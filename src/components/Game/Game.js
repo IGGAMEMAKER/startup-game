@@ -79,8 +79,20 @@ export default class Game extends Component {
     return (
       <div>
         <div>
-          <div>Навыки</div>
-          <div></div>
+          <b>Навыки</b>
+          <div>Ранг {state.player.skills.level}</div>
+          <b>Психологические</b>
+          <div title="Способность работать даже при плохом настрое">Дисциплина {state.player.skills.discipline}</div>
+          <div title="Влияет на переговорный процесс, найм сотрудников и.т.д.">Харизма {state.player.skills.charisma}</div>
+          <br />
+          <b>Специализация</b>
+          <div>Программирование {state.player.skills.programming}</div>
+          <div>Маркетинг {state.player.skills.marketing}</div>
+          <div>Дизайн {state.player.skills.design}</div>
+          <div>UX {state.player.skills.ux}</div>
+          <div>SEO-продвижение {state.player.skills.SEO}</div>
+          <br />
+          <div>Maybe need to merge marketing and SEO</div>
         </div>
         {JSON.stringify(state)}
       </div>
