@@ -7,6 +7,8 @@ type StateType = {};
 
 type ResponseType = {};
 
+import ProductMenu from '../Game/ProductMenu';
+
 export default class Game extends Component {
   state = {
     player: {
@@ -27,37 +29,41 @@ export default class Game extends Component {
         design: 1000,
         ux: 1000,
 
-        marketing: 1000,
-        SEO: 1000,
+        marketing: 1000
+        // SEO: 1000
       },
 
       // temporaries
-      morale: 1000,
-      energy: 1000,
+      morale: 100,
+      energy: 100,
 
       // friends: 100, // NEED MORE INFO.
 
       reputation: 50,
-      money: 20000,
+      // fame: 0 - infinite
+      money: 20000
     },
 
     products: [{
       rating: 0,
       idea: 'IDEA_WEB_STUDIO',
+      name: 'WWWEB STUDIO',
 
       features: {
-        offer: {},
-        programming: {},
-        marketing: {},
-        analytics: {},
+        offer: {}, // features, that are attached to main idea
+        programming: {}, // backups, more dev servers, e.t.c.
+
+        marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
+        analytics: {}, // simple analytics (main KPIs),
+        // middle (segments analytics), mid+ (segments + versions),
 
         // not only chat with users, but also localisations, content updates
         // and all sort of things, that you need doing constantly
-        support: {},
+        support: {}
       },
 
       bonuses: {
-        debt: 0, // technical debt. Shows, how fast can you implement new features
+        debt: 0 // technical debt. Shows, how fast can you implement new features
       }
     }],
 
@@ -65,35 +71,69 @@ export default class Game extends Component {
 
     expenses: [{
       type: 'EXPENSES_FOOD',
-      quality: 0, // poor. Eat doshik and be happy (no) costs low money
+      quality: 0, // poor. Eat doshik and be happy (no). costs low money
       price: 100,
-      regularity: 1, // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
+      regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
     }]
   };
 
   componentWillMount() {}
 
-  render(props: PropsType) {
-    const state = this.state;
-    console.log('state is', state);
+  renderSkills = state => {
     return (
       <div>
-        <div>
-          <b>Навыки</b>
-          <div>Ранг {state.player.skills.level}</div>
-          <b>Психологические</b>
-          <div title="Способность работать даже при плохом настрое">Дисциплина {state.player.skills.discipline}</div>
-          <div title="Влияет на переговорный процесс, найм сотрудников и.т.д.">Харизма {state.player.skills.charisma}</div>
-          <br />
-          <b>Специализация</b>
-          <div>Программирование {state.player.skills.programming}</div>
-          <div>Маркетинг {state.player.skills.marketing}</div>
-          <div>Дизайн {state.player.skills.design}</div>
-          <div>UX {state.player.skills.ux}</div>
-          <div>SEO-продвижение {state.player.skills.SEO}</div>
-          <br />
-          <div>Maybe need to merge marketing and SEO</div>
-        </div>
+        <b>Навыки</b>
+        <div>Ранг {state.player.skills.level}</div>
+        <b>Психологические</b>
+        <div title="Способность работать даже при плохом настрое">Дисциплина {state.player.skills.discipline}</div>
+        <div title="Влияет на переговорный процесс, найм сотрудников и.т.д.">Харизма {state.player.skills.charisma}</div>
+        <br />
+        <b>Специализация</b>
+        <div>Программирование {state.player.skills.programming}</div>
+        <div>Маркетинг {state.player.skills.marketing}</div>
+        <div>Дизайн {state.player.skills.design}</div>
+        <div>UX {state.player.skills.ux}</div>
+        <div>SEO-продвижение {state.player.skills.SEO}</div>
+        <br />
+        <div>Maybe need to merge marketing and SEO</div>
+      </div>
+    )
+  };
+
+  renderProduct = (p, i) => {
+    console.log('renderProduct', p, i);
+
+    return (
+      <div>
+        <ProductMenu key={i} a="1" product={p} i={i} />
+      </div>
+    )
+  };
+
+  renderProducts = state => {
+    return state.products.map(this.renderProduct);
+  };
+
+  renderExpenses = state => {
+    return (
+      <div>
+        <b>Расходы</b>
+        <br />
+        {JSON.stringify(state.expenses)}
+      </div>
+    )
+  };
+
+  render(props: PropsType) {
+    const state = this.state;
+    // console.log('state is', state);
+
+    return (
+      <div>
+        {this.renderSkills(state)}
+        {this.renderProducts(state)}
+        {this.renderExpenses(state)}
+        <br />
         {JSON.stringify(state)}
       </div>
     );
