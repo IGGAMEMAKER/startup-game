@@ -12,7 +12,7 @@ export default class ProductFeatureListItem extends Component {
   render() {
     const props = this.props;
 
-    const level = props.features[props.i];
+    const level = props.currentFeatures[props.i];
 
     return (
       <div>

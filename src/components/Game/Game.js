@@ -154,7 +154,7 @@ export default class Game extends Component {
     //        {this.renderSkills(state)}
 
     return (
-      <div>
+      <div style={{padding: '15px'}}>
         <br />
         <hr />
         {this.renderEconomy(state)}
