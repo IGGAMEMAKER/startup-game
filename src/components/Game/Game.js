@@ -10,7 +10,7 @@ type ResponseType = {};
 import ProductMenu from '../Game/ProductMenu';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 import * as IDEAS from '../../constants/products/ideas';
-
+//
 export default class Game extends Component {
   state = {
     player: {
@@ -53,7 +53,8 @@ export default class Game extends Component {
 
       features: {
         offer: {
-          'portfolio': 0.8
+          'portfolio': 0.8,
+          'website': 1
         }, // features, that are attached to main idea
         programming: {}, // backups, more dev servers, e.t.c.
 
@@ -67,7 +68,13 @@ export default class Game extends Component {
       },
 
       KPI: {
-        debt: 0 // technical debt. Shows, how fast can you implement new features
+        // accumulated values
+        debt: 0, // technical debt. Shows, how fast can you implement new features
+        clients: 10,
+
+        // computable values. Need to be deleted
+        virality: 1.15, // computable value. We DO NOT need it here!!
+        churn: 10 // churn rate. // computable value too! DELETE IT!
       }
     }],
 

@@ -37,16 +37,17 @@ export default class DevelopPanel extends Component {
   };
 
   computeRating = product => {
+    // TODO: include other features too
     let rating = 0;
 
     const { idea } = product;
-    const idealFeatures = this.getBasicProductFeatureListByIdea(idea);
 
-    idealFeatures.forEach((f, i) => {
+
+    const idealFeatures = this.getBasicProductFeatureListByIdea(idea);
+    idealFeatures.forEach(f => {
       const value = product.features.offer[f.name] || 0;
-      const weight = f.influence;
-      console.log('idealFeature', f.name, value, weight);
-      rating += value * weight;
+      // console.log('idealFeature', f.name, value, weight);
+      rating += value * f.influence;
     });
 
     return rating;
