@@ -1,0 +1,1 @@
+export const IDEA_WEB_STUDIO = 'IDEA_WEB_STUDIO';

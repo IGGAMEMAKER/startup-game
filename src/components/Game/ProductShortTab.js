@@ -1,18 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 
-type PropsType = {};
-
-type StateType = {};
-
-type ResponseType = {};
-
 export default class ProductShortTab extends Component {
   state = {};
 
   componentWillMount() {}
 
   render() {
-    const { props, state } = this;
+    const { props } = this;
 
     const p = props.product;
     const i = props.i;
@@ -25,15 +19,12 @@ export default class ProductShortTab extends Component {
         <i>Рейтинг {p.rating}/10</i>
         <br />
         <a href="#" style={{cursor: 'pointer'}}>Улучшения</a>
-        <div>Технический долг: {p.bonuses.debt}</div>
+        <div>Технический долг: {p.KPI.debt}</div>
         {JSON.stringify(p)}
+
       </div>
     );
 
-    return (
-      <div>
-        {text}
-      </div>
-    );
+    return <div>{text}</div>;
   }
 }

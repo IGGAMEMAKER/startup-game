@@ -8,6 +8,8 @@ type StateType = {};
 type ResponseType = {};
 
 import ProductMenu from '../Game/ProductMenu';
+import Button from '../Shared/Button';
+import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 
 export default class Game extends Component {
   state = {
@@ -62,7 +64,7 @@ export default class Game extends Component {
         support: {}
       },
 
-      bonuses: {
+      KPI: {
         debt: 0 // technical debt. Shows, how fast can you implement new features
       }
     }],
@@ -85,7 +87,7 @@ export default class Game extends Component {
         <b>Навыки</b>
         <div>Ранг {state.player.skills.level}</div>
         <b>Психологические</b>
-        <div title="Способность работать даже при плохом настрое">Дисциплина {state.player.skills.discipline}</div>
+        <div alt="Способность работать даже при плохом настрое">Дисциплина {state.player.skills.discipline}</div>
         <div title="Влияет на переговорный процесс, найм сотрудников и.т.д.">Харизма {state.player.skills.charisma}</div>
         <br />
         <b>Специализация</b>
@@ -114,6 +116,25 @@ export default class Game extends Component {
     return state.products.map(this.renderProduct);
   };
 
+  renderIncome = state => {
+    return (
+      <div>
+        <b>Доходы</b>
+        <br />
+        {JSON.stringify(state.income)}
+      </div>
+    )
+  };
+
+  renderEconomy = state => {
+    return (
+      <div>
+        {this.renderIncome(state)}
+        {this.renderExpenses(state)}
+      </div>
+    )
+  };
+
   renderExpenses = state => {
     return (
       <div>
@@ -124,17 +145,27 @@ export default class Game extends Component {
     )
   };
 
+  renderDevelopMode = product => {
+    return <DevelopPanel product={product} />;
+  };
+
   render(props: PropsType) {
     const state = this.state;
-    // console.log('state is', state);
+    //        {this.renderSkills(state)}
 
     return (
       <div>
-        {this.renderSkills(state)}
-        {this.renderProducts(state)}
-        {this.renderExpenses(state)}
         <br />
-        {JSON.stringify(state)}
+        <hr />
+        {this.renderEconomy(state)}
+        <hr />
+        <br />
+        {this.renderProducts(state)}
+        <br />
+        <hr />
+        {this.renderDevelopMode(state.products[0])}
+        <br />
+        <hr />
       </div>
     );
   }
