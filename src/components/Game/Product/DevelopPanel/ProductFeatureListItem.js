@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react';
 
 type PropsType = {};
 
+import Button from '../../../Shared/Button';
+
 export default class ProductFeatureListItem extends Component {
   state = {};
 
@@ -16,6 +18,7 @@ export default class ProductFeatureListItem extends Component {
       <div>
         {`${props.feature.name}:${props.feature.influence}`}
         {level}
+        <Button text="Improve" />
       </div>
     );
   }

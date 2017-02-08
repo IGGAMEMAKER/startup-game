@@ -8,8 +8,8 @@ type StateType = {};
 type ResponseType = {};
 
 import ProductMenu from '../Game/ProductMenu';
-import Button from '../Shared/Button';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
+import * as IDEAS from '../../constants/products/ideas';
 
 export default class Game extends Component {
   state = {
@@ -48,7 +48,7 @@ export default class Game extends Component {
 
     products: [{
       rating: 0,
-      idea: 'IDEA_WEB_STUDIO',
+      idea: IDEAS.IDEA_WEB_STUDIO,
       name: 'WWWEB STUDIO',
 
       features: {

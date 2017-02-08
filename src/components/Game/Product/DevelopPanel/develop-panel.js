@@ -3,22 +3,31 @@ import React, { Component, PropTypes } from 'react';
 
 type PropsType = {};
 
-import Button from '../../../Shared/Button';
-import ProductFeatureList from './ProductFeatureList'; //<ProductFeatureList product={props.product} />
+import ProductFeatureListItem from './ProductFeatureListItem';
+import ProductDescriptions from '../../../../constants/products/product-descriptions';
 
 export default class DevelopPanel extends Component {
   state = {};
 
   componentWillMount() {}
 
+  getFeatureList = idea => {
+    return ProductDescriptions(idea).features;
+  };
+
   render() {
     const { props } = this;
+    const idea = props.product.idea;
+    const features = props.product.features;
+
+    const featureList = this.getFeatureList(idea)
+      .map((feature, i) => <ProductFeatureListItem features={features} feature={feature} i={i} />);
+
     return (
       <div>
         <b>Развитие продукта</b>
-        <ProductFeatureList product={props.product} />
-        <div>Feature 1</div>
-        <Button text="Improve" />
+
+        {featureList}
       </div>
     );
   }
