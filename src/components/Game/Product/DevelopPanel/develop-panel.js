@@ -11,7 +11,7 @@ export default class DevelopPanel extends Component {
 
   componentWillMount() {}
 
-  getProductFeatureList = idea => {
+  getBasicProductFeatureListByIdea = idea => {
     return ProductDescriptions(idea).features;
   };
 
@@ -36,6 +36,22 @@ export default class DevelopPanel extends Component {
     }
   };
 
+  computeRating = product => {
+    let rating = 0;
+
+    const { idea } = product;
+    const idealFeatures = this.getBasicProductFeatureListByIdea(idea);
+
+    idealFeatures.forEach((f, i) => {
+      const value = product.features.offer[f.name] || 0;
+      const weight = f.influence;
+      console.log('idealFeature', f.name, value, weight);
+      rating += value * weight;
+    });
+
+    return rating;
+  };
+
   render() {
     const { props } = this;
 
@@ -44,18 +60,24 @@ export default class DevelopPanel extends Component {
 
     const debt = product.KPI.debt;
 
+    const rating = this.computeRating(product);
+
+
     // specify actual feature values
     const renderFeature = currentFeatures => (feature, i) =>
       <ProductFeatureListItem currentFeatures={currentFeatures} feature={feature} i={i} />;
 
-    const featureList = this.getProductFeatureList(idea).map(renderFeature(product.features.offer));
+    console.log('product', product);
+    const featureList = this.getBasicProductFeatureListByIdea(idea).map(renderFeature(product.features.offer));
     const marketing = this.getMarketingFeatureList(idea).map(renderFeature(product.features.marketing));
 
+          // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     return (
       <div>
         <b>Развитие продукта</b>
         <div style={{padding: '15px'}}>
-          <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
+          <b>Рейтинг: {rating}</b>
+          <div></div>
           <b>Основные фичи продукта</b>
           {featureList}
           <b>Маркетинг</b>

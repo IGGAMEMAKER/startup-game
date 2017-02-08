@@ -52,7 +52,9 @@ export default class Game extends Component {
       name: 'WWWEB STUDIO',
 
       features: {
-        offer: {}, // features, that are attached to main idea
+        offer: {
+          'portfolio': 0.8
+        }, // features, that are attached to main idea
         programming: {}, // backups, more dev servers, e.t.c.
 
         marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.

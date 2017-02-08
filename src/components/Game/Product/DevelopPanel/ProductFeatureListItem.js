@@ -11,12 +11,14 @@ export default class ProductFeatureListItem extends Component {
 
   render() {
     const props = this.props;
+    const { currentFeatures } = props;
+    const { name } = props.feature;
+    const level = currentFeatures[name] || JSON.stringify(currentFeatures); // props.currentFeatures[props.i];
 
-    const level = props.currentFeatures[props.i];
-
+        // {JSON.stringify(props)}
     return (
       <div>
-        {`${props.feature.name}:${props.feature.influence}`}
+        {`${name}:${props.feature.influence}`}
         {level}
         <Button text="Improve" />
       </div>
