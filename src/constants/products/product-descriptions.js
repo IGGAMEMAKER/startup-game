@@ -10,7 +10,7 @@ export default function (idea) {
           { name: 'website', influence: 4, description: '' },
           { name: 'SM activity', influence: 1, description: '' }
         ],
-        utility: 100, // 0 - useless, 100 - more usefull,than water in Africa or tablet from AID
+        utility: 100 // 0 - useless, 100 - more useful, than water in Africa or tablet from AIDs
       };
       break;
   }
