@@ -8,6 +8,8 @@ import * as IDEAS from '../constants/products/ideas';
 
 const EC = 'PRODUCT_EVENT_CHANGE';
 
+import computeRating from '../helpers/products/compute-rating';
+
 let _products = [{
   rating: 0, // computable value, so... needs to be deleted
   idea: IDEAS.IDEA_WEB_STUDIO,
@@ -15,10 +17,10 @@ let _products = [{
 
   features: {
     offer: {
-      'portfolio': 0.81,
-      'website': 1
+      // 'portfolio': 0.81,
+      // 'website': 1
     }, // features, that are attached to main idea
-    programming: {}, // backups, more dev servers, e.t.c.
+    development: {}, // backups, more dev servers, e.t.c.
 
     marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
     analytics: {}, // simple analytics (main KPIs),
@@ -56,6 +58,26 @@ class ProductStore extends EventEmitter {
   getProducts() {
     return _products;
   }
+
+  getRating(i) {
+    return computeRating(_products[i]);
+  }
+
+  getChurnRate(i) {
+    const rating = this.getRating(i) || 8;
+    const ratingModifier = 15 - rating;
+
+    const blog = 0.5;
+    const email = 0.15;
+    const support = 0.35;
+
+    const marketingModifier = blog + email + support;
+
+    // bad 10-15+
+    // good 1-5
+    const churn = ratingModifier * (1 - 0.5 * marketingModifier);
+    return churn.toFixed(0); // products[i].features.marketing;
+  }
 }
 
 const store = new ProductStore();
@@ -72,8 +94,9 @@ Dispatcher.register((p: PayloadType) => {
   let change = true;
   switch (p.type) {
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
-      logger.log('rewrite value', 'PRODUCT_ACTIONS_IMPROVE_FEATURE', _products[p.id], p);
-      _products[p.id].features[p.featureGroup][p.featureName] = p.value;
+      let previous = _products[p.id].features[p.featureGroup][p.featureName];
+      _products[p.id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
+      // _products[p.id].features[p.featureGroup][p.featureName] = p.value;
       break;
     default:
       break;

@@ -8,6 +8,10 @@ import Button from '../../../Shared/Button';
 
 import productActions from '../../../../actions/product-actions';
 
+import computeRating from '../../../../helpers/products/compute-rating';
+
+import productStore from '../../../../stores/product-store';
+
 export default class DevelopPanel extends Component {
   state = {};
 
@@ -28,6 +32,12 @@ export default class DevelopPanel extends Component {
     ]
   };
 
+  getDevelopmentFeatureList = idea => {
+    return [
+      { name: 'Бэкапы', influence: 7, description: ''}
+    ];
+  };
+
   getTechnicalDebtDescription = debt => {
     if (debt < 10) {
       return `Всё хорошо`;
@@ -36,22 +46,6 @@ export default class DevelopPanel extends Component {
     } else {
       return `Ты мразь и п**ор, программисты ненавидят тебя!! Отрефакторь этот шлак!`;
     }
-  };
-
-  computeRating = product => {
-    // TODO: include other features too
-    let rating = 0;
-
-    const { idea } = product;
-
-    const idealFeatures = this.getSpecificProductFeatureListByIdea(idea);
-    idealFeatures.forEach(f => {
-      const value = product.features.offer[f.name] || 0;
-      // console.log('idealFeature', f.name, value, weight);
-      rating += value * f.influence;
-    });
-
-    return rating;
   };
 
   // computeMarketingBonus
@@ -64,7 +58,7 @@ export default class DevelopPanel extends Component {
 
     const debt = product.KPI.debt;
 
-    const rating = this.computeRating(product);
+    const rating = computeRating(product);
 
     const id = 0; // TODO FIX PRODUCT ID
 
@@ -72,23 +66,20 @@ export default class DevelopPanel extends Component {
     const renderFeature = featureGroup => (feature, i) => {
       const currentFeatures = product.features[featureGroup];
       const featureName = feature.name;
-      const level = currentFeatures[featureName] || 0;
+      const quality = currentFeatures[featureName] || 0;
 
       return (
         <div>
-          {`${featureName}: ${level * 100}%`}
+          {`${featureName}: ${quality * 100}%`}
           <Button
             text="Improve"
-            onClick={() => {
-              productActions.improveFeature(id, featureGroup, featureName);
-            }}
+            onClick={() => { productActions.improveFeature(id, featureGroup, featureName); }}
           />
         </div>
       )
     };
-      // <ProductFeatureListItem currentFeatures={currentFeatures} feature={feature} i={i} />;
 
-    console.log('product', product);
+    // console.log('product', product);
     const featureList = this
       .getSpecificProductFeatureListByIdea(idea)
       .map(renderFeature('offer'));
@@ -97,17 +88,33 @@ export default class DevelopPanel extends Component {
       .getMarketingFeatureList(idea)
       .map(renderFeature('marketing'));
 
+    const development = this
+      .getDevelopmentFeatureList(idea)
+      .map(renderFeature('development'));
+
           // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     return (
       <div>
         <b>Развитие продукта</b>
         <div style={{padding: '15px'}}>
-          <b>Рейтинг: {rating}</b>
           <div></div>
+          <b>Основные метрики продукта</b>
+          <div>
+            <ul>
+              <li>
+                <b>Рейтинг: {rating}</b>
+              </li>
+              <li>
+                <b>Отток клиентов: {productStore.getChurnRate(id)}%</b>
+              </li>
+            </ul>
+          </div>
           <b>Основные фичи продукта</b>
           {featureList}
           <b>Работа с клиентами</b>
           {marketing}
+          <b>Разработка</b>
+          {development}
         </div>
       </div>
     );
