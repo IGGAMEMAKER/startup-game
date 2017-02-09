@@ -3,15 +3,17 @@ import React, { Component, PropTypes } from 'react';
 
 type PropsType = {};
 
-import ProductFeatureListItem from './ProductFeatureListItem';
 import ProductDescriptions from '../../../../constants/products/product-descriptions';
+import Button from '../../../Shared/Button';
+
+import productActions from '../../../../actions/product-actions';
 
 export default class DevelopPanel extends Component {
   state = {};
 
   componentWillMount() {}
 
-  getBasicProductFeatureListByIdea = idea => {
+  getSpecificProductFeatureListByIdea = idea => {
     return ProductDescriptions(idea).features;
   };
 
@@ -42,8 +44,7 @@ export default class DevelopPanel extends Component {
 
     const { idea } = product;
 
-
-    const idealFeatures = this.getBasicProductFeatureListByIdea(idea);
+    const idealFeatures = this.getSpecificProductFeatureListByIdea(idea);
     idealFeatures.forEach(f => {
       const value = product.features.offer[f.name] || 0;
       // console.log('idealFeature', f.name, value, weight);
@@ -52,6 +53,8 @@ export default class DevelopPanel extends Component {
 
     return rating;
   };
+
+  // computeMarketingBonus
 
   render() {
     const { props } = this;
@@ -63,14 +66,36 @@ export default class DevelopPanel extends Component {
 
     const rating = this.computeRating(product);
 
+    const id = 0; // TODO FIX PRODUCT ID
 
     // specify actual feature values
-    const renderFeature = currentFeatures => (feature, i) =>
-      <ProductFeatureListItem currentFeatures={currentFeatures} feature={feature} i={i} />;
+    const renderFeature = featureGroup => (feature, i) => {
+      const currentFeatures = product.features[featureGroup];
+      const featureName = feature.name;
+      const level = currentFeatures[featureName] || 0;
+
+      return (
+        <div>
+          {`${featureName}: ${level * 100}%`}
+          <Button
+            text="Improve"
+            onClick={() => {
+              productActions.improveFeature(id, featureGroup, featureName);
+            }}
+          />
+        </div>
+      )
+    };
+      // <ProductFeatureListItem currentFeatures={currentFeatures} feature={feature} i={i} />;
 
     console.log('product', product);
-    const featureList = this.getBasicProductFeatureListByIdea(idea).map(renderFeature(product.features.offer));
-    const marketing = this.getMarketingFeatureList(idea).map(renderFeature(product.features.marketing));
+    const featureList = this
+      .getSpecificProductFeatureListByIdea(idea)
+      .map(renderFeature('offer'));
+
+    const marketing = this
+      .getMarketingFeatureList(idea)
+      .map(renderFeature('marketing'));
 
           // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     return (
@@ -81,7 +106,7 @@ export default class DevelopPanel extends Component {
           <div></div>
           <b>Основные фичи продукта</b>
           {featureList}
-          <b>Маркетинг</b>
+          <b>Работа с клиентами</b>
           {marketing}
         </div>
       </div>

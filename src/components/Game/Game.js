@@ -10,7 +10,9 @@ type ResponseType = {};
 import ProductMenu from '../Game/ProductMenu';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 import * as IDEAS from '../../constants/products/ideas';
-//
+
+import store from '../../stores/product-store';
+
 export default class Game extends Component {
   state = {
     player: {
@@ -46,37 +48,7 @@ export default class Game extends Component {
       money: 20000
     },
 
-    products: [{
-      rating: 0,
-      idea: IDEAS.IDEA_WEB_STUDIO,
-      name: 'WWWEB STUDIO',
-
-      features: {
-        offer: {
-          'portfolio': 0.8,
-          'website': 1
-        }, // features, that are attached to main idea
-        programming: {}, // backups, more dev servers, e.t.c.
-
-        marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-        analytics: {}, // simple analytics (main KPIs),
-        // middle (segments analytics), mid+ (segments + versions),
-
-        // not only chat with users, but also localisations, content updates
-        // and all sort of things, that you need doing constantly
-        support: {}
-      },
-
-      KPI: {
-        // accumulated values
-        debt: 0, // technical debt. Shows, how fast can you implement new features
-        clients: 10,
-
-        // computable values. Need to be deleted
-        virality: 1.15, // computable value. We DO NOT need it here!!
-        churn: 10 // churn rate. // computable value too! DELETE IT!
-      }
-    }],
+    products: [],
 
     team: [],
 
@@ -88,7 +60,21 @@ export default class Game extends Component {
     }]
   };
 
-  componentWillMount() {}
+  componentWillMount() {
+    this.getProductsFromStore();
+
+    store.addChangeListener(() => {
+      this.setState({
+        products: store.getProducts()
+      });
+    });
+  }
+
+  getProductsFromStore = () => {
+    this.setState({
+      products: store.getProducts()
+    });
+  };
 
   renderSkills = state => {
     return (
@@ -172,7 +158,7 @@ export default class Game extends Component {
         {this.renderProducts(state)}
         <br />
         <hr />
-        {this.renderDevelopMode(state.products[0])}
+        {state.products.length === 0 ? '' : this.renderDevelopMode(state.products[0])}
         <br />
         <hr />
       </div>
