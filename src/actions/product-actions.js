@@ -1,5 +1,6 @@
 import Dispatcher from '../dispatcher';
 import * as ACTIONS from '../constants/actions/product-actions';
+import logger from '../helpers/logger/logger';
 
 export default {
   improveFeature: (id, featureGroup, featureName) => {
@@ -9,6 +10,7 @@ export default {
 
     const quality = commonExperience + specificExperience + luck;
 
+    logger.log('improveFeature', id, featureGroup, featureName, quality);
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
       id,

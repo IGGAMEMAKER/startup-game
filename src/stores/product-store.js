@@ -72,8 +72,8 @@ Dispatcher.register((p: PayloadType) => {
   let change = true;
   switch (p.type) {
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
-      logger.log('rewrite value', 'PRODUCT_ACTIONS_IMPROVE_FEATURE');
-      _products[p.id][p.featureGroup][p.featureName] = p.value;
+      logger.log('rewrite value', 'PRODUCT_ACTIONS_IMPROVE_FEATURE', _products[p.id], p);
+      _products[p.id].features[p.featureGroup][p.featureName] = p.value;
       break;
     default:
       break;
