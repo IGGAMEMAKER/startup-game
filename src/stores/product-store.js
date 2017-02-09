@@ -64,18 +64,24 @@ class ProductStore extends EventEmitter {
   }
 
   getChurnRate(i) {
-    const rating = this.getRating(i) || 8;
-    const ratingModifier = 15 - rating;
+    const rating = this.getRating(i);
+
+    if (rating < 3) return 100;
+
+    logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
+    const ratingModifier = Math.min(Math.pow(12 - rating, 1.7), 100);
 
     const blog = 0.5;
     const email = 0.15;
     const support = 0.35;
+    const k = 0.35; // поправочный коэффициент
 
     const marketingModifier = blog + email + support;
 
+    // 15: r7
     // bad 10-15+
     // good 1-5
-    const churn = ratingModifier * (1 - 0.5 * marketingModifier);
+    const churn = ratingModifier * (1 - k * marketingModifier);
     return churn.toFixed(0); // products[i].features.marketing;
   }
 }

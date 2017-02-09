@@ -8,9 +8,9 @@ import Button from '../../../Shared/Button';
 
 import productActions from '../../../../actions/product-actions';
 
-import computeRating from '../../../../helpers/products/compute-rating';
-
 import productStore from '../../../../stores/product-store';
+
+import computeRating from '../../../../helpers/products/compute-rating';
 
 export default class DevelopPanel extends Component {
   state = {};
@@ -93,6 +93,7 @@ export default class DevelopPanel extends Component {
       .map(renderFeature('development'));
 
           // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
+    const churn = productStore.getChurnRate(id);
     return (
       <div>
         <b>Развитие продукта</b>
@@ -105,7 +106,7 @@ export default class DevelopPanel extends Component {
                 <b>Рейтинг: {rating}</b>
               </li>
               <li>
-                <b>Отток клиентов: {productStore.getChurnRate(id)}%</b>
+                <b>Отток клиентов: {churn}%</b>
               </li>
             </ul>
           </div>
