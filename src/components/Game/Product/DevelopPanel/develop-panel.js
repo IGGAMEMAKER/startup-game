@@ -4,13 +4,12 @@ import React, { Component, PropTypes } from 'react';
 type PropsType = {};
 
 import ProductDescriptions from '../../../../constants/products/product-descriptions';
+import Metrics from '../KPI/metrics';
 import Button from '../../../Shared/Button';
 
 import productActions from '../../../../actions/product-actions';
 
 import productStore from '../../../../stores/product-store';
-
-import computeRating from '../../../../helpers/products/compute-rating';
 
 export default class DevelopPanel extends Component {
   state = {};
@@ -65,10 +64,6 @@ export default class DevelopPanel extends Component {
     const { product } = props;
     const { idea } = product;
 
-    const debt = product.KPI.debt;
-
-    const rating = computeRating(product);
-
     const id = 0; // TODO FIX PRODUCT ID
 
     // specify actual feature values
@@ -105,24 +100,13 @@ export default class DevelopPanel extends Component {
       .getAnalyticFeatures(idea)
       .map(renderFeature('analytics'));
 
-          // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
-    const churn = productStore.getChurnRate(id);
     return (
       <div>
         <b>Развитие продукта</b>
         <div style={{padding: '15px'}}>
           <div></div>
           <b>Основные метрики продукта</b>
-          <div>
-            <ul>
-              <li>
-                <b>Рейтинг: {rating}</b>
-              </li>
-              <li>
-                <b>Отток клиентов: {churn}%</b>
-              </li>
-            </ul>
-          </div>
+          <Metrics product={product} id={id} />
           <b>Основные фичи продукта</b>
           {featureList}
           <b>Работа с клиентами</b>

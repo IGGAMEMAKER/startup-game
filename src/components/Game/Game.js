@@ -12,7 +12,7 @@ import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 
 import * as IDEAS from '../../constants/products/ideas';
 
-import store from '../../stores/product-store';
+import productStore from '../../stores/product-store';
 
 export default class Game extends Component {
   state = {
@@ -64,16 +64,16 @@ export default class Game extends Component {
   componentWillMount() {
     this.getProductsFromStore();
 
-    store.addChangeListener(() => {
+    productStore.addChangeListener(() => {
       this.setState({
-        products: store.getProducts()
+        products: productStore.getProducts()
       });
     });
   }
 
   getProductsFromStore = () => {
     this.setState({
-      products: store.getProducts()
+      products: productStore.getProducts()
     });
   };
 
@@ -121,7 +121,7 @@ export default class Game extends Component {
       </div>
     )
   };
-  
+
   renderAdCampaignGenerator = state => {
     return (
       <div>

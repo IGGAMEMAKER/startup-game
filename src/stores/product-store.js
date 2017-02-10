@@ -64,6 +64,10 @@ class ProductStore extends EventEmitter {
     return computeRating(_products[i]);
   }
 
+  getClients(i) {
+    return _products[i].KPI.clients;
+  }
+
   getAnalyticsValueForFeatureCreating(i) {
     // range: 0 - 1
     const analytics = _products[i].features.analytics;
@@ -75,16 +79,23 @@ class ProductStore extends EventEmitter {
     return (feedback + inexactSegmenting + exactSegmenting) / 10;
   }
 
-  getProductIncome(i) {
+  getConversionRate(i) {
     const rating = this.getRating(i);
     const utility = 10;
-    let conversion = Math.pow((rating - 7), 2) / 1000; // rating 10 - 0.05
-    conversion *= utility;
+
+    // let conversion = utility * Math.pow((rating), 1.5) / 1000; // rating 10 - 0.05
+    let conversion = utility * rating / 1000; // rating 10 - 0.05
 
     if (conversion <= 0 || conversion > 15) {
       logger.error(`invalid conversion value ${conversion}`);
-      throw 'INVALID_CONVERSION_ERROR';
+      // throw 'INVALID_CONVERSION_ERROR';
     }
+
+    return conversion;
+  }
+
+  getProductIncome(i) {
+    const conversion = this.getConversionRate(i); // rating 10 - 0.05
 
     const clients = _products[i].KPI.clients;
     const price = 100;
@@ -97,6 +108,9 @@ class ProductStore extends EventEmitter {
   }
 
   getChurnRate(i) {
+    // TODO fix constant values in blog, email, support in getChurnRate(i)
+    logger.shit('TODO fix constant values in blog, email, support in getChurnRate(i)');
+
     const rating = this.getRating(i);
 
     if (rating < 3) return 100;
