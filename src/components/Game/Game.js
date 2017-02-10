@@ -9,6 +9,7 @@ type ResponseType = {};
 
 import ProductMenu from '../Game/ProductMenu';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
+
 import * as IDEAS from '../../constants/products/ideas';
 
 import store from '../../stores/product-store';
@@ -117,6 +118,15 @@ export default class Game extends Component {
         <b>Доходы</b>
         <br />
         {JSON.stringify(state.income)}
+      </div>
+    )
+  };
+  
+  renderAdCampaignGenerator = state => {
+    return (
+      <div>
+        <b>Рекламная кампания</b>
+        <br />
       </div>
     )
   };

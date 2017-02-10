@@ -22,19 +22,28 @@ export default class DevelopPanel extends Component {
   };
 
   getMarketingFeatureList = (idea) => {
-    // VK + TG = 10
-    // VK = 8
-    // TG = 5
+    // VK + TG = 10 // VK = 8 // TG = 5
 
     return [
-      { name: 'VK', influence: 8, description: '' },
-      { name: 'Telegram', influence: 5, description: '' }
+      { name: 'vk', influence: 8, description: '' },
+      { name: 'telegram', influence: 5, description: '' }
     ]
   };
 
   getDevelopmentFeatureList = idea => {
     return [
-      { name: 'Бэкапы', influence: 7, description: ''}
+      { name: 'backups', influence: 7, description: ''},
+      { name: 'clusters', influence: 7, description: ''},
+      { name: 'tests', influence: 7, description: ''},
+      { name: 'mobiles', influence: 7, description: ''}, // ios android apps
+    ];
+  };
+
+  getAnalyticFeatures = idea => {
+    return [
+      { name: 'feedback', description: '' },
+      { name: 'inexactSegmenting', description: '' },
+      { name: 'exactSegmenting', description: '' }
     ];
   };
 
@@ -92,6 +101,10 @@ export default class DevelopPanel extends Component {
       .getDevelopmentFeatureList(idea)
       .map(renderFeature('development'));
 
+    const analytics = this
+      .getAnalyticFeatures(idea)
+      .map(renderFeature('analytics'));
+
           // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     const churn = productStore.getChurnRate(id);
     return (
@@ -116,6 +129,8 @@ export default class DevelopPanel extends Component {
           {marketing}
           <b>Разработка</b>
           {development}
+          <b>Аналитика</b>
+          {analytics}
         </div>
       </div>
     );

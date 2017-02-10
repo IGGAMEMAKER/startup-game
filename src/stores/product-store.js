@@ -35,6 +35,7 @@ let _products = [{
     // accumulated values
     debt: 0, // technical debt. Shows, how fast can you implement new features
     clients: 10,
+    bugs: 10
 
     // computable values. Need to be deleted
     // virality: 1.15, // computable value. We DO NOT need it here!!
@@ -61,6 +62,38 @@ class ProductStore extends EventEmitter {
 
   getRating(i) {
     return computeRating(_products[i]);
+  }
+
+  getAnalyticsValueForFeatureCreating(i) {
+    // range: 0 - 1
+    const analytics = _products[i].features.analytics;
+
+    const feedback = analytics.feedback ? 2 : 0;
+    const inexactSegmenting = analytics.inexactSegmenting ? 3 : 0;
+    const exactSegmenting = analytics.exactSegmenting ? 5 : 0;
+
+    return (feedback + inexactSegmenting + exactSegmenting) / 10;
+  }
+
+  getProductIncome(i) {
+    const rating = this.getRating(i);
+    const utility = 10;
+    let conversion = Math.pow((rating - 7), 2) / 1000; // rating 10 - 0.05
+    conversion *= utility;
+
+    if (conversion <= 0 || conversion > 15) {
+      logger.error(`invalid conversion value ${conversion}`);
+      throw 'INVALID_CONVERSION_ERROR';
+    }
+
+    const clients = _products[i].KPI.clients;
+    const price = 100;
+    const payAbility = 1;
+
+    // need app
+    // want to pay
+    // can pay
+    return conversion * clients * price;
   }
 
   getChurnRate(i) {
