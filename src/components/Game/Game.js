@@ -82,14 +82,12 @@ export default class Game extends Component {
     const object = { gameSpeed: 1 };
     let timerId = this.state.timerId;
 
-    if (!timerId) {
-      timerId = setInterval(gameRunner.run, 1000);
-      object.timerId = timerId;
-    } else {
+    if (timerId) {
       clearInterval(timerId);
-      timerId = setInterval(gameRunner.run, 1000);
     }
 
+    timerId = setInterval(gameRunner.run, 1000);
+    object.timerId = timerId;
     this.setState(object);
     // this.setState({ gameSpeed: speed + 1 });
   };
