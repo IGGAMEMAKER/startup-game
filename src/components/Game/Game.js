@@ -19,6 +19,8 @@ import gameRunner from '../../game';
 
 import Button from '../Shared/Button';
 
+import round from '../../helpers/math/round';
+
 export default class Game extends Component {
   state = {
     player: {
@@ -85,15 +87,16 @@ export default class Game extends Component {
   };
 
   increaseGameSpeed = () => {
-    const speed = this.state.gameSpeed;
-    const object = { gameSpeed: 1 };
+    const speed = this.state.gameSpeed + 1;
+    const object = { gameSpeed: speed };
+
     let timerId = this.state.timerId;
 
     if (timerId) {
       clearInterval(timerId);
     }
 
-    timerId = setInterval(gameRunner.run, 1000);
+    timerId = setInterval(gameRunner.run, 1000 / speed);
     object.timerId = timerId;
     this.setState(object);
   };
@@ -197,7 +200,7 @@ export default class Game extends Component {
   renderEconomy = state => {
     return (
       <div>
-        <div>На вашем счету: {state.money}$</div>
+        <div>На вашем счету: {round(state.money)}$</div>
         {this.renderIncome(state)}
         {this.renderExpenses(state)}
       </div>
