@@ -105,15 +105,20 @@ export default class DevelopPanel extends Component {
         <b>Развитие продукта</b>
         <div style={{padding: '15px'}}>
           <div></div>
-          <b>Основные метрики продукта</b>
+          <b>Основные показатели продукта</b>
           <Metrics product={product} id={id} />
           <b>Основные фичи продукта</b>
+          <div>
+            Улучшая главные фичи продукта, вы повышаете его рейтинг,
+            что приводит к увеличению всех основных метрик
+          </div>
           {featureList}
           <b>Работа с клиентами</b>
           {marketing}
           <b>Разработка</b>
           {development}
           <b>Аналитика</b>
+          <div>Позволяет быстрее улучшать главные фичи проекта</div>
           {analytics}
         </div>
       </div>

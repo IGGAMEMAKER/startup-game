@@ -9,6 +9,7 @@ type ResponseType = {};
 
 import ProductMenu from '../Game/ProductMenu';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
+import AdsPanel from './Product/Ads/advert-planner-panel';
 
 import * as IDEAS from '../../constants/products/ideas';
 
@@ -122,10 +123,16 @@ export default class Game extends Component {
     )
   };
 
-  renderAdCampaignGenerator = state => {
+  renderAdCampaignGenerator = (state) => {
+    if (!state.products.length) return <div></div>;
+
+    const id = 0;
+    const product = state.products[id];
+
     return (
       <div>
         <b>Рекламная кампания</b>
+        <AdsPanel product={product} id={id} />
         <br />
       </div>
     )
@@ -150,13 +157,20 @@ export default class Game extends Component {
     )
   };
 
-  renderDevelopMode = product => {
-    return <DevelopPanel product={product} />;
+  renderDevelopMode = (state) => {
+  // product, id) => {
+    if (!state.products.length) return <div></div>;
+    const id = 0;
+    const product = state.products[id];
+
+    return <DevelopPanel product={product} id={id} />;
   };
 
   render(props: PropsType) {
     const state = this.state;
     //        {this.renderSkills(state)}
+
+    const id = 0;
 
     return (
       <div style={{padding: '15px'}}>
@@ -168,7 +182,10 @@ export default class Game extends Component {
         {this.renderProducts(state)}
         <br />
         <hr />
-        {state.products.length === 0 ? '' : this.renderDevelopMode(state.products[0])}
+        {this.renderDevelopMode(state)}
+        <br />
+        <hr />
+        {this.renderAdCampaignGenerator(state)}
         <br />
         <hr />
       </div>

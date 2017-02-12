@@ -97,14 +97,16 @@ class ProductStore extends EventEmitter {
   getProductIncome(i) {
     const conversion = this.getConversionRate(i); // rating 10 - 0.05
 
-    const clients = _products[i].KPI.clients;
+    const clients = this.getClients(i);
     const price = 100;
     const payAbility = 1;
+
+    const payments = conversion * clients;
 
     // need app
     // want to pay
     // can pay
-    return conversion * clients * price;
+    return payments * price;
   }
 
   getChurnRate(i) {
@@ -115,7 +117,7 @@ class ProductStore extends EventEmitter {
 
     if (rating < 3) return 100;
 
-    logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
+    // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
     const ratingModifier = Math.min(Math.pow(12 - rating, 1.7), 100);
 
     const blog = 0.5;
