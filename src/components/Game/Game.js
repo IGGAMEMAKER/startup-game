@@ -11,9 +11,11 @@ import ProductMenu from '../Game/ProductMenu';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 import AdsPanel from './Product/Ads/advert-planner-panel';
 
-import * as IDEAS from '../../constants/products/ideas';
-
 import productStore from '../../stores/product-store';
+import scheduleStore from '../../stores/schedule-store';
+import gameRunner from '../../game';
+
+import Button from '../Shared/Button';
 
 export default class Game extends Component {
   state = {
@@ -59,18 +61,59 @@ export default class Game extends Component {
       quality: 0, // poor. Eat doshik and be happy (no). costs low money
       price: 100,
       regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
-    }]
+    }],
+
+    day: 0,
+
+    tasks: [],
+
+    gameSpeed: 0,
+
+    timerId: null
+  };
+
+  initialize = () => {
+    this.getProductsFromStore();
+    this.pickDataFromScheduleStore();
+  };
+
+  increaseGameSpeed = () => {
+    const speed = this.state.gameSpeed;
+    const object = { gameSpeed: 1 };
+    let timerId = this.state.timerId;
+
+    if (!timerId) {
+      timerId = setInterval(gameRunner.run, 1000);
+      object.timerId = timerId;
+    } else {
+      clearInterval(timerId);
+      timerId = setInterval(gameRunner.run, 1000);
+    }
+
+    this.setState(object);
+    // this.setState({ gameSpeed: speed + 1 });
+  };
+
+  pauseGame = () => {
+    let timerId = this.state.timerId;
+    clearInterval(timerId);
+    this.setState({ gameSpeed: 0, timerId: null });
   };
 
   componentWillMount() {
-    this.getProductsFromStore();
+    this.initialize();
 
-    productStore.addChangeListener(() => {
-      this.setState({
-        products: productStore.getProducts()
-      });
-    });
+    productStore.addChangeListener(this.getProductsFromStore);
+
+    scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
   }
+
+  pickDataFromScheduleStore = () => {
+    this.setState({
+      day: scheduleStore.getDay(),
+      tasks: scheduleStore.getTasks()
+    })
+  };
 
   getProductsFromStore = () => {
     this.setState({
@@ -103,7 +146,7 @@ export default class Game extends Component {
     console.log('renderProduct', p, i);
 
     return (
-      <div>
+      <div key={`product${i}`}>
         <ProductMenu key={i} a="1" product={p} i={i} />
       </div>
     )
@@ -123,7 +166,7 @@ export default class Game extends Component {
     )
   };
 
-  renderAdCampaignGenerator = (state) => {
+  renderAdCampaignGenerator = state => {
     if (!state.products.length) return <div></div>;
 
     const id = 0;
@@ -157,7 +200,7 @@ export default class Game extends Component {
     )
   };
 
-  renderDevelopMode = (state) => {
+  renderDevelopMode = state => {
   // product, id) => {
     if (!state.products.length) return <div></div>;
     const id = 0;
@@ -172,8 +215,13 @@ export default class Game extends Component {
 
     const id = 0;
 
+    const day = state.day;
     return (
       <div style={{padding: '15px'}}>
+        <Button text="increase game speed" onClick={this.increaseGameSpeed} />
+        <Button text="pause" onClick={this.pauseGame} />
+
+        <div>day: {day}</div>
         <br />
         <hr />
         {this.renderEconomy(state)}

@@ -86,7 +86,7 @@ class ProductStore extends EventEmitter {
     // let conversion = utility * Math.pow((rating), 1.5) / 1000; // rating 10 - 0.05
     let conversion = utility * rating / 1000; // rating 10 - 0.05
 
-    if (conversion <= 0 || conversion > 15) {
+    if (conversion < 0 || conversion > 15) {
       logger.error(`invalid conversion value ${conversion}`);
       // throw 'INVALID_CONVERSION_ERROR';
     }

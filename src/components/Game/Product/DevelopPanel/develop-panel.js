@@ -72,8 +72,10 @@ export default class DevelopPanel extends Component {
       const featureName = feature.name;
       const quality = currentFeatures[featureName] || 0;
 
+      const key = `feature${featureGroup}${featureName}${i}`;
+
       return (
-        <div>
+        <div key={key}>
           {`${featureName}: ${quality * 100}%`}
           <Button
             text="Improve"
