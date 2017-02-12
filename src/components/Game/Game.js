@@ -159,7 +159,7 @@ export default class Game extends Component {
   };
 
   renderProduct = (p, i) => {
-    console.log('renderProduct', p, i);
+    // console.log('renderProduct', p, i);
 
     return (
       <div key={`product${i}`}>

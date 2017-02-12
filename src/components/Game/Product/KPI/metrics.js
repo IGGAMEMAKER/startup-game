@@ -30,10 +30,13 @@ export default class Metrics extends Component {
     const rating = computeRating(product);
 
     // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
-    const churn = productStore.getChurnRate(id);
+    const churn = percentify(productStore.getChurnRate(id));
+    const disloyalClients = productStore.getDisloyalClients(id);
     const conversion = percentify(productStore.getConversionRate(id));
     const clients = productStore.getClients(id);
     const income = round(productStore.getProductIncome(id));
+    const virality = round(productStore.getViralityRate(id));
+    const viralClients = productStore.getViralClients(id);
 
     return (
       <div>
@@ -43,7 +46,10 @@ export default class Metrics extends Component {
               <b>Рейтинг: {rating}</b>
             </li>
             <li>
-              <b>Отток клиентов: {churn}%</b>
+              <b>Отток клиентов: {churn}% ({disloyalClients})</b>
+            </li>
+            <li>
+              <b>Виральность: {virality} ({viralClients})</b>
             </li>
             <li>
               <b>Процент платящих: {conversion}%</b>

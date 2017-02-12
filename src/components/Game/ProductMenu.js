@@ -11,7 +11,7 @@ import ProductShortTab from '../Game/ProductShortTab';
 export default class ProductMenu extends Component {
   render() {
     const { props, state } = this;
-    console.log('ProductMenu', props, state);
+    // console.log('ProductMenu', props, state);
 
     return (
       <div>

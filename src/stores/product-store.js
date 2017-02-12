@@ -68,6 +68,14 @@ class ProductStore extends EventEmitter {
     return _products[i].KPI.clients;
   }
 
+  getDisloyalClients(i) {
+    return Math.floor(this.getClients(i) * this.getChurnRate(i));
+  }
+
+  getViralClients(i) {
+    return Math.floor(this.getClients(i) * this.getViralityRate(i));
+  }
+
   getAnalyticsValueForFeatureCreating(i) {
     // range: 0 - 1
     const analytics = _products[i].features.analytics;
@@ -109,16 +117,33 @@ class ProductStore extends EventEmitter {
     return payments * price;
   }
 
+  getViralityRate(i) {
+    const rating = this.getRating(i);
+
+    let base = 0;
+
+    if (rating < 7) {
+      base = 0.1;
+    } else {
+      base = (rating - 7) / 10 + 0.1;
+    }
+
+    const referralBonuses = 0;
+
+    return base + referralBonuses;
+  }
+
   getChurnRate(i) {
     // TODO fix constant values in blog, email, support in getChurnRate(i)
+    // return answer in partitions 0-1
     logger.shit('TODO fix constant values in blog, email, support in getChurnRate(i)');
 
     const rating = this.getRating(i);
 
-    if (rating < 3) return 100;
+    if (rating < 3) return 1;
 
     // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
-    const ratingModifier = Math.min(Math.pow(12 - rating, 1.7), 100);
+    const ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
 
     const blog = 0.5;
     const email = 0.15;
@@ -130,8 +155,9 @@ class ProductStore extends EventEmitter {
     // 15: r7
     // bad 10-15+
     // good 1-5
-    const churn = ratingModifier * (1 - k * marketingModifier);
-    return churn.toFixed(0); // products[i].features.marketing;
+    const churn = ratingModifier * (1 - k * marketingModifier) / 100;
+    return churn;
+    // return churn.toFixed(0); // products[i].features.marketing;
   }
 }
 
