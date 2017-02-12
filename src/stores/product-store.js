@@ -146,12 +146,21 @@ Dispatcher.register((p: PayloadType) => {
     return;
   }
 
+  const id = p.id;
+
   let change = true;
   switch (p.type) {
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
-      let previous = _products[p.id].features[p.featureGroup][p.featureName];
-      _products[p.id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
+      let previous = _products[id].features[p.featureGroup][p.featureName];
+      _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
       // _products[p.id].features[p.featureGroup][p.featureName] = p.value;
+      break;
+    case c.PRODUCT_ACTIONS_CLIENTS_ADD:
+      // not all users will become our clients. Some of them will vanish
+      let clients = p.clients;
+      const efficiency = 1;
+
+      _products[id].KPI.clients += efficiency * clients;
       break;
     default:
       break;

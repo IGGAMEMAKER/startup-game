@@ -28,4 +28,11 @@ export default {
       value: quality
     })
   },
+  addClients: (id, clients) => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,
+      id,
+      clients
+    })
+  }
 };

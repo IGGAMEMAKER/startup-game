@@ -16,5 +16,13 @@ export default {
       task: Object,
       id: Number
     }
+  },
+
+  playerStorePayload: {
+    name: 'playerStorePayload',
+    type: {
+      type: String,
+      amount: Number
+    }
   }
 };

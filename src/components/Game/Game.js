@@ -13,6 +13,8 @@ import AdsPanel from './Product/Ads/advert-planner-panel';
 
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
+import playerStore from '../../stores/player-store';
+
 import gameRunner from '../../game';
 
 import Button from '../Shared/Button';
@@ -69,12 +71,17 @@ export default class Game extends Component {
 
     gameSpeed: 0,
 
-    timerId: null
+    timerId: null,
+
+    money: 0,
+
+    id: 0, // productID
   };
 
   initialize = () => {
     this.getProductsFromStore();
     this.pickDataFromScheduleStore();
+    this.getPlayerInfoFromStore();
   };
 
   increaseGameSpeed = () => {
@@ -89,7 +96,6 @@ export default class Game extends Component {
     timerId = setInterval(gameRunner.run, 1000);
     object.timerId = timerId;
     this.setState(object);
-    // this.setState({ gameSpeed: speed + 1 });
   };
 
   pauseGame = () => {
@@ -104,6 +110,8 @@ export default class Game extends Component {
     productStore.addChangeListener(this.getProductsFromStore);
 
     scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
+
+    playerStore.addChangeListener(this.getPlayerInfoFromStore);
   }
 
   pickDataFromScheduleStore = () => {
@@ -117,6 +125,13 @@ export default class Game extends Component {
     this.setState({
       products: productStore.getProducts()
     });
+  };
+
+  getPlayerInfoFromStore = () => {
+    this.setState({
+      money: playerStore.getMoney(),
+      skills: playerStore.getSkills()
+    })
   };
 
   renderSkills = state => {
@@ -145,7 +160,7 @@ export default class Game extends Component {
 
     return (
       <div key={`product${i}`}>
-        <ProductMenu key={i} a="1" product={p} i={i} />
+        <ProductMenu product={p} i={i} />
       </div>
     )
   };
@@ -167,7 +182,7 @@ export default class Game extends Component {
   renderAdCampaignGenerator = state => {
     if (!state.products.length) return <div></div>;
 
-    const id = 0;
+    const id = state.id;
     const product = state.products[id];
 
     return (
@@ -182,6 +197,7 @@ export default class Game extends Component {
   renderEconomy = state => {
     return (
       <div>
+        <div>На вашем счету: {state.money}$</div>
         {this.renderIncome(state)}
         {this.renderExpenses(state)}
       </div>
@@ -199,9 +215,9 @@ export default class Game extends Component {
   };
 
   renderDevelopMode = state => {
-  // product, id) => {
     if (!state.products.length) return <div></div>;
-    const id = 0;
+
+    const id = state.id;
     const product = state.products[id];
 
     return <DevelopPanel product={product} id={id} />;
@@ -210,8 +226,6 @@ export default class Game extends Component {
   render(props: PropsType) {
     const state = this.state;
     //        {this.renderSkills(state)}
-
-    const id = 0;
 
     const day = state.day;
     return (
