@@ -9,5 +9,12 @@ export default {
       value: Number
     }
   },
-
+  scheduleStorePayload: {
+    name: 'scheduleStorePayload',
+    type: {
+      type: String,
+      task: Object,
+      id: Number
+    }
+  }
 };
