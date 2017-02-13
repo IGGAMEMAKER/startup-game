@@ -38,6 +38,8 @@ export default class Metrics extends Component {
     const virality = round(productStore.getViralityRate(id));
     const viralClients = productStore.getViralClients(id);
 
+    const newbies = productStore.getNewClients(id);
+
     return (
       <div>
         <div>
@@ -50,6 +52,9 @@ export default class Metrics extends Component {
             </li>
             <li>
               <b>Виральность: {virality} ({viralClients})</b>
+            </li>
+            <li>
+              <b>Новые клиенты: {newbies}</b>
             </li>
             <li>
               <b>Процент платящих: {conversion}%</b>

@@ -35,6 +35,7 @@ let _products = [{
     // accumulated values
     debt: 0, // technical debt. Shows, how fast can you implement new features
     clients: 10,
+    newClients: 10,
     bugs: 10
 
     // computable values. Need to be deleted
@@ -68,12 +69,16 @@ class ProductStore extends EventEmitter {
     return _products[i].KPI.clients;
   }
 
+  getNewClients(i) {
+    return _products[i].KPI.newClients;
+  }
+
   getDisloyalClients(i) {
     return Math.floor(this.getClients(i) * this.getChurnRate(i));
   }
 
   getViralClients(i) {
-    return Math.floor(this.getClients(i) * this.getViralityRate(i));
+    return Math.floor(this.getNewClients(i) * this.getViralityRate(i));
   }
 
   getAnalyticsValueForFeatureCreating(i) {
@@ -183,10 +188,27 @@ Dispatcher.register((p: PayloadType) => {
       break;
     case c.PRODUCT_ACTIONS_CLIENTS_ADD:
       // not all users will become our clients. Some of them will vanish
-      let clients = p.clients;
-      const efficiency = 1;
+      // if you got them from ads, efficiency will be less than 1
+      const efficiency = p.efficiency || 1;
+      let clients = Math.floor(efficiency * p.clients);
 
-      _products[id].KPI.clients += efficiency * clients;
+      _products[id].KPI.clients += clients;
+      _products[id].KPI.newClients += clients;
+      break;
+    case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
+      clients = p.clients;
+      _products[id].KPI.clients += clients;
+      _products[id].KPI.newClients = clients;
+      break;
+    case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
+      // churn clients
+      clients = p.clients;
+
+      if (_products[id].KPI.clients - clients < 0) {
+        _products[id].KPI.clients = 0;
+      } else {
+        _products[id].KPI.clients -= Math.floor(clients);
+      }
       break;
     default:
       break;
