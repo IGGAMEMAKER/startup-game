@@ -25,10 +25,8 @@ const run = () => {
   if (isLastDayOfMonth(day)) {
     // calculate client amount change
     products.forEach((p, i) => {
-      const clients = productStore.getClients(i);
       const churn = productStore.getDisloyalClients(i);
       const viral = productStore.getViralClients(i);
-      logger.log('onMonth update', churn, viral, clients);
 
       productActions.removeClients(i, churn);
       productActions.viralClients(i, viral);

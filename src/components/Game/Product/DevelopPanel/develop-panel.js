@@ -25,7 +25,9 @@ export default class DevelopPanel extends Component {
 
     return [
       { name: 'vk', influence: 8, description: '' },
-      { name: 'telegram', influence: 5, description: '' }
+      { name: 'telegram', influence: 5, description: '' },
+      { name: 'referralProgram', influence: 5, description: '' },
+      { name: 'improvedReferralProgram', influence: 8, description: '' },
     ]
   };
 
@@ -98,6 +100,9 @@ export default class DevelopPanel extends Component {
       .getDevelopmentFeatureList(idea)
       .map(renderFeature('development'));
 
+    // <b>Разработка</b>
+    // {development}
+
     const analytics = this
       .getAnalyticFeatures(idea)
       .map(renderFeature('analytics'));
@@ -116,9 +121,8 @@ export default class DevelopPanel extends Component {
           </div>
           {featureList}
           <b>Работа с клиентами</b>
+          <div>Позволяет снизить отток клиентов, повышая их лояльность</div>
           {marketing}
-          <b>Разработка</b>
-          {development}
           <b>Аналитика</b>
           <div>Позволяет быстрее улучшать главные фичи проекта</div>
           {analytics}

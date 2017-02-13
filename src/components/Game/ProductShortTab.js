@@ -20,10 +20,9 @@ export default class ProductShortTab extends Component {
         <br />
         <a href="#" style={{cursor: 'pointer'}}>Улучшения</a>
         <div>Технический долг: {p.KPI.debt}</div>
-        {JSON.stringify(p)}
-
       </div>
     );
+        // {JSON.stringify(p)}
 
     return <div>{text}</div>;
   }

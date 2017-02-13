@@ -124,16 +124,24 @@ class ProductStore extends EventEmitter {
 
   getViralityRate(i) {
     const rating = this.getRating(i);
+    const marketing = _products[i].features.marketing;
 
-    let base = 0;
+    let base = 0.1;
 
-    if (rating < 7) {
-      base = 0.1;
-    } else {
-      base = (rating - 7) / 10 + 0.1;
+    if (rating >= 7) {
+      base += (rating - 7) / 10;
     }
 
-    const referralBonuses = 0;
+    let referralBonuses = 0;
+    if (marketing.improvedReferralProgram) {
+      referralBonuses += 0.45;
+    }
+
+    if (marketing.referralProgram) {
+      referralBonuses += 0.21;
+    }
+    // referralProgram
+    // improvedReferralProgram
 
     return base + referralBonuses;
   }

@@ -44,6 +44,12 @@ export default class AdvertPlannerPanel extends Component {
           text="Start ad campaign"
           onClick={inviteUsers(id, stream * 5, baseCost * 4.5)}
         />
+        <div>Invite {stream * 25} users to your website</div>
+        <Button
+          item="start-campaign"
+          text="Start ad campaign"
+          onClick={inviteUsers(id, stream * 25, baseCost * 20)}
+        />
       </div>
     );
   }
