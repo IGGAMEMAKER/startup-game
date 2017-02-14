@@ -169,7 +169,9 @@ export default class Game extends Component {
   };
 
   renderProducts = state => {
-    return state.products.map(this.renderProduct);
+    return state.products
+      .map((p, i) => Object.assign(p, { rating: productStore.getRating(i) }))
+      .map(this.renderProduct);
   };
 
   renderIncome = state => {

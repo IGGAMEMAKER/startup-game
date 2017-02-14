@@ -20,6 +20,7 @@ const run = () => {
   const products = productStore.getProducts();
 
   // check tasks for finishing
+  tasks.forEach(t => { t.do(); });
 
   // check if it is last day of month (pay day)
   if (isLastDayOfMonth(day)) {

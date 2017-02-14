@@ -24,10 +24,12 @@ export default class DevelopPanel extends Component {
     // VK + TG = 10 // VK = 8 // TG = 5
 
     return [
-      { name: 'vk', influence: 8, description: '' },
-      { name: 'telegram', influence: 5, description: '' },
-      { name: 'referralProgram', influence: 5, description: '' },
-      { name: 'improvedReferralProgram', influence: 8, description: '' },
+      { name: 'blog', influence: 5, description: '', time: 2 },
+      { name: 'support', influence: 5, description: '', time: 4 },
+      { name: 'emails', influence: 5, description: '', time: 10 },
+
+      { name: 'referralProgram', influence: 5, description: '', time: 7 },
+      // { name: 'improvedReferralProgram', influence: 8, description: '', time: 14 }
     ]
   };
 
@@ -36,15 +38,16 @@ export default class DevelopPanel extends Component {
       { name: 'backups', influence: 7, description: ''},
       { name: 'clusters', influence: 7, description: ''},
       { name: 'tests', influence: 7, description: ''},
-      { name: 'mobiles', influence: 7, description: ''}, // ios android apps
+      { name: 'mobiles', influence: 7, description: ''} // ios android apps
     ];
   };
 
   getAnalyticFeatures = idea => {
     return [
-      { name: 'feedback', description: '' },
-      { name: 'inexactSegmenting', description: '' },
-      { name: 'exactSegmenting', description: '' }
+      { name: 'feedback', description: '', time: 1 },
+      { name: 'segmenting', description: '', time: 7 },
+      // { name: 'inexactSegmenting', description: '', time: 7 },
+      // { name: 'exactSegmenting', description: '', time: 21 }
     ];
   };
 
@@ -72,13 +75,13 @@ export default class DevelopPanel extends Component {
     const renderFeature = featureGroup => (feature, i) => {
       const currentFeatures = product.features[featureGroup];
       const featureName = feature.name;
-      const quality = currentFeatures[featureName] || 0;
+      const quality = Math.floor((currentFeatures[featureName] || 0) * 100);
 
       const key = `feature${featureGroup}${featureName}${i}`;
 
       return (
         <div key={key}>
-          {`${featureName}: ${quality * 100}%`}
+          {`${featureName}: ${quality}%`}
           <Button
             text="Improve"
             onClick={() => { productActions.improveFeature(id, featureGroup, featureName); }}

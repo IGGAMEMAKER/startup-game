@@ -27,7 +27,7 @@ export default class Metrics extends Component {
 
     const debt = product.KPI.debt;
 
-    const rating = computeRating(product);
+    const rating = round(computeRating(product));
 
     // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     const churn = percentify(productStore.getChurnRate(id));

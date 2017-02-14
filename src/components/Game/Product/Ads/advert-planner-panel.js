@@ -30,26 +30,26 @@ export default class AdvertPlannerPanel extends Component {
       }
     };
 
+    const renderAdCampaignButton = (users, cost) => {
+      return (
+        <div>
+          <div>Invite {users} users to your website for {cost}$</div>
+          <Button
+            item="start-campaign"
+            text={`Start ad campaign for ${cost}$`}
+            onClick={inviteUsers(id, users, cost)}
+          />
+        </div>
+      )
+    };
+
     return (
       <div>
-        <div>Invite {stream} users to your website</div>
-        <Button
-          item="start-campaign"
-          text="Start ad campaign"
-          onClick={inviteUsers(id, stream, baseCost)}
-        />
-        <div>Invite {stream * 5} users to your website</div>
-        <Button
-          item="start-campaign"
-          text="Start ad campaign"
-          onClick={inviteUsers(id, stream * 5, baseCost * 4.5)}
-        />
-        <div>Invite {stream * 25} users to your website</div>
-        <Button
-          item="start-campaign"
-          text="Start ad campaign"
-          onClick={inviteUsers(id, stream * 25, baseCost * 20)}
-        />
+        {renderAdCampaignButton(stream, baseCost)}
+        {renderAdCampaignButton(stream * 5, baseCost * 4.5)}
+        {renderAdCampaignButton(stream * 25, baseCost * 20)}
+        {renderAdCampaignButton(stream * 100, baseCost * 80)}
+        {renderAdCampaignButton(stream * 1000, baseCost * 750)}
       </div>
     );
   }

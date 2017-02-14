@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import round from '../../helpers/math/round';
 
 export default class ProductShortTab extends Component {
   state = {};
@@ -16,12 +17,12 @@ export default class ProductShortTab extends Component {
         <div>№ {i + 1}</div>
         <div>{p.name}</div>
         <div>Тип: {p.idea}</div>
-        <i>Рейтинг {p.rating}/10</i>
+        <i>Рейтинг {round(p.rating)}/10</i>
         <br />
-        <a href="#" style={{cursor: 'pointer'}}>Улучшения</a>
-        <div>Технический долг: {p.KPI.debt}</div>
       </div>
     );
+        // <a href="#" style={{cursor: 'pointer'}}>Улучшения</a>
+        // <div>Технический долг: {p.KPI.debt}</div>
         // {JSON.stringify(p)}
 
     return <div>{text}</div>;

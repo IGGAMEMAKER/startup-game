@@ -9,6 +9,7 @@ import * as IDEAS from '../constants/products/ideas';
 const EC = 'PRODUCT_EVENT_CHANGE';
 
 import computeRating from '../helpers/products/compute-rating';
+import productDescriptions from '../constants/products/product-descriptions';
 
 let _products = [{
   rating: 0, // computable value, so... needs to be deleted
@@ -89,12 +90,19 @@ class ProductStore extends EventEmitter {
     const inexactSegmenting = analytics.inexactSegmenting ? 3 : 0;
     const exactSegmenting = analytics.exactSegmenting ? 5 : 0;
 
-    return (feedback + inexactSegmenting + exactSegmenting) / 10;
+    // const segmenting = inexactSegmenting + exactSegmenting;
+    const segmenting = (analytics.segmenting || 0) * 8;
+    return (feedback + segmenting) / 10;
+  }
+
+  getProductUtility(i) {
+    const idea = _products[i].idea;
+    return productDescriptions(idea).utility;
   }
 
   getConversionRate(i) {
     const rating = this.getRating(i);
-    const utility = 10;
+    const utility = this.getProductUtility(i);
 
     // let conversion = utility * Math.pow((rating), 1.5) / 1000; // rating 10 - 0.05
     let conversion = utility * rating / 1000; // rating 10 - 0.05
@@ -122,8 +130,13 @@ class ProductStore extends EventEmitter {
     return payments * price;
   }
 
+  getIdea(i) {
+    return _products[i].idea;
+  }
+
   getViralityRate(i) {
     const rating = this.getRating(i);
+    const multiplier = productDescriptions(this.getIdea(i)).virality;
     const marketing = _products[i].features.marketing;
 
     let base = 0.1;
@@ -133,17 +146,16 @@ class ProductStore extends EventEmitter {
     }
 
     let referralBonuses = 0;
-    if (marketing.improvedReferralProgram) {
-      referralBonuses += 0.45;
-    }
+    // if (marketing.improvedReferralProgram) {
+    //   referralBonuses += 0.45;
+    // }
 
     if (marketing.referralProgram) {
-      referralBonuses += 0.21;
+      // referralBonuses += 0.21;
+      referralBonuses += 0.65 * marketing.referralProgram;
     }
-    // referralProgram
-    // improvedReferralProgram
 
-    return base + referralBonuses;
+    return (base + referralBonuses) * multiplier;
   }
 
   getChurnRate(i) {
@@ -158,12 +170,14 @@ class ProductStore extends EventEmitter {
     // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
     const ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
 
-    const blog = 0.5;
-    const email = 0.15;
-    const support = 0.35;
+    const marketing = _products[i].features.marketing;
+
+    const blog = marketing.blog || 0;
+    const emails = marketing.emails || 0;
+    const support = marketing.support || 0;
     const k = 0.35; // поправочный коэффициент
 
-    const marketingModifier = blog + email + support;
+    const marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
 
     // 15: r7
     // bad 10-15+
