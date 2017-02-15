@@ -22,7 +22,7 @@ const run = () => {
   // check tasks for finishing
   const finishing = [];
   tasks.forEach((t, taskId) => {
-    const speed = 8;
+    const speed = t.speed;
 
     if (t.inProgress) {
       if (t.progress + speed >= t.timecost) {
