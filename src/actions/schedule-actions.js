@@ -15,6 +15,14 @@ export default {
     })
   },
 
+  increaseProgress: (taskId, speed) => {
+    Dispatcher.dispatch({
+      type: ACTIONS.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS,
+      speed,
+      taskId
+    })
+  },
+
   addTask: (days, queue, description, cb) => {
     // days: amount of days, that you need to complete the task. While working fulltime
     // if you have a job/freelance, you need more days to complete it.

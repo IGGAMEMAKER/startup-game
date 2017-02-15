@@ -20,7 +20,21 @@ const run = () => {
   const products = productStore.getProducts();
 
   // check tasks for finishing
-  // tasks.forEach(t => { t.cb(); });
+  const finishing = [];
+  tasks.forEach((t, taskId) => {
+    const speed = 8;
+
+    if (t.inProgress) {
+      if (t.progress + speed >= t.timecost) {
+        // this task will complete today
+        finishing.push(taskId);
+      } else {
+        scheduleActions.increaseProgress(taskId, speed);
+      }
+    }
+  });
+
+  scheduleActions.removeTasks(finishing); // and we need to set new inProgress task
 
   // check if it is last day of month (pay day)
   if (isLastDayOfMonth(day)) {

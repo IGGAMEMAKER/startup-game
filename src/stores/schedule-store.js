@@ -102,13 +102,33 @@ Dispatcher.register((p: PayloadType) => {
       let task = p.task;
       addTask(task);
       break;
+    case c.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS:
+      // it's considered, that this increase will not complete task and there is at least one day left
+      let taskId = p.taskId;
+      let speed = _tasks[taskId].speed;
+
+      _tasks[taskId].progress += speed;
+      break;
     case c.SCHEDULE_ACTIONS_TASKS_REMOVE:
       // let tasks = [10, 1, 3, 2]; // p.tasks.sort((a, b) => a - b);
       let tasks = p.tasks.sort((a, b) => b - a);
-      // let taskId = p.id;
+
       tasks.forEach((taskId, i) => {
         _tasks.splice(taskId, 1);
       });
+
+      const synchronous =  _tasks
+        .map((t, taskId) => Object.assign(t, { taskId }))
+        .filter(t => t.isSynchronous);
+
+      if (synchronous.length) {
+        if (!synchronous.filter(t => t.inProgress).length) {
+          // we HAVE synchronous tasks, but we didn't set any of them in progress
+
+          const newSynchronousTaskId = synchronous[0].taskId;
+          _tasks[newSynchronousTaskId].inProgress = true;
+        }
+      }
       break;
     default:
       break;

@@ -39,13 +39,14 @@ export default class Schedule extends Component {
     const renderTask = (task, i) => {
       const description = task.description;
       const progress = `${task.progress}/${task.timecost}`;
+
       let result;
 
       const percentage = `${Math.floor(task.progress * 100 / task.timecost)} %`;
 
       const days = Math.ceil((task.timecost - task.progress) / task.speed);
       if (task.inProgress) {
-        result = <b>{description} (Ещё {days} дней, {percentage})</b>
+        result = <b>{description} (Ещё {days} дней, {progress}, {percentage})</b>
       } else {
         result = <div>{description} (Ожидает выполнения: {progress}, {percentage})</div>
       }
@@ -57,9 +58,6 @@ export default class Schedule extends Component {
         </div>
       );
     };
-
-    // let tasks1 = [10, 11, 1, 3, 2]; // p.tasks.sort((a, b) => a - b);
-    // logger.log(tasks1, tasks1.map(m => m).sort((a, b) => b - a));
 
     return (
       <div>
