@@ -14,7 +14,11 @@ import productActions from '../../../../actions/product-actions';
 import productStore from '../../../../stores/product-store';
 import computeFeatureCost from '../../../../helpers/products/feature-price';
 
-import { WORK_SPEED_NORMAL } from '../../../../constants/work-speed';
+import scheduleActions from '../../../../actions/schedule-actions';
+
+import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../../../../constants/work-speed';
+
+import logger from '../../../../helpers/logger/logger';
 
 export default class DevelopPanel extends Component {
   state = {};
@@ -89,12 +93,35 @@ export default class DevelopPanel extends Component {
 
       const key = `feature${featureGroup}${featureName}${i}`;
           // {JSON.stringify(feature)}
+
+      const cb = () => {
+        logger.log('deferred callback!!');
+        productActions.improveFeature(id, featureGroup, featureName);
+      };
+
+      const freelancerTime = time;
+      // const efficiency = WORK_SPEED_NORMAL / WORK_SPEED_HAS_MAIN_JOB;
+      const yourTime = Math.ceil(time * WORK_SPEED_NORMAL / WORK_SPEED_HAS_MAIN_JOB);
+
+      const doTaskYourself = () => {
+        scheduleActions.addTask(time, true, WORK_SPEED_HAS_MAIN_JOB, key, cb);
+      };
+
+      const sendTaskToFreelancer = () => {
+        scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, cb);
+      };
+
       return (
         <div key={key}>
           {`${featureName}: ${quality}%. Time: ${time}. Cost ${cost}$`}
           <Button
-            text="Improve"
-            onClick={() => { productActions.improveFeature(id, featureGroup, featureName); }}
+            text={`Отдать задачу фрилансеру. (${freelancerTime} дней и ${cost}$)`}
+            onClick={sendTaskToFreelancer}
+          />
+          <br />
+          <Button
+            text={`Сделать самому (${yourTime} дней)`}
+            onClick={doTaskYourself}
           />
         </div>
       )

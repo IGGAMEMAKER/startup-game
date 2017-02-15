@@ -23,7 +23,7 @@ export default {
     })
   },
 
-  addTask: (days, queue, description, cb) => {
+  addTask: (days, queue, performance, description, cb) => {
     // days: amount of days, that you need to complete the task. While working fulltime
     // if you have a job/freelance, you need more days to complete it.
     // it's considered, that you can work 8 h/day
@@ -38,7 +38,8 @@ export default {
         days,
         queue,
         cb,
-        description
+        description,
+        performance
       }
     })
   },

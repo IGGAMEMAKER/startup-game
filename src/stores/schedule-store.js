@@ -56,11 +56,12 @@ class ScheduleStore extends EventEmitter {
 }
 
 const addTask = task => {
-  const { queue, days, description, cb } = task;
+  const { queue, days, description, cb, performance } = task;
 
   let start = _day;
   let finish = _day + days;
   let inProgress = true;
+
 
   if (queue) {
     _tasks.filter(t => t.isSynchronous).forEach((t, i) => {
@@ -76,7 +77,8 @@ const addTask = task => {
     isSynchronous: queue,
     start, finish,
     progress: 0, inProgress,
-    timecost: days * WORK_SPEED_NORMAL
+    timecost: days * WORK_SPEED_NORMAL,
+    speed: performance
   };
 
   _tasks.push(object);
@@ -114,6 +116,12 @@ Dispatcher.register((p: PayloadType) => {
       let tasks = p.tasks.sort((a, b) => b - a);
 
       tasks.forEach((taskId, i) => {
+        // const callback = _tasks[taskId].cb;
+
+        // if (callback) {
+        //   callback();
+        // }
+
         _tasks.splice(taskId, 1);
       });
 

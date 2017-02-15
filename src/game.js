@@ -28,6 +28,11 @@ const run = () => {
       if (t.progress + speed >= t.timecost) {
         // this task will complete today
         finishing.push(taskId);
+
+        if (t.cb) {
+          t.cb();
+        }
+
       } else {
         scheduleActions.increaseProgress(taskId, speed);
       }
