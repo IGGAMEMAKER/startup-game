@@ -7,9 +7,14 @@ import ProductDescriptions from '../../../../constants/products/product-descript
 import Metrics from '../KPI/metrics';
 import Button from '../../../Shared/Button';
 
+import * as PROFESSIONS from '../../../../constants/professions';
+
 import productActions from '../../../../actions/product-actions';
 
 import productStore from '../../../../stores/product-store';
+import computeFeatureCost from '../../../../helpers/products/feature-price';
+
+import { WORK_SPEED_NORMAL } from '../../../../constants/work-speed';
 
 export default class DevelopPanel extends Component {
   state = {};
@@ -21,34 +26,35 @@ export default class DevelopPanel extends Component {
   };
 
   getMarketingFeatureList = (idea) => {
-    // VK + TG = 10 // VK = 8 // TG = 5
+    const cost = 1500 * WORK_SPEED_NORMAL;
 
     return [
-      { name: 'blog', influence: 5, description: '', time: 2 },
-      { name: 'support', influence: 5, description: '', time: 4 },
-      { name: 'emails', influence: 5, description: '', time: 10 },
+      { name: 'blog', description: '', time: 2 },
+      { name: 'support', description: '', time: 4 },
+      { name: 'emails', description: '', time: 10 },
 
-      { name: 'referralProgram', influence: 5, description: '', time: 7 },
-      // { name: 'improvedReferralProgram', influence: 8, description: '', time: 14 }
-    ]
+      { name: 'referralProgram', influence: 5, description: '', time: 7 }
+    ].map(computeFeatureCost(cost));
   };
 
   getDevelopmentFeatureList = idea => {
+    const cost = 1500 * WORK_SPEED_NORMAL;
+
     return [
-      { name: 'backups', influence: 7, description: ''},
-      { name: 'clusters', influence: 7, description: ''},
-      { name: 'tests', influence: 7, description: ''},
-      { name: 'mobiles', influence: 7, description: ''} // ios android apps
-    ];
+      { name: 'backups', description: ''},
+      { name: 'clusters', description: ''},
+      { name: 'tests', description: ''},
+      { name: 'mobiles', description: ''} // ios android apps
+    ].map(computeFeatureCost(cost));
   };
 
   getAnalyticFeatures = idea => {
+    const cost = 1000 * WORK_SPEED_NORMAL;
+
     return [
       { name: 'feedback', description: '', time: 1 },
-      { name: 'segmenting', description: '', time: 7 },
-      // { name: 'inexactSegmenting', description: '', time: 7 },
-      // { name: 'exactSegmenting', description: '', time: 21 }
-    ];
+      { name: 'segmenting', description: '', time: 7 }
+    ].map(computeFeatureCost(cost));
   };
 
   getTechnicalDebtDescription = debt => {
@@ -73,15 +79,19 @@ export default class DevelopPanel extends Component {
 
     // specify actual feature values
     const renderFeature = featureGroup => (feature, i) => {
-      const currentFeatures = product.features[featureGroup];
       const featureName = feature.name;
+
+      const currentFeatures = product.features[featureGroup];
+
       const quality = Math.floor((currentFeatures[featureName] || 0) * 100);
 
-      const key = `feature${featureGroup}${featureName}${i}`;
+      const { cost, time } = feature;
 
+      const key = `feature${featureGroup}${featureName}${i}`;
+          // {JSON.stringify(feature)}
       return (
         <div key={key}>
-          {`${featureName}: ${quality}%`}
+          {`${featureName}: ${quality}%. Time: ${time}. Cost ${cost}$`}
           <Button
             text="Improve"
             onClick={() => { productActions.improveFeature(id, featureGroup, featureName); }}
@@ -117,9 +127,9 @@ export default class DevelopPanel extends Component {
           <div></div>
           <b>Основные показатели продукта</b>
           <Metrics product={product} id={id} />
-          <b>Основные фичи продукта</b>
+          <b>Основные характеристики продукта</b>
           <div>
-            Улучшая главные фичи продукта, вы повышаете его рейтинг,
+            Улучшая главные характеристики продукта, вы повышаете его рейтинг,
             что приводит к увеличению всех основных метрик
           </div>
           {featureList}
@@ -127,7 +137,7 @@ export default class DevelopPanel extends Component {
           <div>Позволяет снизить отток клиентов, повышая их лояльность</div>
           {marketing}
           <b>Аналитика</b>
-          <div>Позволяет быстрее улучшать главные фичи проекта</div>
+          <div>Позволяет быстрее улучшать главные характеристики проекта</div>
           {analytics}
         </div>
       </div>

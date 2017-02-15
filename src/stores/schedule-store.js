@@ -4,11 +4,34 @@ import * as c from '../constants/actions/schedule-actions';
 import payloads from '../constants/actions/payloads';
 import logger from '../helpers/logger/logger';
 
+import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../constants/work-speed';
+
 const EC = 'MAIN_EVENT_CHANGE';
 
-let _tasks = [];
+let _tasks = [{
+  description: 'improve main feature',
+  inProgress: true,
+  isSynchronous: true,
+  progress: 1,
+  timecost: 15 * WORK_SPEED_HAS_MAIN_JOB,
+  speed: WORK_SPEED_HAS_MAIN_JOB,
+}, {
+  description: 'improve secondary feature',
+  inProgress: true,
+  isSynchronous: false,
+  progress: 8,
+  timecost: 2 * WORK_SPEED_NORMAL,
+  speed: WORK_SPEED_NORMAL
+}, {
+  description: 'improve analytics',
+  inProgress: false,
+  isSynchronous: true,
+  progress: 1,
+  timecost: 2 * WORK_SPEED_NORMAL,
+  speed: WORK_SPEED_NORMAL
+}];
 let _day = 0;
-
+let _workHours = 4;
 
 class ScheduleStore extends EventEmitter {
   addChangeListener(cb:Function) {
@@ -32,6 +55,33 @@ class ScheduleStore extends EventEmitter {
   }
 }
 
+const addTask = task => {
+  const { queue, days, description, cb } = task;
+
+  let start = _day;
+  let finish = _day + days;
+  let inProgress = true;
+
+  if (queue) {
+    _tasks.filter(t => t.isSynchronous).forEach((t, i) => {
+      if (t.inProgress) {
+        inProgress = false;
+      }
+    });
+  }
+
+  const object = {
+    added: _day,
+    days, cb, description,
+    isSynchronous: queue,
+    start, finish,
+    progress: 0, inProgress,
+    timecost: days * WORK_SPEED_NORMAL
+  };
+
+  _tasks.push(object);
+};
+
 const store = new ScheduleStore();
 
 const payload = payloads.scheduleStorePayload;
@@ -50,11 +100,15 @@ Dispatcher.register((p: PayloadType) => {
       break;
     case c.SCHEDULE_ACTIONS_TASKS_ADD:
       let task = p.task;
-      _tasks.push(task);
+      addTask(task);
       break;
     case c.SCHEDULE_ACTIONS_TASKS_REMOVE:
-      let taskId = p.id;
-      _tasks.splice(taskId, 1);
+      // let tasks = [10, 1, 3, 2]; // p.tasks.sort((a, b) => a - b);
+      let tasks = p.tasks.sort((a, b) => b - a);
+      // let taskId = p.id;
+      tasks.forEach((taskId, i) => {
+        _tasks.splice(taskId, 1);
+      });
       break;
     default:
       break;

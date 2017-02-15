@@ -8,6 +8,7 @@ type StateType = {};
 type ResponseType = {};
 
 import ProductMenu from '../Game/ProductMenu';
+import Schedule from '../Game/Schedule';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 import AdsPanel from './Product/Ads/advert-planner-panel';
 
@@ -228,6 +229,10 @@ export default class Game extends Component {
     return <DevelopPanel product={product} id={id} />;
   };
 
+  renderSchedule = state => {
+    return <Schedule />;
+  };
+
   render(props: PropsType) {
     const state = this.state;
     //        {this.renderSkills(state)}
@@ -241,6 +246,9 @@ export default class Game extends Component {
         <div>day: {day}</div>
         <br />
         <hr />
+        {this.renderSchedule(state)}
+        <hr />
+        <br />
         {this.renderEconomy(state)}
         <hr />
         <br />

@@ -96,7 +96,7 @@ class ProductStore extends EventEmitter {
   }
 
   getProductUtility(i) {
-    const idea = _products[i].idea;
+    const idea = this.getIdea(i);
     return productDescriptions(idea).utility;
   }
 
@@ -115,11 +115,15 @@ class ProductStore extends EventEmitter {
     return conversion;
   }
 
+  getProductPrice(i) {
+    return productDescriptions(this.getIdea(i)).price;
+  }
+
   getProductIncome(i) {
     const conversion = this.getConversionRate(i); // rating 10 - 0.05
 
     const clients = this.getClients(i);
-    const price = 100;
+    const price = this.getProductPrice(i);
     const payAbility = 1;
 
     const payments = conversion * clients;
