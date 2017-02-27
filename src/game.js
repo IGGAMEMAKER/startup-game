@@ -58,7 +58,9 @@ const run = () => {
       .reduce((p, c) => p + c);
 
     // check expenses
-    const expenses = 100;
+    const expenses = 100 + products
+      .map((p, i) => productStore.getProductExpenses(i))
+      .reduce((p, c) => p + c);
 
     playerActions.increaseMoney(income - expenses);
   }

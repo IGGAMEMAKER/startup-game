@@ -190,6 +190,44 @@ class ProductStore extends EventEmitter {
     return churn;
     // return churn.toFixed(0); // products[i].features.marketing;
   }
+
+  getProductBlogCost(i) {
+    const BASE_BLOG_COST = 5000;
+
+    return _products[i].features.marketing.blog ? BASE_BLOG_COST : 0;
+  }
+
+  getProductSupportCost(i) {
+    const marketing = _products[i].features.marketing;
+
+    const support = marketing.support || 0;
+
+    if (!support) return 0;
+
+    const clients = this.getClients(i);
+
+    if (clients < 1000) return 1000;
+    if (clients < 10000) return 5000;
+    if (clients < 100000) return 30000;
+
+    return 100000;
+  }
+
+  getProductExpenses(i) {
+    return this.getProductBlogCost(i) + this.getProductSupportCost(i);
+  }
+
+  getName(i) {
+    return _products[i].name;
+  }
+
+  getProductExpensesStructure(i) {
+    return {
+      name: this.getName(i),
+      blog: this.getProductBlogCost(i),
+      support: this.getProductSupportCost(i)
+    };
+  }
 }
 
 const store = new ProductStore();

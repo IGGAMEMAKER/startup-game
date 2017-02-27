@@ -12,6 +12,8 @@ import Schedule from '../Game/Schedule';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 import AdsPanel from './Product/Ads/advert-planner-panel';
 
+import Expenses from './Player/Expenses';
+
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
 import playerStore from '../../stores/player-store';
@@ -60,13 +62,6 @@ export default class Game extends Component {
     products: [],
 
     team: [],
-
-    expenses: [{
-      type: 'EXPENSES_FOOD',
-      quality: 0, // poor. Eat doshik and be happy (no). costs low money
-      price: 100,
-      regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
-    }],
 
     day: 0,
 
@@ -211,13 +206,9 @@ export default class Game extends Component {
   };
 
   renderExpenses = state => {
-    return (
-      <div>
-        <b>Расходы</b>
-        <br />
-        {JSON.stringify(state.expenses)}
-      </div>
-    )
+    const expenses = state.products.map((p, i) => productStore.getProductExpensesStructure(i));
+
+    return <Expenses expenses={expenses} />;
   };
 
   renderDevelopMode = state => {
