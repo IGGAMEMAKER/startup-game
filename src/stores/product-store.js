@@ -192,7 +192,7 @@ class ProductStore extends EventEmitter {
   }
 
   getProductBlogCost(i) {
-    const BASE_BLOG_COST = 5000;
+    const BASE_BLOG_COST = 1000;
 
     return _products[i].features.marketing.blog ? BASE_BLOG_COST : 0;
   }

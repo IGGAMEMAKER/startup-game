@@ -18,6 +18,8 @@ import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
 import playerStore from '../../stores/player-store';
 
+import playerActions from '../../actions/player-actions';
+
 import gameRunner from '../../game';
 
 import Button from '../Shared/Button';
@@ -209,9 +211,24 @@ export default class Game extends Component {
       );
     }
 
+    const takeLoan = amount => {
+      return (
+        <div>
+          <div>
+            Взять кредит на сумму {amount}$. Ежемесячный платёж составит: {amount / 100}$
+          </div>
+          <Button text={`Взять кредит (${amount}$)`} onClick={() => playerActions.loans.take(amount)} />
+        </div>
+      )
+    };
+
     return (
       <div>
         <div>На вашем счету: {round(state.money)}$</div>
+        {takeLoan(1000)}
+        {takeLoan(10000)}
+        {takeLoan(100000)}
+        {takeLoan(500000)}
         {loanTab}
         {this.renderIncome(state)}
         {this.renderExpenses(state)}

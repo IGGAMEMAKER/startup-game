@@ -3,8 +3,11 @@ import React, { Component, PropTypes } from 'react';
 
 import playerStore from '../../../stores/player-store';
 import productStore from '../../../stores/product-store';
+import playerActions from '../../../actions/player-actions';
 
 import * as EXPENSES from '../../../constants/expenses';
+
+import Button from '../../Shared/Button';
 
 type PropsType = {};
 
@@ -59,7 +62,10 @@ export default class Expenses extends Component {
 
       if (e.type === EXPENSES.EXPENSES_LOAN) {
         loanIndex++;
-        phrase = `Выплата процентов по долгу #${loanIndex}: ${e.price * 0.01}`
+        phrase = <div>
+          Выплата процентов по долгу #${loanIndex}: ${e.price * 0.01}
+          <Button text={`Погасить долг (${e.price})`} onClick={() => { playerActions.loans.repay(i); }} />
+        </div>
       }
 
       return (
