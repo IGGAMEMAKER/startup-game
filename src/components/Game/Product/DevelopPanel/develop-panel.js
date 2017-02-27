@@ -111,9 +111,10 @@ export default class DevelopPanel extends Component {
         scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, cb);
       };
 
+          // {`${featureName}: ${quality}%. Time: ${time}. Cost ${cost}$`}
       return (
         <div key={key}>
-          {`${featureName}: ${quality}%. Time: ${time}. Cost ${cost}$`}
+          {featureName}: {quality}%
           <Button
             text={`Отдать задачу фрилансеру. (${freelancerTime} дней и ${cost}$)`}
             onClick={sendTaskToFreelancer}

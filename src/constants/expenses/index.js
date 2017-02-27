@@ -1,0 +1,2 @@
+export const EXPENSES_FOOD = 'EXPENSES_FOOD';
+export const EXPENSES_LOAN = 'EXPENSES_LOAN';

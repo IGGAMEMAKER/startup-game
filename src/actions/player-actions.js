@@ -15,7 +15,7 @@ export default {
       amount
     })
   },
-  
+
   loans: {
     take: (amount) => {
       Dispatcher.dispatch({
@@ -25,8 +25,8 @@ export default {
     },
     repay: (id) => {
       Dispatcher.dispatch({
-        type: ACTIONS.PLAYER_ACTIONS_LOANS_TAKE,
-        amount
+        type: ACTIONS.PLAYER_ACTIONS_LOANS_REPAY,
+        id
       })
     }
   }

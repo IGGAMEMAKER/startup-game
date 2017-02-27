@@ -4,6 +4,8 @@ import React, { Component, PropTypes } from 'react';
 import playerStore from '../../../stores/player-store';
 import productStore from '../../../stores/product-store';
 
+import * as EXPENSES from '../../../constants/expenses';
+
 type PropsType = {};
 
 type StateType = {};
@@ -28,7 +30,8 @@ export default class Expenses extends Component {
     const { props } = this;
     const state = this.state;
 
-    const expenses = props.expenses;
+    const productExpenses = props.expenses;
+    const basicExpenses = state.expenses;
 
     const renderExpense = (e, i) => {
       return (
@@ -36,22 +39,45 @@ export default class Expenses extends Component {
           Затраты на проект {e.name}
           <ul>
             <li>
-              Затраты на ведение блога:{e.blog}
+              Затраты на ведение блога: {e.blog}
             </li>
             <li>
-              Затраты на техподдержку:{e.support}
+              Затраты на техподдержку: {e.support}
             </li>
           </ul>
         </div>
       );
     };
 
+    let loanIndex = 0;
+    const renderBasicExpense = (e, i) => {
+      let phrase = '';
+
+      if (e.type === EXPENSES.EXPENSES_FOOD) {
+        phrase = `Затраты на еду: ${e.price}`;
+      }
+
+      if (e.type === EXPENSES.EXPENSES_LOAN) {
+        loanIndex++;
+        phrase = `Выплата процентов по долгу #${loanIndex}: ${e.price * 0.01}`
+      }
+
+      return (
+        <div>
+          {phrase}
+        </div>
+      );
+    };
+
+        // {JSON.stringify(state.expenses)}
     return (
       <div>
         <b>Расходы</b>
         <br />
-        {JSON.stringify(state.expenses)}
-        {expenses.map(renderExpense)}
+        <h4>Базовые расходы</h4>
+        {basicExpenses.map(renderBasicExpense)}
+        <h4>Продуктовые расходы</h4>
+        {productExpenses.map(renderExpense)}
       </div>
     )
   }

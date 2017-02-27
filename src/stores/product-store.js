@@ -273,6 +273,7 @@ Dispatcher.register((p: PayloadType) => {
       } else {
         _products[id].KPI.clients -= Math.floor(clients);
       }
+
       break;
     default:
       break;

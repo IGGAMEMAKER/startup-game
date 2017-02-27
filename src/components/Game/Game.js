@@ -171,11 +171,13 @@ export default class Game extends Component {
   };
 
   renderIncome = state => {
+    // {JSON.stringify(state.income)}
+
     return (
       <div>
         <b>Доходы</b>
         <br />
-        {JSON.stringify(state.income)}
+        <div>Фриланс: 5000$</div>
       </div>
     )
   };
@@ -196,9 +198,21 @@ export default class Game extends Component {
   };
 
   renderEconomy = state => {
+    const loans = playerStore.getLoanSize();
+
+    let loanTab = <div></div>;
+    if (loans > 0) {
+      loanTab = (
+        <div>
+          Суммарная задолженность {loans}$
+        </div>
+      );
+    }
+
     return (
       <div>
         <div>На вашем счету: {round(state.money)}$</div>
+        {loanTab}
         {this.renderIncome(state)}
         {this.renderExpenses(state)}
       </div>

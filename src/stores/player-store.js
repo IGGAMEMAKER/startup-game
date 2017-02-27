@@ -4,12 +4,14 @@ import * as c from '../constants/actions/player-actions';
 import payloads from '../constants/actions/payloads';
 import logger from '../helpers/logger/logger';
 
+import * as EXPENSES from '../constants/expenses';
+
 const EC = 'PLAYER_EVENT_CHANGE';
 
 let _skills = {};
 let _money = 1000;
 let _expenses = [{
-  type: 'EXPENSES_FOOD',
+  type: EXPENSES.EXPENSES_FOOD,
   quality: 0, // poor. Eat doshik and be happy (no). costs low money
   price: 100,
   regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
@@ -45,7 +47,7 @@ class PlayerStore extends EventEmitter {
   }
 
   getLoanPaymentAmount() {
-    return _loan * 0.01;
+    return _loan ? _loan * 0.01 : 0;
   }
 
   getLoanSize() {
@@ -80,6 +82,12 @@ Dispatcher.register((p: PayloadType) => {
 
       _money += p.amount;
       _loan += p.amount;
+
+      _expenses.push({
+        type: EXPENSES.EXPENSES_LOAN,
+        price: p.amount,
+        regularity: 1
+      });
       break;
     case c.PLAYER_ACTIONS_LOANS_REPAY:
       let loanSize = _expenses[p.id].price;
