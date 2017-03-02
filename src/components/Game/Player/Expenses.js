@@ -38,7 +38,7 @@ export default class Expenses extends Component {
 
     const renderExpense = (e, i) => {
       return (
-        <div>
+        <div key={`product-expense${i}`}>
           Затраты на проект {e.name}
           <ul>
             <li>
@@ -69,7 +69,7 @@ export default class Expenses extends Component {
       }
 
       return (
-        <div>
+        <div key={`basic-expense${i}`}>
           {phrase}
         </div>
       );

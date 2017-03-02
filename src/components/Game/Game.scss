@@ -4,6 +4,11 @@
   padding: 7px
 }
 
+.moneyNegative,
+.moneyPositive {
+  cursor: pointer;
+}
+
 .moneyPositive {
   color: #00A000;
 }

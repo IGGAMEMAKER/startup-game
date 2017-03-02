@@ -16,7 +16,8 @@ import store from '../../stores/schedule-store';
 
 export default class Schedule extends Component {
   state = {
-    tasks: []
+    tasks: [],
+    collapse: false
   };
 
   componentWillMount() {
@@ -33,9 +34,14 @@ export default class Schedule extends Component {
     })
   };
 
+  toggleTasks = () => {
+    this.setState({ collapse: !this.state.collapse })
+  };
+
   // render(props: PropsType, state: StateType) {
   render() {
     const tasks = this.state.tasks;
+
     const renderTask = (task, i) => {
       const description = task.description;
       const progress = `${task.progress}/${task.timecost}`;
@@ -61,8 +67,8 @@ export default class Schedule extends Component {
 
     return (
       <div>
-        <h4>Текущие задачи</h4>
-        {tasks.length ? tasks.map(renderTask) : ''}
+        <h4 onClick={this.toggleTasks}>Текущие задачи</h4><span>(свернуть)</span>
+        {tasks.length && !this.state.collapse ? tasks.map(renderTask) : ''}
       </div>
     );
   }

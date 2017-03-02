@@ -27,6 +27,10 @@ import Button from '../Shared/Button';
 import round from '../../helpers/math/round';
 
 const GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
+const GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
+const GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
+const GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
+const GAME_MODE_ADS = 'GAME_MODE_ADS';
 
 import s from './Game.scss';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
@@ -265,9 +269,26 @@ class Game extends Component {
     return <Schedule />;
   };
 
+  onRenderProjectMenu = (i) => {
+    this.setState({ mode: GAME_MODE_PRODUCT, id: i })
+  };
+
+  onRenderProjectsMenu = () => {
+    this.setState({ mode: GAME_MODE_PRODUCTS })
+  };
+
+  onRenderEconomicsMenu = () => {
+    this.setState({ mode: GAME_MODE_ECONOMICS })
+  };
+
+  onRenderAdCampaignsMenu = () => {
+    this.setState({ mode: GAME_MODE_ADS })
+  };
+
   render(props: PropsType) {
     const state = this.state;
     //        {this.renderSkills(state)}
+    const mode = state.mode;
 
     const day = state.day;
 
@@ -278,7 +299,7 @@ class Game extends Component {
     return (
       <div style={{ padding: '15px' }}>
         <div className={s.navigation}>
-          <div>  day: {day}  </div>
+          <div>День: {day}</div>
         </div>
         <div className={s.navigation}>
           <Button text="||" onClick={this.pauseGame} />
@@ -289,21 +310,18 @@ class Game extends Component {
 
         <div className={moneyIndication}>${state.money} {arrow}</div>
 
+        <div className={s.navigation} onClick={this.onRenderProjectsMenu}>Проекты</div>
+        <div className={s.navigation} onClick={this.onRenderAdCampaignsMenu}>Рекламные кампании</div>
+        <div className={s.navigation} onClick={this.onRenderEconomicsMenu}>Экономика</div>
         <br />
         <hr />
         {this.renderSchedule(state)}
-        <hr />
-        <br />
-        {this.renderEconomy(state)}
-        <hr />
-        <br />
-        {this.renderProducts(state)}
         <br />
         <hr />
-        {this.renderDevelopMode(state)}
-        <br />
-        <hr />
-        {this.renderAdCampaignGenerator(state)}
+        {mode === GAME_MODE_ECONOMICS ? this.renderEconomy(state) : ''}
+        {mode === GAME_MODE_PRODUCTS ? this.renderProducts(state) : ''}
+        {mode === GAME_MODE_PRODUCT ? this.renderDevelopMode(state) : ''}
+        {mode === GAME_MODE_ADS ? this.renderAdCampaignGenerator(state) : ''}
         <br />
         <hr />
       </div>
