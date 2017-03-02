@@ -8,6 +8,8 @@ import playerActions from './actions/player-actions';
 
 import logger from './helpers/logger/logger';
 
+import moneyCalculator from './helpers/economics/money-difference';
+
 const isLastDayOfMonth = (day) => {
   return day % 30 === 0;
 };
@@ -57,35 +59,13 @@ const run = () => {
       productActions.viralClients(i, viral);
     });
 
-    // check income
-    const jobIncome = 5000;
+    const difference = moneyCalculator.saldo();
 
-    const income = jobIncome + products
-      .map((p, i) => productStore.getProductIncome(i))
-      .reduce((p, c) => p + c);
-
-    // check expenses
-    const nonProductExpenses = playerStore.getExpenses()
-      .map((e, i) => e.price)
-      .reduce((p, c) => p + c);
-
-
-    const productExpenses = products
-      .map((p, i) => productStore.getProductExpenses(i))
-      .reduce((p, c) => p + c);
-
-    const loans = playerStore.getLoanPaymentAmount();
-
-    const expenses = nonProductExpenses + productExpenses + loans;
-
-    logger.log('expenses', expenses, nonProductExpenses, productExpenses, loans);
-
-    playerActions.increaseMoney(income - expenses);
+    playerActions.increaseMoney(difference);
 
     const money = playerStore.getMoney();
 
-    logger.log(`resulting money __ money: ${money}. ${income} - ${expenses}`, income, expenses);
-
+    // take loans if necessary
     if (money < 0) {
       playerActions.loans.take(-money);
     }

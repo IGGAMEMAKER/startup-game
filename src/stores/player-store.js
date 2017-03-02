@@ -16,6 +16,7 @@ let _expenses = [{
   price: 100,
   regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
 }];
+
 let _reputation = 50; // neutral reputation
 let _fame = 0; // nobody knows you
 
@@ -53,6 +54,10 @@ class PlayerStore extends EventEmitter {
   getLoanSize() {
     return _loan;
   }
+  
+  getExpectedMoney() {
+    return 
+  }
 }
 
 const store = new PlayerStore();
@@ -80,12 +85,13 @@ Dispatcher.register((p: PayloadType) => {
     case c.PLAYER_ACTIONS_LOANS_TAKE:
       logger.shit('LOAN SIZE MUST BASE ON YOUR INCOME!!!. stores player-store.js');
 
+      const repay = 1.3;
       _money += p.amount;
-      _loan += p.amount;
+      _loan += p.amount * repay;
 
       _expenses.push({
         type: EXPENSES.EXPENSES_LOAN,
-        price: p.amount,
+        price: p.amount * repay,
         regularity: 1
       });
       break;

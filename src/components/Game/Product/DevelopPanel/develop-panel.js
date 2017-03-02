@@ -30,7 +30,7 @@ export default class DevelopPanel extends Component {
   };
 
   getMarketingFeatureList = (idea) => {
-    const cost = 1500 * WORK_SPEED_NORMAL;
+    const cost = 30 * WORK_SPEED_NORMAL;
 
     return [
       { name: 'blog', description: '', time: 2 },
@@ -42,7 +42,7 @@ export default class DevelopPanel extends Component {
   };
 
   getDevelopmentFeatureList = idea => {
-    const cost = 1500 * WORK_SPEED_NORMAL;
+    const cost = 50 * WORK_SPEED_NORMAL;
 
     return [
       { name: 'backups', description: ''},
@@ -53,7 +53,7 @@ export default class DevelopPanel extends Component {
   };
 
   getAnalyticFeatures = idea => {
-    const cost = 1000 * WORK_SPEED_NORMAL;
+    const cost = 30 * WORK_SPEED_NORMAL;
 
     return [
       { name: 'feedback', description: '', time: 1 },

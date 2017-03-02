@@ -1,7 +1,7 @@
 import * as IDEAS from '../../constants/products/ideas';
 import computeFeatureCost from '../../helpers/products/feature-price';
 
-const cost = 1500;
+const cost = 50;
 
 export default function (idea) {
   switch (idea) {

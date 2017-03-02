@@ -26,7 +26,14 @@ import Button from '../Shared/Button';
 
 import round from '../../helpers/math/round';
 
-export default class Game extends Component {
+const GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
+
+import s from './Game.scss';
+import withStyles from 'isomorphic-style-loader/lib/withStyles';
+
+import moneyCalculator from '../../helpers/economics/money-difference';
+
+class Game extends Component {
   state = {
     player: {
       skills: {
@@ -76,6 +83,8 @@ export default class Game extends Component {
     money: 0,
 
     id: 0, // productID
+
+    mode: GAME_MODE_PRODUCTS
   };
 
   initialize = () => {
@@ -212,10 +221,11 @@ export default class Game extends Component {
     }
 
     const takeLoan = amount => {
+      const repay = 1.3;
       return (
         <div>
           <div>
-            Взять кредит на сумму {amount}$. Ежемесячный платёж составит: {amount / 100}$
+            Взять кредит на сумму {amount}$. Ежемесячный платёж составит: {amount * repay / 100}$
           </div>
           <Button text={`Взять кредит (${amount}$)`} onClick={() => playerActions.loans.take(amount)} />
         </div>
@@ -260,12 +270,25 @@ export default class Game extends Component {
     //        {this.renderSkills(state)}
 
     const day = state.day;
-    return (
-      <div style={{padding: '15px'}}>
-        <Button text="increase game speed" onClick={this.increaseGameSpeed} />
-        <Button text="pause" onClick={this.pauseGame} />
 
-        <div>day: {day}</div>
+    const saldo = moneyCalculator.saldo() > 0;
+    const arrow = saldo ? '\u2197' : '\u2198';
+    const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
+
+    return (
+      <div style={{ padding: '15px' }}>
+        <div className={s.navigation}>
+          <div>  day: {day}  </div>
+        </div>
+        <div className={s.navigation}>
+          <Button text="||" onClick={this.pauseGame} />
+        </div>
+        <div className={s.navigation}>
+          <Button text=">>" onClick={this.increaseGameSpeed} />
+        </div>
+
+        <div className={moneyIndication}>${state.money} {arrow}</div>
+
         <br />
         <hr />
         {this.renderSchedule(state)}
@@ -287,3 +310,5 @@ export default class Game extends Component {
     );
   }
 }
+
+export default withStyles(Game, s);
