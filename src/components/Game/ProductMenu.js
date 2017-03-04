@@ -15,7 +15,7 @@ export default class ProductMenu extends Component {
 
     return (
       <div>
-        <ProductShortTab {...props} />
+        <ProductShortTab {...props} onChooseProject={props.onChooseProject} />
       </div>
     );
   }

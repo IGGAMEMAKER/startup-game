@@ -37,6 +37,8 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import moneyCalculator from '../../helpers/economics/money-difference';
 
+import Range from '../../components/Shared/Range';
+
 class Game extends Component {
   state = {
     player: {
@@ -88,7 +90,9 @@ class Game extends Component {
 
     id: 0, // productID
 
-    mode: GAME_MODE_PRODUCTS
+    mode: GAME_MODE_PRODUCTS,
+
+    possibleCredit: 1000
   };
 
   initialize = () => {
@@ -174,7 +178,7 @@ class Game extends Component {
 
     return (
       <div key={`product${i}`}>
-        <ProductMenu product={p} i={i} />
+        <ProductMenu product={p} i={i} onChooseProject={event => this.onRenderProjectMenu(i)} />
       </div>
     )
   };
@@ -215,7 +219,7 @@ class Game extends Component {
   renderEconomy = state => {
     const loans = playerStore.getLoanSize();
 
-    let loanTab = <div></div>;
+    let loanTab = <div>Долгов нет</div>;
     if (loans > 0) {
       loanTab = (
         <div>
@@ -236,13 +240,17 @@ class Game extends Component {
       )
     };
 
+    const onDrag = (value) => {
+      this.setState({ possibleCredit: Math.floor(value) });
+    };
+
+    const { possibleCredit } =  state;
     return (
       <div>
         <div>На вашем счету: {round(state.money)}$</div>
-        {takeLoan(1000)}
-        {takeLoan(10000)}
-        {takeLoan(100000)}
-        {takeLoan(500000)}
+        <Range min={1000} max={5000000} onDrag={onDrag} />
+        <div>onDrag: {possibleCredit}</div>
+        {takeLoan(possibleCredit)}
         {loanTab}
         {this.renderIncome(state)}
         {this.renderExpenses(state)}
@@ -281,10 +289,6 @@ class Game extends Component {
     this.setState({ mode: GAME_MODE_ECONOMICS })
   };
 
-  onRenderAdCampaignsMenu = () => {
-    this.setState({ mode: GAME_MODE_ADS })
-  };
-
   render(props: PropsType) {
     const state = this.state;
     //        {this.renderSkills(state)}
@@ -299,6 +303,9 @@ class Game extends Component {
     return (
       <div style={{ padding: '15px' }}>
         <div className={s.navigation}>
+          <div className={moneyIndication}>${state.money} {arrow}</div>
+        </div>
+        <div className={s.navigation}>
           <div>День: {day}</div>
         </div>
         <div className={s.navigation}>
@@ -308,10 +315,8 @@ class Game extends Component {
           <Button text=">>" onClick={this.increaseGameSpeed} />
         </div>
 
-        <div className={moneyIndication}>${state.money} {arrow}</div>
 
         <div className={s.navigation} onClick={this.onRenderProjectsMenu}>Проекты</div>
-        <div className={s.navigation} onClick={this.onRenderAdCampaignsMenu}>Рекламные кампании</div>
         <div className={s.navigation} onClick={this.onRenderEconomicsMenu}>Экономика</div>
         <br />
         <hr />
@@ -320,8 +325,16 @@ class Game extends Component {
         <hr />
         {mode === GAME_MODE_ECONOMICS ? this.renderEconomy(state) : ''}
         {mode === GAME_MODE_PRODUCTS ? this.renderProducts(state) : ''}
-        {mode === GAME_MODE_PRODUCT ? this.renderDevelopMode(state) : ''}
-        {mode === GAME_MODE_ADS ? this.renderAdCampaignGenerator(state) : ''}
+        {
+          mode === GAME_MODE_PRODUCT ?
+          <div>
+            {this.renderDevelopMode(state)}
+            <br />
+            <hr />
+            {this.renderAdCampaignGenerator(state)}
+          </div>
+          : ''
+        }
         <br />
         <hr />
       </div>

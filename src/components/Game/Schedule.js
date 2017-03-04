@@ -38,37 +38,34 @@ export default class Schedule extends Component {
     this.setState({ collapse: !this.state.collapse })
   };
 
+
+  renderTask = (task, i) => {
+    const description = task.description;
+    const progress = `${task.progress}/${task.timecost}`;
+
+    const percentage = `${Math.floor(task.progress * 100 / task.timecost)} %`;
+
+    const days = Math.ceil((task.timecost - task.progress) / task.speed);
+
+    let result;
+    if (task.inProgress) {
+      result = <b>{description} (Ещё {days} дней, {progress}, {percentage})</b>
+    } else {
+      result = <div>{description} (Ожидает выполнения: {progress}, {percentage})</div>
+    }
+
+    return <div key={`task${i}`}>{result}</div>;
+  };
+
   // render(props: PropsType, state: StateType) {
   render() {
     const tasks = this.state.tasks;
 
-    const renderTask = (task, i) => {
-      const description = task.description;
-      const progress = `${task.progress}/${task.timecost}`;
-
-      let result;
-
-      const percentage = `${Math.floor(task.progress * 100 / task.timecost)} %`;
-
-      const days = Math.ceil((task.timecost - task.progress) / task.speed);
-      if (task.inProgress) {
-        result = <b>{description} (Ещё {days} дней, {progress}, {percentage})</b>
-      } else {
-        result = <div>{description} (Ожидает выполнения: {progress}, {percentage})</div>
-      }
-
-          // {JSON.stringify(task)}
-      return (
-        <div key={`task${i}`}>
-          {result}
-        </div>
-      );
-    };
-
+    const collapse = this.state.collapse;
     return (
       <div>
-        <h4 onClick={this.toggleTasks}>Текущие задачи</h4><span>(свернуть)</span>
-        {tasks.length && !this.state.collapse ? tasks.map(renderTask) : ''}
+        <h4 onClick={this.toggleTasks}>Текущие задачи ({collapse ? tasks.length : '-'})</h4>
+        {tasks.length && !collapse ? tasks.map(this.renderTask) : ''}
       </div>
     );
   }

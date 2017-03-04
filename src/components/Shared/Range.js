@@ -1,4 +1,5 @@
-import { h, Component } from 'preact';
+// import { h, Component } from 'preact';
+import React, { Component, PropTypes } from 'react';
 
 type PropsType = {};
 
@@ -11,10 +12,17 @@ export default class Range extends Component {
 
   componentWillMount() {}
 
-  render(props: PropsType, state: StateType) {
+  render() {
+    const props = this.props;
+
     return (
       <div>
-        <input type="range" {...props} />
+        <input
+          type="range"
+          min={props.min}
+          max={props.max}
+          onChange={(event) => { props.onDrag(event.target.value) }}
+        />
       </div>
     );
   }

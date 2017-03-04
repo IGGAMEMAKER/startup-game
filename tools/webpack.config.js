@@ -182,6 +182,9 @@ const serverConfig = extend(true, {}, config, {
     new webpack.DefinePlugin({ ...GLOBALS, 'process.env.BROWSER': false }),
     new webpack.BannerPlugin('require("source-map-support").install();',
       { raw: true, entryOnly: false }),
+    new webpack.ProvidePlugin({
+      "React": "react",
+    }),
   ],
 });
 

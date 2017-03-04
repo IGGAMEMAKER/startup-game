@@ -13,7 +13,7 @@ export default class ProductShortTab extends Component {
     const i = props.i;
 
     const text = (
-      <div style={{ padding: 15 }}>
+      <div style={{ padding: 15 }} onClick={props.onChooseProject}>
         <div>№ {i + 1}</div>
         <div>{p.name}</div>
         <div>Тип: {p.idea}</div>
