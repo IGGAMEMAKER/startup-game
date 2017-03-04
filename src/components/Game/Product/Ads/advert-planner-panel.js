@@ -4,6 +4,7 @@ import React, { Component, PropTypes } from 'react';
 type PropsType = {};
 
 import Button from '../../../Shared/Button';
+import Range from '../../../Shared/Range';
 
 import productActions from '../../../../actions/product-actions';
 import playerActions from '../../../../actions/player-actions';
@@ -12,12 +13,14 @@ import productStore from '../../../../stores/product-store';
 import playerStore from '../../../../stores/player-store';
 
 export default class AdvertPlannerPanel extends Component {
-  state = {};
+  state = {
+    possibleClients: 100
+  };
 
   componentWillMount() {}
 
   render() {
-    const { props } = this;
+    const { props, state } = this;
 
     const id = props.id;
     const stream = 100;
@@ -43,13 +46,15 @@ export default class AdvertPlannerPanel extends Component {
       )
     };
 
+    const onDrag = (possibleClients) => {
+      this.setState({ possibleClients })
+    };
+
+    const { possibleClients } = state;
     return (
       <div>
-        {renderAdCampaignButton(stream, baseCost)}
-        {renderAdCampaignButton(stream * 5, baseCost * 4.5)}
-        {renderAdCampaignButton(stream * 25, baseCost * 20)}
-        {renderAdCampaignButton(stream * 100, baseCost * 80)}
-        {renderAdCampaignButton(stream * 1000, baseCost * 750)}
+        <Range min={stream} max={stream * 1000} onDrag={onDrag} />
+        {renderAdCampaignButton(possibleClients, possibleClients * baseCost / stream)}
       </div>
     );
   }

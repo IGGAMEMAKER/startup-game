@@ -249,7 +249,6 @@ class Game extends Component {
       <div>
         <div>На вашем счету: {round(state.money)}$</div>
         <Range min={1000} max={5000000} onDrag={onDrag} />
-        <div>onDrag: {possibleCredit}</div>
         {takeLoan(possibleCredit)}
         {loanTab}
         {this.renderIncome(state)}
