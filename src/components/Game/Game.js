@@ -9,6 +9,7 @@ type ResponseType = {};
 
 import ProductMenu from '../Game/ProductMenu';
 import Schedule from '../Game/Schedule';
+import Staff from '../Game/Staff';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 import AdsPanel from './Product/Ads/advert-planner-panel';
 
@@ -31,6 +32,7 @@ const GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
 const GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
 const GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
 const GAME_MODE_ADS = 'GAME_MODE_ADS';
+const GAME_MODE_STAFF = 'GAME_MODE_STAFF';
 
 import s from './Game.scss';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
@@ -276,6 +278,10 @@ class Game extends Component {
     return <Schedule />;
   };
 
+  renderStaff = state => {
+    return <Staff />;
+  };
+
   onRenderProjectMenu = (i) => {
     this.setState({ mode: GAME_MODE_PRODUCT, id: i })
   };
@@ -286,6 +292,10 @@ class Game extends Component {
 
   onRenderEconomicsMenu = () => {
     this.setState({ mode: GAME_MODE_ECONOMICS })
+  };
+
+  onRenderStaffMenu = () => {
+    this.setState({ mode: GAME_MODE_STAFF })
   };
 
   render(props: PropsType) {
@@ -302,7 +312,7 @@ class Game extends Component {
     return (
       <div style={{ padding: '15px' }}>
         <div className={s.navigation}>
-          <div className={moneyIndication}>${state.money} {arrow}</div>
+          <div className={moneyIndication}>${Math.floor(state.money)} {arrow}</div>
         </div>
         <div className={s.navigation}>
           <div>День: {day}</div>
@@ -317,6 +327,7 @@ class Game extends Component {
 
         <div className={s.navigation} onClick={this.onRenderProjectsMenu}>Проекты</div>
         <div className={s.navigation} onClick={this.onRenderEconomicsMenu}>Экономика</div>
+        <div className={s.navigation} onClick={this.onRenderStaffMenu}>Персонал</div>
         <br />
         <hr />
         {this.renderSchedule(state)}
@@ -324,6 +335,7 @@ class Game extends Component {
         <hr />
         {mode === GAME_MODE_ECONOMICS ? this.renderEconomy(state) : ''}
         {mode === GAME_MODE_PRODUCTS ? this.renderProducts(state) : ''}
+        {mode === GAME_MODE_STAFF ? this.renderStaff(state) : ''}
         {
           mode === GAME_MODE_PRODUCT ?
           <div>

@@ -5,6 +5,7 @@ import payloads from '../constants/actions/payloads';
 import logger from '../helpers/logger/logger';
 
 import * as EXPENSES from '../constants/expenses';
+import * as JOB from '../constants/job';
 
 const EC = 'PLAYER_EVENT_CHANGE';
 
@@ -15,6 +16,36 @@ let _expenses = [{
   quality: 0, // poor. Eat doshik and be happy (no). costs low money
   price: 100,
   regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
+}];
+
+let _points = {
+  programming: 100,
+  marketing: 1000,
+  analyst: 1000
+};
+
+let _team = [{
+  name: 'James',
+  skills: {
+    programming: 1000,
+    marketing: 150,
+    analyst: 300,
+  },
+  task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+  jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
+  salary: {}
+  // на каком основании работает в проекте
+  // за еду, за опыт, за процент с продаж, собственник бизнеса
+}, {
+  name: 'Lynda',
+  skills: {
+    programming: 0,
+    marketing: 500,
+    analyst: 150,
+  },
+  task: JOB.JOB_TASK_MARKETING_POINTS,
+  jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+  salary: {}
 }];
 
 let _reputation = 50; // neutral reputation
@@ -54,9 +85,16 @@ class PlayerStore extends EventEmitter {
   getLoanSize() {
     return _loan;
   }
-  
-  getExpectedMoney() {
-    return 
+
+  // getExpectedMoney() {
+  //   return
+  // }
+  getPoints() {
+    return _points;
+  }
+
+  getTeam() {
+    return _team;
   }
 }
 
