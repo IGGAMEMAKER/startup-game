@@ -6,6 +6,10 @@ import * as JOB from '../../constants/job';
 import percentify from '../../helpers/math/percentify';
 import round from '../../helpers/math/round';
 
+import getSpecialization from '../../helpers/team/specialization';
+
+import actions from '../../actions/player-actions';
+
 import Select from '../Shared/Select';
 
 type StateType = {
@@ -40,22 +44,14 @@ export default class Staff extends Component {
     this.setState({ collapse: !this.state.collapse })
   };
 
-  getSpecialization = p => {
-    const skills = [
-      { s: 'programming', value: p.skills.programming },
-      { s: 'analytics', value: p.skills.analyst },
-      { s: 'marketing', value: p.skills.marketing },
-    ];
-
-    return skills.sort((a, b) => a.value < b.value)[0].s;
-  };
+  getSkill = skill => Math.floor(skill / 100);
 
   renderPerson = (p, i) => {
     let specialization;
-    switch (this.getSpecialization(p)) {
-      case 'programming': specialization = 'программист'; break;
-      case 'marketing': specialization = 'маркетолог'; break;
-      case 'analytics': specialization = 'аналитик'; break;
+    switch (getSpecialization(p)) {
+      case JOB.PROFESSION_PROGRAMMER: specialization = 'программист'; break;
+      case JOB.PROFESSION_MARKETER: specialization = 'маркетолог'; break;
+      case JOB.PROFESSION_ANALYST: specialization = 'аналитик'; break;
     }
 
     let motivation = '';
@@ -67,7 +63,18 @@ export default class Staff extends Component {
     }
 
     let work = '';
+    let value = '';
 
+    switch (p.task) {
+      case JOB.JOB_TASK_MARKETING_POINTS:
+        value = store.getMarketingPointsProducedBy(p);
+        work = `Производит ${value} marketing points / month`;
+        break;
+      case JOB.JOB_TASK_PROGRAMMER_POINTS:
+        value = store.getProgrammingPointsProducedBy(p);
+        work = `Производит ${value} programming points / month`;
+        break;
+    }
 
     const tasks = [
       { text: 'Программирование', value: JOB.JOB_TASK_PROGRAMMER_POINTS },
@@ -75,10 +82,24 @@ export default class Staff extends Component {
     ];
 
     return <div key={`person${i}`}>
+      <div>
+        {p.name}&nbsp;
+        (
+        {this.getSkill(p.skills.programming)}/
+        {this.getSkill(p.skills.marketing)}/
+        {this.getSkill(p.skills.analyst)}
+        )
+      </div>
       <div>Специальность: {specialization}</div>
       <div>
         <span>Задача: </span>
-        <span><Select options={tasks} value={p.task} /></span>
+        <span>
+          <Select
+            onChange={(value) => { actions.setTaskForPerson(value, i); }}
+            options={tasks}
+            value={p.task}
+          />
+        </span>
       </div>
       <div>{work}</div>
       <div>Мотивация: {motivation}</div>

@@ -7,6 +7,8 @@ import logger from '../helpers/logger/logger';
 import * as EXPENSES from '../constants/expenses';
 import * as JOB from '../constants/job';
 
+import getSpecialization from '../helpers/team/specialization';
+
 const EC = 'PLAYER_EVENT_CHANGE';
 
 let _skills = {};
@@ -96,6 +98,44 @@ class PlayerStore extends EventEmitter {
   getTeam() {
     return _team;
   }
+
+  getMaxPossibleFreelanceMarketingPoints() {
+    return Math.floor(_money / JOB.PRICE_OF_ONE_MP)
+  }
+
+  getMaxPossibleFreelanceProgrammingPoints() {
+    return Math.floor(_money / JOB.PRICE_OF_ONE_PP)
+  }
+
+  getProgrammers() {
+    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_PROGRAMMER)
+  }
+
+  getMarketers() {
+    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_MARKETER)
+  }
+
+  getAnalysts() {
+    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_ANALYST)
+  }
+
+  getDesigners() {
+    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_DESIGNER)
+  }
+
+  getSkill = skill => Math.floor(skill / 100);
+
+  getMarketingPointsProducedBy(p) {
+    const marketingEfficiency = 30;
+
+    return this.getSkill(p.skills.marketing) * marketingEfficiency;
+  }
+
+  getProgrammingPointsProducedBy(p) {
+    const programmingEfficiency = 30;
+
+    return this.getSkill(p.skills.programming) * programmingEfficiency;
+  }
 }
 
 const store = new PlayerStore();
@@ -144,9 +184,25 @@ Dispatcher.register((p: PayloadType) => {
         change = false;
       }
       break;
+    case c.PLAYER_ACTIONS_SET_TASK:
+      _team[p.index].task = p.task;
+      break;
+    case c.PLAYER_ACTIONS_INCREASE_POINTS:
+      _points.marketing += p.points.marketing;
+      _points.programming += p.points.programming;
+      break;
+    case c.PLAYER_ACTIONS_BUY_PP:
+      _points.programming += p.pp;
+      _money -= p.pp * JOB.PRICE_OF_ONE_PP;
+      break;
+    case c.PLAYER_ACTIONS_BUY_MP:
+      _points.marketing += p.mp;
+      _money -= p.mp * JOB.PRICE_OF_ONE_MP;
+      break;
     default:
       break;
   }
+
 
   if (change) store.emitChange();
 });

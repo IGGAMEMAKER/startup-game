@@ -56,9 +56,28 @@ export default class DevelopPanel extends Component {
     const cost = 30 * WORK_SPEED_NORMAL;
 
     return [
-      { name: 'feedback', description: '', time: 1 },
+      { name: 'feedback', description: '',
+        points: { programming: 50}
+      },
       { name: 'segmenting', description: '', time: 7 }
     ].map(computeFeatureCost(cost));
+  };
+
+  getMonetizationFeatures = idea => {
+    const technicalDebtModifier = 1;
+    const up = Math.ceil;
+
+    return [
+      { name: 'mockBuying', description: 'Заглушки вместо покупок',
+        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
+      },
+      { name: 'basicPricing', description: 'Одна цена для всех',
+        points: { programming: up(150 * technicalDebtModifier), marketing: 50 }
+      },
+      { name: 'segmentedPricing', description: 'Несколько ценовых сегментов',
+        points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
+      }
+    ];
   };
 
   getTechnicalDebtDescription = debt => {
@@ -95,7 +114,7 @@ export default class DevelopPanel extends Component {
           // {JSON.stringify(feature)}
 
       const cb = () => {
-        logger.log('deferred callback!!');
+        logger.log('deferred callback!!', feature, i);
         productActions.improveFeature(id, featureGroup, featureName);
       };
 
@@ -148,6 +167,10 @@ export default class DevelopPanel extends Component {
       .getAnalyticFeatures(idea)
       .map(renderFeature('analytics'));
 
+    const monetization = JSON.stringify(this
+      .getMonetizationFeatures(idea))
+      // .map(renderFeature('monetization'));
+
     return (
       <div>
         <b>Развитие продукта</b>
@@ -167,6 +190,9 @@ export default class DevelopPanel extends Component {
           <b>Аналитика</b>
           <div>Позволяет быстрее улучшать главные характеристики проекта</div>
           {analytics}
+          <b>Монетизация</b>
+          <div>Позволяет повысить доходы с продаж</div>
+          {monetization}
         </div>
       </div>
     );

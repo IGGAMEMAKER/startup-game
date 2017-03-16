@@ -14,6 +14,7 @@ import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 import AdsPanel from './Product/Ads/advert-planner-panel';
 
 import Expenses from './Player/Expenses';
+import PointShop from './Player/Point-shop';
 
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
@@ -92,7 +93,7 @@ class Game extends Component {
 
     id: 0, // productID
 
-    mode: GAME_MODE_PRODUCTS,
+    mode: GAME_MODE_PRODUCT,
 
     possibleCredit: 1000
   };
@@ -287,6 +288,11 @@ class Game extends Component {
   };
 
   onRenderProjectsMenu = () => {
+    if (this.state.products.length === 1) {
+      this.onRenderProjectMenu(0);
+      return;
+    }
+
     this.setState({ mode: GAME_MODE_PRODUCTS })
   };
 
@@ -323,11 +329,14 @@ class Game extends Component {
         <div className={s.navigation}>
           <Button text=">>" onClick={this.increaseGameSpeed} />
         </div>
+        <div className={s.navigation}>MP: {playerStore.getPoints().marketing}</div>
+        <div className={s.navigation}>PP: {playerStore.getPoints().programming}</div>
 
-
-        <div className={s.navigation} onClick={this.onRenderProjectsMenu}>Проекты</div>
-        <div className={s.navigation} onClick={this.onRenderEconomicsMenu}>Экономика</div>
-        <div className={s.navigation} onClick={this.onRenderStaffMenu}>Персонал</div>
+        <div>
+          <div className={s.navigation} onClick={this.onRenderProjectsMenu}>Проекты</div>
+          <div className={s.navigation} onClick={this.onRenderEconomicsMenu}>Экономика</div>
+          <div className={s.navigation} onClick={this.onRenderStaffMenu}>Персонал</div>
+        </div>
         <br />
         <hr />
         {this.renderSchedule(state)}
@@ -343,6 +352,7 @@ class Game extends Component {
             <br />
             <hr />
             {this.renderAdCampaignGenerator(state)}
+            <PointShop />
           </div>
           : ''
         }

@@ -10,6 +10,8 @@ import logger from './helpers/logger/logger';
 
 import moneyCalculator from './helpers/economics/money-difference';
 
+import * as JOB from './constants/job';
+
 const isLastDayOfMonth = (day) => {
   return day % 30 === 0;
 };
@@ -69,6 +71,31 @@ const run = () => {
     if (money < 0) {
       playerActions.loans.take(-money);
     }
+
+    // calculate human points
+
+    // calculate programmer points
+    let programmingPoints = playerStore
+      .getTeam()
+      .filter(p => p.task === JOB.JOB_TASK_PROGRAMMER_POINTS)
+      .map(p => playerStore.getProgrammingPointsProducedBy(p))
+      .reduce((p, c) => p + c);
+
+    // calculate marketing points
+    let marketingPoints = playerStore
+      .getTeam()
+      .filter(p => p.task === JOB.JOB_TASK_MARKETING_POINTS)
+      .map(p => playerStore.getMarketingPointsProducedBy(p))
+      .reduce((p, c) => p + c);
+
+    logger.log('increase points', programmingPoints, marketingPoints);
+    logger.shit('compute penalties and bonuses for point production');
+
+    const points = {
+      programming: programmingPoints,
+      marketing: marketingPoints
+    };
+    playerActions.increasePoints(points);
   }
 
   // try to make an event

@@ -1,5 +1,6 @@
 export default {
   log: console.log,
+  debug: console.log,
   error: console.error,
   shit: (text) => {
     // console.log(`GOVNOKOD ${text}`);

@@ -16,14 +16,12 @@ export default class Range extends Component {
     const props = this.props;
 
     return (
-      <div>
         <input
           type="range"
           min={props.min}
           max={props.max}
-          onChange={(event) => { props.onDrag(event.target.value) }}
+          onChange={(event) => { props.onDrag(parseInt(event.target.value)) }}
         />
-      </div>
     );
   }
 }

@@ -19,7 +19,7 @@ export default class Select extends Component {
       return <option value={o.value}>{o.text}</option>;
     });
 
-    const onchange = props.onChange ? props.onChange : () => {};
+    const onchange = props.onChange ? (e) => props.onChange(e.target.value) : () => {};
     return (
       <select value={props.value} onChange={onchange}>
         {optionList}
