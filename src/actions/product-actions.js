@@ -29,6 +29,15 @@ export default {
       value: quality
     })
   },
+  improveFeatureByPoints: (id, featureGroup, featureName) => {
+    logger.debug('improveFeatureByPoints', arguments);
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
+      id,
+      featureGroup,
+      featureName
+    })
+  },
   addClients: (id, clients) => {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,

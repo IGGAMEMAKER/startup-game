@@ -20,6 +20,9 @@ import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../../../../constant
 
 import logger from '../../../../helpers/logger/logger';
 
+import playerStore from '../../../../stores/player-store';
+import playerActions from '../../../../actions/player-actions';
+
 export default class DevelopPanel extends Component {
   state = {};
 
@@ -37,7 +40,7 @@ export default class DevelopPanel extends Component {
       { name: 'support', description: '', time: 4 },
       { name: 'emails', description: '', time: 10 },
 
-      { name: 'referralProgram', influence: 5, description: '', time: 7 }
+      { name: 'referralProgram', description: '', time: 7 }
     ].map(computeFeatureCost(cost));
   };
 
@@ -57,10 +60,16 @@ export default class DevelopPanel extends Component {
 
     return [
       { name: 'feedback', description: '',
-        points: { programming: 50}
+        points: { programming: 50 }
       },
-      { name: 'segmenting', description: '', time: 7 }
-    ].map(computeFeatureCost(cost));
+      { name: 'segmenting', description: '',
+        points: { programming: 100, marketing: 100 }
+      },
+      { name: 'shareAnalytics', description: 'Просмотр статистики шеринга',
+        points: { programming: 15 }
+      }
+    ];
+    // ].map(computeFeatureCost(cost));
   };
 
   getMonetizationFeatures = idea => {
@@ -99,7 +108,7 @@ export default class DevelopPanel extends Component {
     const { idea } = product;
 
     const id = 0; // TODO FIX PRODUCT ID
-
+    //
     // specify actual feature values
     const renderFeature = featureGroup => (feature, i) => {
       const featureName = feature.name;
@@ -130,19 +139,34 @@ export default class DevelopPanel extends Component {
         scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, cb);
       };
 
+      const upgradeFeature = event => {
+        const mp = feature.points.marketing || 0;
+        const pp = feature.points.programming || 0;
+
+        logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
+
+        const points = playerStore.getPoints();
+        if (points.marketing >= mp && points.programming >= pp) {
+          playerActions.spendPoints(pp, mp);
+          productActions.improveFeatureByPoints(id, featureGroup, featureName, mp, pp);
+        }
+      };
           // {`${featureName}: ${quality}%. Time: ${time}. Cost ${cost}$`}
+
+      // <Button
+      //   text={`Отдать задачу фрилансеру. (${freelancerTime} дней и ${cost}$)`}
+      //   onClick={sendTaskToFreelancer}
+      // />
+
+      const description = feature.description || '';
       return (
         <div key={key}>
           {featureName}: {quality}%
-          <Button
-            text={`Отдать задачу фрилансеру. (${freelancerTime} дней и ${cost}$)`}
-            onClick={sendTaskToFreelancer}
-          />
           <br />
-          <Button
-            text={`Сделать самому (${yourTime} дней)`}
-            onClick={doTaskYourself}
-          />
+          <div>{JSON.stringify(feature)}</div>
+          <div>{description}</div>
+          <div>Стоимость улучшения:</div>
+          <Button text="Улучшить" onClick={upgradeFeature} />
         </div>
       )
     };

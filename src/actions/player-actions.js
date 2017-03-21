@@ -22,7 +22,13 @@ export default {
       points
     })
   },
-
+  spendPoints: (pp, mp) => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_DECREASE_POINTS,
+      pp,
+      mp
+    })
+  },
   buyProgrammingPoints: pp => {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_BUY_PP,

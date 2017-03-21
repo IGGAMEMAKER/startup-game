@@ -199,6 +199,10 @@ Dispatcher.register((p: PayloadType) => {
       _points.marketing += p.mp;
       _money -= p.mp * JOB.PRICE_OF_ONE_MP;
       break;
+    case c.PLAYER_ACTIONS_DECREASE_POINTS:
+      _points.marketing -= p.mp;
+      _points.programming -= p.pp;
+      break;
     default:
       break;
   }

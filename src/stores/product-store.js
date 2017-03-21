@@ -10,11 +10,13 @@ const EC = 'PRODUCT_EVENT_CHANGE';
 
 import computeRating from '../helpers/products/compute-rating';
 import productDescriptions from '../constants/products/product-descriptions';
+const PRODUCT_STAGE_IDEA = 'PRODUCT_STAGE_IDEA';
 
 let _products = [{
   rating: 0, // computable value, so... needs to be deleted
   idea: IDEAS.IDEA_WEB_STUDIO,
   name: 'WWWEB STUDIO',
+  stage: PRODUCT_STAGE_IDEA,
 
   features: {
     offer: {
@@ -37,11 +39,12 @@ let _products = [{
     debt: 0, // technical debt. Shows, how fast can you implement new features
     clients: 10,
     newClients: 10,
-    bugs: 10
 
-    // computable values. Need to be deleted
-    // virality: 1.15, // computable value. We DO NOT need it here!!
-    // churn: 10 // churn rate. // computable value too! DELETE IT!
+    bugs: 10,
+
+    maxUXBugs: 100,
+    foundUXBugs: 50,
+    fixedUXBugs: 50
   }
 }];
 
@@ -221,6 +224,10 @@ class ProductStore extends EventEmitter {
     return _products[i].name;
   }
 
+  getStage(i) {
+    return _products[i].stage;
+  }
+
   getProductExpensesStructure(i) {
     return {
       name: this.getName(i),
@@ -248,6 +255,12 @@ Dispatcher.register((p: PayloadType) => {
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
       let previous = _products[id].features[p.featureGroup][p.featureName];
       _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
+      // _products[p.id].features[p.featureGroup][p.featureName] = p.value;
+      break;
+    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
+      // let previous = _products[id].features[p.featureGroup][p.featureName];
+      _products[id].features[p.featureGroup][p.featureName] = 1;
+      logger.log('improved feature');
       // _products[p.id].features[p.featureGroup][p.featureName] = p.value;
       break;
     case c.PRODUCT_ACTIONS_CLIENTS_ADD:

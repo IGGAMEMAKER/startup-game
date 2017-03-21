@@ -315,6 +315,31 @@ class Game extends Component {
     const arrow = saldo ? '\u2197' : '\u2198';
     const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
+    let body = '';
+
+    switch (mode) {
+      case GAME_MODE_ECONOMICS:
+        body = this.renderEconomy(state);
+        break;
+      case GAME_MODE_PRODUCTS:
+        body = this.renderProducts(state);
+        break;
+      case GAME_MODE_STAFF:
+        body = this.renderStaff(state);
+        break;
+      case GAME_MODE_PRODUCT:
+        body = (
+          <div>
+            {this.renderDevelopMode(state)}
+            <br />
+            <hr />
+            {this.renderAdCampaignGenerator(state)}
+            <PointShop />
+          </div>
+        );
+        break;
+    }
+
     return (
       <div style={{ padding: '15px' }}>
         <div className={s.navigation}>
@@ -339,23 +364,17 @@ class Game extends Component {
         </div>
         <br />
         <hr />
+
+        <div>
+          <h3>Два вопроса бизнеса</h3>
+          <div>Готовы ли люди этим пользоваться</div>
+          <div>Сколько они готовы заплатить за это</div>
+        </div>
+
         {this.renderSchedule(state)}
         <br />
         <hr />
-        {mode === GAME_MODE_ECONOMICS ? this.renderEconomy(state) : ''}
-        {mode === GAME_MODE_PRODUCTS ? this.renderProducts(state) : ''}
-        {mode === GAME_MODE_STAFF ? this.renderStaff(state) : ''}
-        {
-          mode === GAME_MODE_PRODUCT ?
-          <div>
-            {this.renderDevelopMode(state)}
-            <br />
-            <hr />
-            {this.renderAdCampaignGenerator(state)}
-            <PointShop />
-          </div>
-          : ''
-        }
+        {body}
         <br />
         <hr />
       </div>
