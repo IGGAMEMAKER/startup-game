@@ -228,6 +228,10 @@ class ProductStore extends EventEmitter {
     return _products[i].stage;
   }
 
+  getFeatureStatus(i, featureGroup, featureName) {
+    return _products[i].features[featureGroup][featureName] > 0;
+  }
+
   getProductExpensesStructure(i) {
     return {
       name: this.getName(i),
@@ -260,8 +264,7 @@ Dispatcher.register((p: PayloadType) => {
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
       // let previous = _products[id].features[p.featureGroup][p.featureName];
       _products[id].features[p.featureGroup][p.featureName] = 1;
-      logger.log('improved feature');
-      // _products[p.id].features[p.featureGroup][p.featureName] = p.value;
+      logger.log('improved feature by points');
       break;
     case c.PRODUCT_ACTIONS_CLIENTS_ADD:
       // not all users will become our clients. Some of them will vanish

@@ -1,0 +1,23 @@
+@import '../../../ui-colors.scss';
+
+.featureGroupTitle {
+  //padding: 7px;
+  font-weight: 700;
+  font-size: large;
+}
+
+.featureGroupDescription {
+  //padding: 7px;
+  font-size: larger;
+}
+
+.featureGroupBody {
+  padding: 7px;
+}
+
+.noPoints {
+  color: $negative;
+}
+.enoughPoints {
+  color: $positive;
+}

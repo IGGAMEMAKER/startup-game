@@ -1,3 +1,4 @@
+@import '../ui-colors.scss';
 
 .navigation {
   display: inline-block;
@@ -11,9 +12,9 @@
 }
 
 .moneyPositive {
-  color: #00A000;
+  color: $positive;
 }
 
 .moneyNegative {
-  color: red;
+  color: $negative;
 }
