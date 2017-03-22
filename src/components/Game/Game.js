@@ -11,8 +11,8 @@ import ProductMenu from '../Game/ProductMenu';
 import Schedule from '../Game/Schedule';
 import Staff from '../Game/Staff';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
+import InitialProductTab from '../Game/Product/InitialPanel/InitialProductTab';
 import AdsPanel from './Product/Ads/advert-planner-panel';
-
 import Expenses from './Player/Expenses';
 import PointShop from './Player/Point-shop';
 
@@ -25,6 +25,7 @@ import playerActions from '../../actions/player-actions';
 import gameRunner from '../../game';
 
 import Button from '../Shared/Button';
+import Range from '../../components/Shared/Range';
 
 import round from '../../helpers/math/round';
 
@@ -40,7 +41,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import moneyCalculator from '../../helpers/economics/money-difference';
 
-import Range from '../../components/Shared/Range';
+import * as PRODUCT_STAGES from '../../constants/products/product-stages';
 
 class Game extends Component {
   state = {
@@ -177,8 +178,6 @@ class Game extends Component {
   };
 
   renderProduct = (p, i) => {
-    // console.log('renderProduct', p, i);
-
     return (
       <div key={`product${i}`}>
         <ProductMenu product={p} i={i} onChooseProject={event => this.onRenderProjectMenu(i)} />
@@ -272,7 +271,18 @@ class Game extends Component {
     const id = state.id;
     const product = state.products[id];
 
-    return <DevelopPanel product={product} id={id} />;
+    let body;
+
+    switch (product.stage) {
+      case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
+        body = <InitialProductTab product={product} id={id} />;
+        break;
+      default:
+        body = <DevelopPanel product={product} id={id} />;
+        break;
+    }
+
+    return body;
   };
 
   renderSchedule = state => {
@@ -306,7 +316,6 @@ class Game extends Component {
 
   render(props: PropsType) {
     const state = this.state;
-    //        {this.renderSkills(state)}
     const mode = state.mode;
 
     const day = state.day;
@@ -340,6 +349,14 @@ class Game extends Component {
         break;
     }
 
+    // <div>
+    //   <h3>Два вопроса бизнеса</h3>
+    //   <div>Готовы ли люди этим пользоваться</div>
+    //   <div>Сколько они готовы заплатить за это</div>
+    // </div>
+    //
+    // <br />
+    // <hr />
     return (
       <div style={{ padding: '15px' }}>
         <div className={s.navigation}>
@@ -365,15 +382,6 @@ class Game extends Component {
         <br />
         <hr />
 
-        <div>
-          <h3>Два вопроса бизнеса</h3>
-          <div>Готовы ли люди этим пользоваться</div>
-          <div>Сколько они готовы заплатить за это</div>
-        </div>
-
-        {this.renderSchedule(state)}
-        <br />
-        <hr />
         {body}
         <br />
         <hr />

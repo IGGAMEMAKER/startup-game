@@ -38,6 +38,12 @@ export default {
       featureName
     })
   },
+  setInitialProductSettings: (id, features, KPI) => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS,
+      id, features, KPI
+    })
+  },
   addClients: (id, clients) => {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,

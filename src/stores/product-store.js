@@ -10,13 +10,14 @@ const EC = 'PRODUCT_EVENT_CHANGE';
 
 import computeRating from '../helpers/products/compute-rating';
 import productDescriptions from '../constants/products/product-descriptions';
-const PRODUCT_STAGE_IDEA = 'PRODUCT_STAGE_IDEA';
+
+import * as PRODUCT_STAGES from '../constants/products/product-stages';
 
 let _products = [{
   rating: 0, // computable value, so... needs to be deleted
   idea: IDEAS.IDEA_WEB_STUDIO,
   name: 'WWWEB STUDIO',
-  stage: PRODUCT_STAGE_IDEA,
+  stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
 
   features: {
     offer: {
@@ -42,7 +43,7 @@ let _products = [{
 
     bugs: 10,
 
-    maxUXBugs: 100,
+    currentUXBugs: 100,
     foundUXBugs: 50,
     fixedUXBugs: 50
   }
@@ -232,6 +233,21 @@ class ProductStore extends EventEmitter {
     return _products[i].features[featureGroup][featureName] > 0;
   }
 
+  getBugs(i) {
+    return {
+      ux: {
+        current: 100,
+        found: 50,
+        fixed: 10
+      },
+      programming: {
+        current: 100,
+        found: 50,
+        fixed: 10
+      }
+    }
+  }
+
   getProductExpensesStructure(i) {
     return {
       name: this.getName(i),
@@ -256,6 +272,14 @@ Dispatcher.register((p: PayloadType) => {
 
   let change = true;
   switch (p.type) {
+    case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
+      _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
+      _products[id].KPI = p.KPI;
+      _products[id].features = p.features;
+      break;
+    case c.PRODUCT_ACTIONS_SWITCH_STAGE:
+      _products[id].stage = p.stage;
+      break;
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
       let previous = _products[id].features[p.featureGroup][p.featureName];
       _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;

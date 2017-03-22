@@ -42,11 +42,13 @@ export default class Metrics extends Component {
 
     const canShowRatingTab = true;
     const canShowChurnTab = true;
-    const canShowViralityTab = true;
-    const canShowPayingPercentage = false;
+    // const canShowViralityTab = true;
+    const canShowViralityTab = !!productStore.getFeatureStatus(id, 'analytics', 'shareAnalytics');
+    // const canShowViralityTab = !!productStore.getFeatureStatus(id, 'analytics', 'googleAnalytics');
+    const canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
     const canShowClientsTab = true;
     const canShowNewClientsTab = true;
-    const canShowIncomeTab = true;
+    const canShowIncomeTab = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
 
     let ratingTab;
     if (canShowRatingTab) {

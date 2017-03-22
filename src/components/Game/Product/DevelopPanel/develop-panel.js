@@ -69,10 +69,16 @@ class DevelopPanel extends Component {
       { name: 'feedback', shortDescription: 'Форма для комментариев', description: '',
         points: { programming: 50 }
       },
-      { name: 'segmenting', shortDescription: 'Сегментирование пользователей', description: '',
-        points: { programming: 100, marketing: 100 }
+      { name: 'googleAnalytics', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей',
+        points: { programming: 50 }
+      },
+      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '',
+        points: { programming: 150, marketing: 100 }
       },
       { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Просмотр статистики шеринга',
+        points: { programming: 15 }
+      },
+      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Просмотр статистики платежей',
         points: { programming: 15 }
       }
     ];
@@ -94,6 +100,10 @@ class DevelopPanel extends Component {
         points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
       }
     ];
+  };
+
+  renderMonetizationFeatures = idea => {
+
   };
 
   getTechnicalDebtDescription = debt => {
@@ -199,7 +209,12 @@ class DevelopPanel extends Component {
               <span className={ppColors}>PP:{pp}</span>
             </div>
           </div>
-          <Button disabled={!enoughPointsToUpgrade} className={upgradeButtonClassName} text="Улучшить" onClick={upgradeFeature} />
+          <Button
+            disabled={!enoughPointsToUpgrade}
+            className={upgradeButtonClassName}
+            onClick={upgradeFeature}
+            text="Улучшить"
+          />
           <br />
         </div>
       )
@@ -236,6 +251,7 @@ class DevelopPanel extends Component {
           <div></div>
           <b>Основные показатели продукта</b>
           <Metrics product={product} id={id} />
+
           <div className={s.featureGroupTitle}>Основные характеристики продукта</div>
           <div className={s.featureGroupDescription}>
             Улучшая главные характеристики продукта, вы повышаете его рейтинг,
