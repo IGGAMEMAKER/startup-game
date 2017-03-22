@@ -69,7 +69,7 @@ class DevelopPanel extends Component {
       { name: 'feedback', shortDescription: 'Форма для комментариев', description: '',
         points: { programming: 50 }
       },
-      { name: 'googleAnalytics', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей',
+      { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей',
         points: { programming: 50 }
       },
       { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '',

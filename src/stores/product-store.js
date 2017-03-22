@@ -4,6 +4,8 @@ import * as c from '../constants/actions/product-actions';
 import payloads from '../constants/actions/payloads';
 import logger from '../helpers/logger/logger';
 
+import round from '../helpers/math/round';
+
 import * as IDEAS from '../constants/products/ideas';
 
 const EC = 'PRODUCT_EVENT_CHANGE';
@@ -246,6 +248,64 @@ class ProductStore extends EventEmitter {
         fixed: 10
       }
     }
+  }
+
+  getRatingForMetricsTab(i) {
+    let phrase;
+    const features = _products[i].features;
+    const analytics = features.analytics;
+
+    // rating depends on
+    // number of users (stat pogreshnost)
+    // feedback form
+    // segmenting
+    // webvisor
+
+    if (!analytics.feedback && !analytics.webvisor && !analytics.segmenting) {
+      return 0;
+    }
+    let analyticsModifier = 1;
+    if (analytics.feedback) analyticsModifier -= 0.3;
+
+    if (analytics.webvisor) {
+      analyticsModifier -= 0.5;
+    } else if (analytics.segmenting) {
+      analyticsModifier -= 0.65;
+    }
+
+    const clients = this.getClients(i);
+    let factor = 2;
+    if (clients > 100000) {
+      factor = 1;
+    } else if (clients > 10000) {
+      factor = 1.1;
+    } else if (clients > 1000) {
+      factor = 1.2;
+    } else if (clients > 100) {
+      factor = 1.5;
+    } else {
+      factor = 2;
+    }
+
+    const error = round(5 * factor * analyticsModifier);
+    const offset = Math.random() * error;
+    const rating = this.getRating(i);
+
+    let leftValue = round(rating - offset);
+    if (leftValue < 0) {
+      leftValue = 0;
+    }
+
+    let rightValue = round(leftValue + error);
+    if (rightValue < 0) {
+      rightValue = 0;
+    } else if (rightValue > 10) {
+      rightValue = 10;
+    }
+
+    phrase = `${leftValue} - ${rightValue}`;
+
+    return phrase;
   }
 
   getProductExpensesStructure(i) {

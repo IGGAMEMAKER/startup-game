@@ -27,7 +27,8 @@ export default class Metrics extends Component {
 
     const debt = product.KPI.debt;
 
-    const rating = round(computeRating(product));
+    const rating = productStore.getRatingForMetricsTab(id);
+    //round(computeRating(product));
 
     // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     const churn = percentify(productStore.getChurnRate(id));
@@ -40,19 +41,24 @@ export default class Metrics extends Component {
 
     const newbies = productStore.getNewClients(id);
 
-    const canShowRatingTab = true;
-    const canShowChurnTab = true;
+    const canShowRatingTab = productStore.getRatingForMetricsTab(id) != 0;
+    const canShowChurnTab = !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
     // const canShowViralityTab = true;
     const canShowViralityTab = !!productStore.getFeatureStatus(id, 'analytics', 'shareAnalytics');
-    // const canShowViralityTab = !!productStore.getFeatureStatus(id, 'analytics', 'googleAnalytics');
     const canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
-    const canShowClientsTab = true;
-    const canShowNewClientsTab = true;
+    const canShowClientsTab =
+      !!productStore.getFeatureStatus(id, 'analytics', 'webvisor') ||
+      !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
+    const canShowNewClientsTab =
+      !!productStore.getFeatureStatus(id, 'analytics', 'webvisor') ||
+      !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
     const canShowIncomeTab = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
 
     let ratingTab;
     if (canShowRatingTab) {
       ratingTab = <li><b>Рейтинг: {rating}</b></li>;
+    } else {
+      ratingTab = <li><b>Рейтинг: ???</b></li>;
     }
 
     let churnTab;
@@ -100,11 +106,13 @@ export default class Metrics extends Component {
         <div>
           <ul>
             {ratingTab}
+            {clientsTab}
             {churnTab}
+
             {viralityTab}
             {newClientsTab}
+
             {payingPercentageTab}
-            {clientsTab}
             {incomeTab}
           </ul>
         </div>
