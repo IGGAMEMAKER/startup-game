@@ -107,6 +107,12 @@ class PlayerStore extends EventEmitter {
     return Math.floor(_money / JOB.PRICE_OF_ONE_PP)
   }
 
+  getMaxPossibleAdClients() {
+    const CLIENT_PRICE = 1;
+
+    return Math.floor(_money / CLIENT_PRICE);
+  }
+
   getProgrammers() {
     return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_PROGRAMMER)
   }

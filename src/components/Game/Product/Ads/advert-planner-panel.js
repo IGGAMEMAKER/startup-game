@@ -24,7 +24,7 @@ export default class AdvertPlannerPanel extends Component {
 
     const id = props.id;
     const stream = 100;
-    const baseCost = 10;
+    const costPerClient = 0.1;
 
     const inviteUsers = (id, amountOfUsers, cost) => () => {
       if (playerStore.getMoney() >= cost) {
@@ -51,10 +51,12 @@ export default class AdvertPlannerPanel extends Component {
     };
 
     const { possibleClients } = state;
+
+    const maxPossibleClients = Math.floor(playerStore.getMoney() / costPerClient);
     return (
       <div>
-        <Range min={stream} max={stream * 1000} onDrag={onDrag} />
-        {renderAdCampaignButton(possibleClients, possibleClients * baseCost / stream)}
+        <Range min={0} max={maxPossibleClients} onDrag={onDrag} />
+        {renderAdCampaignButton(possibleClients, Math.ceil(possibleClients * costPerClient))}
       </div>
     );
   }
