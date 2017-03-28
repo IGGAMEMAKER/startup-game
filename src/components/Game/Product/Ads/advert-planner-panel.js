@@ -14,22 +14,27 @@ import playerStore from '../../../../stores/player-store';
 
 export default class AdvertPlannerPanel extends Component {
   state = {
-    possibleClients: 100
+    possibleClients: 0
   };
 
   componentWillMount() {}
+
+  onDrag = (possibleClients) => {
+    this.setState({ possibleClients })
+  };
 
   render() {
     const { props, state } = this;
 
     const id = props.id;
-    const stream = 100;
     const costPerClient = 0.1;
 
     const inviteUsers = (id, amountOfUsers, cost) => () => {
       if (playerStore.getMoney() >= cost) {
         productActions.addClients(id, amountOfUsers);
         playerActions.increaseMoney(-cost);
+
+        this.onDrag(0);
       }
     };
 
@@ -41,22 +46,21 @@ export default class AdvertPlannerPanel extends Component {
             item="start-campaign"
             text={`Start ad campaign for ${cost}$`}
             onClick={inviteUsers(id, users, cost)}
+            primary
           />
         </div>
       )
     };
 
-    const onDrag = (possibleClients) => {
-      this.setState({ possibleClients })
-    };
-
     const { possibleClients } = state;
 
     const maxPossibleClients = Math.floor(playerStore.getMoney() / costPerClient);
+    const campaignCost = Math.ceil(possibleClients * costPerClient);
+
     return (
       <div>
-        <Range min={0} max={maxPossibleClients} onDrag={onDrag} />
-        {renderAdCampaignButton(possibleClients, Math.ceil(possibleClients * costPerClient))}
+        <Range min={0} max={maxPossibleClients} onDrag={this.onDrag} />
+        {renderAdCampaignButton(possibleClients, campaignCost)}
       </div>
     );
   }

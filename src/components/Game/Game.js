@@ -209,13 +209,24 @@ class Game extends Component {
     const id = state.id;
     const product = state.products[id];
 
-    return (
-      <div>
-        <b>Рекламная кампания</b>
-        <AdsPanel product={product} id={id} />
-        <br />
-      </div>
-    )
+    let body;
+
+    switch (product.stage) {
+      case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
+        body = '';
+        break;
+      default:
+        body = (
+          <div>
+            <b>Рекламная кампания</b>
+            <AdsPanel product={product} id={id} />
+            <br />
+          </div>
+        );
+        break;
+    }
+
+    return body;
   };
 
   renderEconomy = state => {
@@ -293,6 +304,39 @@ class Game extends Component {
     return <Staff />;
   };
 
+  renderProductMenu = state => {
+    if (!state.products.length) return <div></div>;
+
+    const id = state.id;
+    const product = state.products[id];
+
+    let body;
+
+    switch (product.stage) {
+      case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
+        body = <InitialProductTab product={product} id={id} />;
+        break;
+      default:
+        // body = <DevelopPanel product={product} id={id} />;
+        body = (
+          <div>
+            <DevelopPanel product={product} id={id} />
+            <br />
+            <hr />
+            <div>
+              <b>Рекламная кампания</b>
+              <AdsPanel product={product} id={id} />
+              <br />
+            </div>
+            <PointShop />
+          </div>
+        );
+        break;
+    }
+
+    return body;
+  };
+
   onRenderProjectMenu = (i) => {
     this.setState({ mode: GAME_MODE_PRODUCT, id: i })
   };
@@ -337,15 +381,7 @@ class Game extends Component {
         body = this.renderStaff(state);
         break;
       case GAME_MODE_PRODUCT:
-        body = (
-          <div>
-            {this.renderDevelopMode(state)}
-            <br />
-            <hr />
-            {this.renderAdCampaignGenerator(state)}
-            <PointShop />
-          </div>
-        );
+        body = this.renderProductMenu(state);
         break;
     }
 

@@ -26,6 +26,7 @@ class InitialProductTab extends Component {
         <Button
           text="Создать прототип"
           onClick={e => mvpCreator.create(props.id, [])}
+          primary
         />
       </div>
     );

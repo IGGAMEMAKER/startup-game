@@ -16,9 +16,19 @@ export default class Button extends Component {
     let { item } = props;
     if (!item) item = 'unknownButton';
 
+    let className = '';
+
+    if (props.primary) {
+      className = 'btn btn-primary';
+    }
+
+    if (props.secondary) {
+      className = 'btn btn-success';
+    }
+
     return (
       <div>
-        <button {...props}>{props.text}</button>
+        <button className={`btn ${className}`} {...props}>{props.text}</button>
       </div>
     );
   }

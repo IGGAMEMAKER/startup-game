@@ -211,9 +211,9 @@ class DevelopPanel extends Component {
           </div>
           <Button
             disabled={!enoughPointsToUpgrade}
-            className={upgradeButtonClassName}
             onClick={upgradeFeature}
             text="Улучшить"
+            secondary
           />
           <br />
         </div>
