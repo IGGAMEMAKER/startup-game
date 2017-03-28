@@ -110,7 +110,6 @@ export default class Metrics extends Component {
             {churnTab}
 
             {viralityTab}
-            {newClientsTab}
 
             {payingPercentageTab}
             {incomeTab}

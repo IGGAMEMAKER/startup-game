@@ -22,3 +22,15 @@
 .enoughPoints {
   color: $positive;
 }
+
+.hide {
+  cursor: pointer;
+  color: $link;
+  margin-bottom: 25px;
+}
+
+.featureDescription {
+  //font-size: 80%;
+  font-weight: 100;
+  margin-left: 10px;
+}

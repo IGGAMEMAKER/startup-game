@@ -209,9 +209,9 @@ class DevelopPanel extends Component {
       if (isUpgraded) {
         return (
           <div key={key}>
-            {userOrientedFeatureName}: Улучшено ({quality}%)
+            {userOrientedFeatureName}: Улучшено
             <br />
-            <div>{description}</div>
+            <div className={s.featureDescription}>{description}</div>
           </div>
         );
       }
@@ -269,6 +269,8 @@ class DevelopPanel extends Component {
       .getPaymentFeatures(idea)
       .map(renderFeature('payment'));
 
+    // var arrow = saldo ? '\u2197' : '\u2198';
+    const upArrow = '\u2191';
     return (
       <div>
         <b>Развитие продукта</b>
@@ -285,6 +287,7 @@ class DevelopPanel extends Component {
               что приводит к увеличению всех основных метрик
             </div>
             <div className={s.featureGroupBody}>{featureList}</div>
+            <div className={s.hide} onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>
 
           <div className={s.featureGroupTitle} onClick={this.toggleMarketingTab}
@@ -292,7 +295,7 @@ class DevelopPanel extends Component {
           <div style={{ display: state.marketing ? 'block' : 'none' }}>
             <div className={s.featureGroupDescription}>Позволяет снизить отток клиентов, повышая их лояльность</div>
             <div className={s.featureGroupBody}>{marketing}</div>
-            <div onClick={this.toggleMarketingTab}>Свернуть</div>
+            <div className={s.hide} onClick={this.toggleMarketingTab}>Свернуть {upArrow}</div>
           </div>
 
           <div className={s.featureGroupTitle} onClick={this.toggleAnalyticsTab}
@@ -300,7 +303,7 @@ class DevelopPanel extends Component {
           <div style={{ display: state.analytics ? 'block' : 'none' }}>
             <div className={s.featureGroupDescription}>Позволяет быстрее улучшать главные характеристики проекта</div>
             <div className={s.featureGroupBody}>{analytics}</div>
-            <div onClick={this.toggleAnalyticsTab}>Свернуть</div>
+            <div className={s.hide} onClick={this.toggleAnalyticsTab}>Свернуть {upArrow}</div>
           </div>
 
           <div className={s.featureGroupTitle} onClick={this.togglePaymentTab}
@@ -308,7 +311,7 @@ class DevelopPanel extends Component {
           <div style={{ display: state.payment ? 'block' : 'none' }}>
             <div className={s.featureGroupDescription}>Позволяет повысить доходы с продаж</div>
             <div className={s.featureGroupBody}>{payment}</div>
-            <div onClick={this.togglePaymentTab}>Свернуть</div>
+            <div className={s.hide} onClick={this.togglePaymentTab}>Свернуть {upArrow}</div>
           </div>
 
         </div>
