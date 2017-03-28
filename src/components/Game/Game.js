@@ -209,32 +209,6 @@ class Game extends Component {
     )
   };
 
-  renderAdCampaignGenerator = state => {
-    if (!state.products.length) return <div></div>;
-
-    const id = state.id;
-    const product = state.products[id];
-
-    let body;
-
-    switch (product.stage) {
-      case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
-        body = '';
-        break;
-      default:
-        body = (
-          <div>
-            <b>Рекламная кампания</b>
-            <AdsPanel product={product} id={id} />
-            <br />
-          </div>
-        );
-        break;
-    }
-
-    return body;
-  };
-
   renderEconomy = state => {
     const loans = playerStore.getLoanSize();
 
@@ -294,26 +268,6 @@ class Game extends Component {
     const expenses = state.products.map((p, i) => productStore.getProductExpensesStructure(i));
 
     return <Expenses expenses={expenses} />;
-  };
-
-  renderDevelopMode = state => {
-    if (!state.products.length) return <div></div>;
-
-    const id = state.id;
-    const product = state.products[id];
-
-    let body;
-
-    switch (product.stage) {
-      case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
-        body = <InitialProductTab product={product} id={id} />;
-        break;
-      default:
-        body = <DevelopPanel product={product} id={id} />;
-        break;
-    }
-
-    return body;
   };
 
   renderSchedule = state => {

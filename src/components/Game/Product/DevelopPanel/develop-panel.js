@@ -27,7 +27,12 @@ import playerStore from '../../../../stores/player-store';
 import playerActions from '../../../../actions/player-actions';
 
 class DevelopPanel extends Component {
-  state = {};
+  state = {
+    marketing: false,
+    payment: false,
+    analytics: false,
+    features: true
+  };
 
   componentWillMount() {}
 
@@ -114,8 +119,31 @@ class DevelopPanel extends Component {
 
   // computeMarketingBonus
 
+  toggleMainFeatureTab = () => {
+    const value = this.state.features;
+    this.setState({ features: !value });
+  };
+  toggleAnalyticsTab = () => {
+    const value = this.state.analytics;
+    this.setState({ analytics: !value });
+  };
+  togglePaymentTab = () => {
+    const value = this.state.payment;
+    this.setState({ payment: !value });
+  };
+  toggleMarketingTab = () => {
+    const value = this.state.marketing;
+    this.setState({ marketing: !value });
+  };
+
+  // toggler = (value) => {
+  //   if (value) {
+  //     return
+  //   }
+  // }
+
   render() {
-    const { props } = this;
+    const { props, state } = this;
 
     const { product } = props;
     const { idea } = product;
@@ -249,24 +277,40 @@ class DevelopPanel extends Component {
           <b>Основные показатели продукта</b>
           <Metrics product={product} id={id} />
 
-          <div className={s.featureGroupTitle}>Основные характеристики продукта</div>
-          <div className={s.featureGroupDescription}>
-            Улучшая главные характеристики продукта, вы повышаете его рейтинг,
-            что приводит к увеличению всех основных метрик
+          <div className={s.featureGroupTitle} onClick={this.toggleMainFeatureTab}
+          >Основные характеристики продукта</div>
+          <div style={{ display: state.features ? 'block' : 'none' }}>
+            <div className={s.featureGroupDescription}>
+              Улучшая главные характеристики продукта, вы повышаете его рейтинг,
+              что приводит к увеличению всех основных метрик
+            </div>
+            <div className={s.featureGroupBody}>{featureList}</div>
           </div>
-          <div className={s.featureGroupBody}>{featureList}</div>
 
-          <div className={s.featureGroupTitle}>Работа с клиентами</div>
-          <div className={s.featureGroupDescription}>Позволяет снизить отток клиентов, повышая их лояльность</div>
-          <div className={s.featureGroupBody}>{marketing}</div>
+          <div className={s.featureGroupTitle} onClick={this.toggleMarketingTab}
+          >Работа с клиентами</div>
+          <div style={{ display: state.marketing ? 'block' : 'none' }}>
+            <div className={s.featureGroupDescription}>Позволяет снизить отток клиентов, повышая их лояльность</div>
+            <div className={s.featureGroupBody}>{marketing}</div>
+            <div onClick={this.toggleMarketingTab}>Свернуть</div>
+          </div>
 
-          <div className={s.featureGroupTitle}>Аналитика</div>
-          <div className={s.featureGroupDescription}>Позволяет быстрее улучшать главные характеристики проекта</div>
-          <div className={s.featureGroupBody}>{analytics}</div>
+          <div className={s.featureGroupTitle} onClick={this.toggleAnalyticsTab}
+          >Аналитика</div>
+          <div style={{ display: state.analytics ? 'block' : 'none' }}>
+            <div className={s.featureGroupDescription}>Позволяет быстрее улучшать главные характеристики проекта</div>
+            <div className={s.featureGroupBody}>{analytics}</div>
+            <div onClick={this.toggleAnalyticsTab}>Свернуть</div>
+          </div>
 
-          <div className={s.featureGroupTitle}>Монетизация</div>
-          <div className={s.featureGroupDescription}>Позволяет повысить доходы с продаж</div>
-          <div className={s.featureGroupBody}>{payment}</div>
+          <div className={s.featureGroupTitle} onClick={this.togglePaymentTab}
+          >Монетизация</div>
+          <div style={{ display: state.payment ? 'block' : 'none' }}>
+            <div className={s.featureGroupDescription}>Позволяет повысить доходы с продаж</div>
+            <div className={s.featureGroupBody}>{payment}</div>
+            <div onClick={this.togglePaymentTab}>Свернуть</div>
+          </div>
+
         </div>
       </div>
     );

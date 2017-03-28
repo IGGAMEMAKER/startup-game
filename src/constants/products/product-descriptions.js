@@ -14,8 +14,8 @@ export default function (idea) {
           // { name: 'SM activity', influence: 1, description: '' }
         ].map(computeFeatureCost(cost)),
         utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
-        virality: 1, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
-        price: 100
+        virality: 0.5, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
+        price: 10
       };
       break;
   }
