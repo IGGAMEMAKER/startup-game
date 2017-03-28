@@ -193,12 +193,18 @@ class Game extends Component {
 
   renderIncome = state => {
     // {JSON.stringify(state.income)}
+    const productIncome = moneyCalculator.structured().byProductIncome
+      .filter(p => p.income > 0)
+      .map(p => (
+        <div>{p.name} : {p.income}$</div>
+      ));
 
     return (
       <div>
         <b>Доходы</b>
         <br />
         <div>Фриланс: 5000$</div>
+        <div>{productIncome}</div>
       </div>
     )
   };
@@ -232,9 +238,9 @@ class Game extends Component {
   renderEconomy = state => {
     const loans = playerStore.getLoanSize();
 
-    let loanTab = <div>Долгов нет</div>;
+    let loanStatusTab = <div>Долгов нет</div>;
     if (loans > 0) {
-      loanTab = (
+      loanStatusTab = (
         <div>
           Суммарная задолженность {loans}$
         </div>
@@ -258,12 +264,26 @@ class Game extends Component {
     };
 
     const { possibleCredit } =  state;
+
+    const maxLoanSize = (moneyCalculator.structured().income - loans) * 12;
+    let loanTakingTab;
+
+    if (maxLoanSize <= 0) {
+      loanTakingTab = <div>Вы больше не можете брать займы. Выплатите предыдущие займы!</div>
+    } else {
+      loanTakingTab = (
+        <div>
+          <Range min={0} max={maxLoanSize} onDrag={onDrag} />
+          {takeLoan(possibleCredit)}
+        </div>
+      )
+    }
+
     return (
       <div>
         <div>На вашем счету: {round(state.money)}$</div>
-        <Range min={1000} max={5000000} onDrag={onDrag} />
-        {takeLoan(possibleCredit)}
-        {loanTab}
+        {loanTakingTab}
+        {loanStatusTab}
         {this.renderIncome(state)}
         {this.renderExpenses(state)}
       </div>

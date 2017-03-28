@@ -28,6 +28,9 @@ const calculate = () => {
 
   const expenses = nonProductExpenses + productExpenses + loans;
 
+  const byProductIncome = products
+    .map((p, i) => ({ name: p.name, income: productStore.getProductIncome(i) }));
+
   return {
     nonProductExpenses,
     productExpenses,
@@ -36,6 +39,8 @@ const calculate = () => {
 
     expenses,
     income,
+    byProductIncome,
+    
     saldo: income - expenses
   }
 };
