@@ -85,7 +85,7 @@ class DevelopPanel extends Component {
     // ].map(computeFeatureCost(cost));
   };
 
-  getMonetizationFeatures = idea => {
+  getPaymentFeatures = idea => {
     const technicalDebtModifier = 1;
     const up = Math.ceil;
 
@@ -100,10 +100,6 @@ class DevelopPanel extends Component {
         points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
       }
     ];
-  };
-
-  renderMonetizationFeatures = idea => {
-
   };
 
   getTechnicalDebtDescription = debt => {
@@ -240,9 +236,10 @@ class DevelopPanel extends Component {
       .getAnalyticFeatures(idea)
       .map(renderFeature('analytics'));
 
-    const monetization = JSON.stringify(this
-      .getMonetizationFeatures(idea))
-      // .map(renderFeature('monetization'));
+    // const payment = JSON.stringify(this
+    const payment = this
+      .getPaymentFeatures(idea)
+      .map(renderFeature('payment'));
 
     return (
       <div>
@@ -269,7 +266,7 @@ class DevelopPanel extends Component {
 
           <div className={s.featureGroupTitle}>Монетизация</div>
           <div className={s.featureGroupDescription}>Позволяет повысить доходы с продаж</div>
-          <div className={s.featureGroupBody}>{monetization}</div>
+          <div className={s.featureGroupBody}>{payment}</div>
         </div>
       </div>
     );

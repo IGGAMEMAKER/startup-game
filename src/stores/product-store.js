@@ -34,7 +34,9 @@ let _products = [{
 
     // not only chat with users, but also localisations, content updates
     // and all sort of things, that you need doing constantly
-    support: {}
+    support: {},
+
+    payment: {},
   },
 
   KPI: {
@@ -106,12 +108,34 @@ class ProductStore extends EventEmitter {
     return productDescriptions(idea).utility;
   }
 
+  getPaymentModifier(i) {
+    const payments = _products[i].features.payment;
+    // mockBuying
+    // basicPricing
+    // segmentedPricing
+    if (payments.segmentedPricing) {
+      return 0.95;
+    }
+
+    if (payments.basicPricing) {
+      return 0.5;
+    }
+
+    if (payments.mockBuying) {
+      return 1;
+    }
+
+    return 0;
+  }
+
   getConversionRate(i) {
     const rating = this.getRating(i);
     const utility = this.getProductUtility(i);
 
+    const paymentModifier = this.getPaymentModifier(i);
+
     // let conversion = utility * Math.pow((rating), 1.5) / 1000; // rating 10 - 0.05
-    let conversion = utility * rating / 1000; // rating 10 - 0.05
+    let conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
 
     if (conversion < 0 || conversion > 15) {
       logger.error(`invalid conversion value ${conversion}`);
@@ -125,8 +149,20 @@ class ProductStore extends EventEmitter {
     return productDescriptions(this.getIdea(i)).price;
   }
 
+  getPaymentSwitcher(i) {
+    const payments = _products[i].features.payment;
+    // mockBuying
+    // basicPricing
+    // segmentedPricing
+    if (payments.segmentedPricing || payments.basicPricing) {
+      return 1;
+    }
+
+    return 0;
+  }
+
   getProductIncome(i) {
-    const conversion = this.getConversionRate(i); // rating 10 - 0.05
+    const conversion = this.getConversionRate(i) * this.getPaymentSwitcher(i); // rating 10 - 0.05
 
     const clients = this.getClients(i);
     const price = this.getProductPrice(i);

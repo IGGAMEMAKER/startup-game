@@ -49,7 +49,8 @@ export default {
 
         // not only chat with users, but also localisations, content updates
         // and all sort of things, that you need doing constantly
-        support: {}
+        support: {},
+        payment: {}
       };
 
       playerActions.spendPoints(basePoints[1].amount, basePoints[0].amount);
