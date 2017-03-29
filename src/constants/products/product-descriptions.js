@@ -15,7 +15,9 @@ export default function (idea) {
         ].map(computeFeatureCost(cost)),
         utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
         virality: 0.5, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
-        price: 10
+        price: 1,
+        CAC: 0.0159,
+        marketSize: 1000000
       };
       break;
   }

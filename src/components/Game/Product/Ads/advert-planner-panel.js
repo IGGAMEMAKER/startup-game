@@ -23,34 +23,21 @@ export default class AdvertPlannerPanel extends Component {
     this.setState({ possibleClients })
   };
 
+  inviteUsers = (id, amountOfUsers, cost) => () => {
+    if (playerStore.getMoney() >= cost) {
+      productActions.addClients(id, amountOfUsers);
+      playerActions.increaseMoney(-cost);
+
+      this.onDrag(0);
+    }
+  };
+
   render() {
     const { props, state } = this;
 
     const id = props.id;
-    const costPerClient = 0.1;
+    const costPerClient = productStore.getCostPerClient(id);
 
-    const inviteUsers = (id, amountOfUsers, cost) => () => {
-      if (playerStore.getMoney() >= cost) {
-        productActions.addClients(id, amountOfUsers);
-        playerActions.increaseMoney(-cost);
-
-        this.onDrag(0);
-      }
-    };
-
-    const renderAdCampaignButton = (users, cost) => {
-      return (
-        <div>
-          <div>Invite {users} users to your website for {cost}$</div>
-          <Button
-            item="start-campaign"
-            text={`Start ad campaign for ${cost}$`}
-            onClick={inviteUsers(id, users, cost)}
-            primary
-          />
-        </div>
-      )
-    };
 
     const { possibleClients } = state;
 
@@ -60,7 +47,15 @@ export default class AdvertPlannerPanel extends Component {
     return (
       <div>
         <Range min={0} max={maxPossibleClients} onDrag={this.onDrag} />
-        {renderAdCampaignButton(possibleClients, campaignCost)}
+        <div>
+          <div>Invite {possibleClients} users to your website for {campaignCost}$</div>
+          <Button
+            item="start-campaign"
+            text={`Start ad campaign for ${campaignCost}$`}
+            onClick={this.inviteUsers(id, possibleClients, campaignCost)}
+            primary
+          />
+        </div>
       </div>
     );
   }

@@ -139,6 +139,7 @@ class ProductStore extends EventEmitter {
 
     if (conversion < 0 || conversion > 15) {
       logger.error(`invalid conversion value ${conversion}`);
+      return 0;
       // throw 'INVALID_CONVERSION_ERROR';
     }
 
@@ -269,6 +270,10 @@ class ProductStore extends EventEmitter {
 
   getFeatureStatus(i, featureGroup, featureName) {
     return _products[i].features[featureGroup][featureName] > 0;
+  }
+
+  getCostPerClient(i) {
+    return productDescriptions(this.getIdea(i)).CAC;
   }
 
   getBugs(i) {

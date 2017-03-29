@@ -43,7 +43,6 @@ export default class Metrics extends Component {
 
     const canShowRatingTab = productStore.getRatingForMetricsTab(id) != 0;
     const canShowChurnTab = !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
-    // const canShowViralityTab = true;
     const canShowViralityTab = !!productStore.getFeatureStatus(id, 'analytics', 'shareAnalytics');
     const canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
     const canShowClientsTab =
