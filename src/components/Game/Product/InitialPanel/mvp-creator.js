@@ -5,7 +5,7 @@ import playerStore from '../../../../stores/player-store';
 import logger from '../../../../helpers/logger/logger';
 
 export default {
-  create: (i, basePoints) => {
+  create: (i, basePoints, idea) => {
     const points = playerStore.getPoints();
 
     // basePoints must be an array
@@ -35,6 +35,8 @@ export default {
         foundUXBugs: 0,
         fixedUXBugs: 0
       };
+
+
 
       const randomDefaultFeatures = {
         offer: {

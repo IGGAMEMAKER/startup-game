@@ -15,20 +15,20 @@ let _tasks = [{
   progress: 1,
   timecost: 15 * WORK_SPEED_HAS_MAIN_JOB,
   speed: WORK_SPEED_HAS_MAIN_JOB,
-}, {
-  description: 'improve secondary feature',
-  inProgress: true,
-  isSynchronous: false,
-  progress: 8,
-  timecost: 2 * WORK_SPEED_NORMAL,
-  speed: WORK_SPEED_NORMAL
-}, {
-  description: 'improve analytics',
-  inProgress: false,
-  isSynchronous: true,
-  progress: 1,
-  timecost: 2 * WORK_SPEED_NORMAL,
-  speed: WORK_SPEED_NORMAL
+// }, {
+//   description: 'improve secondary feature',
+//   inProgress: true,
+//   isSynchronous: false,
+//   progress: 8,
+//   timecost: 2 * WORK_SPEED_NORMAL,
+//   speed: WORK_SPEED_NORMAL
+// }, {
+//   description: 'improve analytics',
+//   inProgress: false,
+//   isSynchronous: true,
+//   progress: 1,
+//   timecost: 2 * WORK_SPEED_NORMAL,
+//   speed: WORK_SPEED_NORMAL
 }];
 let _day = 0;
 let _workHours = 4;

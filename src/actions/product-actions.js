@@ -9,24 +9,24 @@ function getRandomRange(min, max) {
 }
 
 export default {
-  improveFeature: (id, featureGroup, featureName) => {
-    // common business experience of team
+  improveFeature: (id, featureGroup, featureName, h, max) => {
     logger.shit('fix commonExperience in improveFeature() product-actions.js');
-    const commonExperience = 0.25;
-    // business experience of team in specific theme
-    const analytics = 0.5 * productStore.getAnalyticsValueForFeatureCreating(id);
-    const luck = getRandomRange(0, 0.35);// 0.25; 0.5 - commonExperience
 
-    const quality = Math.min((commonExperience + analytics + luck), 1).toFixed(2);
 
-    logger.log('improveFeature', id, featureGroup, featureName, quality);
+    const chance = h.baseChance + productStore.getAnalyticsValueForFeatureCreating(id);
+    const randomValue = 1; //getRandomRange(0, 1);// 0.25; 0.5 - commonExperience
+
+    const quality = randomValue > chance ? h.data : 0;
+
+    logger.log('improveFeature', id, featureGroup, featureName, quality, chance, randomValue);
 
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
       id,
       featureGroup,
       featureName,
-      value: quality
+      value: quality,
+      max
     })
   },
   improveFeatureByPoints: (id, featureGroup, featureName) => {

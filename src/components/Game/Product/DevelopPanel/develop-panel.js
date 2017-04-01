@@ -144,7 +144,7 @@ class DevelopPanel extends Component {
     return points.marketing >= mp && points.programming >= pp;
   };
 
-  renderHypothesisItem = (id, featureName, time) => (h, i) => {
+  renderHypothesisItem = (id, featureName, time, current, max) => (h, i) => {
     const necessaryPoints = h.points;
     const key = `${featureName}`;
 
@@ -153,18 +153,26 @@ class DevelopPanel extends Component {
     const action = () => {
       playerActions.spendPoints(pp, mp);
       scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
-        productActions.improveFeature(id, 'offer', featureName);
+        productActions.improveFeature(id, 'offer', featureName, h, max);
       });
     };
 
+    const chance = (h.baseChance + productStore.getAnalyticsValueForFeatureCreating(id)) * 100;
+
+    let text = `Протестировать гипотезу (${time}дней)`;
+    if (current >= max) {
+      text = 'Эта фича огонь';
+    }
+
     return (
       <div key={`hypothesis${i}`}>
-        <div>Гипотеза #{i}</div>
+        <div>Гипотеза #{i} (Ценность - {h.data}XP, {chance}% шанс)</div>
         <div>Стоимость тестирования ({mp}MP и {pp}PP)</div>
         <Button
-          disabled={!this.haveEnoughPointsToUpgrade(necessaryPoints)}
+          disabled={!this.haveEnoughPointsToUpgrade(necessaryPoints) || current >= max}
           onClick={action}
-          text={`Протестировать гипотезу`}
+          text={text}
+          primary={current < max}
         />
       </div>
     )
@@ -201,13 +209,13 @@ class DevelopPanel extends Component {
         baseChance: 0.1
       }];
 
-      const hypothesisList = hypothesis.map(this.renderHypothesisItem(id, featureName, time));
+      const hypothesisList = hypothesis.map(this.renderHypothesisItem(id, featureName, time, current, max));
       const description = defaultFeature.description || '';
       const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
 
       return (
         <div key={key}>
-          {userOrientedFeatureName} ({current}/{max})
+          {userOrientedFeatureName} ({current}/{max}XP)
           <br />
           <div className={s.featureDescription}>{description}</div>
           {hypothesisList}

@@ -92,15 +92,24 @@ class ProductStore extends EventEmitter {
 
   getAnalyticsValueForFeatureCreating(i) {
     // range: 0 - 1
+    // range: 0.1 - 0.4
     const analytics = _products[i].features.analytics;
 
-    const feedback = analytics.feedback ? 2 : 0;
-    const inexactSegmenting = analytics.inexactSegmenting ? 3 : 0;
-    const exactSegmenting = analytics.exactSegmenting ? 5 : 0;
+    let value = 0;
 
-    // const segmenting = inexactSegmenting + exactSegmenting;
-    const segmenting = (analytics.segmenting || 0) * 8;
-    return (feedback + segmenting) / 10;
+    const feedback = analytics.feedback;
+    const webvisor = analytics.webvisor;
+    const segmenting = analytics.segmenting;
+
+    if (segmenting) {
+      value = 0.4;
+    } else if (webvisor) {
+      value = 0.3;
+    } else if (feedback) {
+      value = 0.1;
+    }
+
+    return value;
   }
 
   getProductUtility(i) {
@@ -383,9 +392,11 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].stage = p.stage;
       break;
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
-      let previous = _products[id].features[p.featureGroup][p.featureName];
-      _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
-      // _products[p.id].features[p.featureGroup][p.featureName] = p.value;
+      let previous = _products[id].features[p.featureGroup][p.featureName] || 0;
+      let sum = previous + p.value;
+      let max = p.max;
+      // _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
+      _products[p.id].features[p.featureGroup][p.featureName] = sum > max ? max: sum;
       break;
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
       // let previous = _products[id].features[p.featureGroup][p.featureName];
