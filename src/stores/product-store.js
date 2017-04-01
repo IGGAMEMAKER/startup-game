@@ -17,8 +17,8 @@ import * as PRODUCT_STAGES from '../constants/products/product-stages';
 
 let _products = [{
   rating: 0, // computable value, so... needs to be deleted
-  idea: IDEAS.IDEA_WEB_STUDIO,
-  name: 'WWWEB STUDIO',
+  idea: IDEAS.IDEA_WEB_HOSTING,
+  name: 'WWWEB HOSTING',
   stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
 
   features: {
@@ -249,11 +249,11 @@ class ProductStore extends EventEmitter {
 
     const clients = this.getClients(i);
 
-    if (clients < 1000) return 1000;
-    if (clients < 10000) return 5000;
-    if (clients < 100000) return 30000;
+    if (clients < 1000) return 300;
+    if (clients < 10000) return 500;
+    if (clients < 100000) return 3000;
 
-    return 100000;
+    return 10000;
   }
 
   getProductExpenses(i) {
@@ -279,12 +279,12 @@ class ProductStore extends EventEmitter {
   getBugs(i) {
     return {
       ux: {
-        current: 100,
+        max: 100,
         found: 50,
         fixed: 10
       },
       programming: {
-        current: 100,
+        max: 100,
         found: 50,
         fixed: 10
       }
@@ -345,6 +345,7 @@ class ProductStore extends EventEmitter {
     }
 
     phrase = `${leftValue} - ${rightValue}`;
+    phrase = rating;
 
     return phrase;
   }

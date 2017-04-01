@@ -1,1 +1,2 @@
 export const IDEA_WEB_STUDIO = 'IDEA_WEB_STUDIO';
+export const IDEA_WEB_HOSTING = 'IDEA_WEB_HOSTING';

@@ -80,10 +80,10 @@ class DevelopPanel extends Component {
       { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '',
         points: { programming: 150, marketing: 100 }
       },
-      { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Просмотр статистики шеринга',
+      { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
         points: { programming: 15 }
       },
-      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Просмотр статистики платежей',
+      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрики "процент платящих" и "ежемесячный доход"',
         points: { programming: 15 }
       }
     ];
@@ -136,6 +136,40 @@ class DevelopPanel extends Component {
     this.setState({ marketing: !value });
   };
 
+  haveEnoughPointsToUpgrade = necessaryPoints => {
+    const points = playerStore.getPoints();
+    const mp = necessaryPoints.mp || 0;
+    const pp = necessaryPoints.pp || 0;
+
+    return points.marketing >= mp && points.programming >= pp;
+  };
+
+  renderHypothesisItem = (id, featureName, time) => (h, i) => {
+    const necessaryPoints = h.points;
+    const key = `${featureName}`;
+
+    const { pp, mp } = necessaryPoints;
+
+    const action = () => {
+      playerActions.spendPoints(pp, mp);
+      scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
+        productActions.improveFeature(id, 'offer', featureName);
+      });
+    };
+
+    return (
+      <div key={`hypothesis${i}`}>
+        <div>Гипотеза #{i}</div>
+        <div>Стоимость тестирования ({mp}MP и {pp}PP)</div>
+        <Button
+          disabled={!this.haveEnoughPointsToUpgrade(necessaryPoints)}
+          onClick={action}
+          text={`Протестировать гипотезу`}
+        />
+      </div>
+    )
+  };
+
   render() {
     const { props, state } = this;
 
@@ -143,95 +177,40 @@ class DevelopPanel extends Component {
     const { idea } = product;
 
     const id = 0; // TODO FIX PRODUCT ID
-    //
-    // specify actual feature values
-    const renderMainFeature = featureGroup => (feature, i) => {
-      const featureName = feature.name;
+    logger.shit('develop-panel.js fix productID id=0');
 
-      const currentFeatures = product.features[featureGroup];
+    const renderMainFeature = featureGroup => (defaultFeature, i) => {
+      const featureName = defaultFeature.name;
+      const { cost, time, shortDescription } = defaultFeature;
 
-      const quality = Math.floor((currentFeatures[featureName] || 0) * 100);
+      const feature = product.features[featureGroup][featureName];
 
-      const { cost, time } = feature;
+      const current = feature || 0;
+      const max = defaultFeature.data;
+
 
       const key = `feature${featureGroup}${featureName}${i}`;
 
-      const cb = () => {
-        logger.log('deferred callback!!', feature, i);
-        productActions.improveFeature(id, featureGroup, featureName);
-      };
+      const hypothesis = [{
+        points: { mp: 100, pp: 100 },
+        data: 1000,
+        baseChance: 0.3
+      }, {
+        points: { mp: 100, pp: 200 },
+        data: 4000,
+        baseChance: 0.1
+      }];
 
-      const freelancerTime = time;
-      // const efficiency = WORK_SPEED_NORMAL / WORK_SPEED_HAS_MAIN_JOB;
-      const yourTime = Math.ceil(time * WORK_SPEED_NORMAL / WORK_SPEED_HAS_MAIN_JOB);
-
-      const doTaskYourself = () => {
-        scheduleActions.addTask(time, true, WORK_SPEED_HAS_MAIN_JOB, key, cb);
-      };
-
-      const sendTaskToFreelancer = () => {
-        scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, cb);
-      };
-
-      const standardPoints = feature.points || {};
-      const mp = standardPoints.marketing || 0;
-      const pp = standardPoints.programming || 0;
-      const points = playerStore.getPoints();
-
-      const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
-
-      const upgradeFeature = event => {
-        logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
-
-        if (enoughPointsToUpgrade) {
-          playerActions.spendPoints(pp, mp);
-          productActions.improveFeatureByPoints(id, featureGroup, featureName);
-        }
-      };
-      // {`${featureName}: ${quality}%. Time: ${time}. Cost ${cost}$`}
-
-      // <Button
-      //   text={`Отдать задачу фрилансеру. (${freelancerTime} дней и ${cost}$)`}
-      //   onClick={sendTaskToFreelancer}
-      // />
-
-      const description = feature.description || '';
-      const isUpgraded = productStore.getFeatureStatus(id, featureGroup, featureName);
-
-      const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
-      if (isUpgraded) {
-        return (
-          <div key={key}>
-            {userOrientedFeatureName}: Улучшено
-            <br />
-            <div className={s.featureDescription}>{description}</div>
-          </div>
-        );
-      }
-
-      // <div>{JSON.stringify(feature)}</div>
-      const mpColors = points.marketing < mp ? s.noPoints : s.enoughPoints;
-      const ppColors = points.programming < pp ? s.noPoints : s.enoughPoints;
-      const upgradeButtonClassName = '';
+      const hypothesisList = hypothesis.map(this.renderHypothesisItem(id, featureName, time));
+      const description = defaultFeature.description || '';
+      const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
 
       return (
         <div key={key}>
-          {userOrientedFeatureName}
+          {userOrientedFeatureName} ({current}/{max})
           <br />
           <div className={s.featureDescription}>{description}</div>
-          <div>
-            <div>
-              Стоимость улучшения - &nbsp;
-              <span className={mpColors}>MP:{mp}&nbsp;</span>
-              <span className={ppColors}>PP:{pp}</span>
-            </div>
-          </div>
-          <Button
-            disabled={!enoughPointsToUpgrade}
-            onClick={upgradeFeature}
-            text="Улучшить"
-            secondary
-          />
+          {hypothesisList}
           <br />
         </div>
       )
@@ -303,7 +282,7 @@ class DevelopPanel extends Component {
     // console.log('product', product);
     const featureList = this
       .getSpecificProductFeatureListByIdea(idea)
-      .map(renderFeature('offer'));
+      .map(renderMainFeature('offer'));
 
     const marketing = this
       .getMarketingFeatureList(idea)
