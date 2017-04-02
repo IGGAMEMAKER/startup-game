@@ -36,21 +36,24 @@ export default class PointShop extends Component {
 
     return (
       <div>
+
         <span>{minPP}</span>
         <span>
           <Range min={minPP} max={maxPP} onDrag={pp => { this.setState({ pp }) }} />
         </span>
         <span>{maxPP}</span>
         <Button
-          text={`Купить ${pp} PP за ${JOB.PRICE_OF_ONE_PP * pp}`}
+          text={`Купить ${pp} PP за ${JOB.PRICE_OF_ONE_PP * pp}$`}
           onClick={() => { playerActions.buyProgrammingPoints(pp) }}
         />
 
         <span>{minMP}</span>
-        <Range min={minMP} max={maxMP} onDrag={mp => { this.setState({ mp }) }} />
+        <span>
+          <Range min={minMP} max={maxMP} onDrag={mp => { this.setState({ mp }) }} />
+        </span>
         <span>{maxMP}</span>
         <Button
-          text={`Купить ${mp} MP за ${JOB.PRICE_OF_ONE_MP * mp}`}
+          text={`Купить ${mp} MP за ${JOB.PRICE_OF_ONE_MP * mp}$`}
           onClick={() => { playerActions.buyMarketingPoints(mp) }}
         />
       </div>
