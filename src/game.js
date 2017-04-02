@@ -9,6 +9,7 @@ import playerActions from './actions/player-actions';
 import logger from './helpers/logger/logger';
 
 import moneyCalculator from './helpers/economics/money-difference';
+import eventGenerator from './helpers/events/event-generator';
 
 import * as JOB from './constants/job';
 
@@ -99,6 +100,7 @@ const run = () => {
   }
 
   // try to make an event
+  eventGenerator.emit();
 };
 
 export default {

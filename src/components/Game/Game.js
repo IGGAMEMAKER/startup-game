@@ -27,7 +27,7 @@ import gameRunner from '../../game';
 
 import Button from '../Shared/Button';
 import Range from '../../components/Shared/Range';
-import MessageTab from '../../components/Shared/Message';
+import ModalTab from '../Shared/Modal';
 
 import round from '../../helpers/math/round';
 
@@ -371,7 +371,7 @@ class Game extends Component {
     // <hr />
     return (
       <div className={s.background}>
-        <MessageTab />
+        <ModalTab />
         <div className={s.wrapper}>
           <div className={s.navigation}>
             <div className={moneyIndication}>${Math.floor(state.money)} {arrow}</div>

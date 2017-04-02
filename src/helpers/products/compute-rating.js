@@ -13,11 +13,11 @@ export default product => {
 
   getSpecificProductFeatureListByIdea(idea).forEach(f => {
     const value = (product.features.offer[f.name] || 0) / f.data;
-    logger.debug('computing rating for feature', f.name);
+    // logger.debug('computing rating for feature', f.name);
 
     rating += value * f.influence;
   });
-  logger.debug('rating=', rating);
+  // logger.debug('rating=', rating);
 
   return rating;
 };

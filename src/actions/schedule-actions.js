@@ -4,10 +4,6 @@ import logger from '../helpers/logger/logger';
 
 import scheduleStore from '../stores/schedule-store';
 
-function getRandomRange(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
 export default {
   increaseDay: () => {
     Dispatcher.dispatch({

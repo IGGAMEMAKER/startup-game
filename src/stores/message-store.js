@@ -1,12 +1,19 @@
 import { EventEmitter } from 'events';
 import Dispatcher from '../dispatcher';
 import * as c from '../constants/actions/message-actions';
+import * as t from '../constants/events';
 import payloads from '../constants/actions/payloads';
 import logger from '../helpers/logger/logger';
 
 const EC = 'MAIN_EVENT_CHANGE';
 
-let _messages = [];
+let _messages = [{
+  type: c.MESSAGE_TYPE_GAME_EVENT,
+  data: {
+    type: t.GAME_EVENT_FREE_MONEY,
+    money: 32000,
+  }
+}];
 
 class ScheduleStore extends EventEmitter {
   addChangeListener(cb:Function) {
@@ -39,6 +46,10 @@ const respond = (i, message) => {
   _messages.splice(i, 1);
 };
 
+const close = i => {
+  _messages.splice(i, 1);
+};
+
 const store = new ScheduleStore();
 
 const payload = payloads.messageStorePayload;
@@ -57,6 +68,9 @@ Dispatcher.register((p: PayloadType) => {
       break;
     case c.GAME_EVENT_CHOOSE_ANSWER:
       respond(p.message);
+      break;
+    case c.GAME_EVENT_CLOSE_TAB:
+      close(p.id);
       break;
     default:
       break;
