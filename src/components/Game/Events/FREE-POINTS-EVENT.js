@@ -47,9 +47,11 @@ class FreePointsEvent extends Component {
           В свободное от работы время вы много читаете и это приносит плоды! На что сделаете ставку?
         </div>
         <br />
-        <Button onClick={pickMarketingPoints} text={`Маркетинг наше всё! (+${points * 2}MP)`} primary />
-        <Button onClick={pickProgrammingPoints} text={`Технологии рулят! (+${points * 2}PP)`} primary />
-        <Button onClick={pickBoth} text={`Баланс во всём! (+${points}PP и +${points}MP)`} primary />
+        <Button className={s.button1} onClick={pickMarketingPoints} text={`Маркетинг наше всё! (+${points * 2}MP)`} primary />
+        <br />
+        <Button className={s.button1} onClick={pickProgrammingPoints} text={`Технологии рулят! (+${points * 2}PP)`} primary />
+        <br />
+        <Button className={s.button1} onClick={pickBoth} text={`Баланс во всём! (+${points}PP и +${points}MP)`} primary />
       </div>
     );
   }

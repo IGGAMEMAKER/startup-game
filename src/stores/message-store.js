@@ -7,13 +7,41 @@ import logger from '../helpers/logger/logger';
 
 const EC = 'MAIN_EVENT_CHANGE';
 
-let _messages = [{
-  type: c.MESSAGE_TYPE_GAME_EVENT,
-  data: {
-    type: t.GAME_EVENT_FREE_MONEY,
-    money: 32000,
-  }
-}];
+import * as  JOB from '../constants/job';
+
+let _messages = [
+  {
+    type: c.MESSAGE_TYPE_GAME_EVENT,
+    data: {
+      type: t.GAME_EVENT_HIRE_ENTHUSIAST,
+      player: {
+        name: 'Jessie',
+        skills: {
+          programming: 0,
+          marketing: 800,
+          analyst: 50
+        },
+        task: JOB.JOB_TASK_MARKETING_POINTS,
+        jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+        salary: {}
+      }
+    }
+  },
+  // {
+  //   type: c.MESSAGE_TYPE_GAME_EVENT,
+  //   data: {
+  //     type: t.GAME_EVENT_FREE_POINTS,
+  //     points: 100,
+  //   }
+  // },
+  // {
+  //   type: c.MESSAGE_TYPE_GAME_EVENT,
+  //   data: {
+  //     type: t.GAME_EVENT_FREE_MONEY,
+  //     money: 32000,
+  //   }
+  // }
+];
 
 class ScheduleStore extends EventEmitter {
   addChangeListener(cb:Function) {

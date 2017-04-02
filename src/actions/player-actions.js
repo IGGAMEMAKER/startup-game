@@ -15,6 +15,12 @@ export default {
       amount
     })
   },
+  hireWorker: player => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_HIRE_WORKER,
+      player
+    })
+  },
 
   increasePoints: (points) => {
     Dispatcher.dispatch({

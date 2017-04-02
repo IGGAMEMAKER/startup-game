@@ -28,7 +28,7 @@ export default class Button extends Component {
 
     return (
       <div>
-        <button className={`btn ${className}`} {...props}>{props.text}</button>
+        <button {...props} className={`btn ${className}`}>{props.text}</button>
       </div>
     );
   }

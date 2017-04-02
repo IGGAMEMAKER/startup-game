@@ -209,6 +209,9 @@ Dispatcher.register((p: PayloadType) => {
       _points.marketing -= p.mp;
       _points.programming -= p.pp;
       break;
+    case c.PLAYER_ACTIONS_HIRE_WORKER:
+      _team.push(p.player);
+      break;
     default:
       break;
   }
