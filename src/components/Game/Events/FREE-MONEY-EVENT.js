@@ -31,9 +31,6 @@ class FreeMoneyEvent extends Component {
       messageActions.closeEvent(id);
     };
 
-    //
-    // Free money event
-    // {JSON.stringify(props)}
     return (
       <div>
         <div className={s.text}>Некто, пожелавший остаться неизвестным, пожертвовал в ваш проект {money}$</div>

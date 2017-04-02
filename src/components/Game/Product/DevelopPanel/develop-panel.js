@@ -163,18 +163,11 @@ class DevelopPanel extends Component {
     const ratingOverflow = current >= max;
     const disabled = notEnoughPPs || ratingOverflow;
 
-    let text = `Протестировать гипотезу (${time}дней)`;
-    if (ratingOverflow) {
-      text = 'Эта фича огонь';
-    }
+    let text = <span>Протестировать гипотезу ({time} дней)</span>;
 
-
-        // <div>Rat owf: {ratingOverflow}</div>
-        // <div>noPPs: {notEnoughPPs}</div>
-        // <div>Disabled: {disabled}</div>
     return (
       <div key={`hypothesis${i}`}>
-        <div>Гипотеза #{i} (Ценность - {h.data}XP, {chance}% шанс)</div>
+        <div className={s.hypothesis}>Гипотеза #{i} (Ценность - {h.data}XP, {chance}% шанс)</div>
         <div>Стоимость тестирования ({mp}MP и {pp}PP)</div>
         <Button
           disabled={disabled}

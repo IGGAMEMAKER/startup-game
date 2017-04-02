@@ -13,8 +13,6 @@ import s from './Modal.scss';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 class Modal extends Component {
-  state = {};
-
   componentWillMount() {
     this.getMessages();
 
@@ -39,10 +37,9 @@ class Modal extends Component {
 
     let body = this.renderModalBody(message);
         // {JSON.stringify(message)}
+
     return (
-      <div className={s.messageTab}>
-        {body}
-      </div>
+      <div className={s.messageTab}>{body}</div>
     );
   }
 }
