@@ -6,13 +6,16 @@ import Button from '../../Shared/Button';
 import playerActions from '../../../actions/player-actions';
 import messageActions from '../../../actions/message-actions';
 
+import s from './Events.scss';
+import withStyles from 'isomorphic-style-loader/lib/withStyles';
+
 type PropsType = {};
 
 type StateType = {};
 
 type ResponseType = {};
 
-export default class FreeMoneyEvent extends Component {
+class FreeMoneyEvent extends Component {
   state = {};
 
   componentWillMount() {}
@@ -28,12 +31,17 @@ export default class FreeMoneyEvent extends Component {
       messageActions.closeEvent(id);
     };
 
+    //
+    // Free money event
+    // {JSON.stringify(props)}
     return (
       <div>
-        Free money event
-        {JSON.stringify(props)}
-        <Button onClick={onClick} text={`Получить халявные ${money}$`} primary />
+        <div className={s.text}>Некто, пожелавший остаться неизвестным, пожертвовал в ваш проект {money}$</div>
+        <br />
+        <Button onClick={onClick} text={`Получить халявные ${money}$ !`} primary />
       </div>
     );
   }
 }
+
+export default withStyles(FreeMoneyEvent, s);
