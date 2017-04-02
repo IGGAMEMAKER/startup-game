@@ -8,13 +8,14 @@ import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../constants/work-sp
 
 const EC = 'MAIN_EVENT_CHANGE';
 
-let _tasks = [{
-  description: 'improve main feature',
-  inProgress: true,
-  isSynchronous: true,
-  progress: 1,
-  timecost: 15 * WORK_SPEED_HAS_MAIN_JOB,
-  speed: WORK_SPEED_HAS_MAIN_JOB,
+let _tasks = [];
+// let _tasks = [{
+//   description: 'improve main feature',
+//   inProgress: true,
+//   isSynchronous: true,
+//   progress: 1,
+//   timecost: 15 * WORK_SPEED_HAS_MAIN_JOB,
+//   speed: WORK_SPEED_HAS_MAIN_JOB,
 // }, {
 //   description: 'improve secondary feature',
 //   inProgress: true,
@@ -29,7 +30,7 @@ let _tasks = [{
 //   progress: 1,
 //   timecost: 2 * WORK_SPEED_NORMAL,
 //   speed: WORK_SPEED_NORMAL
-}];
+// }];
 let _day = 0;
 let _workHours = 4;
 

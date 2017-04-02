@@ -24,5 +24,12 @@ export default {
       type: String,
       amount: Number
     }
+  },
+  messageStorePayload: {
+    name: 'messageStorePayload',
+    type: {
+      type: String,
+      amount: Number
+    }
   }
 };

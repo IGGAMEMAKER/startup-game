@@ -14,7 +14,7 @@ export default {
 
 
     const chance = h.baseChance + productStore.getAnalyticsValueForFeatureCreating(id);
-    const randomValue = 1; //getRandomRange(0, 1);// 0.25; 0.5 - commonExperience
+    const randomValue = getRandomRange(0, 1);// 0.25; 0.5 - commonExperience
 
     const quality = randomValue > chance ? h.data : 0;
 

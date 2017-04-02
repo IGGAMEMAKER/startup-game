@@ -95,7 +95,7 @@ class DevelopPanel extends Component {
     const up = Math.ceil;
 
     return [
-      { name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Заглушки вместо покупок',
+      { name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов',
         points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
       },
       { name: 'basicPricing', shortDescription: 'Один тарифный план', description: 'Одна цена для всех',
@@ -159,20 +159,28 @@ class DevelopPanel extends Component {
 
     const chance = (h.baseChance + productStore.getAnalyticsValueForFeatureCreating(id)) * 100;
 
+    const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
+    const ratingOverflow = current >= max;
+    const disabled = notEnoughPPs || ratingOverflow;
+
     let text = `Протестировать гипотезу (${time}дней)`;
-    if (current >= max) {
+    if (ratingOverflow) {
       text = 'Эта фича огонь';
     }
 
+
+        // <div>Rat owf: {ratingOverflow}</div>
+        // <div>noPPs: {notEnoughPPs}</div>
+        // <div>Disabled: {disabled}</div>
     return (
       <div key={`hypothesis${i}`}>
         <div>Гипотеза #{i} (Ценность - {h.data}XP, {chance}% шанс)</div>
         <div>Стоимость тестирования ({mp}MP и {pp}PP)</div>
         <Button
-          disabled={!this.haveEnoughPointsToUpgrade(necessaryPoints) || current >= max}
+          disabled={disabled}
           onClick={action}
           text={text}
-          primary={current < max}
+          primary={!ratingOverflow}
         />
       </div>
     )
@@ -207,11 +215,28 @@ class DevelopPanel extends Component {
         points: { mp: 100, pp: 200 },
         data: 4000,
         baseChance: 0.1
+      }, {
+        points: { mp: 300, pp: 500 },
+        data: 10000,
+        baseChance: 0
       }];
 
-      const hypothesisList = hypothesis.map(this.renderHypothesisItem(id, featureName, time, current, max));
       const description = defaultFeature.description || '';
       const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
+
+      let hypothesisList = '   Улучшено';
+      if (current < max) {
+        hypothesisList = hypothesis.map(this.renderHypothesisItem(id, featureName, time, current, max));
+      } else {
+        return (
+          <div key={key}>
+            {userOrientedFeatureName} (Улучшено) {'\u2713'}
+            <br />
+            <div className={s.featureDescription}>{description}</div>
+            <br />
+          </div>
+        )
+      }
 
       return (
         <div key={key}>

@@ -19,6 +19,7 @@ import PointShop from './Player/Point-shop';
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
 import playerStore from '../../stores/player-store';
+import messageStore from '../../stores/message-store';
 
 import playerActions from '../../actions/player-actions';
 
@@ -26,6 +27,7 @@ import gameRunner from '../../game';
 
 import Button from '../Shared/Button';
 import Range from '../../components/Shared/Range';
+import MessageTab from '../../components/Shared/Message';
 
 import round from '../../helpers/math/round';
 
@@ -368,36 +370,39 @@ class Game extends Component {
     // <br />
     // <hr />
     return (
-      <div style={{ padding: '15px' }}>
-        <div className={s.navigation}>
-          <div className={moneyIndication}>${Math.floor(state.money)} {arrow}</div>
-        </div>
-        <div className={s.navigation}>
-          <div>День: {day}</div>
-        </div>
-        <div className={s.navigation}>
-          <Button text="||" onClick={this.pauseGame} />
-        </div>
-        <div className={s.navigation}>
-          <Button text=">>" onClick={this.increaseGameSpeed} />
-        </div>
-        <div className={s.navigation}>MP: {playerStore.getPoints().marketing}</div>
-        <div className={s.navigation}>PP: {playerStore.getPoints().programming}</div>
+      <div className={s.background}>
+        <MessageTab />
+        <div className={s.wrapper}>
+          <div className={s.navigation}>
+            <div className={moneyIndication}>${Math.floor(state.money)} {arrow}</div>
+          </div>
+          <div className={s.navigation}>
+            <div>День: {day}</div>
+          </div>
+          <div className={s.navigation}>
+            <Button text="||" onClick={this.pauseGame} />
+          </div>
+          <div className={s.navigation}>
+            <Button text=">>" onClick={this.increaseGameSpeed} />
+          </div>
+          <div className={s.navigation}>MP: {playerStore.getPoints().marketing}</div>
+          <div className={s.navigation}>PP: {playerStore.getPoints().programming}</div>
 
-        <div>
-          <div className={s.navigation} onClick={this.onRenderProjectsMenu}>Проекты</div>
-          <div className={s.navigation} onClick={this.onRenderEconomicsMenu}>Экономика</div>
-          <div className={s.navigation} onClick={this.onRenderStaffMenu}>Персонал</div>
-        </div>
-        <br />
-        <hr />
-        {this.renderSchedule(state)}
-        <br />
-        <hr />
+          <div>
+            <div className={s.navigation} onClick={this.onRenderProjectsMenu}>Проекты</div>
+            <div className={s.navigation} onClick={this.onRenderEconomicsMenu}>Экономика</div>
+            <div className={s.navigation} onClick={this.onRenderStaffMenu}>Персонал</div>
+          </div>
+          <br />
+          <hr />
+          {this.renderSchedule(state)}
+          <br />
+          <hr />
 
-        {body}
-        <br />
-        <hr />
+          {body}
+          <br />
+          <hr />
+        </div>
       </div>
     );
   }

@@ -6,6 +6,14 @@
   cursor: pointer;
 }
 
+.background {
+  position: relative;
+}
+
+.wrapper {
+  padding: 15px;
+}
+
 .moneyNegative,
 .moneyPositive {
   cursor: pointer;
