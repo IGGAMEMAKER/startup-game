@@ -27,7 +27,8 @@ export default class Metrics extends Component {
 
     const debt = product.KPI.debt;
 
-    const rating = productStore.getRatingForMetricsTab(id);
+    const rating = round(productStore.getRatingForMetricsTab(id));
+    const ratingColor = `rgba(${255 * (rating - 10)}, ${255 * (rating - 10)}, 0, 1`;
     //round(computeRating(product));
 
     // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
@@ -55,7 +56,7 @@ export default class Metrics extends Component {
 
     let ratingTab;
     if (canShowRatingTab) {
-      ratingTab = <li><b>Рейтинг: {rating}</b></li>;
+      ratingTab = <li style={{ color: ratingColor }}><b>Рейтинг: {rating}</b></li>;
     } else {
       ratingTab = <li><b>Рейтинг: ???</b></li>;
     }

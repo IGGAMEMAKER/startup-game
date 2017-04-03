@@ -62,10 +62,16 @@ export default class Schedule extends Component {
     const tasks = this.state.tasks;
 
     const collapse = this.state.collapse;
+
+    if (!tasks.length) return <div></div>;
+
     return (
       <div>
         <h4 onClick={this.toggleTasks}>Текущие задачи ({collapse ? tasks.length : '-'})</h4>
         {tasks.length && !collapse ? tasks.map(this.renderTask) : ''}
+
+        <br />
+        <hr />
       </div>
     );
   }

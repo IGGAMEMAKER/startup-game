@@ -4,6 +4,9 @@ import playerStore from '../../../../stores/player-store';
 
 import logger from '../../../../helpers/logger/logger';
 
+import productDescriptions from '../../../../constants/products/product-descriptions';
+import random from '../../../../helpers/math/random';
+
 export default {
   create: (i, basePoints, idea) => {
     const points = playerStore.getPoints();
@@ -36,13 +39,18 @@ export default {
         fixedUXBugs: 0
       };
 
+      const features = productDescriptions(idea).features;
 
+      const luck = random(1, 6) / 10; // luck in 0.1-0.8
+      logger.debug(idea, features);
+
+      const offer = {};
+      features.forEach(f => {
+        offer[f.name] = Math.floor(luck * f.data);
+      });
 
       const randomDefaultFeatures = {
-        offer: {
-          // 'portfolio': 0.81,
-          // 'website': 1
-        }, // features, that are attached to main idea
+        offer, // features, that are attached to main idea
         development: {}, // backups, more dev servers, e.t.c.
 
         marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.

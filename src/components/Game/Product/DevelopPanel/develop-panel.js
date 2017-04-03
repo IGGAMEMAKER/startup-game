@@ -71,20 +71,20 @@ class DevelopPanel extends Component {
     const cost = 30 * WORK_SPEED_NORMAL;
 
     return [
-      { name: 'feedback', shortDescription: 'Форма для комментариев', description: '',
+      { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
         points: { programming: 50 }
       },
-      { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей',
+      { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
         points: { programming: 50 }
       },
-      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '',
+      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
         points: { programming: 150, marketing: 100 }
       },
       { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-        points: { programming: 15 }
+        points: { programming: 50 }
       },
       { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрики "процент платящих" и "ежемесячный доход"',
-        points: { programming: 15 }
+        points: { programming: 50 }
       }
     ];
     // ].map(computeFeatureCost(cost));
@@ -95,13 +95,13 @@ class DevelopPanel extends Component {
     const up = Math.ceil;
 
     return [
-      { name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов',
+      { name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
         points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
       },
-      { name: 'basicPricing', shortDescription: 'Один тарифный план', description: 'Одна цена для всех',
+      { name: 'basicPricing', shortDescription: 'Один тарифный план', description: 'Одна цена для всех. Процент платящих снижается вдвое, однако вы начинаете зарабатывать деньги',
         points: { programming: up(150 * technicalDebtModifier), marketing: 50 }
       },
-      { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов', description: 'Несколько ценовых сегментов',
+      { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов', description: 'Несколько ценовых сегментов. Максимально возможный доход с продукта',
         points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
       }
     ];
@@ -272,7 +272,7 @@ class DevelopPanel extends Component {
       if (isUpgraded) {
         return (
           <div key={key}>
-            {userOrientedFeatureName}: Улучшено
+            {userOrientedFeatureName}: Улучшено {'\u2713'}
             <br />
             <div className={s.featureDescription}>{description}</div>
           </div>

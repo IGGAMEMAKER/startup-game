@@ -28,7 +28,7 @@ class InitialProductTab extends Component {
         <div>{productDescriptions(idea).description}</div>
         <Button
           text="Создать прототип"
-          onClick={e => mvpCreator.create(props.id, [])}
+          onClick={e => mvpCreator.create(props.id, [], idea)}
           primary
         />
       </div>

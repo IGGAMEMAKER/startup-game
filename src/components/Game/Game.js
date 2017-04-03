@@ -351,8 +351,6 @@ class Game extends Component {
           <br />
           <hr />
           {this.renderSchedule(state)}
-          <br />
-          <hr />
 
           {body}
           <br />
