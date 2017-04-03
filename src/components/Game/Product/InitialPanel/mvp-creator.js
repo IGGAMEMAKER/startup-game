@@ -41,7 +41,7 @@ export default {
 
       const features = productDescriptions(idea).features;
 
-      const luck = random(1, 6) / 10; // luck in 0.1-0.8
+      const luck = random(1, 6) / 10; // luck in 0.1-0.6
       logger.debug(idea, features);
 
       const offer = {};
