@@ -7,6 +7,7 @@ import percentify from '../../helpers/math/percentify';
 import round from '../../helpers/math/round';
 
 import getSpecialization from '../../helpers/team/specialization';
+import teamHelper from '../../helpers/team/skills';
 
 import actions from '../../actions/player-actions';
 
@@ -47,12 +48,7 @@ export default class Staff extends Component {
   getSkill = skill => Math.floor(skill / 100);
 
   renderPerson = (p, i) => {
-    let specialization;
-    switch (getSpecialization(p)) {
-      case JOB.PROFESSION_PROGRAMMER: specialization = 'программист'; break;
-      case JOB.PROFESSION_MARKETER: specialization = 'маркетолог'; break;
-      case JOB.PROFESSION_ANALYST: specialization = 'аналитик'; break;
-    }
+    let specialization = teamHelper.getTranslatedSpecialization(p);
 
     let motivation = '';
     switch (p.jobMotivation) {
@@ -83,7 +79,7 @@ export default class Staff extends Component {
 
     return <div key={`person${i}`}>
       <div>
-        {p.name}&nbsp;
+        {p.isPlayer ? 'Вы' : p.name}&nbsp;
         (
         {this.getSkill(p.skills.programming)}/
         {this.getSkill(p.skills.marketing)}/
@@ -115,7 +111,7 @@ export default class Staff extends Component {
     const collapse = this.state.collapse;
     return (
       <div>
-        <h4 onClick={this.toggleStaff}>Персонал ({collapse ? staff.length : '-'})</h4>
+        <h4 onClick={this.toggleStaff}>Команда ({collapse ? staff.length : '-'})</h4>
         {staff.length && !collapse ? staff.map(this.renderPerson) : ''}
       </div>
     );

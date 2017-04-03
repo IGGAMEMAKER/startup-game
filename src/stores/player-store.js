@@ -26,29 +26,33 @@ let _points = {
   analyst: 1000
 };
 
-let _team = [{
-  name: 'James',
-  skills: {
-    programming: 1000,
-    marketing: 150,
-    analyst: 300,
+let _team = [
+  {
+    name: 'James',
+    skills: {
+      programming: 1000,
+      marketing: 150,
+      analyst: 300,
+    },
+    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+    jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
+    salary: {},
+    isPlayer: true
+    // на каком основании работает в проекте
+    // за еду, за опыт, за процент с продаж, собственник бизнеса
   },
-  task: JOB.JOB_TASK_PROGRAMMER_POINTS,
-  jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
-  salary: {}
-  // на каком основании работает в проекте
-  // за еду, за опыт, за процент с продаж, собственник бизнеса
-}, {
-  name: 'Lynda',
-  skills: {
-    programming: 0,
-    marketing: 500,
-    analyst: 150,
-  },
-  task: JOB.JOB_TASK_MARKETING_POINTS,
-  jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-  salary: {}
-}];
+  // {
+  //   name: 'Lynda',
+  //   skills: {
+  //     programming: 0,
+  //     marketing: 500,
+  //     analyst: 150,
+  //   },
+  //   task: JOB.JOB_TASK_MARKETING_POINTS,
+  //   jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+  //   salary: {}
+  // }
+];
 
 let _reputation = 50; // neutral reputation
 let _fame = 0; // nobody knows you

@@ -15,7 +15,7 @@ type StateType = {};
 
 type ResponseType = {};
 
-import skillHelper from '../../../helpers/team/skills';
+import teamHelper from '../../../helpers/team/skills';
 
 class HireEnthusiastEvent extends Component {
   state = {};
@@ -37,12 +37,13 @@ class HireEnthusiastEvent extends Component {
       messageActions.closeEvent(id);
     };
 
-    const hireText = `Нанять ${player.name} (${skillHelper.plain(player)})`;
+    const specialization = teamHelper.getTranslatedSpecialization(player);
+    const hireText = `Нанять ${player.name}, ${specialization}, (${teamHelper.plain(player)})`;
 
     return (
       <div>
         <div className={s.text}>
-          Оо! Один из наших фанатов нашего проекта хочет помочь в разработке!
+          Оо! Один из наших фанатов нашего проекта хочет помочь в разработке БЕСПЛАТНО!
         </div>
         <br />
         <Button className={s.button1} onClick={hireEnthusiast} text={hireText} primary />

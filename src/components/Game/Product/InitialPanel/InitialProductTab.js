@@ -10,6 +10,8 @@ import Button from '../../../Shared/Button';
 
 import mvpCreator from './mvp-creator';
 
+import productDescriptions from '../../../../constants/products/product-descriptions';
+
 class InitialProductTab extends Component {
   state = {};
 
@@ -23,6 +25,7 @@ class InitialProductTab extends Component {
 
     return (
       <div>
+        <div>{productDescriptions(idea).description}</div>
         <Button
           text="Создать прототип"
           onClick={e => mvpCreator.create(props.id, [])}
