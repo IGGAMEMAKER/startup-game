@@ -141,8 +141,8 @@ export default class DevelopPanel extends Component {
     return points.marketing >= mp && points.programming >= pp;
   };
 
-  renderHypothesisItem = (id, featureName, time, current, max) => (h, i) => {
-    const necessaryPoints = h.points;
+  renderHypothesisItem = (id, featureName, time, current, max) => (hypothesis, i) => {
+    const necessaryPoints = hypothesis.points;
     const key = `${featureName}`;
 
     const { pp, mp } = necessaryPoints;
@@ -150,11 +150,11 @@ export default class DevelopPanel extends Component {
     const action = () => {
       playerActions.spendPoints(pp, mp);
       scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
-        productActions.improveFeature(id, 'offer', featureName, h, max);
+        productActions.improveFeature(id, 'offer', featureName, hypothesis, max);
       });
     };
 
-    const chance = (h.baseChance + productStore.getAnalyticsValueForFeatureCreating(id)) * 100;
+    const chance = (hypothesis.baseChance + productStore.getAnalyticsValueForFeatureCreating(id)) * 100;
 
     const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
     const ratingOverflow = current >= max;
@@ -164,7 +164,7 @@ export default class DevelopPanel extends Component {
 
     return (
       <div key={`hypothesis${i}`}>
-        <div className="hypothesis">Гипотеза #{i} (Ценность - {h.data}XP, {chance}% шанс)</div>
+        <div className="hypothesis">Гипотеза #{i} (Ценность - {hypothesis.data}XP, {chance}% шанс)</div>
         <div>Стоимость тестирования ({mp}MP и {pp}PP)</div>
         <Button
           disabled={disabled}
@@ -276,8 +276,8 @@ export default class DevelopPanel extends Component {
         );
       }
 
-      const mpColors = points.marketing < mp ? s.noPoints : s.enoughPoints;
-      const ppColors = points.programming < pp ? s.noPoints : s.enoughPoints;
+      const mpColors = points.marketing < mp ? "noPoints": "enoughPoints";
+      const ppColors = points.programming < pp ? "noPoints": "enoughPoints";
 
       return (
         <div key={key}>

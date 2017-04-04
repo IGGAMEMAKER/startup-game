@@ -7099,8 +7099,8 @@
 
 	      return points.marketing >= mp && points.programming >= pp;
 	    }, _this.renderHypothesisItem = function (id, featureName, time, current, max) {
-	      return function (h, i) {
-	        var necessaryPoints = h.points;
+	      return function (hypothesis, i) {
+	        var necessaryPoints = hypothesis.points;
 	        var key = '' + featureName;
 
 	        var pp = necessaryPoints.pp,
@@ -7110,17 +7110,17 @@
 	        var action = function action() {
 	          _playerActions2.default.spendPoints(pp, mp);
 	          _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
-	            _productActions2.default.improveFeature(id, 'offer', featureName, h, max);
+	            _productActions2.default.improveFeature(id, 'offer', featureName, hypothesis, max);
 	          });
 	        };
 
-	        var chance = (h.baseChance + _productStore2.default.getAnalyticsValueForFeatureCreating(id)) * 100;
+	        var chance = (hypothesis.baseChance + _productStore2.default.getAnalyticsValueForFeatureCreating(id)) * 100;
 
 	        var notEnoughPPs = !_this.haveEnoughPointsToUpgrade(necessaryPoints);
 	        var ratingOverflow = current >= max;
 	        var disabled = notEnoughPPs || ratingOverflow;
 
-	        var text = h(
+	        var text = (0, _preact.h)(
 	          'span',
 	          null,
 	          '\u041F\u0440\u043E\u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u0443 (',
@@ -7128,21 +7128,21 @@
 	          ' \u0434\u043D\u0435\u0439)'
 	        );
 
-	        return h(
+	        return (0, _preact.h)(
 	          'div',
 	          { key: 'hypothesis' + i },
-	          h(
+	          (0, _preact.h)(
 	            'div',
 	            { className: 'hypothesis' },
 	            '\u0413\u0438\u043F\u043E\u0442\u0435\u0437\u0430 #',
 	            i,
 	            ' (\u0426\u0435\u043D\u043D\u043E\u0441\u0442\u044C - ',
-	            h.data,
+	            hypothesis.data,
 	            'XP, ',
 	            chance,
 	            '% \u0448\u0430\u043D\u0441)'
 	          ),
-	          h(
+	          (0, _preact.h)(
 	            'div',
 	            null,
 	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F (',
@@ -7151,7 +7151,7 @@
 	            pp,
 	            'PP)'
 	          ),
-	          h(_Button2.default, {
+	          (0, _preact.h)(_Button2.default, {
 	            disabled: disabled,
 	            onClick: action,
 	            text: text,
@@ -7297,8 +7297,8 @@
 	            );
 	          }
 
-	          var mpColors = points.marketing < mp ? s.noPoints : s.enoughPoints;
-	          var ppColors = points.programming < pp ? s.noPoints : s.enoughPoints;
+	          var mpColors = points.marketing < mp ? "noPoints" : "enoughPoints";
+	          var ppColors = points.programming < pp ? "noPoints" : "enoughPoints";
 
 	          return (0, _preact.h)(
 	            'div',
