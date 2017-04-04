@@ -255,3 +255,13 @@ textarea {
 .hypothesis {
   padding-left: 10px;
 }
+
+.messageTab {
+  position: fixed;
+  background-color: var(--modalBackground);
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  text-align: center;
+}

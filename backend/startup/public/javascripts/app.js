@@ -618,6 +618,10 @@
 
 	var _Expenses2 = _interopRequireDefault(_Expenses);
 
+	var _Economics = __webpack_require__(157);
+
+	var _Economics2 = _interopRequireDefault(_Economics);
+
 	var _PointShop = __webpack_require__(154);
 
 	var _PointShop2 = _interopRequireDefault(_PointShop);
@@ -649,10 +653,6 @@
 	var _UI = __webpack_require__(129);
 
 	var _UI2 = _interopRequireDefault(_UI);
-
-	var _round = __webpack_require__(96);
-
-	var _round2 = _interopRequireDefault(_round);
 
 	var _moneyDifference = __webpack_require__(120);
 
@@ -694,39 +694,6 @@
 	    }
 
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Game.__proto__ || (0, _getPrototypeOf2.default)(Game)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      // player: {
-	      //   skills: {
-	      //     level: 0,
-	      //     // experience: 1000, // business experience... maybe equal to level
-	      //
-	      //     discipline: 1000, // ability to perform well even in low morale. Suffers less morale if fails
-	      //     charisma: 1000, // коммуникабельность + способность управлять людьми
-	      //
-	      //       // talent is not shown anywhere
-	      //       // is not upgradeable (level of difficulty)
-	      //       talent: 1000,
-	      //     // vision: 1000, // may be done in one parameter firstly
-	      //
-	      //     // профильный навык
-	      //     programming: 1000,
-	      //     design: 1000,
-	      //     ux: 1000,
-	      //
-	      //     marketing: 1000
-	      //     // SEO: 1000
-	      //   },
-	      //
-	      //   // temporaries
-	      //   morale: 100,
-	      //   energy: 100,
-	      //
-	      //   // friends: 100, // NEED MORE INFO.
-	      //
-	      //   reputation: 50,
-	      //   // fame: 0 - infinite
-	      //   money: 20000
-	      // },
-
 	      products: [],
 
 	      team: [],
@@ -793,129 +760,6 @@
 	            } })
 	        );
 	      });
-	    }, _this.renderIncome = function (state) {
-	      // {JSON.stringify(state.income)}
-	      var productIncome = _moneyDifference2.default.structured().byProductIncome.filter(function (p) {
-	        return p.income > 0;
-	      }).map(function (p) {
-	        return (0, _preact.h)(
-	          'div',
-	          null,
-	          p.name,
-	          ' : ',
-	          p.income,
-	          '$'
-	        );
-	      });
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'b',
-	          null,
-	          '\u0414\u043E\u0445\u043E\u0434\u044B'
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0424\u0440\u0438\u043B\u0430\u043D\u0441: 5000$'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          productIncome
-	        )
-	      );
-	    }, _this.renderEconomy = function (state) {
-	      var loans = _playerStore2.default.getLoanSize();
-
-	      var loanStatusTab = (0, _preact.h)(
-	        'div',
-	        null,
-	        '\u0414\u043E\u043B\u0433\u043E\u0432 \u043D\u0435\u0442'
-	      );
-	      if (loans > 0) {
-	        loanStatusTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0421\u0443\u043C\u043C\u0430\u0440\u043D\u0430\u044F \u0437\u0430\u0434\u043E\u043B\u0436\u0435\u043D\u043D\u043E\u0441\u0442\u044C ',
-	          loans,
-	          '$'
-	        );
-	      }
-
-	      var takeLoan = function takeLoan(amount) {
-	        var repay = 1.3;
-	        return (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 \u043D\u0430 \u0441\u0443\u043C\u043C\u0443 ',
-	            amount,
-	            '$. \u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u044B\u0439 \u043F\u043B\u0430\u0442\u0451\u0436 \u0441\u043E\u0441\u0442\u0430\u0432\u0438\u0442: ',
-	            amount * repay / 100,
-	            '$'
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, { text: '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 (' + amount + '$)', onClick: function onClick() {
-	              return _playerActions2.default.loans.take(amount);
-	            } })
-	        );
-	      };
-
-	      var onDrag = function onDrag(value) {
-	        _this.setState({ possibleCredit: Math.floor(value) });
-	      };
-
-	      var possibleCredit = state.possibleCredit;
-
-
-	      var maxLoanSize = (_moneyDifference2.default.structured().income - loans) * 12;
-	      var loanTakingTab = void 0;
-
-	      if (maxLoanSize <= 0) {
-	        loanTakingTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0412\u044B \u0431\u043E\u043B\u044C\u0448\u0435 \u043D\u0435 \u043C\u043E\u0436\u0435\u0442\u0435 \u0431\u0440\u0430\u0442\u044C \u0437\u0430\u0439\u043C\u044B. \u0412\u044B\u043F\u043B\u0430\u0442\u0438\u0442\u0435 \u043F\u0440\u0435\u0434\u044B\u0434\u0443\u0449\u0438\u0435 \u0437\u0430\u0439\u043C\u044B!'
-	        );
-	      } else {
-	        loanTakingTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxLoanSize, onDrag: onDrag }),
-	          takeLoan(possibleCredit)
-	        );
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430 \u0432\u0430\u0448\u0435\u043C \u0441\u0447\u0435\u0442\u0443: ',
-	          (0, _round2.default)(state.money),
-	          '$'
-	        ),
-	        loanTakingTab,
-	        loanStatusTab,
-	        _this.renderIncome(state),
-	        _this.renderExpenses(state)
-	      );
-	    }, _this.renderExpenses = function (state) {
-	      var expenses = state.products.map(function (p, i) {
-	        return _productStore2.default.getProductExpensesStructure(i);
-	      });
-
-	      return (0, _preact.h)(_Expenses2.default, { expenses: expenses });
-	    }, _this.renderSchedule = function (state) {
-	      return (0, _preact.h)(_Schedule2.default, null);
-	    }, _this.renderStaff = function (state) {
-	      return (0, _preact.h)(_Staff2.default, null);
 	    }, _this.renderProductMenu = function (state) {
 	      if (!state.products.length) return (0, _preact.h)('div', null);
 
@@ -992,13 +836,13 @@
 
 	      switch (mode) {
 	        case GAME_MODE_ECONOMICS:
-	          body = this.renderEconomy(state);
+	          body = (0, _preact.h)(_Economics2.default, null);
 	          break;
 	        case GAME_MODE_PRODUCTS:
 	          body = this.renderProducts(state);
 	          break;
 	        case GAME_MODE_STAFF:
-	          body = this.renderStaff(state);
+	          body = (0, _preact.h)(_Staff2.default, null);
 	          break;
 	        case GAME_MODE_PRODUCT:
 	          body = this.renderProductMenu(state);
@@ -1026,7 +870,7 @@
 	          }),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null),
-	          this.renderSchedule(state),
+	          (0, _preact.h)(_Schedule2.default, null),
 	          body,
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null)
@@ -8826,6 +8670,234 @@
 	exports.default = {
 	  emit: emit
 	};
+
+/***/ },
+/* 157 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _UI = __webpack_require__(129);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	var _moneyDifference = __webpack_require__(120);
+
+	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
+
+	var _playerStore = __webpack_require__(116);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _productStore = __webpack_require__(121);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	var _playerActions = __webpack_require__(114);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _Expenses = __webpack_require__(153);
+
+	var _Expenses2 = _interopRequireDefault(_Expenses);
+
+	var _round = __webpack_require__(96);
+
+	var _round2 = _interopRequireDefault(_round);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Economics = function (_Component) {
+	  (0, _inherits3.default)(Economics, _Component);
+
+	  function Economics() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Economics);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Economics.__proto__ || (0, _getPrototypeOf2.default)(Economics)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      possibleCredit: 0
+	    }, _this.pickProducts = function () {
+	      _this.setState({
+	        products: _productStore2.default.getProducts()
+	      });
+	    }, _this.pickMoney = function () {
+	      _this.setState({
+	        money: _playerStore2.default.getMoney()
+	      });
+	    }, _this.renderIncome = function (state) {
+	      // {JSON.stringify(state.income)}
+	      var productIncome = _moneyDifference2.default.structured().byProductIncome.filter(function (p) {
+	        return p.income > 0;
+	      }).map(function (p) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          p.name,
+	          ' : ',
+	          p.income,
+	          '$'
+	        );
+	      });
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'b',
+	          null,
+	          '\u0414\u043E\u0445\u043E\u0434\u044B'
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0424\u0440\u0438\u043B\u0430\u043D\u0441: 5000$'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          productIncome
+	        )
+	      );
+	    }, _this.renderExpenses = function (state) {
+	      var expenses = state.products.map(function (p, i) {
+	        return _productStore2.default.getProductExpensesStructure(i);
+	      });
+
+	      return (0, _preact.h)(_Expenses2.default, { expenses: expenses });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Economics, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.pickProducts();
+	      this.pickMoney();
+
+	      _playerStore2.default.addChangeListener(this.pickMoney);
+	      _productStore2.default.addChangeListener(this.pickProducts);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(props, state) {
+	      var _this2 = this;
+
+	      var loans = _playerStore2.default.getLoanSize();
+
+	      var loanStatusTab = (0, _preact.h)(
+	        'div',
+	        null,
+	        '\u0414\u043E\u043B\u0433\u043E\u0432 \u043D\u0435\u0442'
+	      );
+	      if (loans > 0) {
+	        loanStatusTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0421\u0443\u043C\u043C\u0430\u0440\u043D\u0430\u044F \u0437\u0430\u0434\u043E\u043B\u0436\u0435\u043D\u043D\u043E\u0441\u0442\u044C ',
+	          loans,
+	          '$'
+	        );
+	      }
+
+	      var takeLoan = function takeLoan(amount) {
+	        var repay = 1.3;
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 \u043D\u0430 \u0441\u0443\u043C\u043C\u0443 ',
+	            amount,
+	            '$. \u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u044B\u0439 \u043F\u043B\u0430\u0442\u0451\u0436 \u0441\u043E\u0441\u0442\u0430\u0432\u0438\u0442: ',
+	            amount * repay / 100,
+	            '$'
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, { text: '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 (' + amount + '$)', onClick: function onClick() {
+	              return _playerActions2.default.loans.take(amount);
+	            } })
+	        );
+	      };
+
+	      var onDrag = function onDrag(value) {
+	        _this2.setState({ possibleCredit: Math.floor(value) });
+	      };
+
+	      var possibleCredit = state.possibleCredit;
+
+
+	      var maxLoanSize = (_moneyDifference2.default.structured().income - loans) * 12;
+	      var loanTakingTab = void 0;
+
+	      if (maxLoanSize <= 0) {
+	        loanTakingTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0412\u044B \u0431\u043E\u043B\u044C\u0448\u0435 \u043D\u0435 \u043C\u043E\u0436\u0435\u0442\u0435 \u0431\u0440\u0430\u0442\u044C \u0437\u0430\u0439\u043C\u044B. \u0412\u044B\u043F\u043B\u0430\u0442\u0438\u0442\u0435 \u043F\u0440\u0435\u0434\u044B\u0434\u0443\u0449\u0438\u0435 \u0437\u0430\u0439\u043C\u044B!'
+	        );
+	      } else {
+	        loanTakingTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxLoanSize, onDrag: onDrag }),
+	          takeLoan(possibleCredit)
+	        );
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041D\u0430 \u0432\u0430\u0448\u0435\u043C \u0441\u0447\u0435\u0442\u0443: ',
+	          (0, _round2.default)(state.money),
+	          '$'
+	        ),
+	        loanTakingTab,
+	        loanStatusTab,
+	        this.renderIncome(state),
+	        this.renderExpenses(state)
+	      );
+	    }
+	  }]);
+	  return Economics;
+	}(_preact.Component);
+
+	exports.default = Economics;
 
 /***/ }
 /******/ ]);

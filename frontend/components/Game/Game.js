@@ -9,6 +9,7 @@ import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 import InitialProductTab from '../Game/Product/InitialPanel/InitialProductTab';
 import AdsPanel from './Product/Ads/advert-planner-panel';
 import Expenses from './Player/Expenses';
+import Economics from './Economics/Economics';
 import PointShop from './Player/Point-shop';
 
 import productStore from '../../stores/product-store';
@@ -21,8 +22,6 @@ import playerActions from '../../actions/player-actions';
 import gameRunner from '../../game';
 
 import UI from '../UI';
-
-import round from '../../helpers/math/round';
 
 const GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 const GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
@@ -40,39 +39,6 @@ import * as PRODUCT_STAGES from '../../constants/products/product-stages';
 
 export default class Game extends Component {
   state = {
-    // player: {
-    //   skills: {
-    //     level: 0,
-    //     // experience: 1000, // business experience... maybe equal to level
-    //
-    //     discipline: 1000, // ability to perform well even in low morale. Suffers less morale if fails
-    //     charisma: 1000, // коммуникабельность + способность управлять людьми
-    //
-    //       // talent is not shown anywhere
-    //       // is not upgradeable (level of difficulty)
-    //       talent: 1000,
-    //     // vision: 1000, // may be done in one parameter firstly
-    //
-    //     // профильный навык
-    //     programming: 1000,
-    //     design: 1000,
-    //     ux: 1000,
-    //
-    //     marketing: 1000
-    //     // SEO: 1000
-    //   },
-    //
-    //   // temporaries
-    //   morale: 100,
-    //   energy: 100,
-    //
-    //   // friends: 100, // NEED MORE INFO.
-    //
-    //   reputation: 50,
-    //   // fame: 0 - infinite
-    //   money: 20000
-    // },
-
     products: [],
 
     team: [],
@@ -162,91 +128,6 @@ export default class Game extends Component {
       ));
   };
 
-  renderIncome = state => {
-    // {JSON.stringify(state.income)}
-    const productIncome = moneyCalculator.structured().byProductIncome
-      .filter(p => p.income > 0)
-      .map(p => (<div>{p.name} : {p.income}$</div>));
-
-    return (
-      <div>
-        <b>Доходы</b>
-        <br />
-        <div>Фриланс: 5000$</div>
-        <div>{productIncome}</div>
-      </div>
-    )
-  };
-
-  renderEconomy = state => {
-    const loans = playerStore.getLoanSize();
-
-    let loanStatusTab = <div>Долгов нет</div>;
-    if (loans > 0) {
-      loanStatusTab = (
-        <div>
-          Суммарная задолженность {loans}$
-        </div>
-      );
-    }
-
-    const takeLoan = amount => {
-      const repay = 1.3;
-      return (
-        <div>
-          <div>
-            Взять кредит на сумму {amount}$. Ежемесячный платёж составит: {amount * repay / 100}$
-          </div>
-          <UI.Button text={`Взять кредит (${amount}$)`} onClick={() => playerActions.loans.take(amount)} />
-        </div>
-      )
-    };
-
-    const onDrag = (value) => {
-      this.setState({ possibleCredit: Math.floor(value) });
-    };
-
-    const { possibleCredit } =  state;
-
-    const maxLoanSize = (moneyCalculator.structured().income - loans) * 12;
-    let loanTakingTab;
-
-    if (maxLoanSize <= 0) {
-      loanTakingTab = <div>Вы больше не можете брать займы. Выплатите предыдущие займы!</div>
-    } else {
-      loanTakingTab = (
-        <div>
-          <UI.Range min={0} max={maxLoanSize} onDrag={onDrag} />
-          {takeLoan(possibleCredit)}
-        </div>
-      )
-    }
-
-    return (
-      <div>
-        <div>На вашем счету: {round(state.money)}$</div>
-        {loanTakingTab}
-        {loanStatusTab}
-        {this.renderIncome(state)}
-        {this.renderExpenses(state)}
-      </div>
-    )
-  };
-
-  renderExpenses = state => {
-    const expenses = state.products.map((p, i) => productStore.getProductExpensesStructure(i));
-
-    return <Expenses expenses={expenses} />;
-  };
-
-  renderSchedule = state => {
-    return <Schedule />;
-  };
-
-  renderStaff = state => {
-    return <Staff />;
-  };
-
   renderProductMenu = state => {
     if (!state.products.length) return <div></div>;
 
@@ -311,13 +192,13 @@ export default class Game extends Component {
 
     switch (mode) {
       case GAME_MODE_ECONOMICS:
-        body = this.renderEconomy(state);
+        body = <Economics />;
         break;
       case GAME_MODE_PRODUCTS:
         body = this.renderProducts(state);
         break;
       case GAME_MODE_STAFF:
-        body = this.renderStaff(state);
+        body = <Staff />;
         break;
       case GAME_MODE_PRODUCT:
         body = this.renderProductMenu(state);
@@ -342,7 +223,7 @@ export default class Game extends Component {
           />
           <br />
           <hr />
-          {this.renderSchedule(state)}
+          <Schedule />
 
           {body}
           <br />
