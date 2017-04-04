@@ -33,13 +33,13 @@ export default class HireEnthusiastEvent extends Component {
 
     return (
       <div>
-        <div className={s.text}>
+        <div className="text">
           Оо! Один из наших фанатов нашего проекта хочет помочь в разработке БЕСПЛАТНО!
         </div>
         <br />
-        <Button className={s.button1} onClick={hireEnthusiast} text={hireText} primary />
+        <Button className="button1" onClick={hireEnthusiast} text={hireText} primary />
         <br />
-        <Button className={s.button1} onClick={cancel} text="Увы, наша команда укомплектована" primary />
+        <Button className="button1" onClick={cancel} text="Увы, наша команда укомплектована" primary />
       </div>
     );
   }

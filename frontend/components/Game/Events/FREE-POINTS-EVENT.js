@@ -8,10 +8,6 @@ import messageActions from '../../../actions/message-actions';
 
 
 export default class FreePointsEvent extends Component {
-  state = {};
-
-  componentWillMount() {}
-
   render() {
     const { props } = this;
     const id = props.id;
@@ -35,7 +31,7 @@ export default class FreePointsEvent extends Component {
 
     return (
       <div>
-        <div className={s.text}>
+        <div className="text">
           В свободное от работы время вы много читаете и это приносит плоды! На что сделаете ставку?
         </div>
         <br />

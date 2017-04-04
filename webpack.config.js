@@ -6,7 +6,7 @@ const MINIFY = process.argv.indexOf('--minify') !== -1;
 const sourceDir = __dirname + '/frontend';
 const outputDir = __dirname + '/build/public';
 
-const JS_DIST_DIR = `${outputDir}/js`;
+const JS_DIST_DIR = `${__dirname}/backend/startup/public/javascripts/`;
 
 const STYLES_SRC_DIR = `${sourceDir}/styles/`;
 const STYLES_DIST_DIR = `${outputDir}/styles/`;
