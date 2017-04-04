@@ -38,7 +38,6 @@ export default class Game extends Component {
     timerId: null,
     id: 0, // productID
     mode: GAME_MODE_PRODUCT,
-    possibleCredit: 1000
   };
 
   initialize = () => {

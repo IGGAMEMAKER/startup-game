@@ -675,8 +675,7 @@
 	      gameSpeed: 0,
 	      timerId: null,
 	      id: 0, // productID
-	      mode: GAME_MODE_PRODUCT,
-	      possibleCredit: 1000
+	      mode: GAME_MODE_PRODUCT
 	    }, _this.initialize = function () {
 	      _this.getProductsFromStore();
 	      _this.pickDataFromScheduleStore();
@@ -4865,7 +4864,6 @@
 	  (0, _createClass3.default)(Menu, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      this.pickDataFromScheduleStore();
 	      this.getPlayerInfoFromStore();
 
 	      _playerStore2.default.addChangeListener(this.getPlayerInfoFromStore);
