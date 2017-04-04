@@ -1,23 +1,14 @@
-// import { h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 import Button from '../../Shared/Button';
 
 import playerActions from '../../../actions/player-actions';
 import messageActions from '../../../actions/message-actions';
 
-import s from './Events.scss';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-
-type PropsType = {};
-
-type StateType = {};
-
-type ResponseType = {};
-
 import teamHelper from '../../../helpers/team/skills';
 
-class HireEnthusiastEvent extends Component {
+export default class HireEnthusiastEvent extends Component {
   state = {};
 
   componentWillMount() {}
@@ -53,5 +44,3 @@ class HireEnthusiastEvent extends Component {
     );
   }
 }
-
-export default withStyles(HireEnthusiastEvent, s);

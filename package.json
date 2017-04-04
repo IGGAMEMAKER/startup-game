@@ -85,6 +85,7 @@
     "redbox-react": "^1.2.2",
     "replace": "^0.3.0",
     "sass-loader": "^6.0.3",
+    "stylus-loader": "^3.0.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.14",
     "webpack-hot-middleware": "^2.8.1",

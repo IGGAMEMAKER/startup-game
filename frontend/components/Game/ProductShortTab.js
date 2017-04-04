@@ -1,11 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 import round from '../../helpers/math/round';
-
+//
 export default class ProductShortTab extends Component {
-  state = {};
-
-  componentWillMount() {}
-
   render() {
     const { props } = this;
 

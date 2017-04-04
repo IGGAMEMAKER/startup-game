@@ -1,29 +1,27 @@
-* {
-  --positive: #00A000;
-  --negative: red;
-  --link: blue;
+/**
+ * React Starter Kit (https://www.reactstarterkit.com/)
+ *
+ * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
 
-  --modalMainText: black;
-  --modalBackground: rgba(135,135,135, 0.9);
-  --font-family-base: Arial;
-}
+@import '../../../node_modules/normalize.css/normalize.css';
 
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: darkgray;
-}
+/*! React Starter Kit | MIT License | https://www.reactstarterkit.com/ */
 
-a {
-  color: #00B7FF;
-}
+@import '../variables.scss';
 
+/*
+ * Base styles
+ * ========================================================================== */
 
 html {
   color: #222;
   font-weight: 100;
   font-size: 1em; /* ~16px; */
-  font-family: var(--font-family-base);
+  font-family: $font-family-base;
   line-height: 1.375; /* ~22px */
 }
 
@@ -176,82 +174,4 @@ textarea {
   h3 {
     page-break-after: avoid;
   }
-}
-
-.navigation {
-  display: inline-block;
-  padding: 7px;
-  cursor: pointer;
-}
-
-.body-background {
-  position: relative;
-}
-
-.body-wrapper {
-  padding: 15px;
-}
-
-.moneyNegative,
-.moneyPositive {
-  cursor: pointer;
-}
-
-.moneyPositive {
-  color: var(--positive);
-}
-
-.moneyNegative {
-  color: var(--negative);
-}
-
-.text {
-  color: var(--modalMainText);
-}
-
-.button1 {
-  min-width: 280px;
-}
-
-.featureGroupTitle {
-//padding: 7px;
-  font-weight: 700;
-  font-size: large;
-  cursor: pointer;
-}
-
-.featureGroupDescription {
-//padding: 7px;
-  font-size: larger;
-}
-
-.featureGroupBody {
-  padding: 7px;
-}
-
-.noPoints {
-  color: var(--negative);
-}
-.enoughPoints {
-  color: var(--positive);
-}
-
-.hide {
-  cursor: pointer;
-  color: var(--link);
-  margin-bottom: 25px;
-}
-
-.featureDescription {
-//font-size: 80%;
-  font-weight: 100;
-  margin-left: 10px;
-}
-
-.featureGroupDescriptionWrapper {
-  margin-left: 10px;
-}
-
-.hypothesis {
-  padding-left: 10px;
 }

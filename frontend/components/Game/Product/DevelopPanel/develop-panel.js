@@ -1,10 +1,7 @@
-// import { h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 type PropsType = {};
-
-import s from './develop-panel.scss';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import ProductDescriptions from '../../../../constants/products/product-descriptions';
 import Metrics from '../KPI/metrics';
@@ -26,7 +23,7 @@ import logger from '../../../../helpers/logger/logger';
 import playerStore from '../../../../stores/player-store';
 import playerActions from '../../../../actions/player-actions';
 
-class DevelopPanel extends Component {
+export default class DevelopPanel extends Component {
   state = {
     marketing: false,
     payment: false,
@@ -167,7 +164,7 @@ class DevelopPanel extends Component {
 
     return (
       <div key={`hypothesis${i}`}>
-        <div className={s.hypothesis}>Гипотеза #{i} (Ценность - {h.data}XP, {chance}% шанс)</div>
+        <div className="hypothesis">Гипотеза #{i} (Ценность - {h.data}XP, {chance}% шанс)</div>
         <div>Стоимость тестирования ({mp}MP и {pp}PP)</div>
         <Button
           disabled={disabled}
@@ -225,7 +222,7 @@ class DevelopPanel extends Component {
           <div key={key}>
             {userOrientedFeatureName} (Улучшено) {'\u2713'}
             <br />
-            <div className={s.featureDescription}>{description}</div>
+            <div className="featureDescription">{description}</div>
             <br />
           </div>
         )
@@ -235,7 +232,7 @@ class DevelopPanel extends Component {
         <div key={key}>
           {userOrientedFeatureName} ({current}/{max}XP)
           <br />
-          <div className={s.featureDescription}>{description}</div>
+          <div className="featureDescription">{description}</div>
           {hypothesisList}
           <br />
         </div>
@@ -274,7 +271,7 @@ class DevelopPanel extends Component {
           <div key={key}>
             {userOrientedFeatureName}: Улучшено {'\u2713'}
             <br />
-            <div className={s.featureDescription}>{description}</div>
+            <div className="featureDescription">{description}</div>
           </div>
         );
       }
@@ -286,7 +283,7 @@ class DevelopPanel extends Component {
         <div key={key}>
           {userOrientedFeatureName}
           <br />
-          <div className={s.featureDescription}>{description}</div>
+          <div className="featureDescription">{description}</div>
           <div>
             <div>
               Стоимость улучшения - &nbsp;
@@ -340,61 +337,61 @@ class DevelopPanel extends Component {
           <Metrics product={product} id={id} />
 
           <div
-            className={s.featureGroupTitle}
+            className="featureGroupTitle"
             onClick={this.toggleMainFeatureTab}
           >Основные характеристики продукта</div>
           <div
-            className={s.featureGroupDescriptionWrapper}
+            className="featureGroupDescriptionWrapper"
             style={{ display: state.features ? 'block' : 'none' }}
           >
-            <div className={s.featureGroupDescription}>
+            <div className="featureGroupDescription">
               Улучшая главные характеристики продукта, вы повышаете его рейтинг,
               что приводит к увеличению всех основных метрик
             </div>
-            <div className={s.featureGroupBody}>{featureList}</div>
-            <div className={s.hide} onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
+            <div className="featureGroupBody">{featureList}</div>
+            <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>
 
 
           <div
-            className={s.featureGroupTitle}
+            className="featureGroupTitle"
             onClick={this.toggleMarketingTab}
           >Работа с клиентами</div>
           <div
-            className={s.featureGroupDescriptionWrapper}
+            className="featureGroupDescriptionWrapper"
             style={{ display: state.marketing ? 'block' : 'none' }}
           >
-            <div className={s.featureGroupDescription}>Позволяет снизить отток клиентов, повышая их лояльность</div>
-            <div className={s.featureGroupBody}>{marketing}</div>
-            <div className={s.hide} onClick={this.toggleMarketingTab}>Свернуть {upArrow}</div>
+            <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
+            <div className="featureGroupBody">{marketing}</div>
+            <div className="hide" onClick={this.toggleMarketingTab}>Свернуть {upArrow}</div>
           </div>
 
 
           <div
-            className={s.featureGroupTitle}
+            className="featureGroupTitle"
             onClick={this.toggleAnalyticsTab}
           >Аналитика</div>
           <div
-            className={s.featureGroupDescriptionWrapper}
+            className="featureGroupDescriptionWrapper"
             style={{ display: state.analytics ? 'block' : 'none' }}
           >
-            <div className={s.featureGroupDescription}>Позволяет быстрее улучшать главные характеристики проекта</div>
-            <div className={s.featureGroupBody}>{analytics}</div>
-            <div className={s.hide} onClick={this.toggleAnalyticsTab}>Свернуть {upArrow}</div>
+            <div className="featureGroupDescription">Позволяет быстрее улучшать главные характеристики проекта</div>
+            <div className="featureGroupBody">{analytics}</div>
+            <div className="hide" onClick={this.toggleAnalyticsTab}>Свернуть {upArrow}</div>
           </div>
 
 
           <div
-            className={s.featureGroupTitle}
+            className="featureGroupTitle"
             onClick={this.togglePaymentTab}
           >Монетизация</div>
           <div
-            className={s.featureGroupDescriptionWrapper}
+            className="featureGroupDescriptionWrapper"
             style={{ display: state.payment ? 'block' : 'none' }}
           >
-            <div className={s.featureGroupDescription}>Позволяет повысить доходы с продаж</div>
-            <div className={s.featureGroupBody}>{payment}</div>
-            <div className={s.hide} onClick={this.togglePaymentTab}>Свернуть {upArrow}</div>
+            <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
+            <div className="featureGroupBody">{payment}</div>
+            <div className="hide" onClick={this.togglePaymentTab}>Свернуть {upArrow}</div>
           </div>
 
         </div>
@@ -402,5 +399,3 @@ class DevelopPanel extends Component {
     );
   }
 }
-
-export default withStyles(DevelopPanel, s);

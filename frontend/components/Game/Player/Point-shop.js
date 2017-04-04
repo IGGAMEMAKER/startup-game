@@ -1,5 +1,5 @@
-// import { h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 import playerStore from '../../../stores/player-store';
 import playerActions from '../../../actions/player-actions';

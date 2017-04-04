@@ -1,16 +1,13 @@
-// import { h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 import moneyCalculator from '../../helpers/economics/money-difference';
 import scheduleStore from '../../stores/schedule-store';
 import playerStore from '../../stores/player-store';
 
-import s from './Game.scss';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-
 import UI from '../UI';
 
-class Menu extends Component {
+export default class Menu extends Component {
   componentWillMount() {
     this.pickDataFromScheduleStore();
     this.getPlayerInfoFromStore();
@@ -38,6 +35,8 @@ class Menu extends Component {
 
     const saldo = moneyCalculator.saldo() > 0;
     const arrow = saldo ? '\u2197' : '\u2198';
+
+    const s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
     const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
     const navigation = s.navigation;
@@ -67,5 +66,3 @@ class Menu extends Component {
     );
   }
 }
-
-export default withStyles(Menu, s);

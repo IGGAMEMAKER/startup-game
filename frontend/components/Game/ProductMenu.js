@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 type PropsType = {};
 

@@ -1,10 +1,5 @@
-// import { h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
-
-type PropsType = {};
-
-import s from './InitialProductTab.scss';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 import Button from '../../../Shared/Button';
 
@@ -12,7 +7,7 @@ import mvpCreator from './mvp-creator';
 
 import productDescriptions from '../../../../constants/products/product-descriptions';
 
-class InitialProductTab extends Component {
+export default class InitialProductTab extends Component {
   state = {};
 
   componentWillMount() {}
@@ -35,5 +30,3 @@ class InitialProductTab extends Component {
     );
   }
 }
-
-export default withStyles(InitialProductTab, s);

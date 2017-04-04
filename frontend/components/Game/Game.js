@@ -1,5 +1,5 @@
-// import { React, h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 import ProductMenu from '../Game/ProductMenu';
 import Schedule from '../Game/Schedule';
@@ -33,14 +33,14 @@ const GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
 const GAME_MODE_ADS = 'GAME_MODE_ADS';
 const GAME_MODE_STAFF = 'GAME_MODE_STAFF';
 
-import s from './Game.scss';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-
+// import s from './Game.scss';
+// import withStyles from 'isomorphic-style-loader/lib/withStyles';
+//
 import moneyCalculator from '../../helpers/economics/money-difference';
 
 import * as PRODUCT_STAGES from '../../constants/products/product-stages';
 
-class Game extends Component {
+export default class Game extends Component {
   state = {
     // player: {
     //   skills: {
@@ -332,9 +332,9 @@ class Game extends Component {
     //   <div>Сколько они готовы заплатить за это</div>
     // </div>
     return (
-      <div className={s.background}>
+      <div className="body-background">
         <ModalTab />
-        <div className={s.wrapper}>
+        <div className="body-wrapper">
           <Menu
             pauseGame={this.pauseGame}
             increaseGameSpeed={this.increaseGameSpeed}
@@ -354,5 +354,3 @@ class Game extends Component {
     );
   }
 }
-
-export default withStyles(Game, s);

@@ -1,21 +1,12 @@
-// import { h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 import Button from '../../Shared/Button';
 
 import playerActions from '../../../actions/player-actions';
 import messageActions from '../../../actions/message-actions';
 
-import s from './Events.scss';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-
-type PropsType = {};
-
-type StateType = {};
-
-type ResponseType = {};
-
-class FreeMoneyEvent extends Component {
+export default class FreeMoneyEvent extends Component {
   state = {};
 
   componentWillMount() {}
@@ -40,5 +31,3 @@ class FreeMoneyEvent extends Component {
     );
   }
 }
-
-export default withStyles(FreeMoneyEvent, s);

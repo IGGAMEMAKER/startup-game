@@ -1,5 +1,5 @@
-// import { h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 import messageStore from '../../stores/message-store';
 
@@ -8,11 +8,7 @@ import * as c from '../../constants/actions/message-actions';
 
 import renderModal from '../Game/Events/event-renderer';
 
-
-import s from './Modal.scss';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-
-class Modal extends Component {
+export default class Modal extends Component {
   componentWillMount() {
     this.getMessages();
 
@@ -39,9 +35,7 @@ class Modal extends Component {
         // {JSON.stringify(message)}
 
     return (
-      <div className={s.messageTab}>{body}</div>
+      <div className="messageTab">{body}</div>
     );
   }
 }
-
-export default withStyles(Modal, s);

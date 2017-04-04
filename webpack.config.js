@@ -14,49 +14,55 @@ const STYLES_DIST_DIR = `${outputDir}/styles/`;
 const ESLINT_CONFIG_FILE = __dirname + '/.eslintrc';
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-// const pages = 'pages/';
-
 module.exports = [
-{
-  name: 'styles',
-  cache: true,
-  entry: {
-    // Add more entry point styles
-    index: `${STYLES_SRC_DIR}/index.styl`
-  },
-  output: {
-    path: STYLES_DIST_DIR,
-    filename: '[name].js'
-  },
-  module: {
-    loaders: [
-      {
-        test: /\.styl$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader!postcss-loader!stylus-loader'
-        })
-      }
-    ]
-  },
-  // postcss: () => ({
-  //   defaults: [
-  //     lost,
-  //     assets,
-  //     customMedia,
-  //     fontMagician({
-  //       hosted: `${__dirname}/src/fonts`
-  //     }),
-  //     autoprefixer
-  //   ]
-  // }),
-  plugins: [
-    new ExtractTextPlugin('[name].css'),
-    new LiveReloadPlugin({
-      port: 35739
-    })
-  ]
-},
+// {
+//   name: 'styles',
+//   cache: true,
+//   entry: {
+//     // Add more entry point styles
+//     // index: `${STYLES_SRC_DIR}index.styl`
+//     index: `${STYLES_SRC_DIR}index.styl`
+//   },
+//   output: {
+//     path: STYLES_DIST_DIR,
+//     filename: '[name].js'
+//   },
+//   // module: {
+//   //   loaders: [
+//   //     {
+//   //       test: /\.styl$/,
+//   //       loaders: ExtractTextPlugin.extract({
+//   //         fallback: 'style-loader',
+//   //         use: 'css-loader!postcss-loader!stylus-loader'
+//   //       })
+//   //     }
+//   //   ]
+//   // },
+//   module: {
+//     loaders: [{
+//       test: /\.styl$/,
+//       loader: 'css-loader!stylus-loader?paths=node_modules/bootstrap-stylus/stylus/'
+//     }]
+//   },
+//   // postcss: () => ({
+//   //   defaults: [
+//   //     lost,
+//   //     assets,
+//   //     customMedia,
+//   //     fontMagician({
+//   //       hosted: `${__dirname}/src/fonts`
+//   //     }),
+//   //     autoprefixer
+//   //   ]
+//   // }),
+//   plugins: [
+//     new ExtractTextPlugin('[name].css'),
+//     new LiveReloadPlugin({
+//       port: 35739
+//     })
+//   ]
+// },
+
   {
   name: 'react',
   entry: {
@@ -108,4 +114,5 @@ module.exports = [
     }),
     // new webpack.optimize.UglifyJsPlugin({minimize: true})
   ],
-}];
+}
+];

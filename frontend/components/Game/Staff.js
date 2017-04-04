@@ -1,5 +1,5 @@
-// import { h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 import logger from '../../helpers/logger/logger';
 import * as JOB from '../../constants/job';
 
