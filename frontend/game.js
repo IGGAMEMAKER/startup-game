@@ -76,18 +76,27 @@ const run = () => {
     // calculate human points
 
     // calculate programmer points
-    let programmingPoints = playerStore
+    const ppProducers = playerStore
       .getTeam()
-      .filter(p => p.task === JOB.JOB_TASK_PROGRAMMER_POINTS)
-      .map(p => playerStore.getProgrammingPointsProducedBy(p))
-      .reduce((p, c) => p + c);
+      .filter(p => p.task === JOB.JOB_TASK_PROGRAMMER_POINTS);
+
+    let programmingPoints = ppProducers.length ?
+      ppProducers
+        .map(p => playerStore.getProgrammingPointsProducedBy(p))
+        .reduce((p, c) => p + c)
+      :
+      0;
 
     // calculate marketing points
-    let marketingPoints = playerStore
+    const mpProducers = playerStore
       .getTeam()
-      .filter(p => p.task === JOB.JOB_TASK_MARKETING_POINTS)
-      .map(p => playerStore.getMarketingPointsProducedBy(p))
-      .reduce((p, c) => p + c);
+      .filter(p => p.task === JOB.JOB_TASK_MARKETING_POINTS);
+    let marketingPoints = mpProducers.length ?
+      mpProducers
+        .map(p => playerStore.getMarketingPointsProducedBy(p))
+        .reduce((p, c) => p + c)
+      :
+      0;
 
     logger.log('increase points', programmingPoints, marketingPoints);
     logger.shit('compute penalties and bonuses for point production');

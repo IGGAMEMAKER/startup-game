@@ -8539,22 +8539,25 @@
 	    // calculate human points
 
 	    // calculate programmer points
-	    var programmingPoints = _playerStore2.default.getTeam().filter(function (p) {
+	    var ppProducers = _playerStore2.default.getTeam().filter(function (p) {
 	      return p.task === JOB.JOB_TASK_PROGRAMMER_POINTS;
-	    }).map(function (p) {
+	    });
+
+	    var programmingPoints = ppProducers.length ? ppProducers.map(function (p) {
 	      return _playerStore2.default.getProgrammingPointsProducedBy(p);
 	    }).reduce(function (p, c) {
 	      return p + c;
-	    });
+	    }) : 0;
 
 	    // calculate marketing points
-	    var marketingPoints = _playerStore2.default.getTeam().filter(function (p) {
+	    var mpProducers = _playerStore2.default.getTeam().filter(function (p) {
 	      return p.task === JOB.JOB_TASK_MARKETING_POINTS;
-	    }).map(function (p) {
+	    });
+	    var marketingPoints = mpProducers.length ? mpProducers.map(function (p) {
 	      return _playerStore2.default.getMarketingPointsProducedBy(p);
 	    }).reduce(function (p, c) {
 	      return p + c;
-	    });
+	    }) : 0;
 
 	    _logger2.default.log('increase points', programmingPoints, marketingPoints);
 	    _logger2.default.shit('compute penalties and bonuses for point production');
