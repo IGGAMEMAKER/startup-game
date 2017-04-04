@@ -9,18 +9,10 @@ import UI from '../UI';
 
 export default class Menu extends Component {
   componentWillMount() {
-    this.pickDataFromScheduleStore();
     this.getPlayerInfoFromStore();
 
-    scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
-    scheduleStore.addChangeListener(this.getPlayerInfoFromStore);
+    playerStore.addChangeListener(this.getPlayerInfoFromStore);
   }
-
-  pickDataFromScheduleStore = () => {
-    this.setState({
-      day: scheduleStore.getDay()
-    })
-  };
 
   getPlayerInfoFromStore = () => {
     this.setState({
@@ -29,10 +21,7 @@ export default class Menu extends Component {
     })
   };
 
-  render() {
-    const { state, props } = this;
-    // state: StateType, props: PropsType
-
+  render(props, state) {
     const saldo = moneyCalculator.saldo() > 0;
     const arrow = saldo ? '\u2197' : '\u2198';
 
@@ -46,7 +35,7 @@ export default class Menu extends Component {
           <div className={moneyIndication}>${Math.floor(state.money)} {arrow}</div>
         </div>
         <div className={navigation}>
-          <div>День: {state.day}</div>
+          <div>День: {props.day}</div>
         </div>
         <div className={navigation}>
           <UI.Button text="||" onClick={props.pauseGame} />

@@ -759,15 +759,10 @@
 	    }
 	  }, {
 	    key: 'render',
-	    value: function render(props) {
-	      var state = this.state;
-	      var mode = state.mode;
-
-	      var day = state.day;
-
+	    value: function render(props, state) {
 	      var body = '';
 
-	      switch (mode) {
+	      switch (state.mode) {
 	        case GAME_MODE_ECONOMICS:
 	          body = (0, _preact.h)(_Economics2.default, null);
 	          break;
@@ -799,7 +794,8 @@
 	            increaseGameSpeed: this.increaseGameSpeed,
 	            onRenderProjectsMenu: this.onRenderProjectsMenu,
 	            onRenderEconomicsMenu: this.onRenderEconomicsMenu,
-	            onRenderStaffMenu: this.onRenderStaffMenu
+	            onRenderStaffMenu: this.onRenderStaffMenu,
+	            day: state.day
 	          }),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null),
@@ -4858,11 +4854,7 @@
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Menu.__proto__ || (0, _getPrototypeOf2.default)(Menu)).call.apply(_ref, [this].concat(args))), _this), _this.pickDataFromScheduleStore = function () {
-	      _this.setState({
-	        day: _scheduleStore2.default.getDay()
-	      });
-	    }, _this.getPlayerInfoFromStore = function () {
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Menu.__proto__ || (0, _getPrototypeOf2.default)(Menu)).call.apply(_ref, [this].concat(args))), _this), _this.getPlayerInfoFromStore = function () {
 	      _this.setState({
 	        money: _playerStore2.default.getMoney(),
 	        points: _playerStore2.default.getPoints()
@@ -4876,16 +4868,11 @@
 	      this.pickDataFromScheduleStore();
 	      this.getPlayerInfoFromStore();
 
-	      _scheduleStore2.default.addChangeListener(this.pickDataFromScheduleStore);
-	      _scheduleStore2.default.addChangeListener(this.getPlayerInfoFromStore);
+	      _playerStore2.default.addChangeListener(this.getPlayerInfoFromStore);
 	    }
 	  }, {
 	    key: 'render',
-	    value: function render() {
-	      var state = this.state,
-	          props = this.props;
-	      // state: StateType, props: PropsType
-
+	    value: function render(props, state) {
 	      var saldo = _moneyDifference2.default.saldo() > 0;
 	      var arrow = saldo ? '\u2197' : '\u2198';
 
@@ -4915,7 +4902,7 @@
 	            'div',
 	            null,
 	            '\u0414\u0435\u043D\u044C: ',
-	            state.day
+	            props.day
 	          )
 	        ),
 	        (0, _preact.h)(

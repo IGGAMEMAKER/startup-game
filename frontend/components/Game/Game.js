@@ -137,15 +137,10 @@ export default class Game extends Component {
     this.setState({ mode: GAME_MODE_STAFF })
   };
 
-  render(props: PropsType) {
-    const state = this.state;
-    const mode = state.mode;
-
-    const day = state.day;
-
+  render(props: PropsType, state) {
     let body = '';
 
-    switch (mode) {
+    switch (state.mode) {
       case GAME_MODE_ECONOMICS:
         body = <Economics />;
         break;
@@ -175,6 +170,7 @@ export default class Game extends Component {
             onRenderProjectsMenu={this.onRenderProjectsMenu}
             onRenderEconomicsMenu={this.onRenderEconomicsMenu}
             onRenderStaffMenu={this.onRenderStaffMenu}
+            day={state.day}
           />
           <br />
           <hr />
