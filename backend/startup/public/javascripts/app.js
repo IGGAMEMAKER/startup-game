@@ -602,25 +602,9 @@
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _developPanel = __webpack_require__(143);
-
-	var _developPanel2 = _interopRequireDefault(_developPanel);
-
-	var _InitialProductTab = __webpack_require__(149);
-
-	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
-
-	var _advertPlannerPanel = __webpack_require__(152);
-
-	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
-
 	var _Economics = __webpack_require__(157);
 
 	var _Economics2 = _interopRequireDefault(_Economics);
-
-	var _PointShop = __webpack_require__(154);
-
-	var _PointShop2 = _interopRequireDefault(_PointShop);
 
 	var _Product = __webpack_require__(158);
 
@@ -634,13 +618,13 @@
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
-	var _playerStore = __webpack_require__(116);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
 	var _messageStore = __webpack_require__(132);
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
+
+	var _playerStore = __webpack_require__(116);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
 
 	var _playerActions = __webpack_require__(114);
 
@@ -650,29 +634,24 @@
 
 	var _game2 = _interopRequireDefault(_game);
 
+	var _logger = __webpack_require__(98);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
 	var _UI = __webpack_require__(129);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _productStages = __webpack_require__(128);
-
-	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	// import React, { Component, PropTypes } from 'react';
 
+	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	var GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
 	var GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
 	var GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
 	var GAME_MODE_ADS = 'GAME_MODE_ADS';
 	var GAME_MODE_STAFF = 'GAME_MODE_STAFF';
-
-	// import s from './Game.scss';
-	// import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 	var Game = function (_Component) {
 	  (0, _inherits3.default)(Game, _Component);
@@ -719,6 +698,7 @@
 	      clearInterval(timerId);
 	      _this.setState({ gameSpeed: 0, timerId: null });
 	    }, _this.getMessages = function () {
+	      _logger2.default.debug('MessageStore callback pausing');
 	      if (_messageStore2.default.isDrawable()) {
 	        _this.pauseGame();
 	      }

@@ -5,22 +5,19 @@ import ProductMenu from '../Game/ProductMenu';
 import Schedule from '../Game/Schedule';
 import Staff from '../Game/Staff';
 import Menu from '../Game/Menu';
-import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
-import InitialProductTab from '../Game/Product/InitialPanel/InitialProductTab';
-import AdsPanel from './Product/Ads/advert-planner-panel';
 import Economics from './Economics/Economics';
-import PointShop from './Player/Point-shop';
-
 import Product from './Product';
 
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
-import playerStore from '../../stores/player-store';
 import messageStore from '../../stores/message-store';
 
+import playerStore from '../../stores/player-store';
 import playerActions from '../../actions/player-actions';
 
 import gameRunner from '../../game';
+
+import logger from '../../helpers/logger/logger';
 
 import UI from '../UI';
 
@@ -30,11 +27,6 @@ const GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
 const GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
 const GAME_MODE_ADS = 'GAME_MODE_ADS';
 const GAME_MODE_STAFF = 'GAME_MODE_STAFF';
-
-// import s from './Game.scss';
-// import withStyles from 'isomorphic-style-loader/lib/withStyles';
-
-import * as PRODUCT_STAGES from '../../constants/products/product-stages';
 
 export default class Game extends Component {
   state = {
@@ -86,6 +78,7 @@ export default class Game extends Component {
   }
 
   getMessages = () => {
+    logger.debug('MessageStore callback pausing');
     if (messageStore.isDrawable()) {
       this.pauseGame();
     }
