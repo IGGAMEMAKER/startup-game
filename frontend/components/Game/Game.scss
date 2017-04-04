@@ -1,4 +1,7 @@
 @import '../ui-colors.scss';
+@import './Events/Events.scss';
+@import './Product/DevelopPanel/develop-panel.scss';
+@import './Product/InitialPanel/InitialProductTab.scss';
 
 .navigation {
   display: inline-block;

@@ -1,11 +1,5 @@
-// import { h, Component } from 'preact';
+// import { React, h, Component } from 'preact';
 import React, { Component, PropTypes } from 'react';
-
-type PropsType = {};
-
-type StateType = {};
-
-type ResponseType = {};
 
 import ProductMenu from '../Game/ProductMenu';
 import Schedule from '../Game/Schedule';
