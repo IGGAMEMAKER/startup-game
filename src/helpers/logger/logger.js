@@ -4,7 +4,11 @@ export default {
   error: console.error,
   shit: (text) => {
     // console.log(`GOVNOKOD ${text}`);
-  }
+  },
+  actions: (sessionId, userId, action) => {
+    
+  },
+
   // TODO: send error logs to server
   // TODO: specify user info: login, useragent, gameData, user segment
 };

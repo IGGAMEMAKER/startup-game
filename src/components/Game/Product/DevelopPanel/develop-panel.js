@@ -44,14 +44,14 @@ class DevelopPanel extends Component {
     const cost = 30 * WORK_SPEED_NORMAL;
 
     return [
-      { name: 'blog', shortDescription: 'Блог проекта', description: '',
+      { name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 35%',
         points: { marketing: 150, programming: 0 }, time: 2 },
-      { name: 'support', shortDescription: 'Техподдержка', description: '',
+      { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 50%',
         points: { marketing: 50, programming: 100 }, time: 4 },
-      { name: 'emails', shortDescription: 'Рассылка электронной почты', description: '',
+      { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 15%',
         points: { marketing: 50, programming: 100 }, time: 10 },
 
-      { name: 'referralProgram', shortDescription: 'Реферальная программа', description: '',
+      { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
         points: { marketing: 50, programming: 100 }, time: 7 }
     ].map(computeFeatureCost(cost));
   };

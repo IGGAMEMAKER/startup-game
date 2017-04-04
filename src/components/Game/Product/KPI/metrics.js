@@ -26,13 +26,12 @@ export default class Metrics extends Component {
     const { idea } = product;
 
     const debt = product.KPI.debt;
-    //
+
     const rating = round(productStore.getRatingForMetricsTab(id));
     const green = Math.floor(rating * 160 / 10);
-    // const red = Math.max(255 - green, 70);
+
     const red = 255 - Math.floor(rating * 255 / 10);
     const ratingColor = `rgba(${red}, ${green}, 0, 1)`;//`rgba(${red}, ${green}, 0, 1)`;
-    //round(computeRating(product));
 
     // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     const churn = percentify(productStore.getChurnRate(id));

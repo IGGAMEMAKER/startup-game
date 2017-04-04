@@ -4,8 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import playerStore from '../../../stores/player-store';
 import playerActions from '../../../actions/player-actions';
 
-import Button from '../../Shared/Button';
-import Range from '../../Shared/Range';
+import UI from '../../UI';
 
 import * as JOB from '../../../constants/job';
 
@@ -39,10 +38,10 @@ export default class PointShop extends Component {
 
         <span>{minPP}</span>
         <span>
-          <Range min={minPP} max={maxPP} onDrag={pp => { this.setState({ pp }) }} />
+          <UI.Range min={minPP} max={maxPP} onDrag={pp => { this.setState({ pp }) }} />
         </span>
         <span>{maxPP}</span>
-        <Button
+        <UI.Button
           text={`Купить ${pp} PP за ${JOB.PRICE_OF_ONE_PP * pp}$`}
           onClick={() => { playerActions.buyProgrammingPoints(pp) }}
         />
@@ -52,7 +51,7 @@ export default class PointShop extends Component {
           <Range min={minMP} max={maxMP} onDrag={mp => { this.setState({ mp }) }} />
         </span>
         <span>{maxMP}</span>
-        <Button
+        <UI.Button
           text={`Купить ${mp} MP за ${JOB.PRICE_OF_ONE_MP * mp}$`}
           onClick={() => { playerActions.buyMarketingPoints(mp) }}
         />

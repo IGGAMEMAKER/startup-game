@@ -1,5 +1,5 @@
-// import { h, Component } from 'preact';
-import React, { Component, PropTypes } from 'react';
+import { h, Component } from 'preact';
+// import React, { Component, PropTypes } from 'react';
 
 type PropsType = {};
 
@@ -17,10 +17,6 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import UI from '../UI';
 
 class Menu extends Component {
-  state = {
-    day: 0,
-  };
-
   componentWillMount() {
     this.pickDataFromScheduleStore();
     this.getPlayerInfoFromStore();

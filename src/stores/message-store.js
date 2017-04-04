@@ -10,23 +10,24 @@ const EC = 'MAIN_EVENT_CHANGE';
 import * as  JOB from '../constants/job';
 
 let _messages = [
-  {
-    type: c.MESSAGE_TYPE_GAME_EVENT,
-    data: {
-      type: t.GAME_EVENT_HIRE_ENTHUSIAST,
-      player: {
-        name: 'Jessie',
-        skills: {
-          programming: 0,
-          marketing: 800,
-          analyst: 50
-        },
-        task: JOB.JOB_TASK_MARKETING_POINTS,
-        jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-        salary: {}
-      }
-    }
-  },
+  // {
+  //   type: c.MESSAGE_TYPE_GAME_EVENT,
+  //   data: {
+  //     type: t.GAME_EVENT_HIRE_ENTHUSIAST,
+  //     player: {
+  //       name: 'Jessie',
+  //       skills: {
+  //         programming: 0,
+  //         marketing: 800,
+  //         analyst: 50
+  //       },
+  //       task: JOB.JOB_TASK_MARKETING_POINTS,
+  //       jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+  //       salary: {}
+  //     }
+  //   }
+  // },
+
   // {
   //   type: c.MESSAGE_TYPE_GAME_EVENT,
   //   data: {
