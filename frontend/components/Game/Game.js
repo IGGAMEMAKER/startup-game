@@ -8,9 +8,10 @@ import Menu from '../Game/Menu';
 import DevelopPanel from '../Game/Product/DevelopPanel/develop-panel';
 import InitialProductTab from '../Game/Product/InitialPanel/InitialProductTab';
 import AdsPanel from './Product/Ads/advert-planner-panel';
-import Expenses from './Player/Expenses';
 import Economics from './Economics/Economics';
 import PointShop from './Player/Point-shop';
+
+import Product from './Product';
 
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
@@ -32,38 +33,25 @@ const GAME_MODE_STAFF = 'GAME_MODE_STAFF';
 
 // import s from './Game.scss';
 // import withStyles from 'isomorphic-style-loader/lib/withStyles';
-//
-import moneyCalculator from '../../helpers/economics/money-difference';
 
 import * as PRODUCT_STAGES from '../../constants/products/product-stages';
 
 export default class Game extends Component {
   state = {
     products: [],
-
     team: [],
-
     day: 0,
-
     tasks: [],
-
     gameSpeed: 0,
-
     timerId: null,
-
-    money: 0,
-
     id: 0, // productID
-
     mode: GAME_MODE_PRODUCT,
-
     possibleCredit: 1000
   };
 
   initialize = () => {
     this.getProductsFromStore();
     this.pickDataFromScheduleStore();
-    this.getPlayerInfoFromStore();
   };
 
   increaseGameSpeed = () => {
@@ -94,8 +82,14 @@ export default class Game extends Component {
 
     scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
 
-    playerStore.addChangeListener(this.getPlayerInfoFromStore);
+    messageStore.addChangeListener(this.getMessages);
   }
+
+  getMessages = () => {
+    if (messageStore.isDrawable()) {
+      this.pauseGame();
+    }
+  };
 
   pickDataFromScheduleStore = () => {
     this.setState({
@@ -109,14 +103,6 @@ export default class Game extends Component {
       products: productStore.getProducts()
     });
   };
-
-  getPlayerInfoFromStore = () => {
-    this.setState({
-      money: playerStore.getMoney(),
-      skills: playerStore.getSkills()
-    })
-  };
-
 
   renderProducts = state => {
     return state.products
@@ -134,31 +120,7 @@ export default class Game extends Component {
     const id = state.id;
     const product = state.products[id];
 
-    let body;
-
-    switch (product.stage) {
-      case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
-        body = <InitialProductTab product={product} id={id} />;
-        break;
-      default:
-        // body = <DevelopPanel product={product} id={id} />;
-        body = (
-          <div>
-            <DevelopPanel product={product} id={id} />
-            <br />
-            <hr />
-            <div>
-              <b>Рекламная кампания</b>
-              <AdsPanel product={product} id={id} />
-              <br />
-            </div>
-            <PointShop />
-          </div>
-        );
-        break;
-    }
-
-    return body;
+    return <Product product={product} id={id} />;
   };
 
   onRenderProjectMenu = (i) => {

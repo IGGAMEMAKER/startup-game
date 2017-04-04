@@ -614,10 +614,6 @@
 
 	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
 
-	var _Expenses = __webpack_require__(153);
-
-	var _Expenses2 = _interopRequireDefault(_Expenses);
-
 	var _Economics = __webpack_require__(157);
 
 	var _Economics2 = _interopRequireDefault(_Economics);
@@ -625,6 +621,10 @@
 	var _PointShop = __webpack_require__(154);
 
 	var _PointShop2 = _interopRequireDefault(_PointShop);
+
+	var _Product = __webpack_require__(158);
+
+	var _Product2 = _interopRequireDefault(_Product);
 
 	var _productStore = __webpack_require__(121);
 
@@ -654,10 +654,6 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _moneyDifference = __webpack_require__(120);
-
-	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
-
 	var _productStages = __webpack_require__(128);
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
@@ -677,7 +673,6 @@
 
 	// import s from './Game.scss';
 	// import withStyles from 'isomorphic-style-loader/lib/withStyles';
-	//
 
 	var Game = function (_Component) {
 	  (0, _inherits3.default)(Game, _Component);
@@ -695,28 +690,17 @@
 
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Game.__proto__ || (0, _getPrototypeOf2.default)(Game)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
 	      products: [],
-
 	      team: [],
-
 	      day: 0,
-
 	      tasks: [],
-
 	      gameSpeed: 0,
-
 	      timerId: null,
-
-	      money: 0,
-
 	      id: 0, // productID
-
 	      mode: GAME_MODE_PRODUCT,
-
 	      possibleCredit: 1000
 	    }, _this.initialize = function () {
 	      _this.getProductsFromStore();
 	      _this.pickDataFromScheduleStore();
-	      _this.getPlayerInfoFromStore();
 	    }, _this.increaseGameSpeed = function () {
 	      var speed = _this.state.gameSpeed + 1;
 	      var object = { gameSpeed: speed };
@@ -734,6 +718,10 @@
 	      var timerId = _this.state.timerId;
 	      clearInterval(timerId);
 	      _this.setState({ gameSpeed: 0, timerId: null });
+	    }, _this.getMessages = function () {
+	      if (_messageStore2.default.isDrawable()) {
+	        _this.pauseGame();
+	      }
 	    }, _this.pickDataFromScheduleStore = function () {
 	      _this.setState({
 	        day: _scheduleStore2.default.getDay(),
@@ -742,11 +730,6 @@
 	    }, _this.getProductsFromStore = function () {
 	      _this.setState({
 	        products: _productStore2.default.getProducts()
-	      });
-	    }, _this.getPlayerInfoFromStore = function () {
-	      _this.setState({
-	        money: _playerStore2.default.getMoney(),
-	        skills: _playerStore2.default.getSkills()
 	      });
 	    }, _this.renderProducts = function (state) {
 	      return state.products.map(function (p, i) {
@@ -766,37 +749,7 @@
 	      var id = state.id;
 	      var product = state.products[id];
 
-	      var body = void 0;
-
-	      switch (product.stage) {
-	        case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
-	          body = (0, _preact.h)(_InitialProductTab2.default, { product: product, id: id });
-	          break;
-	        default:
-	          // body = <DevelopPanel product={product} id={id} />;
-	          body = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(_developPanel2.default, { product: product, id: id }),
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)('hr', null),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              (0, _preact.h)(
-	                'b',
-	                null,
-	                '\u0420\u0435\u043A\u043B\u0430\u043C\u043D\u0430\u044F \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F'
-	              ),
-	              (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
-	              (0, _preact.h)('br', null)
-	            ),
-	            (0, _preact.h)(_PointShop2.default, null)
-	          );
-	          break;
-	      }
-
-	      return body;
+	      return (0, _preact.h)(_Product2.default, { product: product, id: id });
 	    }, _this.onRenderProjectMenu = function (i) {
 	      _this.setState({ mode: GAME_MODE_PRODUCT, id: i });
 	    }, _this.onRenderProjectsMenu = function () {
@@ -822,7 +775,7 @@
 
 	      _scheduleStore2.default.addChangeListener(this.pickDataFromScheduleStore);
 
-	      _playerStore2.default.addChangeListener(this.getPlayerInfoFromStore);
+	      _messageStore2.default.addChangeListener(this.getMessages);
 	    }
 	  }, {
 	    key: 'render',
@@ -8898,6 +8851,114 @@
 	}(_preact.Component);
 
 	exports.default = Economics;
+
+/***/ },
+/* 158 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _productStages = __webpack_require__(128);
+
+	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
+
+	var _InitialProductTab = __webpack_require__(149);
+
+	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
+
+	var _developPanel = __webpack_require__(143);
+
+	var _developPanel2 = _interopRequireDefault(_developPanel);
+
+	var _advertPlannerPanel = __webpack_require__(152);
+
+	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
+
+	var _PointShop = __webpack_require__(154);
+
+	var _PointShop2 = _interopRequireDefault(_PointShop);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Product = function (_Component) {
+	  (0, _inherits3.default)(Product, _Component);
+
+	  function Product() {
+	    (0, _classCallCheck3.default)(this, Product);
+	    return (0, _possibleConstructorReturn3.default)(this, (Product.__proto__ || (0, _getPrototypeOf2.default)(Product)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Product, [{
+	    key: 'render',
+	    value: function render(props, state) {
+	      var product = props.product,
+	          id = props.id;
+
+
+	      var body = void 0;
+
+	      switch (product.stage) {
+	        case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
+	          body = (0, _preact.h)(_InitialProductTab2.default, { product: product, id: id });
+	          break;
+	        default:
+	          body = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(_developPanel2.default, { product: product, id: id }),
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)('hr', null),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              (0, _preact.h)(
+	                'b',
+	                null,
+	                '\u0420\u0435\u043A\u043B\u0430\u043C\u043D\u0430\u044F \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F'
+	              ),
+	              (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
+	              (0, _preact.h)('br', null)
+	            ),
+	            (0, _preact.h)(_PointShop2.default, null)
+	          );
+	          break;
+	      }
+
+	      return body;
+	    }
+	  }]);
+	  return Product;
+	}(_preact.Component);
+
+	exports.default = Product;
 
 /***/ }
 /******/ ]);
