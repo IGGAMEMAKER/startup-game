@@ -20,9 +20,7 @@ import playerActions from '../../actions/player-actions';
 
 import gameRunner from '../../game';
 
-import Button from '../Shared/Button';
-import Range from '../../components/Shared/Range';
-import ModalTab from '../Shared/Modal';
+import UI from '../UI';
 
 import round from '../../helpers/math/round';
 
@@ -199,7 +197,7 @@ export default class Game extends Component {
           <div>
             Взять кредит на сумму {amount}$. Ежемесячный платёж составит: {amount * repay / 100}$
           </div>
-          <Button text={`Взять кредит (${amount}$)`} onClick={() => playerActions.loans.take(amount)} />
+          <UI.Button text={`Взять кредит (${amount}$)`} onClick={() => playerActions.loans.take(amount)} />
         </div>
       )
     };
@@ -218,7 +216,7 @@ export default class Game extends Component {
     } else {
       loanTakingTab = (
         <div>
-          <Range min={0} max={maxLoanSize} onDrag={onDrag} />
+          <UI.Range min={0} max={maxLoanSize} onDrag={onDrag} />
           {takeLoan(possibleCredit)}
         </div>
       )
@@ -333,7 +331,7 @@ export default class Game extends Component {
     // </div>
     return (
       <div className="body-background">
-        <ModalTab />
+        <UI.Modal />
         <div className="body-wrapper">
           <Menu
             pauseGame={this.pauseGame}

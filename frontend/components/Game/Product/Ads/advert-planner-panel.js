@@ -3,8 +3,7 @@ import { h, Component } from 'preact';
 
 type PropsType = {};
 
-import Button from '../../../Shared/Button';
-import Range from '../../../Shared/Range';
+import UI from '../../../UI';
 
 import productActions from '../../../../actions/product-actions';
 import playerActions from '../../../../actions/player-actions';
@@ -46,10 +45,10 @@ export default class AdvertPlannerPanel extends Component {
 
     return (
       <div>
-        <Range min={0} max={maxPossibleClients} onDrag={this.onDrag} />
+        <UI.Range min={0} max={maxPossibleClients} onDrag={this.onDrag} />
         <div>
           <div>Invite {possibleClients} users to your website for {campaignCost}$</div>
-          <Button
+          <UI.Button
             item="start-campaign"
             text={`Start ad campaign for ${campaignCost}$`}
             onClick={this.inviteUsers(id, possibleClients, campaignCost)}

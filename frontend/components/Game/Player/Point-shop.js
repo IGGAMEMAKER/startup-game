@@ -20,8 +20,6 @@ export default class PointShop extends Component {
     mp: 0
   };
 
-  componentWillMount() {}
-
   render(props: PropsType) {
     const { state } = this;
 
@@ -48,7 +46,7 @@ export default class PointShop extends Component {
 
         <span>{minMP}</span>
         <span>
-          <Range min={minMP} max={maxMP} onDrag={mp => { this.setState({ mp }) }} />
+          <UI.Range min={minMP} max={maxMP} onDrag={mp => { this.setState({ mp }) }} />
         </span>
         <span>{maxMP}</span>
         <UI.Button

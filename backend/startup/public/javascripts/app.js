@@ -646,17 +646,9 @@
 
 	var _game2 = _interopRequireDefault(_game);
 
-	var _Button = __webpack_require__(130);
+	var _UI = __webpack_require__(129);
 
-	var _Button2 = _interopRequireDefault(_Button);
-
-	var _Range = __webpack_require__(142);
-
-	var _Range2 = _interopRequireDefault(_Range);
-
-	var _Modal = __webpack_require__(131);
-
-	var _Modal2 = _interopRequireDefault(_Modal);
+	var _UI2 = _interopRequireDefault(_UI);
 
 	var _round = __webpack_require__(96);
 
@@ -868,7 +860,7 @@
 	            amount * repay / 100,
 	            '$'
 	          ),
-	          (0, _preact.h)(_Button2.default, { text: '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 (' + amount + '$)', onClick: function onClick() {
+	          (0, _preact.h)(_UI2.default.Button, { text: '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 (' + amount + '$)', onClick: function onClick() {
 	              return _playerActions2.default.loans.take(amount);
 	            } })
 	        );
@@ -894,7 +886,7 @@
 	        loanTakingTab = (0, _preact.h)(
 	          'div',
 	          null,
-	          (0, _preact.h)(_Range2.default, { min: 0, max: maxLoanSize, onDrag: onDrag }),
+	          (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxLoanSize, onDrag: onDrag }),
 	          takeLoan(possibleCredit)
 	        );
 	      }
@@ -1021,7 +1013,7 @@
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'body-background' },
-	        (0, _preact.h)(_Modal2.default, null),
+	        (0, _preact.h)(_UI2.default.Modal, null),
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'body-wrapper' },
@@ -6887,28 +6879,15 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// import React, { Component, PropTypes } from 'react';
-
 	var Range = function (_Component) {
 	  (0, _inherits3.default)(Range, _Component);
 
 	  function Range() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
 	    (0, _classCallCheck3.default)(this, Range);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Range.__proto__ || (0, _getPrototypeOf2.default)(Range)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    return (0, _possibleConstructorReturn3.default)(this, (Range.__proto__ || (0, _getPrototypeOf2.default)(Range)).apply(this, arguments));
 	  }
 
 	  (0, _createClass3.default)(Range, [{
-	    key: "componentWillMount",
-	    value: function componentWillMount() {}
-	  }, {
 	    key: "render",
 	    value: function render() {
 	      var props = this.props;
@@ -8210,13 +8189,9 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Button = __webpack_require__(130);
+	var _UI = __webpack_require__(129);
 
-	var _Button2 = _interopRequireDefault(_Button);
-
-	var _Range = __webpack_require__(142);
-
-	var _Range2 = _interopRequireDefault(_Range);
+	var _UI2 = _interopRequireDefault(_UI);
 
 	var _productActions = __webpack_require__(145);
 
@@ -8235,8 +8210,6 @@
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
 
 	var AdvertPlannerPanel = function (_Component) {
 	  (0, _inherits3.default)(AdvertPlannerPanel, _Component);
@@ -8290,7 +8263,7 @@
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)(_Range2.default, { min: 0, max: maxPossibleClients, onDrag: this.onDrag }),
+	        (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxPossibleClients, onDrag: this.onDrag }),
 	        (0, _preact.h)(
 	          'div',
 	          null,
@@ -8303,7 +8276,7 @@
 	            campaignCost,
 	            '$'
 	          ),
-	          (0, _preact.h)(_Button2.default, {
+	          (0, _preact.h)(_UI2.default.Button, {
 	            item: 'start-campaign',
 	            text: 'Start ad campaign for ' + campaignCost + '$',
 	            onClick: this.inviteUsers(id, possibleClients, campaignCost),
@@ -8315,6 +8288,7 @@
 	  }]);
 	  return AdvertPlannerPanel;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = AdvertPlannerPanel;
 	;
@@ -8578,9 +8552,6 @@
 	  }
 
 	  (0, _createClass3.default)(PointShop, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
 	    key: 'render',
 	    value: function render(props) {
 	      var _this2 = this;
@@ -8632,7 +8603,7 @@
 	        (0, _preact.h)(
 	          'span',
 	          null,
-	          (0, _preact.h)(Range, { min: minMP, max: maxMP, onDrag: function onDrag(mp) {
+	          (0, _preact.h)(_UI2.default.Range, { min: minMP, max: maxMP, onDrag: function onDrag(mp) {
 	              _this2.setState({ mp: mp });
 	            } })
 	        ),
