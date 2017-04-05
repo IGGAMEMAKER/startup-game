@@ -5,8 +5,7 @@ import messageActions from '../../actions/message-actions';
 import logger from '../../helpers/logger/logger';
 
 const emit = () => {
-  const rnd = Math.floor(random(0, 8));
-  logger.debug('emit()', rnd);
+  const rnd = Math.floor(random(0, 30));
 
   switch (rnd) {
     case GAME_EVENTS.GAME_EVENT_FREE_MONEY:

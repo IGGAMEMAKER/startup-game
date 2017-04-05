@@ -8573,8 +8573,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var emit = function emit() {
-	  var rnd = Math.floor((0, _random2.default)(0, 8));
-	  _logger2.default.debug('emit()', rnd);
+	  var rnd = Math.floor((0, _random2.default)(0, 30));
 
 	  switch (rnd) {
 	    case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
