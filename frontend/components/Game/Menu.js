@@ -29,6 +29,8 @@ export default class Menu extends Component {
     const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
     const navigation = s.navigation;
+
+    const paused = props.pause;
     return (
       <div>
         <div className={navigation}>
@@ -38,10 +40,13 @@ export default class Menu extends Component {
           <div>День: {props.day}</div>
         </div>
         <div className={navigation}>
-          <UI.Button text="||" onClick={props.pauseGame} />
+          <UI.Button text={paused ? '>' : '||'} onClick={paused ? props.resumeGame : props.pauseGame} />
         </div>
         <div className={navigation}>
-          <UI.Button text=">>" onClick={props.increaseGameSpeed} />
+          <UI.Button text=">>" onClick={props.setGameSpeed(5)} />
+        </div>
+        <div className={navigation}>
+          <UI.Button text=">>>" onClick={props.setGameSpeed(9)} />
         </div>
         <div className={navigation}>MP: {state.points.marketing}</div>
         <div className={navigation}>PP: {state.points.programming}</div>

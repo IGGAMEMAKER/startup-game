@@ -34,8 +34,11 @@ export default class Game extends Component {
     team: [],
     day: 0,
     tasks: [],
-    gameSpeed: 0,
+
+    pause: true,
+    gameSpeed: 3,
     timerId: null,
+
     id: 0, // productID
     mode: GAME_MODE_PRODUCT,
   };
@@ -45,25 +48,59 @@ export default class Game extends Component {
     this.pickDataFromScheduleStore();
   };
 
-  increaseGameSpeed = () => {
-    const speed = this.state.gameSpeed + 1;
-    const object = { gameSpeed: speed };
+  // increaseGameSpeed = () => {
+  //   const speed = this.state.gameSpeed + 1;
+  //   const object = { gameSpeed: speed };
+  //
+  //   let timerId = this.state.timerId;
+  //
+  //   if (timerId) {
+  //     clearInterval(timerId);
+  //   }
+  //
+  //   timerId = setInterval(gameRunner.run, 1000 / speed);
+  //   object.timerId = timerId;
+  //   this.setState(object);
+  // };
 
+  runTimer = () => {
     let timerId = this.state.timerId;
+    const speed = this.state.gameSpeed;
 
     if (timerId) {
       clearInterval(timerId);
     }
 
     timerId = setInterval(gameRunner.run, 1000 / speed);
-    object.timerId = timerId;
-    this.setState(object);
+    return timerId;
+  };
+
+  setGameSpeed = speed => () => {
+    const timerId = this.runTimer();
+    // const object = { gameSpeed: speed };
+
+    // object.timerId = timerId;
+    // object.pause = false;
+    // this.setState(object);
+    this.setState({
+      timerId,
+      pause: false,
+      gameSpeed: speed
+    });
   };
 
   pauseGame = () => {
     let timerId = this.state.timerId;
     clearInterval(timerId);
-    this.setState({ gameSpeed: 0, timerId: null });
+    this.setState({ pause: true, timerId: null });
+  };
+
+  resumeGame = () => {
+    let timerId = this.runTimer();
+    this.setState({
+      pause: false,
+      timerId
+    })
   };
 
   componentWillMount() {
@@ -165,10 +202,12 @@ export default class Game extends Component {
         <div className="body-wrapper">
           <Menu
             pauseGame={this.pauseGame}
-            increaseGameSpeed={this.increaseGameSpeed}
+            resumeGame={this.resumeGame}
+            setGameSpeed={this.setGameSpeed}
             onRenderProjectsMenu={this.onRenderProjectsMenu}
             onRenderEconomicsMenu={this.onRenderEconomicsMenu}
             onRenderStaffMenu={this.onRenderStaffMenu}
+            pause={state.pause}
             day={state.day}
           />
           <br />

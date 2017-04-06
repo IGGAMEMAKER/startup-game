@@ -672,30 +672,50 @@
 	      team: [],
 	      day: 0,
 	      tasks: [],
-	      gameSpeed: 0,
+
+	      pause: true,
+	      gameSpeed: 3,
 	      timerId: null,
+
 	      id: 0, // productID
 	      mode: GAME_MODE_PRODUCT
 	    }, _this.initialize = function () {
 	      _this.getProductsFromStore();
 	      _this.pickDataFromScheduleStore();
-	    }, _this.increaseGameSpeed = function () {
-	      var speed = _this.state.gameSpeed + 1;
-	      var object = { gameSpeed: speed };
-
+	    }, _this.runTimer = function () {
 	      var timerId = _this.state.timerId;
+	      var speed = _this.state.gameSpeed;
 
 	      if (timerId) {
 	        clearInterval(timerId);
 	      }
 
 	      timerId = setInterval(_game2.default.run, 1000 / speed);
-	      object.timerId = timerId;
-	      _this.setState(object);
+	      return timerId;
+	    }, _this.setGameSpeed = function (speed) {
+	      return function () {
+	        var timerId = _this.runTimer();
+	        // const object = { gameSpeed: speed };
+
+	        // object.timerId = timerId;
+	        // object.pause = false;
+	        // this.setState(object);
+	        _this.setState({
+	          timerId: timerId,
+	          pause: false,
+	          gameSpeed: speed
+	        });
+	      };
 	    }, _this.pauseGame = function () {
 	      var timerId = _this.state.timerId;
 	      clearInterval(timerId);
-	      _this.setState({ gameSpeed: 0, timerId: null });
+	      _this.setState({ pause: true, timerId: null });
+	    }, _this.resumeGame = function () {
+	      var timerId = _this.runTimer();
+	      _this.setState({
+	        pause: false,
+	        timerId: timerId
+	      });
 	    }, _this.getMessages = function () {
 	      _logger2.default.debug('MessageStore callback pausing');
 	      if (_messageStore2.default.isDrawable()) {
@@ -745,6 +765,21 @@
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
+	  // increaseGameSpeed = () => {
+	  //   const speed = this.state.gameSpeed + 1;
+	  //   const object = { gameSpeed: speed };
+	  //
+	  //   let timerId = this.state.timerId;
+	  //
+	  //   if (timerId) {
+	  //     clearInterval(timerId);
+	  //   }
+	  //
+	  //   timerId = setInterval(gameRunner.run, 1000 / speed);
+	  //   object.timerId = timerId;
+	  //   this.setState(object);
+	  // };
+
 	  (0, _createClass3.default)(Game, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
@@ -790,10 +825,12 @@
 	          { className: 'body-wrapper' },
 	          (0, _preact.h)(_Menu2.default, {
 	            pauseGame: this.pauseGame,
-	            increaseGameSpeed: this.increaseGameSpeed,
+	            resumeGame: this.resumeGame,
+	            setGameSpeed: this.setGameSpeed,
 	            onRenderProjectsMenu: this.onRenderProjectsMenu,
 	            onRenderEconomicsMenu: this.onRenderEconomicsMenu,
 	            onRenderStaffMenu: this.onRenderStaffMenu,
+	            pause: state.pause,
 	            day: state.day
 	          }),
 	          (0, _preact.h)('br', null),
@@ -4886,6 +4923,8 @@
 	      var moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
 	      var navigation = s.navigation;
+
+	      var paused = props.pause;
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -4914,12 +4953,17 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: navigation },
-	          (0, _preact.h)(_UI2.default.Button, { text: '||', onClick: props.pauseGame })
+	          (0, _preact.h)(_UI2.default.Button, { text: paused ? '>' : '||', onClick: paused ? props.resumeGame : props.pauseGame })
 	        ),
 	        (0, _preact.h)(
 	          'div',
 	          { className: navigation },
-	          (0, _preact.h)(_UI2.default.Button, { text: '>>', onClick: props.increaseGameSpeed })
+	          (0, _preact.h)(_UI2.default.Button, { text: '>>', onClick: props.setGameSpeed(5) })
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: navigation },
+	          (0, _preact.h)(_UI2.default.Button, { text: '>>>', onClick: props.setGameSpeed(9) })
 	        ),
 	        (0, _preact.h)(
 	          'div',
