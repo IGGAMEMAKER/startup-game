@@ -12,5 +12,5 @@ export const PROFESSION_MARKETER = 'PROFESSION_MARKETER';
 export const PROFESSION_DESIGNER = 'PROFESSION_DESIGNER';
 export const PROFESSION_ANALYST = 'PROFESSION_ANALYST';
 
-export const PRICE_OF_ONE_MP = 100;
-export const PRICE_OF_ONE_PP = 100;
+export const PRICE_OF_ONE_MP = 30;
+export const PRICE_OF_ONE_PP = 30;

@@ -4194,8 +4194,8 @@
 	var PROFESSION_DESIGNER = exports.PROFESSION_DESIGNER = 'PROFESSION_DESIGNER';
 	var PROFESSION_ANALYST = exports.PROFESSION_ANALYST = 'PROFESSION_ANALYST';
 
-	var PRICE_OF_ONE_MP = exports.PRICE_OF_ONE_MP = 100;
-	var PRICE_OF_ONE_PP = exports.PRICE_OF_ONE_PP = 100;
+	var PRICE_OF_ONE_MP = exports.PRICE_OF_ONE_MP = 30;
+	var PRICE_OF_ONE_PP = exports.PRICE_OF_ONE_PP = 30;
 
 /***/ },
 /* 112 */
@@ -7183,9 +7183,9 @@
 	              ),
 	              (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
 	              (0, _preact.h)('br', null)
-	            )
+	            ),
+	            (0, _preact.h)(_PointShop2.default, null)
 	          );
-	          // <PointShop />
 	          break;
 	      }
 

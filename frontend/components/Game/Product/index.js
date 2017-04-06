@@ -32,9 +32,9 @@ export default class Product extends Component {
               <AdsPanel product={product} id={id} />
               <br />
             </div>
+            <PointShop />
           </div>
         );
-            // <PointShop />
         break;
     }
 
