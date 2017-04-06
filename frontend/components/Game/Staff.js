@@ -13,6 +13,8 @@ import actions from '../../actions/player-actions';
 
 import Select from '../Shared/Select';
 
+import coloringRange from '../../helpers/coloring-range';
+
 type StateType = {
   staff: Array
 };
@@ -45,7 +47,10 @@ export default class Staff extends Component {
     this.setState({ collapse: !this.state.collapse })
   };
 
-  getSkill = skill => Math.floor(skill / 100);
+  getSkill = skill => {
+    const value = Math.floor(skill / 100);
+    return <span style={{ color: coloringRange.standard(value, 10) }}>{value}</span>
+  };
 
   renderPerson = (p, i) => {
     let specialization = teamHelper.getTranslatedSpecialization(p);
@@ -64,11 +69,11 @@ export default class Staff extends Component {
     switch (p.task) {
       case JOB.JOB_TASK_MARKETING_POINTS:
         value = store.getMarketingPointsProducedBy(p);
-        work = `Производит ${value} marketing points / month`;
+        work = `Производит ${value}MP (Marketing Points) / month`;
         break;
       case JOB.JOB_TASK_PROGRAMMER_POINTS:
         value = store.getProgrammingPointsProducedBy(p);
-        work = `Производит ${value} programming points / month`;
+        work = `Производит ${value}PP (Programming Points) / month`;
         break;
     }
 

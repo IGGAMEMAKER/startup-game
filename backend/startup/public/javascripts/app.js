@@ -4000,6 +4000,10 @@
 
 	var _Select2 = _interopRequireDefault(_Select);
 
+	var _coloringRange = __webpack_require__(159);
+
+	var _coloringRange2 = _interopRequireDefault(_coloringRange);
+
 	var _playerStore = __webpack_require__(116);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
@@ -4008,6 +4012,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	// import React, { Component, PropTypes } from 'react';
 	var Staff = function (_Component) {
 	  (0, _inherits3.default)(Staff, _Component);
 
@@ -4032,7 +4037,12 @@
 	    }, _this.toggleStaff = function () {
 	      _this.setState({ collapse: !_this.state.collapse });
 	    }, _this.getSkill = function (skill) {
-	      return Math.floor(skill / 100);
+	      var value = Math.floor(skill / 100);
+	      return (0, _preact.h)(
+	        'span',
+	        { style: { color: _coloringRange2.default.standard(value, 10) } },
+	        value
+	      );
 	    }, _this.renderPerson = function (p, i) {
 	      var specialization = _skills2.default.getTranslatedSpecialization(p);
 
@@ -4054,11 +4064,11 @@
 	      switch (p.task) {
 	        case JOB.JOB_TASK_MARKETING_POINTS:
 	          value = _playerStore2.default.getMarketingPointsProducedBy(p);
-	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442 ' + value + ' marketing points / month';
+	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442 ' + value + 'MP (Marketing Points) / month';
 	          break;
 	        case JOB.JOB_TASK_PROGRAMMER_POINTS:
 	          value = _playerStore2.default.getProgrammingPointsProducedBy(p);
-	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442 ' + value + ' programming points / month';
+	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442 ' + value + 'PP (Programming Points) / month';
 	          break;
 	      }
 
@@ -4158,8 +4168,6 @@
 	  }]);
 	  return Staff;
 	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
 
 	exports.default = Staff;
 	;
@@ -7175,9 +7183,9 @@
 	              ),
 	              (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
 	              (0, _preact.h)('br', null)
-	            ),
-	            (0, _preact.h)(_PointShop2.default, null)
+	            )
 	          );
+	          // <PointShop />
 	          break;
 	      }
 
@@ -8106,17 +8114,13 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productActions = __webpack_require__(148);
-
-	var _productActions2 = _interopRequireDefault(_productActions);
-
 	var _productStore = __webpack_require__(121);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _computeRating = __webpack_require__(124);
+	var _coloringRange = __webpack_require__(159);
 
-	var _computeRating2 = _interopRequireDefault(_computeRating);
+	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
 	var _percentify = __webpack_require__(100);
 
@@ -8128,27 +8132,17 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	// import React, { Component, PropTypes } from 'react';
+
 	var Metrics = function (_Component) {
 	  (0, _inherits3.default)(Metrics, _Component);
 
 	  function Metrics() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
 	    (0, _classCallCheck3.default)(this, Metrics);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Metrics.__proto__ || (0, _getPrototypeOf2.default)(Metrics)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    return (0, _possibleConstructorReturn3.default)(this, (Metrics.__proto__ || (0, _getPrototypeOf2.default)(Metrics)).apply(this, arguments));
 	  }
 
 	  (0, _createClass3.default)(Metrics, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var props = this.props;
@@ -8162,10 +8156,8 @@
 	      var debt = product.KPI.debt;
 
 	      var rating = (0, _round2.default)(_productStore2.default.getRatingForMetricsTab(id));
-	      var green = Math.floor(rating * 160 / 10);
 
-	      var red = 255 - Math.floor(rating * 255 / 10);
-	      var ratingColor = 'rgba(' + red + ', ' + green + ', 0, 1)'; //`rgba(${red}, ${green}, 0, 1)`;
+	      var ratingColor = _coloringRange2.default.standard(rating, 10);
 
 	      // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
 	      var churn = (0, _percentify2.default)(_productStore2.default.getChurnRate(id));
@@ -8329,7 +8321,6 @@
 	  }]);
 	  return Metrics;
 	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = Metrics;
 	;
@@ -8962,6 +8953,24 @@
 
 	exports.default = {
 	  emit: emit
+	};
+
+/***/ },
+/* 159 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {
+	  standard: function standard(value, range) {
+	    var green = Math.floor(value * 160 / range);
+	    var red = 255 - Math.floor(value * 255 / range);
+
+	    return "rgba(" + red + ", " + green + ", 0, 1)"; //`rgba(${red}, ${green}, 0, 1)`;
+	  }
 	};
 
 /***/ }

@@ -1,11 +1,9 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-import productActions from '../../../../actions/product-actions';
-
 import productStore from '../../../../stores/product-store';
 
-import computeRating from '../../../../helpers/products/compute-rating';
+import coloringRange from '../../../../helpers/coloring-range';
 import percentify from '../../../../helpers/math/percentify';
 import round from '../../../../helpers/math/round';
 
@@ -14,10 +12,6 @@ type PropsType = {};
 type StateType = {};
 
 export default class Metrics extends Component {
-  state = {};
-
-  componentWillMount() {}
-
   render() {
     const { props } = this;
     const id = props.id;
@@ -28,10 +22,8 @@ export default class Metrics extends Component {
     const debt = product.KPI.debt;
 
     const rating = round(productStore.getRatingForMetricsTab(id));
-    const green = Math.floor(rating * 160 / 10);
 
-    const red = 255 - Math.floor(rating * 255 / 10);
-    const ratingColor = `rgba(${red}, ${green}, 0, 1)`;//`rgba(${red}, ${green}, 0, 1)`;
+    const ratingColor = coloringRange.standard(rating, 10);
 
     // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     const churn = percentify(productStore.getChurnRate(id));
