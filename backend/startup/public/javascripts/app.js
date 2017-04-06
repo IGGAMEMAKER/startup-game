@@ -7431,12 +7431,22 @@
 	  improveFeature: function improveFeature(id, featureGroup, featureName, h, max) {
 	    _logger2.default.shit('fix commonExperience in improveFeature() product-actions.js');
 
-	    var chance = h.baseChance + _productStore2.default.getAnalyticsValueForFeatureCreating(id);
-	    var randomValue = getRandomRange(0, 1); // 0.25; 0.5 - commonExperience
+	    var analyticsChance = _productStore2.default.getAnalyticsValueForFeatureCreating(id);
+	    var chance = analyticsChance; // h.baseChance +
 
-	    var quality = randomValue > chance ? h.data : 0;
+	    // let quality; // randomValue > chance ? h.data : 0;
 
-	    _logger2.default.log('improveFeature', id, featureGroup, featureName, quality, chance, randomValue);
+	    var maxXP = 1000;
+	    if (chance === 0.4) {
+	      maxXP = 10000;
+	    } else if (chance === 0.3) {
+	      maxXP = 4000;
+	    } else if (chance === 0.1) {
+	      maxXP = 2000;
+	    }
+
+	    var quality = Math.floor(getRandomRange(0.1 * maxXP, maxXP));
+	    _logger2.default.log('improveFeature', id, featureGroup, featureName, quality, chance);
 
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
@@ -7701,20 +7711,10 @@
 	          ' \u0434\u043D\u0435\u0439)'
 	        );
 
+	        // <div className="hypothesis">Гипотеза (Ценность - {hypothesis.data}XP, {chance}% шанс)</div>
 	        return (0, _preact.h)(
 	          'div',
 	          { key: 'hypothesis' + i },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'hypothesis' },
-	            '\u0413\u0438\u043F\u043E\u0442\u0435\u0437\u0430 #',
-	            i,
-	            ' (\u0426\u0435\u043D\u043D\u043E\u0441\u0442\u044C - ',
-	            hypothesis.data,
-	            'XP, ',
-	            chance,
-	            '% \u0448\u0430\u043D\u0441)'
-	          ),
 	          (0, _preact.h)(
 	            'div',
 	            null,
@@ -7758,8 +7758,7 @@
 	      var renderMainFeature = function renderMainFeature(featureGroup) {
 	        return function (defaultFeature, i) {
 	          var featureName = defaultFeature.name;
-	          var cost = defaultFeature.cost,
-	              time = defaultFeature.time,
+	          var time = defaultFeature.time,
 	              shortDescription = defaultFeature.shortDescription;
 
 
@@ -7770,18 +7769,16 @@
 
 	          var key = 'feature' + featureGroup + featureName + i;
 
-	          var hypothesis = [{
-	            points: { mp: 100, pp: 100 },
-	            data: 1000,
-	            baseChance: 0.3
-	          }, {
+	          var hypothesis = [
+	          // {
+	          // points: { mp: 100, pp: 100 },
+	          // data: 1000,
+	          // baseChance: 0.3
+	          // },
+	          {
 	            points: { mp: 100, pp: 200 },
 	            data: 4000,
 	            baseChance: 0.1
-	          }, {
-	            points: { mp: 300, pp: 500 },
-	            data: 10000,
-	            baseChance: 0
 	          }];
 
 	          var description = defaultFeature.description || '';

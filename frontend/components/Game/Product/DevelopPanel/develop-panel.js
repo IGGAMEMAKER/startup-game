@@ -162,9 +162,9 @@ export default class DevelopPanel extends Component {
 
     let text = <span>Протестировать гипотезу ({time} дней)</span>;
 
+        // <div className="hypothesis">Гипотеза (Ценность - {hypothesis.data}XP, {chance}% шанс)</div>
     return (
       <div key={`hypothesis${i}`}>
-        <div className="hypothesis">Гипотеза #{i} (Ценность - {hypothesis.data}XP, {chance}% шанс)</div>
         <div>Стоимость тестирования ({mp}MP и {pp}PP)</div>
         <Button
           disabled={disabled}
@@ -187,7 +187,7 @@ export default class DevelopPanel extends Component {
 
     const renderMainFeature = featureGroup => (defaultFeature, i) => {
       const featureName = defaultFeature.name;
-      const { cost, time, shortDescription } = defaultFeature;
+      const { time, shortDescription } = defaultFeature;
 
       const feature = product.features[featureGroup][featureName];
 
@@ -197,19 +197,23 @@ export default class DevelopPanel extends Component {
 
       const key = `feature${featureGroup}${featureName}${i}`;
 
-      const hypothesis = [{
-        points: { mp: 100, pp: 100 },
-        data: 1000,
-        baseChance: 0.3
-      }, {
+      const hypothesis = [
+        // {
+        // points: { mp: 100, pp: 100 },
+        // data: 1000,
+        // baseChance: 0.3
+      // },
+        {
         points: { mp: 100, pp: 200 },
         data: 4000,
         baseChance: 0.1
-      }, {
-        points: { mp: 300, pp: 500 },
-        data: 10000,
-        baseChance: 0
-      }];
+      },
+        // {
+        // points: { mp: 300, pp: 500 },
+        // data: 10000,
+        // baseChance: 0
+      // }
+      ];
 
       const description = defaultFeature.description || '';
       const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
