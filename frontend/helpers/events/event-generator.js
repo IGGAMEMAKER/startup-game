@@ -1,10 +1,8 @@
 import random from '../math/random';
 import * as GAME_EVENTS from '../../constants/events';
 import * as JOB from '../../constants/job';
-import messageActions from '../../actions/message-actions';
 
-import scheduleStore from '../../stores/schedule-store';
-import playerStore from '../../stores/player-store';
+import flux from '../../flux';
 
 import logger from '../../helpers/logger/logger';
 
@@ -13,15 +11,17 @@ const emit = () => {
 
   switch (rnd) {
     case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
-      let money = Math.ceil(random(10000, 35000));
-      messageActions.addGameEvent(rnd, { money });
+      let money = Math.ceil(random(2000, 15000));
+      flux.messageActions.addGameEvent(rnd, { money });
       break;
+
     case GAME_EVENTS.GAME_EVENT_FREE_POINTS:
-      let points = Math.ceil(random(100, 275));
-      messageActions.addGameEvent(rnd, { points });
+      let points = Math.ceil(random(50, 275));
+      flux.messageActions.addGameEvent(rnd, { points });
       break;
+
     case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
-      if (playerStore.getTeam().length < 4) {
+      if (flux.playerStore.getTeam().length < 4) {
         const names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella'];
         const index = Math.floor(random(0, names.length));
         const name = names[index];
@@ -30,7 +30,7 @@ const emit = () => {
         const marketing = Math.floor(random(0, 1000));
         const analyst = Math.floor(random(0, 1000));
 
-        messageActions.addGameEvent(rnd, {
+        flux.messageActions.addGameEvent(rnd, {
           player: {
             name,
             skills: {

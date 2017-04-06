@@ -8891,17 +8891,9 @@
 
 	var JOB = _interopRequireWildcard(_job);
 
-	var _messageActions = __webpack_require__(139);
+	var _flux = __webpack_require__(160);
 
-	var _messageActions2 = _interopRequireDefault(_messageActions);
-
-	var _scheduleStore = __webpack_require__(101);
-
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
-
-	var _playerStore = __webpack_require__(116);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
+	var _flux2 = _interopRequireDefault(_flux);
 
 	var _logger = __webpack_require__(98);
 
@@ -8916,15 +8908,17 @@
 
 	  switch (rnd) {
 	    case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
-	      var money = Math.ceil((0, _random2.default)(10000, 35000));
-	      _messageActions2.default.addGameEvent(rnd, { money: money });
+	      var money = Math.ceil((0, _random2.default)(2000, 15000));
+	      _flux2.default.messageActions.addGameEvent(rnd, { money: money });
 	      break;
+
 	    case GAME_EVENTS.GAME_EVENT_FREE_POINTS:
-	      var points = Math.ceil((0, _random2.default)(100, 275));
-	      _messageActions2.default.addGameEvent(rnd, { points: points });
+	      var points = Math.ceil((0, _random2.default)(50, 275));
+	      _flux2.default.messageActions.addGameEvent(rnd, { points: points });
 	      break;
+
 	    case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
-	      if (_playerStore2.default.getTeam().length < 4) {
+	      if (_flux2.default.playerStore.getTeam().length < 4) {
 	        var names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella'];
 	        var index = Math.floor((0, _random2.default)(0, names.length));
 	        var name = names[index];
@@ -8933,7 +8927,7 @@
 	        var marketing = Math.floor((0, _random2.default)(0, 1000));
 	        var analyst = Math.floor((0, _random2.default)(0, 1000));
 
-	        _messageActions2.default.addGameEvent(rnd, {
+	        _flux2.default.messageActions.addGameEvent(rnd, {
 	          player: {
 	            name: name,
 	            skills: {
@@ -8971,6 +8965,61 @@
 
 	    return "rgba(" + red + ", " + green + ", 0, 1)"; //`rgba(${red}, ${green}, 0, 1)`;
 	  }
+	};
+
+/***/ },
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _playerStore = __webpack_require__(116);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _scheduleStore = __webpack_require__(101);
+
+	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
+
+	var _messageStore = __webpack_require__(132);
+
+	var _messageStore2 = _interopRequireDefault(_messageStore);
+
+	var _productStore = __webpack_require__(121);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	var _playerActions = __webpack_require__(114);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _scheduleActions = __webpack_require__(154);
+
+	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
+
+	var _messageActions = __webpack_require__(139);
+
+	var _messageActions2 = _interopRequireDefault(_messageActions);
+
+	var _productActions = __webpack_require__(148);
+
+	var _productActions2 = _interopRequireDefault(_productActions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = {
+	  playerStore: _playerStore2.default,
+	  scheduleStore: _scheduleStore2.default,
+	  messageStore: _messageStore2.default,
+	  productStore: _productStore2.default,
+	  playerActions: _playerActions2.default,
+	  scheduleActions: _scheduleActions2.default,
+	  messageActions: _messageActions2.default,
+	  productActions: _productActions2.default
 	};
 
 /***/ }
