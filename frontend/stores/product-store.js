@@ -377,7 +377,11 @@ class ProductStore extends EventEmitter {
       factor = 0.3;
     }
 
-    return factor;
+    return {
+      modifier: factor,
+      clients: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW],
+      factors: [1, 0.9, 0.8, 0.3]
+    }
   }
 
   getImprovementChances(i) {
@@ -387,22 +391,35 @@ class ProductStore extends EventEmitter {
     const webvisor = analytics.webvisor;
     const segmenting = analytics.segmenting;
 
-    const analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
+    // const analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
     const clientModifier = this.getClientAnalyticsModifier(i);
-    const chance = analyticsChance * clientModifier; // h.baseChance +
+    // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
 
-    let maxXP = 1000;
-    if (chance > 0.3) {
-      maxXP = 10000;
-    } else if (chance > 0.1) {
-      maxXP = 4000;
-    } else if (chance > 0.05) {
-      maxXP = 2000;
+    const feedbackBonus = 2000;
+    const webvisorBonus = 3000;
+    const segmentingBonus = 4000;
+    const basicBonus = 1000;
+
+    let maxXP = basicBonus;
+    if (feedback) {
+      maxXP += feedbackBonus;
     }
+    if (webvisor) {
+      maxXP += webvisorBonus;
+    }
+    if (segmenting) {
+      maxXP += segmentingBonus;
+    }
+
+    maxXP *= clientModifier.modifier;
 
     return {
       min: 0.1 * maxXP,
       max: maxXP,
+      webvisorBonus,
+      feedbackBonus,
+      segmentingBonus,
+      basicBonus,
       hasWebvisor: webvisor,
       hasFeedback: feedback,
       hasSegmenting: segmenting,

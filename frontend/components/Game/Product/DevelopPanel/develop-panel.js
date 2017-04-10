@@ -199,23 +199,11 @@ export default class DevelopPanel extends Component {
 
       const key = `feature${featureGroup}${featureName}${i}`;
 
-      const hypothesis = [
-        // {
-        // points: { mp: 100, pp: 100 },
-        // data: 1000,
-        // baseChance: 0.3
-      // },
-        {
+      const hypothesis = [{
         points: { mp: 100, pp: 200 },
         data: 4000,
         baseChance: 0.1
-      },
-        // {
-        // points: { mp: 300, pp: 500 },
-        // data: 10000,
-        // baseChance: 0
-      // }
-      ];
+      }];
 
       const description = defaultFeature.description || '';
       const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
@@ -359,9 +347,12 @@ export default class DevelopPanel extends Component {
               Улучшая главные характеристики продукта, вы повышаете его рейтинг,
               что приводит к увеличению всех основных метрик
             </div>
-            <div>Вероятность улучшения</div>
-            <div>XP: {improvements.min} : {improvements.max}</div>
-            <div></div>
+            <div>XP: {improvements.max}</div>
+            <div>Базовое значение: {improvements.basicBonus}XP</div>
+            <div>Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
+            <div>Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
+            <div>Установлен модуль сегментации (+{improvements.segmentingBonus}XP)</div>
+            <div>Достоверность исследования: {improvements.clientModifier.modifier * 100}%</div>
             <div className="featureGroupBody">{featureList}</div>
             <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>

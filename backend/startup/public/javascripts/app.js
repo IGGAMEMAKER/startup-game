@@ -5561,7 +5561,11 @@
 	        factor = 0.3;
 	      }
 
-	      return factor;
+	      return {
+	        modifier: factor,
+	        clients: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW],
+	        factors: [1, 0.9, 0.8, 0.3]
+	      };
 	    }
 	  }, {
 	    key: 'getImprovementChances',
@@ -5572,22 +5576,35 @@
 	      var webvisor = analytics.webvisor;
 	      var segmenting = analytics.segmenting;
 
-	      var analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
+	      // const analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
 	      var clientModifier = this.getClientAnalyticsModifier(i);
-	      var chance = analyticsChance * clientModifier; // h.baseChance +
+	      // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
 
-	      var maxXP = 1000;
-	      if (chance > 0.3) {
-	        maxXP = 10000;
-	      } else if (chance > 0.1) {
-	        maxXP = 4000;
-	      } else if (chance > 0.05) {
-	        maxXP = 2000;
+	      var feedbackBonus = 2000;
+	      var webvisorBonus = 3000;
+	      var segmentingBonus = 4000;
+	      var basicBonus = 1000;
+
+	      var maxXP = basicBonus;
+	      if (feedback) {
+	        maxXP += feedbackBonus;
 	      }
+	      if (webvisor) {
+	        maxXP += webvisorBonus;
+	      }
+	      if (segmenting) {
+	        maxXP += segmentingBonus;
+	      }
+
+	      maxXP *= clientModifier.modifier;
 
 	      return {
 	        min: 0.1 * maxXP,
 	        max: maxXP,
+	        webvisorBonus: webvisorBonus,
+	        feedbackBonus: feedbackBonus,
+	        segmentingBonus: segmentingBonus,
+	        basicBonus: basicBonus,
 	        hasWebvisor: webvisor,
 	        hasFeedback: feedback,
 	        hasSegmenting: segmenting,
@@ -7870,13 +7887,7 @@
 
 	          var key = 'feature' + featureGroup + featureName + i;
 
-	          var hypothesis = [
-	          // {
-	          // points: { mp: 100, pp: 100 },
-	          // data: 1000,
-	          // baseChance: 0.3
-	          // },
-	          {
+	          var hypothesis = [{
 	            points: { mp: 100, pp: 200 },
 	            data: 4000,
 	            baseChance: 0.1
@@ -8074,17 +8085,44 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0412\u0435\u0440\u043E\u044F\u0442\u043D\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F'
+	              'XP: ',
+	              improvements.max
 	            ),
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              'XP: ',
-	              improvements.min,
-	              ' : ',
-	              improvements.max
+	              '\u0411\u0430\u0437\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ',
+	              improvements.basicBonus,
+	              'XP'
 	            ),
-	            (0, _preact.h)('div', null),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
+	              improvements.feedbackBonus,
+	              'XP)'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
+	              improvements.webvisorBonus,
+	              'XP)'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 (+',
+	              improvements.segmentingBonus,
+	              'XP)'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0414\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u043E\u0441\u0442\u044C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F: ',
+	              improvements.clientModifier.modifier * 100,
+	              '%'
+	            ),
 	            (0, _preact.h)(
 	              'div',
 	              { className: 'featureGroupBody' },
