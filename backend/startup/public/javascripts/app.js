@@ -5542,6 +5542,59 @@
 	      return phrase;
 	    }
 	  }, {
+	    key: 'getClientAnalyticsModifier',
+	    value: function getClientAnalyticsModifier(i) {
+	      var factor = void 0;
+	      var clients = this.getClients(i);
+
+	      var CLIENTS_LOT = 10000;
+	      var CLIENTS_MID = 1000;
+	      var CLIENTS_LOW = 100;
+
+	      if (clients > CLIENTS_LOT) {
+	        factor = 1;
+	      } else if (clients > CLIENTS_MID) {
+	        factor = 0.9;
+	      } else if (clients > CLIENTS_LOW) {
+	        factor = 0.8;
+	      } else {
+	        factor = 0.3;
+	      }
+
+	      return factor;
+	    }
+	  }, {
+	    key: 'getImprovementChances',
+	    value: function getImprovementChances(i) {
+	      var analytics = _products[i].features.analytics;
+
+	      var feedback = analytics.feedback;
+	      var webvisor = analytics.webvisor;
+	      var segmenting = analytics.segmenting;
+
+	      var analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
+	      var clientModifier = this.getClientAnalyticsModifier(i);
+	      var chance = analyticsChance * clientModifier; // h.baseChance +
+
+	      var maxXP = 1000;
+	      if (chance > 0.3) {
+	        maxXP = 10000;
+	      } else if (chance > 0.1) {
+	        maxXP = 4000;
+	      } else if (chance > 0.05) {
+	        maxXP = 2000;
+	      }
+
+	      return {
+	        min: 0.1 * maxXP,
+	        max: maxXP,
+	        hasWebvisor: webvisor,
+	        hasFeedback: feedback,
+	        hasSegmenting: segmenting,
+	        clientModifier: clientModifier
+	      };
+	    }
+	  }, {
 	    key: 'getProductExpensesStructure',
 	    value: function getProductExpensesStructure(i) {
 	      return {
@@ -6712,7 +6765,7 @@
 	        type: "range",
 	        min: props.min,
 	        max: props.max,
-	        onChange: function onChange(event) {
+	        onInput: function onInput(event) {
 	          props.onDrag(parseInt(event.target.value));
 	        }
 	      });
@@ -7490,24 +7543,9 @@
 
 	exports.default = {
 	  improveFeature: function improveFeature(id, featureGroup, featureName, h, max) {
-	    _logger2.default.shit('fix commonExperience in improveFeature() product-actions.js');
+	    var range = _productStore2.default.getImprovementChances(id);
 
-	    var analyticsChance = _productStore2.default.getAnalyticsValueForFeatureCreating(id);
-	    var chance = analyticsChance; // h.baseChance +
-
-	    // let quality; // randomValue > chance ? h.data : 0;
-
-	    var maxXP = 1000;
-	    if (chance === 0.4) {
-	      maxXP = 10000;
-	    } else if (chance === 0.3) {
-	      maxXP = 4000;
-	    } else if (chance === 0.1) {
-	      maxXP = 2000;
-	    }
-
-	    var quality = Math.floor(getRandomRange(0.1 * maxXP, maxXP));
-	    _logger2.default.log('improveFeature', id, featureGroup, featureName, quality, chance);
+	    var quality = Math.floor(getRandomRange(range.min, range.max));
 
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
@@ -7913,6 +7951,8 @@
 	          var description = feature.description || '';
 	          var isUpgraded = _productStore2.default.getFeatureStatus(id, featureGroup, featureName);
 
+	          var separator = (0, _preact.h)('hr', { width: '60%' });
+
 	          var userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
 	          if (isUpgraded) {
 	            return (0, _preact.h)(
@@ -7926,7 +7966,8 @@
 	                'div',
 	                { className: 'featureDescription' },
 	                description
-	              )
+	              ),
+	              separator
 	            );
 	          }
 
@@ -7966,12 +8007,12 @@
 	              )
 	            ),
 	            (0, _preact.h)(_Button2.default, {
+	              text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
 	              disabled: !enoughPointsToUpgrade,
 	              onClick: upgradeFeature,
-	              text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
 	              secondary: true
 	            }),
-	            (0, _preact.h)('br', null)
+	            separator
 	          );
 	        };
 	      };
@@ -7992,6 +8033,8 @@
 
 	      // var arrow = saldo ? '\u2197' : '\u2198';
 	      var upArrow = '\u2191';
+
+	      var improvements = _productStore2.default.getImprovementChances(id);
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -8028,6 +8071,20 @@
 	              { className: 'featureGroupDescription' },
 	              '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0432\u0441\u0435\u0445 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0445 \u043C\u0435\u0442\u0440\u0438\u043A'
 	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0412\u0435\u0440\u043E\u044F\u0442\u043D\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              'XP: ',
+	              improvements.min,
+	              ' : ',
+	              improvements.max
+	            ),
+	            (0, _preact.h)('div', null),
 	            (0, _preact.h)(
 	              'div',
 	              { className: 'featureGroupBody' },

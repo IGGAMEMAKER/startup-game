@@ -9,7 +9,7 @@ export default class Range extends Component {
           type="range"
           min={props.min}
           max={props.max}
-          onChange={(event) => { props.onDrag(parseInt(event.target.value)) }}
+          onInput={(event) => { props.onDrag(parseInt(event.target.value)) }}
         />
     );
   }

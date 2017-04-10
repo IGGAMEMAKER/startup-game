@@ -271,6 +271,8 @@ export default class DevelopPanel extends Component {
       const description = feature.description || '';
       const isUpgraded = productStore.getFeatureStatus(id, featureGroup, featureName);
 
+      const separator = <hr width="60%" />;
+
       const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
       if (isUpgraded) {
         return (
@@ -278,6 +280,7 @@ export default class DevelopPanel extends Component {
             {userOrientedFeatureName}: Улучшено {'\u2713'}
             <br />
             <div className="featureDescription">{description}</div>
+            {separator}
           </div>
         );
       }
@@ -298,12 +301,12 @@ export default class DevelopPanel extends Component {
             </div>
           </div>
           <Button
+            text="Улучшить"
             disabled={!enoughPointsToUpgrade}
             onClick={upgradeFeature}
-            text="Улучшить"
             secondary
           />
-          <br />
+          {separator}
         </div>
       )
     };
@@ -335,6 +338,8 @@ export default class DevelopPanel extends Component {
 
     // var arrow = saldo ? '\u2197' : '\u2198';
     const upArrow = '\u2191';
+
+    const improvements = productStore.getImprovementChances(id);
     return (
       <div>
         <b>Развитие продукта</b>
@@ -354,6 +359,9 @@ export default class DevelopPanel extends Component {
               Улучшая главные характеристики продукта, вы повышаете его рейтинг,
               что приводит к увеличению всех основных метрик
             </div>
+            <div>Вероятность улучшения</div>
+            <div>XP: {improvements.min} : {improvements.max}</div>
+            <div></div>
             <div className="featureGroupBody">{featureList}</div>
             <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>

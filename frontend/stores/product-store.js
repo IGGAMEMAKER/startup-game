@@ -359,6 +359,57 @@ class ProductStore extends EventEmitter {
     return phrase;
   }
 
+  getClientAnalyticsModifier(i) {
+    let factor;
+    const clients = this.getClients(i);
+
+    const CLIENTS_LOT = 10000;
+    const CLIENTS_MID = 1000;
+    const CLIENTS_LOW = 100;
+
+    if (clients > CLIENTS_LOT) {
+      factor = 1;
+    } else if (clients > CLIENTS_MID) {
+      factor = 0.9;
+    } else if (clients > CLIENTS_LOW) {
+      factor = 0.8;
+    } else {
+      factor = 0.3;
+    }
+
+    return factor;
+  }
+
+  getImprovementChances(i) {
+    const analytics = _products[i].features.analytics;
+
+    const feedback = analytics.feedback;
+    const webvisor = analytics.webvisor;
+    const segmenting = analytics.segmenting;
+
+    const analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
+    const clientModifier = this.getClientAnalyticsModifier(i);
+    const chance = analyticsChance * clientModifier; // h.baseChance +
+
+    let maxXP = 1000;
+    if (chance > 0.3) {
+      maxXP = 10000;
+    } else if (chance > 0.1) {
+      maxXP = 4000;
+    } else if (chance > 0.05) {
+      maxXP = 2000;
+    }
+
+    return {
+      min: 0.1 * maxXP,
+      max: maxXP,
+      hasWebvisor: webvisor,
+      hasFeedback: feedback,
+      hasSegmenting: segmenting,
+      clientModifier,
+    }
+  }
+
   getProductExpensesStructure(i) {
     return {
       name: this.getName(i),

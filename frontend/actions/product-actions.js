@@ -10,24 +10,9 @@ function getRandomRange(min, max) {
 
 export default {
   improveFeature: (id, featureGroup, featureName, h, max) => {
-    logger.shit('fix commonExperience in improveFeature() product-actions.js');
+    const range = productStore.getImprovementChances(id);
 
-    const analyticsChance = productStore.getAnalyticsValueForFeatureCreating(id);
-    const chance = analyticsChance; // h.baseChance +
-
-    // let quality; // randomValue > chance ? h.data : 0;
-
-    let maxXP = 1000;
-    if (chance === 0.4) {
-      maxXP = 10000;
-    } else if (chance === 0.3) {
-      maxXP = 4000;
-    } else if (chance === 0.1) {
-      maxXP = 2000;
-    }
-
-    const quality = Math.floor(getRandomRange(0.1 * maxXP, maxXP));
-    logger.log('improveFeature', id, featureGroup, featureName, quality, chance);
+    const quality = Math.floor(getRandomRange(range.min, range.max));
 
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
