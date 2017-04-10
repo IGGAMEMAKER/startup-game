@@ -257,6 +257,11 @@ textarea {
   padding-left: 10px;
 }
 
+.hypothesis-wrapper {
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
 .messageTab {
   position: fixed;
   background-color: var(--modalBackground);

@@ -160,16 +160,18 @@ export default class DevelopPanel extends Component {
     const ratingOverflow = current >= max;
     const disabled = notEnoughPPs || ratingOverflow;
 
-    let text = <span>Протестировать гипотезу ({time} дней)</span>;
+    // let text = <span>Протестировать гипотезу ({time} дней)</span>;
+    // let text = <span>Улучшить характеристику за </span>;
 
         // <div className="hypothesis">Гипотеза (Ценность - {hypothesis.data}XP, {chance}% шанс)</div>
     return (
-      <div key={`hypothesis${i}`}>
-        <div>Стоимость тестирования ({mp}MP и {pp}PP)</div>
+      <div key={`hypothesis${i}`} className="hypothesis-wrapper">
+        <div>Стоимость улучшения: {mp}MP и {pp}PP</div>
+        <div>Срок улучшения: {time} дней</div>
         <Button
           disabled={disabled}
           onClick={action}
-          text={text}
+          text="Улучшить"
           primary={!ratingOverflow}
         />
       </div>
@@ -343,7 +345,7 @@ export default class DevelopPanel extends Component {
           <div
             className="featureGroupTitle"
             onClick={this.toggleMainFeatureTab}
-          >Основные характеристики продукта</div>
+          >1) Основные характеристики продукта</div>
           <div
             className="featureGroupDescriptionWrapper"
             style={{ display: state.features ? 'block' : 'none' }}
@@ -356,25 +358,10 @@ export default class DevelopPanel extends Component {
             <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>
 
-
-          <div
-            className="featureGroupTitle"
-            onClick={this.toggleMarketingTab}
-          >Работа с клиентами</div>
-          <div
-            className="featureGroupDescriptionWrapper"
-            style={{ display: state.marketing ? 'block' : 'none' }}
-          >
-            <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
-            <div className="featureGroupBody">{marketing}</div>
-            <div className="hide" onClick={this.toggleMarketingTab}>Свернуть {upArrow}</div>
-          </div>
-
-
           <div
             className="featureGroupTitle"
             onClick={this.toggleAnalyticsTab}
-          >Аналитика</div>
+          >2) Аналитика</div>
           <div
             className="featureGroupDescriptionWrapper"
             style={{ display: state.analytics ? 'block' : 'none' }}
@@ -387,8 +374,22 @@ export default class DevelopPanel extends Component {
 
           <div
             className="featureGroupTitle"
+            onClick={this.toggleMarketingTab}
+          >3) Работа с клиентами</div>
+          <div
+            className="featureGroupDescriptionWrapper"
+            style={{ display: state.marketing ? 'block' : 'none' }}
+          >
+            <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
+            <div className="featureGroupBody">{marketing}</div>
+            <div className="hide" onClick={this.toggleMarketingTab}>Свернуть {upArrow}</div>
+          </div>
+
+
+          <div
+            className="featureGroupTitle"
             onClick={this.togglePaymentTab}
-          >Монетизация</div>
+          >4) Монетизация</div>
           <div
             className="featureGroupDescriptionWrapper"
             style={{ display: state.payment ? 'block' : 'none' }}

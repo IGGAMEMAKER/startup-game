@@ -52,6 +52,7 @@ export default class Expenses extends Component {
       );
     };
 
+
     let loanIndex = 0;
     const renderBasicExpense = (e, i) => {
       let phrase = '';
@@ -78,11 +79,10 @@ export default class Expenses extends Component {
         // {JSON.stringify(state.expenses)}
     return (
       <div>
-        <b>Расходы</b>
-        <br />
-        <h4>Базовые расходы</h4>
+        <h4>Расходы</h4>
+        <h5>Базовые расходы</h5>
         {basicExpenses.map(renderBasicExpense)}
-        <h4>Продуктовые расходы</h4>
+        <h5>Продуктовые расходы</h5>
         {productExpenses.map(renderExpense)}
       </div>
     )

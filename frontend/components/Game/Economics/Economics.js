@@ -48,10 +48,11 @@ export default class Economics extends Component {
 
     return (
       <div>
-        <b>Доходы</b>
+        <h4>Доходы</h4>
         <br />
         <div>Фриланс: 5000$</div>
         <div>{productIncome}</div>
+        <hr />
       </div>
     )
   };
@@ -59,60 +60,80 @@ export default class Economics extends Component {
   renderExpenses = state => {
     const expenses = state.products.map((p, i) => productStore.getProductExpensesStructure(i));
 
-    return <Expenses expenses={expenses} />;
+    return <div><Expenses expenses={expenses} /><hr /></div>;
   };
 
-  render(props: PropsType, state: StateType) {
-    const loans = playerStore.getLoanSize();
+  takeLoan = amount => {
+    const repay = 1.3;
 
-    let loanStatusTab = <div>Долгов нет</div>;
-    if (loans > 0) {
-      loanStatusTab = (
+    const monthlyPayment = Math.ceil(amount * repay / 100);
+    return (
+      <div>
         <div>
-          Суммарная задолженность {loans}$
+          Взять кредит на сумму {amount}$. Ежемесячный платёж составит: {monthlyPayment}$
         </div>
-      );
-    }
+        <UI.Button text={`Взять кредит (${amount}$)`} onClick={() => playerActions.loans.take(amount)} />
+      </div>
+    )
+  };
 
-    const takeLoan = amount => {
-      const repay = 1.3;
-      return (
-        <div>
-          <div>
-            Взять кредит на сумму {amount}$. Ежемесячный платёж составит: {amount * repay / 100}$
-          </div>
-          <UI.Button text={`Взять кредит (${amount}$)`} onClick={() => playerActions.loans.take(amount)} />
-        </div>
-      )
-    };
+  onDrag = (value) => {
+    this.setState({ possibleCredit: Math.floor(value) });
+  };
 
-    const onDrag = (value) => {
-      this.setState({ possibleCredit: Math.floor(value) });
-    };
+  getLoans = () => {
+    return playerStore.getLoanSize();
+  };
 
+  renderLoanTakingTab = (state) => {
+    const loans = this.getLoans();
     const { possibleCredit } =  state;
 
     const maxLoanSize = (moneyCalculator.structured().income - loans) * 12;
-    let loanTakingTab;
 
     if (maxLoanSize <= 0) {
-      loanTakingTab = <div>Вы больше не можете брать займы. Выплатите предыдущие займы!</div>
-    } else {
-      loanTakingTab = (
-        <div>
-          <UI.Range min={0} max={maxLoanSize} onDrag={onDrag} />
-          {takeLoan(possibleCredit)}
-        </div>
-      )
+      return <div>Вы больше не можете брать займы. Выплатите предыдущие займы!</div>;
     }
 
     return (
       <div>
+        <UI.Range min={0} max={maxLoanSize} onDrag={this.onDrag} />
+        {this.takeLoan(possibleCredit)}
+      </div>
+    )
+  };
+
+  renderLoanStatusTab = () => {
+    const loans = this.getLoans();
+
+    if (loans <= 0) {
+     return <div>Долгов нет</div>;
+    }
+
+    return (
+      <div>
+        Суммарная задолженность {loans}$
+      </div>
+    );
+  };
+
+  renderCredits = (props, state) => {
+    return (
+      <div>
+        <h4>Кредиты</h4>
+        {this.renderLoanStatusTab()}
         <div>На вашем счету: {round(state.money)}$</div>
-        {loanTakingTab}
-        {loanStatusTab}
+        {this.renderLoanTakingTab(state)}
+      </div>
+    )
+  };
+
+  render(props: PropsType, state: StateType) {
+    return (
+      <div>
         {this.renderIncome(state)}
         {this.renderExpenses(state)}
+        {this.renderCredits(props, state)}
       </div>
     )
   }

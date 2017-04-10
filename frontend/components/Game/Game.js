@@ -48,21 +48,6 @@ export default class Game extends Component {
     this.pickDataFromScheduleStore();
   };
 
-  // increaseGameSpeed = () => {
-  //   const speed = this.state.gameSpeed + 1;
-  //   const object = { gameSpeed: speed };
-  //
-  //   let timerId = this.state.timerId;
-  //
-  //   if (timerId) {
-  //     clearInterval(timerId);
-  //   }
-  //
-  //   timerId = setInterval(gameRunner.run, 1000 / speed);
-  //   object.timerId = timerId;
-  //   this.setState(object);
-  // };
-
   runTimer = () => {
     let timerId = this.state.timerId;
     const speed = this.state.gameSpeed;
@@ -208,6 +193,7 @@ export default class Game extends Component {
             onRenderEconomicsMenu={this.onRenderEconomicsMenu}
             onRenderStaffMenu={this.onRenderStaffMenu}
             pause={state.pause}
+            gameSpeed={state.gameSpeed}
             day={state.day}
           />
           <br />

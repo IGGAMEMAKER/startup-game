@@ -30,7 +30,34 @@ export default class Menu extends Component {
 
     const navigation = s.navigation;
 
-    const paused = props.pause;
+    const isRunning = !props.pause;
+    const gameSpeed = props.gameSpeed;
+
+    const speeder = (speed, text) => (
+      <div className={navigation}>
+        <UI.Button
+          text={isRunning && gameSpeed === speed ? '||' : text}
+          onClick={isRunning && gameSpeed === speed ? props.pauseGame : props.setGameSpeed(speed)}
+        />
+      </div>
+    );
+
+
+  //   <div className={navigation}>
+  //     <UI.Button
+  //       text={paused ? '>' : '||'}
+  //       onClick={paused ? props.resumeGame : props.pauseGame}
+  //     />
+  //   </div>
+  //   <div className={navigation}>
+  //     <UI.Button
+  //   text=">>"
+  //   onClick={props.setGameSpeed(5)}
+  // />
+  // </div>
+  //   <div className={navigation}>
+  //     <UI.Button text=">>>" onClick={props.setGameSpeed(9)} />
+  // </div>
     return (
       <div>
         <div className={navigation}>
@@ -39,15 +66,9 @@ export default class Menu extends Component {
         <div className={navigation}>
           <div>День: {props.day}</div>
         </div>
-        <div className={navigation}>
-          <UI.Button text={paused ? '>' : '||'} onClick={paused ? props.resumeGame : props.pauseGame} />
-        </div>
-        <div className={navigation}>
-          <UI.Button text=">>" onClick={props.setGameSpeed(5)} />
-        </div>
-        <div className={navigation}>
-          <UI.Button text=">>>" onClick={props.setGameSpeed(9)} />
-        </div>
+        {speeder(3, '>')}
+        {speeder(5, '>>')}
+        {speeder(9, '>>>')}
         <div className={navigation}>MP: {state.points.marketing}</div>
         <div className={navigation}>PP: {state.points.programming}</div>
 

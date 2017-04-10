@@ -765,21 +765,6 @@
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
-	  // increaseGameSpeed = () => {
-	  //   const speed = this.state.gameSpeed + 1;
-	  //   const object = { gameSpeed: speed };
-	  //
-	  //   let timerId = this.state.timerId;
-	  //
-	  //   if (timerId) {
-	  //     clearInterval(timerId);
-	  //   }
-	  //
-	  //   timerId = setInterval(gameRunner.run, 1000 / speed);
-	  //   object.timerId = timerId;
-	  //   this.setState(object);
-	  // };
-
 	  (0, _createClass3.default)(Game, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
@@ -831,6 +816,7 @@
 	            onRenderEconomicsMenu: this.onRenderEconomicsMenu,
 	            onRenderStaffMenu: this.onRenderStaffMenu,
 	            pause: state.pause,
+	            gameSpeed: state.gameSpeed,
 	            day: state.day
 	          }),
 	          (0, _preact.h)('br', null),
@@ -4924,7 +4910,35 @@
 
 	      var navigation = s.navigation;
 
-	      var paused = props.pause;
+	      var isRunning = !props.pause;
+	      var gameSpeed = props.gameSpeed;
+
+	      var speeder = function speeder(speed, text) {
+	        return (0, _preact.h)(
+	          'div',
+	          { className: navigation },
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: isRunning && gameSpeed === speed ? '||' : text,
+	            onClick: isRunning && gameSpeed === speed ? props.pauseGame : props.setGameSpeed(speed)
+	          })
+	        );
+	      };
+
+	      //   <div className={navigation}>
+	      //     <UI.Button
+	      //       text={paused ? '>' : '||'}
+	      //       onClick={paused ? props.resumeGame : props.pauseGame}
+	      //     />
+	      //   </div>
+	      //   <div className={navigation}>
+	      //     <UI.Button
+	      //   text=">>"
+	      //   onClick={props.setGameSpeed(5)}
+	      // />
+	      // </div>
+	      //   <div className={navigation}>
+	      //     <UI.Button text=">>>" onClick={props.setGameSpeed(9)} />
+	      // </div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -4950,21 +4964,9 @@
 	            props.day
 	          )
 	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          (0, _preact.h)(_UI2.default.Button, { text: paused ? '>' : '||', onClick: paused ? props.resumeGame : props.pauseGame })
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          (0, _preact.h)(_UI2.default.Button, { text: '>>', onClick: props.setGameSpeed(5) })
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          (0, _preact.h)(_UI2.default.Button, { text: '>>>', onClick: props.setGameSpeed(9) })
-	        ),
+	        speeder(3, '>'),
+	        speeder(5, '>>'),
+	        speeder(9, '>>>'),
 	        (0, _preact.h)(
 	          'div',
 	          { className: navigation },
@@ -6826,7 +6828,7 @@
 	        'div',
 	        null,
 	        (0, _preact.h)(
-	          'b',
+	          'h4',
 	          null,
 	          '\u0414\u043E\u0445\u043E\u0434\u044B'
 	        ),
@@ -6840,14 +6842,102 @@
 	          'div',
 	          null,
 	          productIncome
-	        )
+	        ),
+	        (0, _preact.h)('hr', null)
 	      );
 	    }, _this.renderExpenses = function (state) {
 	      var expenses = state.products.map(function (p, i) {
 	        return _productStore2.default.getProductExpensesStructure(i);
 	      });
 
-	      return (0, _preact.h)(_Expenses2.default, { expenses: expenses });
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(_Expenses2.default, { expenses: expenses }),
+	        (0, _preact.h)('hr', null)
+	      );
+	    }, _this.takeLoan = function (amount) {
+	      var repay = 1.3;
+
+	      var monthlyPayment = Math.ceil(amount * repay / 100);
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 \u043D\u0430 \u0441\u0443\u043C\u043C\u0443 ',
+	          amount,
+	          '$. \u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u044B\u0439 \u043F\u043B\u0430\u0442\u0451\u0436 \u0441\u043E\u0441\u0442\u0430\u0432\u0438\u0442: ',
+	          monthlyPayment,
+	          '$'
+	        ),
+	        (0, _preact.h)(_UI2.default.Button, { text: '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 (' + amount + '$)', onClick: function onClick() {
+	            return _playerActions2.default.loans.take(amount);
+	          } })
+	      );
+	    }, _this.onDrag = function (value) {
+	      _this.setState({ possibleCredit: Math.floor(value) });
+	    }, _this.getLoans = function () {
+	      return _playerStore2.default.getLoanSize();
+	    }, _this.renderLoanTakingTab = function (state) {
+	      var loans = _this.getLoans();
+	      var possibleCredit = state.possibleCredit;
+
+
+	      var maxLoanSize = (_moneyDifference2.default.structured().income - loans) * 12;
+
+	      if (maxLoanSize <= 0) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0412\u044B \u0431\u043E\u043B\u044C\u0448\u0435 \u043D\u0435 \u043C\u043E\u0436\u0435\u0442\u0435 \u0431\u0440\u0430\u0442\u044C \u0437\u0430\u0439\u043C\u044B. \u0412\u044B\u043F\u043B\u0430\u0442\u0438\u0442\u0435 \u043F\u0440\u0435\u0434\u044B\u0434\u0443\u0449\u0438\u0435 \u0437\u0430\u0439\u043C\u044B!'
+	        );
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxLoanSize, onDrag: _this.onDrag }),
+	        _this.takeLoan(possibleCredit)
+	      );
+	    }, _this.renderLoanStatusTab = function () {
+	      var loans = _this.getLoans();
+
+	      if (loans <= 0) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0414\u043E\u043B\u0433\u043E\u0432 \u043D\u0435\u0442'
+	        );
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        '\u0421\u0443\u043C\u043C\u0430\u0440\u043D\u0430\u044F \u0437\u0430\u0434\u043E\u043B\u0436\u0435\u043D\u043D\u043E\u0441\u0442\u044C ',
+	        loans,
+	        '$'
+	      );
+	    }, _this.renderCredits = function (props, state) {
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'h4',
+	          null,
+	          '\u041A\u0440\u0435\u0434\u0438\u0442\u044B'
+	        ),
+	        _this.renderLoanStatusTab(),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041D\u0430 \u0432\u0430\u0448\u0435\u043C \u0441\u0447\u0435\u0442\u0443: ',
+	          (0, _round2.default)(state.money),
+	          '$'
+	        ),
+	        _this.renderLoanTakingTab(state)
+	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
@@ -6863,84 +6953,12 @@
 	  }, {
 	    key: 'render',
 	    value: function render(props, state) {
-	      var _this2 = this;
-
-	      var loans = _playerStore2.default.getLoanSize();
-
-	      var loanStatusTab = (0, _preact.h)(
-	        'div',
-	        null,
-	        '\u0414\u043E\u043B\u0433\u043E\u0432 \u043D\u0435\u0442'
-	      );
-	      if (loans > 0) {
-	        loanStatusTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0421\u0443\u043C\u043C\u0430\u0440\u043D\u0430\u044F \u0437\u0430\u0434\u043E\u043B\u0436\u0435\u043D\u043D\u043E\u0441\u0442\u044C ',
-	          loans,
-	          '$'
-	        );
-	      }
-
-	      var takeLoan = function takeLoan(amount) {
-	        var repay = 1.3;
-	        return (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 \u043D\u0430 \u0441\u0443\u043C\u043C\u0443 ',
-	            amount,
-	            '$. \u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u044B\u0439 \u043F\u043B\u0430\u0442\u0451\u0436 \u0441\u043E\u0441\u0442\u0430\u0432\u0438\u0442: ',
-	            amount * repay / 100,
-	            '$'
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, { text: '\u0412\u0437\u044F\u0442\u044C \u043A\u0440\u0435\u0434\u0438\u0442 (' + amount + '$)', onClick: function onClick() {
-	              return _playerActions2.default.loans.take(amount);
-	            } })
-	        );
-	      };
-
-	      var onDrag = function onDrag(value) {
-	        _this2.setState({ possibleCredit: Math.floor(value) });
-	      };
-
-	      var possibleCredit = state.possibleCredit;
-
-
-	      var maxLoanSize = (_moneyDifference2.default.structured().income - loans) * 12;
-	      var loanTakingTab = void 0;
-
-	      if (maxLoanSize <= 0) {
-	        loanTakingTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0412\u044B \u0431\u043E\u043B\u044C\u0448\u0435 \u043D\u0435 \u043C\u043E\u0436\u0435\u0442\u0435 \u0431\u0440\u0430\u0442\u044C \u0437\u0430\u0439\u043C\u044B. \u0412\u044B\u043F\u043B\u0430\u0442\u0438\u0442\u0435 \u043F\u0440\u0435\u0434\u044B\u0434\u0443\u0449\u0438\u0435 \u0437\u0430\u0439\u043C\u044B!'
-	        );
-	      } else {
-	        loanTakingTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxLoanSize, onDrag: onDrag }),
-	          takeLoan(possibleCredit)
-	        );
-	      }
-
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430 \u0432\u0430\u0448\u0435\u043C \u0441\u0447\u0435\u0442\u0443: ',
-	          (0, _round2.default)(state.money),
-	          '$'
-	        ),
-	        loanTakingTab,
-	        loanStatusTab,
 	        this.renderIncome(state),
-	        this.renderExpenses(state)
+	        this.renderExpenses(state),
+	        this.renderCredits(props, state)
 	      );
 	    }
 	  }]);
@@ -7106,19 +7124,18 @@
 	        'div',
 	        null,
 	        (0, _preact.h)(
-	          'b',
+	          'h4',
 	          null,
 	          '\u0420\u0430\u0441\u0445\u043E\u0434\u044B'
 	        ),
-	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
-	          'h4',
+	          'h5',
 	          null,
 	          '\u0411\u0430\u0437\u043E\u0432\u044B\u0435 \u0440\u0430\u0441\u0445\u043E\u0434\u044B'
 	        ),
 	        basicExpenses.map(renderBasicExpense),
 	        (0, _preact.h)(
-	          'h4',
+	          'h5',
 	          null,
 	          '\u041F\u0440\u043E\u0434\u0443\u043A\u0442\u043E\u0432\u044B\u0435 \u0440\u0430\u0441\u0445\u043E\u0434\u044B'
 	        ),
@@ -7747,31 +7764,33 @@
 	        var ratingOverflow = current >= max;
 	        var disabled = notEnoughPPs || ratingOverflow;
 
-	        var text = (0, _preact.h)(
-	          'span',
-	          null,
-	          '\u041F\u0440\u043E\u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u0443 (',
-	          time,
-	          ' \u0434\u043D\u0435\u0439)'
-	        );
+	        // let text = <span>Протестировать гипотезу ({time} дней)</span>;
+	        // let text = <span>Улучшить характеристику за </span>;
 
 	        // <div className="hypothesis">Гипотеза (Ценность - {hypothesis.data}XP, {chance}% шанс)</div>
 	        return (0, _preact.h)(
 	          'div',
-	          { key: 'hypothesis' + i },
+	          { key: 'hypothesis' + i, className: 'hypothesis-wrapper' },
 	          (0, _preact.h)(
 	            'div',
 	            null,
-	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F (',
+	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: ',
 	            mp,
 	            'MP \u0438 ',
 	            pp,
-	            'PP)'
+	            'PP'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0421\u0440\u043E\u043A \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: ',
+	            time,
+	            ' \u0434\u043D\u0435\u0439'
 	          ),
 	          (0, _preact.h)(_Button2.default, {
 	            disabled: disabled,
 	            onClick: action,
-	            text: text,
+	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
 	            primary: !ratingOverflow
 	          })
 	        );
@@ -7996,7 +8015,7 @@
 	              className: 'featureGroupTitle',
 	              onClick: this.toggleMainFeatureTab
 	            },
-	            '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	            '1) \u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -8025,40 +8044,9 @@
 	            'div',
 	            {
 	              className: 'featureGroupTitle',
-	              onClick: this.toggleMarketingTab
-	            },
-	            '\u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            {
-	              className: 'featureGroupDescriptionWrapper',
-	              style: { display: state.marketing ? 'block' : 'none' }
-	            },
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureGroupDescription' },
-	              '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0441\u043D\u0438\u0437\u0438\u0442\u044C \u043E\u0442\u0442\u043E\u043A \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u043E\u0432\u044B\u0448\u0430\u044F \u0438\u0445 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureGroupBody' },
-	              marketing
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'hide', onClick: this.toggleMarketingTab },
-	              '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	              upArrow
-	            )
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            {
-	              className: 'featureGroupTitle',
 	              onClick: this.toggleAnalyticsTab
 	            },
-	            '\u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430'
+	            '2) \u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430'
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -8087,9 +8075,40 @@
 	            'div',
 	            {
 	              className: 'featureGroupTitle',
+	              onClick: this.toggleMarketingTab
+	            },
+	            '3) \u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            {
+	              className: 'featureGroupDescriptionWrapper',
+	              style: { display: state.marketing ? 'block' : 'none' }
+	            },
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'featureGroupDescription' },
+	              '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0441\u043D\u0438\u0437\u0438\u0442\u044C \u043E\u0442\u0442\u043E\u043A \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u043E\u0432\u044B\u0448\u0430\u044F \u0438\u0445 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'featureGroupBody' },
+	              marketing
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'hide', onClick: this.toggleMarketingTab },
+	              '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
+	              upArrow
+	            )
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            {
+	              className: 'featureGroupTitle',
 	              onClick: this.togglePaymentTab
 	            },
-	            '\u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
+	            '4) \u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
 	          ),
 	          (0, _preact.h)(
 	            'div',
