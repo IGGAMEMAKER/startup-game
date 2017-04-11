@@ -36,19 +36,20 @@ export default class Metrics extends Component {
 
     const newbies = productStore.getNewClients(id);
 
-    const canShowRatingTab = productStore.getRatingForMetricsTab(id) != 0;
-    const canShowChurnTab = !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
-    const canShowViralityTab = !!productStore.getFeatureStatus(id, 'analytics', 'shareAnalytics');
-    const canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
-    const canShowClientsTab =
+    let canShowRatingTab = productStore.getRatingForMetricsTab(id) != 0;
+    let canShowChurnTab = !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
+    let canShowViralityTab = !!productStore.getFeatureStatus(id, 'analytics', 'shareAnalytics');
+    let canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
+    let canShowClientsTab =
       !!productStore.getFeatureStatus(id, 'analytics', 'webvisor') ||
       !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
-    const canShowNewClientsTab =
+    let canShowNewClientsTab =
       !!productStore.getFeatureStatus(id, 'analytics', 'webvisor') ||
       !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
-    const canShowIncomeTab = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
+    let canShowIncomeTab = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
 
     let ratingTab;
+    canShowRatingTab = true;
     if (canShowRatingTab) {
       ratingTab = <li><b>Рейтинг: <span style={{ color: ratingColor }}>{rating}</span>/10</b></li>;
     } else {
@@ -82,6 +83,7 @@ export default class Metrics extends Component {
     }
 
     let clientsTab;
+    canShowClientsTab = true;
     if (canShowClientsTab) {
       clientsTab = <li>
         <b>Клиенты: {clients}</b>

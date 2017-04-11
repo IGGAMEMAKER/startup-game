@@ -285,3 +285,7 @@ textarea {
   color: #00a8c6;
   /*transition: 0.2ms color ;*/
 }
+
+.offset-min {
+  padding-left: 10px;
+}

@@ -12,6 +12,10 @@ export default {
   mvp: {
     pp: 300,
     mp: 100
+  },
+  hypothesis: {
+    mp: 100,
+    pp: 50
   }
 };
 

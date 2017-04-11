@@ -5485,9 +5485,9 @@
 	      // segmenting
 	      // webvisor
 
-	      if (!analytics.feedback && !analytics.webvisor && !analytics.segmenting) {
-	        return 0;
-	      }
+	      // if (!analytics.feedback && !analytics.webvisor && !analytics.segmenting) {
+	      //   return 0;
+	      // }
 	      var analyticsModifier = 1;
 	      if (analytics.feedback) analyticsModifier -= 0.3;
 
@@ -5631,6 +5631,17 @@
 	        blog: this.getProductBlogCost(i),
 	        support: this.getProductSupportCost(i)
 	      };
+	    }
+	  }, {
+	    key: 'getXP',
+	    value: function getXP(i) {
+	      return _products[i].XP;
+	    }
+	  }, {
+	    key: 'getHypothesisPoints',
+	    value: function getHypothesisPoints(id) {
+	      var idea = this.getIdea(id);
+	      return (0, _productDescriptions2.default)(idea).hypothesis;
 	    }
 	  }]);
 	  return ProductStore;
@@ -5881,6 +5892,10 @@
 	  mvp: {
 	    pp: 300,
 	    mp: 100
+	  },
+	  hypothesis: {
+	    mp: 100,
+	    pp: 50
 	  }
 	};
 
@@ -7846,7 +7861,7 @@
 	      var pp = necessaryPoints.pp || 0;
 
 	      return points.marketing >= mp && points.programming >= pp;
-	    }, _this.renderHypothesisItem = function (id, featureName, time, current, max) {
+	    }, _this.renderHypothesisItem = function (id, featureName, time, current, max, product) {
 	      return function (hypothesis, i) {
 	        var necessaryPoints = hypothesis.points;
 	        var key = '' + featureName;
@@ -7858,43 +7873,34 @@
 	        var action = function action() {
 	          _playerActions2.default.spendPoints(pp, mp);
 	          _productActions2.default.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
-	          // scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
-	          // });
 	        };
-
-	        var chance = (hypothesis.baseChance + _productStore2.default.getAnalyticsValueForFeatureCreating(id)) * 100;
 
 	        var notEnoughPPs = !_this.haveEnoughPointsToUpgrade(necessaryPoints);
 	        var ratingOverflow = current >= max;
-	        var disabled = notEnoughPPs || ratingOverflow;
+	        var currentXP = _productStore2.default.getXP(id);
+
+	        var disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
 
 	        // let text = <span>Протестировать гипотезу ({time} дней)</span>;
 	        // let text = <span>Улучшить характеристику за </span>;
 
 	        // <div className="hypothesis">Гипотеза (Ценность - {hypothesis.data}XP, {chance}% шанс)</div>
+	        // <div>Срок улучшения: {time} дней</div>
+	        // <div>Стоимость улучшения: {mp}MP и {pp}PP и 1000XP</div>
 	        return (0, _preact.h)(
 	          'div',
 	          { key: 'hypothesis' + i, className: 'hypothesis-wrapper' },
 	          (0, _preact.h)(
 	            'div',
 	            null,
-	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: ',
-	            mp,
-	            'MP \u0438 ',
-	            pp,
-	            'PP'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0421\u0440\u043E\u043A \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: ',
-	            time,
-	            ' \u0434\u043D\u0435\u0439'
+	            '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
+	            product.XP,
+	            ' / 1000 XP'
 	          ),
 	          (0, _preact.h)(_UI2.default.Button, {
 	            disabled: disabled,
 	            onClick: action,
-	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
+	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 1000XP',
 	            primary: !ratingOverflow
 	          })
 	        );
@@ -7947,7 +7953,7 @@
 
 	          var hypothesisList = '   Улучшено';
 	          if (current < max) {
-	            hypothesisList = hypothesis.map(_this2.renderHypothesisItem(id, featureName, time, current, max));
+	            hypothesisList = hypothesis.map(_this2.renderHypothesisItem(id, featureName, time, current, max, product));
 	          } else {
 	            return (0, _preact.h)(
 	              'div',
@@ -8105,7 +8111,7 @@
 
 	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i) {
 	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
-	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : '';
+	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
 	        return (0, _preact.h)(
 	          'div',
 	          null,
@@ -8120,8 +8126,20 @@
 
 	      var testHypothesis = function testHypothesis() {
 	        var time = 5;
-	        var key = 'testing hypothesis';
+	        var key = 'Тестирование гипотезы';
+	        var necessaryPoints = _productStore2.default.getHypothesisPoints(id);
+
+	        var pp = necessaryPoints.pp,
+	            mp = necessaryPoints.mp;
+
+	        // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
+	        // const ratingOverflow = current >= max;
+	        // const currentXP = productStore.getXP(id);
+	        //
+	        // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
+
 	        _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
+	          _playerActions2.default.spendPoints(pp, mp);
 	          _productActions2.default.testHypothesis(id, {}, 0);
 	        });
 	      };
@@ -8165,45 +8183,48 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0422\u0435\u043A\u0443\u0449\u0438\u0435 \u043E\u0447\u043A\u0438 \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP): ',
-	              product.XP
+	              '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 \u043E\u0442 ',
+	              improvements.min,
+	              ' \u0434\u043E ',
+	              improvements.max,
+	              ' XP (\u0448\u0442\u0440\u0430\u0444 -',
+	              clientSizePenalty,
+	              '%)'
 	            ),
 	            (0, _preact.h)(
 	              'div',
-	              null,
-	              '\u041C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0435 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP): ',
-	              improvements.max
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0411\u0430\u0437\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ',
-	              improvements.basicBonus,
-	              'XP'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              feedbackStatus,
-	              ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
-	              improvements.feedbackBonus,
-	              'XP)'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              webvisorStatus,
-	              ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
-	              improvements.webvisorBonus,
-	              'XP)'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              segmentingStatus,
-	              ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 (+',
-	              improvements.segmentingBonus,
-	              'XP)'
+	              { className: 'offset-min' },
+	              (0, _preact.h)(
+	                'div',
+	                null,
+	                '\u0411\u0430\u0437\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ',
+	                improvements.basicBonus,
+	                'XP'
+	              ),
+	              (0, _preact.h)(
+	                'div',
+	                null,
+	                feedbackStatus,
+	                ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
+	                improvements.feedbackBonus,
+	                'XP)'
+	              ),
+	              (0, _preact.h)(
+	                'div',
+	                null,
+	                webvisorStatus,
+	                ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
+	                improvements.webvisorBonus,
+	                'XP)'
+	              ),
+	              (0, _preact.h)(
+	                'div',
+	                null,
+	                segmentingStatus,
+	                ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 (+',
+	                improvements.segmentingBonus,
+	                'XP)'
+	              )
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -8226,7 +8247,7 @@
 	            ),
 	            (0, _preact.h)(
 	              'div',
-	              null,
+	              { className: 'offset-min' },
 	              cliTabDescription
 	            ),
 	            (0, _preact.h)(
@@ -8450,6 +8471,7 @@
 	      var canShowIncomeTab = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
 
 	      var ratingTab = void 0;
+	      canShowRatingTab = true;
 	      if (canShowRatingTab) {
 	        ratingTab = (0, _preact.h)(
 	          'li',
@@ -8542,6 +8564,7 @@
 	      }
 
 	      var clientsTab = void 0;
+	      canShowClientsTab = true;
 	      if (canShowClientsTab) {
 	        clientsTab = (0, _preact.h)(
 	          'li',
@@ -9317,7 +9340,8 @@
 	  up: '\u2191',
 	  upRight: '\u2197',
 	  downRight: '\u2198',
-	  ok: '\u2713'
+	  ok: '\u2713',
+	  dot: '\xB7'
 	};
 
 /***/ }

@@ -311,9 +311,9 @@ class ProductStore extends EventEmitter {
     // segmenting
     // webvisor
 
-    if (!analytics.feedback && !analytics.webvisor && !analytics.segmenting) {
-      return 0;
-    }
+    // if (!analytics.feedback && !analytics.webvisor && !analytics.segmenting) {
+    //   return 0;
+    // }
     let analyticsModifier = 1;
     if (analytics.feedback) analyticsModifier -= 0.3;
 
@@ -454,6 +454,15 @@ class ProductStore extends EventEmitter {
       blog: this.getProductBlogCost(i),
       support: this.getProductSupportCost(i)
     };
+  }
+
+  getXP(i) {
+    return _products[i].XP;
+  }
+
+  getHypothesisPoints(id) {
+    const idea = this.getIdea(id);
+    return productDescriptions(idea).hypothesis;
   }
 }
 
