@@ -198,7 +198,7 @@ export default class DevelopPanel extends Component {
       .map((c, i) => {
         const penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
         const isActivated = i === improvements.clientModifier.index ? UI.symbols.ok : UI.symbols.dot;
-        return <div>
+        return <div className="smallText">
           {isActivated} Клиентов больше, чем {c} - штраф {penalty}%
         </div>
       });
@@ -225,6 +225,21 @@ export default class DevelopPanel extends Component {
 
     return (
       <div>
+        <div
+          className="featureGroupTitle"
+        >Тестирование гипотез</div>
+        <div className="featureGroupDescription">
+          <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
+          <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
+          <div className="smallText">Количество очков экспертизы зависит от аналитики и количества клиентов</div>
+          <div className="smallText">Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)</div>
+          <div className="smallText">Чтобы избавиться от этого штрафа, приведите больше клиентов
+            (Текущее количество клиентов: {improvements.clientModifier.clients})</div>
+          <div className="offset-mid">
+            {cliTabDescription}
+          </div>
+        </div>
+        <br />
         <div>
           Запуская тестирование вы получите от {improvements.min} до {improvements.max} XP
           (штраф -{clientSizePenalty}%)
@@ -234,14 +249,6 @@ export default class DevelopPanel extends Component {
           <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
           <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
           <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
-        </div>
-        <div>Штраф за размер тестовой группы: {clientSizePenalty}%</div>
-        <div>
-          Текущий размер тестовой группы: {improvements.clientModifier.clients} клиентов
-        </div>
-        <div>Чтобы избавиться от этого штрафа, приведите больше клиентов</div>
-        <div className="offset-mid">
-          {cliTabDescription}
         </div>
         <br />
         <div>
@@ -415,15 +422,7 @@ export default class DevelopPanel extends Component {
 
           <br />
           <hr />
-          <div
-            className="featureGroupTitle"
-          >Тестирование гипотез</div>
-          <div className="featureGroupDescription">
-            <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
-            <div className="smallText">После каждого цикла тестирования вы получаете некоторое количество очков экспертизы (XP points)</div>
-            <div className="smallText">Количество очков экспертизы зависит от аналитики и количества клиентов</div>
-            <div className="smallText">Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)</div>
-          </div>
+
           {this.renderHypothesisTab(id)}
 
           <br />
