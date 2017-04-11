@@ -233,7 +233,7 @@ export default class DevelopPanel extends Component {
           <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
           <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
           <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
-          <div>{segmentingStatus} Установлен модуль сегментации (+{improvements.segmentingBonus}XP)</div>
+          <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
         </div>
         <div>Штраф за размер тестовой группы: {clientSizePenalty}%</div>
         <div>
@@ -405,8 +405,6 @@ export default class DevelopPanel extends Component {
 
     const upArrow = UI.symbols.up;
 
-
-
     return (
       <div>
         <b>Развитие продукта "{product.name}"</b>
@@ -414,6 +412,22 @@ export default class DevelopPanel extends Component {
         <div style={{padding: '15px'}}>
           <b>Основные показатели продукта</b>
           <Metrics product={product} id={id} />
+
+          <br />
+          <hr />
+          <div
+            className="featureGroupTitle"
+          >Тестирование гипотез</div>
+          <div className="featureGroupDescription">
+            <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
+            <div className="smallText">После каждого цикла тестирования вы получаете некоторое количество очков экспертизы (XP points)</div>
+            <div className="smallText">Количество очков экспертизы зависит от аналитики и количества клиентов</div>
+            <div className="smallText">Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)</div>
+          </div>
+          {this.renderHypothesisTab(id)}
+
+          <br />
+          <hr />
 
           <div
             className="featureGroupTitle"
@@ -425,12 +439,9 @@ export default class DevelopPanel extends Component {
           >
             <div className="featureGroupDescription">
               Улучшая главные характеристики продукта, вы повышаете его рейтинг,
-              что приводит к увеличению всех основных метрик
+              что приводит к снижению оттока клиентов и увеличению доходов с продукта
             </div>
-            {this.renderHypothesisTab(id)}
 
-            <br />
-            <hr />
             <div className="featureGroupBody">{featureList}</div>
             <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>
