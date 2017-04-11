@@ -5643,6 +5643,11 @@
 	      var idea = this.getIdea(id);
 	      return (0, _productDescriptions2.default)(idea).hypothesis;
 	    }
+	  }, {
+	    key: 'getDescriptionOfProduc',
+	    value: function getDescriptionOfProduc(id) {
+	      return (0, _productDescriptions2.default)(this.getIdea(id)).description;
+	    }
 	  }]);
 	  return ProductStore;
 	}(_events.EventEmitter);
@@ -8249,7 +8254,15 @@
 	        (0, _preact.h)(
 	          'b',
 	          null,
-	          '\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	          '\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430 "',
+	          product.name,
+	          '"'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
+	          _productStore2.default.getDescriptionOfProduc(id)
 	        ),
 	        (0, _preact.h)(
 	          'div',

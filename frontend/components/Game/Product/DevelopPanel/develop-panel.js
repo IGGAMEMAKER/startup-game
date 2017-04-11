@@ -409,7 +409,8 @@ export default class DevelopPanel extends Component {
 
     return (
       <div>
-        <b>Развитие продукта</b>
+        <b>Развитие продукта "{product.name}"</b>
+        <div>Описание продукта: {productStore.getDescriptionOfProduc(id)}</div>
         <div style={{padding: '15px'}}>
           <b>Основные показатели продукта</b>
           <Metrics product={product} id={id} />
