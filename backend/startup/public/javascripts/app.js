@@ -7906,7 +7906,150 @@
 	          })
 	        );
 	      };
-	    }, _this.renderMainFeatureTab = function () {}, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    }, _this.renderMainFeatureTab = function () {}, _this.renderHypothesisTab = function (id) {
+	      var done = _UI2.default.symbols.ok;
+	      var cancel = _UI2.default.symbols.dot;
+
+	      var improvements = _productStore2.default.getImprovementChances(id);
+	      var webvisorStatus = improvements.hasWebvisor ? done : cancel;
+	      var segmentingStatus = improvements.hasSegmenting ? done : cancel;
+	      var feedbackStatus = improvements.hasFeedback ? done : cancel;
+
+	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
+
+	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i) {
+	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
+	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          isActivated,
+	          ' \u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ',
+	          c,
+	          ' - \u0448\u0442\u0440\u0430\u0444 ',
+	          penalty,
+	          '%'
+	        );
+	      });
+
+	      var hypothesisPoints = _productStore2.default.getHypothesisPoints(id);
+
+	      var pp = hypothesisPoints.pp,
+	          mp = hypothesisPoints.mp;
+
+
+	      var notEnoughPPs = !_this.haveEnoughPointsToUpgrade(hypothesisPoints);
+	      // const ratingOverflow = current >= max;
+	      // const currentXP = productStore.getXP(id);
+
+	      var disabled = notEnoughPPs; // || ratingOverflow;
+
+	      var testHypothesis = function testHypothesis() {
+	        var time = 5;
+	        var key = 'Тестирование гипотезы';
+
+	        _playerActions2.default.spendPoints(pp, mp);
+	        _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
+	          _productActions2.default.testHypothesis(id, {}, 0);
+	        });
+	      };
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 \u043E\u0442 ',
+	          improvements.min,
+	          ' \u0434\u043E ',
+	          improvements.max,
+	          ' XP (\u0448\u0442\u0440\u0430\u0444 -',
+	          clientSizePenalty,
+	          '%)'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            done,
+	            ' \u0411\u0430\u0437\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ',
+	            improvements.basicBonus,
+	            'XP'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            feedbackStatus,
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
+	            improvements.feedbackBonus,
+	            'XP)'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            webvisorStatus,
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
+	            improvements.webvisorBonus,
+	            'XP)'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            segmentingStatus,
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 (+',
+	            improvements.segmentingBonus,
+	            'XP)'
+	          )
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0428\u0442\u0440\u0430\u0444 \u0437\u0430 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u0441\u0442\u043E\u0432\u043E\u0439 \u0433\u0440\u0443\u043F\u043F\u044B: ',
+	          clientSizePenalty,
+	          '%'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u0441\u0442\u043E\u0432\u043E\u0439 \u0433\u0440\u0443\u043F\u043F\u044B: ',
+	          improvements.clientModifier.clients,
+	          ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0427\u0442\u043E\u0431\u044B \u0438\u0437\u0431\u0430\u0432\u0438\u0442\u044C\u0441\u044F \u043E\u0442 \u044D\u0442\u043E\u0433\u043E \u0448\u0442\u0440\u0430\u0444\u0430, \u043F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          cliTabDescription
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B: ',
+	            mp,
+	            'MP \u0438 ',
+	            pp,
+	            'PP'
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: '\u041F\u0440\u043E\u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u0443',
+	            onClick: testHypothesis,
+	            primary: true,
+	            disabled: disabled
+	          })
+	        )
+	      );
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
 	  (0, _createClass3.default)(DevelopPanel, [{
@@ -8100,51 +8243,6 @@
 
 	      var upArrow = _UI2.default.symbols.up;
 
-	      var done = _UI2.default.symbols.ok;
-	      var cancel = _UI2.default.symbols.dot;
-
-	      var improvements = _productStore2.default.getImprovementChances(id);
-	      var webvisorStatus = improvements.hasWebvisor ? done : cancel;
-	      var segmentingStatus = improvements.hasSegmenting ? done : cancel;
-	      var feedbackStatus = improvements.hasFeedback ? done : cancel;
-
-	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
-
-	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i) {
-	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
-	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
-	        return (0, _preact.h)(
-	          'div',
-	          null,
-	          isActivated,
-	          ' \u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ',
-	          c,
-	          ' - \u0448\u0442\u0440\u0430\u0444 ',
-	          penalty,
-	          '%'
-	        );
-	      });
-
-	      var testHypothesis = function testHypothesis() {
-	        var time = 5;
-	        var key = 'Тестирование гипотезы';
-	        var necessaryPoints = _productStore2.default.getHypothesisPoints(id);
-
-	        var pp = necessaryPoints.pp,
-	            mp = necessaryPoints.mp;
-
-	        // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
-	        // const ratingOverflow = current >= max;
-	        // const currentXP = productStore.getXP(id);
-	        //
-	        // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
-
-	        _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
-	          _playerActions2.default.spendPoints(pp, mp);
-	          _productActions2.default.testHypothesis(id, {}, 0);
-	        });
-	      };
-
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -8181,86 +8279,9 @@
 	              { className: 'featureGroupDescription' },
 	              '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0432\u0441\u0435\u0445 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0445 \u043C\u0435\u0442\u0440\u0438\u043A'
 	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 \u043E\u0442 ',
-	              improvements.min,
-	              ' \u0434\u043E ',
-	              improvements.max,
-	              ' XP (\u0448\u0442\u0440\u0430\u0444 -',
-	              clientSizePenalty,
-	              '%)'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'offset-mid' },
-	              (0, _preact.h)(
-	                'div',
-	                null,
-	                done,
-	                ' \u0411\u0430\u0437\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ',
-	                improvements.basicBonus,
-	                'XP'
-	              ),
-	              (0, _preact.h)(
-	                'div',
-	                null,
-	                feedbackStatus,
-	                ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
-	                improvements.feedbackBonus,
-	                'XP)'
-	              ),
-	              (0, _preact.h)(
-	                'div',
-	                null,
-	                webvisorStatus,
-	                ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
-	                improvements.webvisorBonus,
-	                'XP)'
-	              ),
-	              (0, _preact.h)(
-	                'div',
-	                null,
-	                segmentingStatus,
-	                ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 (+',
-	                improvements.segmentingBonus,
-	                'XP)'
-	              )
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0428\u0442\u0440\u0430\u0444 \u0437\u0430 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u0441\u0442\u043E\u0432\u043E\u0439 \u0433\u0440\u0443\u043F\u043F\u044B: ',
-	              clientSizePenalty,
-	              '%'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u0441\u0442\u043E\u0432\u043E\u0439 \u0433\u0440\u0443\u043F\u043F\u044B: ',
-	              improvements.clientModifier.clients,
-	              ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0427\u0442\u043E\u0431\u044B \u0438\u0437\u0431\u0430\u0432\u0438\u0442\u044C\u0441\u044F \u043E\u0442 \u044D\u0442\u043E\u0433\u043E \u0448\u0442\u0440\u0430\u0444\u0430, \u043F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'offset-mid' },
-	              cliTabDescription
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              (0, _preact.h)(_UI2.default.Button, {
-	                text: '\u041F\u0440\u043E\u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u0443',
-	                onClick: testHypothesis,
-	                primary: true
-	              })
-	            ),
+	            this.renderHypothesisTab(id),
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)('hr', null),
 	            (0, _preact.h)(
 	              'div',
 	              { className: 'featureGroupBody' },

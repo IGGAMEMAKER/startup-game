@@ -183,6 +183,80 @@ export default class DevelopPanel extends Component {
 
   };
 
+  renderHypothesisTab = (id) => {
+    const done = UI.symbols.ok;
+    const cancel = UI.symbols.dot;
+
+    const improvements = productStore.getImprovementChances(id);
+    const webvisorStatus = improvements.hasWebvisor ? done : cancel;
+    const segmentingStatus = improvements.hasSegmenting ? done : cancel;
+    const feedbackStatus = improvements.hasFeedback ? done : cancel;
+
+    const clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
+
+    const cliTabDescription = improvements.clientModifier.clientsRange
+      .map((c, i) => {
+        const penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
+        const isActivated = i === improvements.clientModifier.index ? UI.symbols.ok : UI.symbols.dot;
+        return <div>
+          {isActivated} Клиентов больше, чем {c} - штраф {penalty}%
+        </div>
+      });
+
+    const hypothesisPoints = productStore.getHypothesisPoints(id);
+
+    const { pp, mp } = hypothesisPoints;
+
+    const notEnoughPPs = !this.haveEnoughPointsToUpgrade(hypothesisPoints);
+    // const ratingOverflow = current >= max;
+    // const currentXP = productStore.getXP(id);
+
+    const disabled = notEnoughPPs;// || ratingOverflow;
+
+    const testHypothesis = () => {
+      const time = 5;
+      const key = 'Тестирование гипотезы';
+
+      playerActions.spendPoints(pp, mp);
+      scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
+        productActions.testHypothesis(id, {}, 0)
+      });
+    };
+
+    return (
+      <div>
+        <div>
+          Запуская тестирование вы получите от {improvements.min} до {improvements.max} XP
+          (штраф -{clientSizePenalty}%)
+        </div>
+        <div className="offset-mid">
+          <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
+          <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
+          <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
+          <div>{segmentingStatus} Установлен модуль сегментации (+{improvements.segmentingBonus}XP)</div>
+        </div>
+        <div>Штраф за размер тестовой группы: {clientSizePenalty}%</div>
+        <div>
+          Текущий размер тестовой группы: {improvements.clientModifier.clients} клиентов
+        </div>
+        <div>Чтобы избавиться от этого штрафа, приведите больше клиентов</div>
+        <div className="offset-mid">
+          {cliTabDescription}
+        </div>
+        <br />
+        <div>
+          <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
+          <UI.Button
+            text="Протестировать гипотезу"
+            onClick={testHypothesis}
+            primary
+            disabled={disabled}
+          />
+        </div>
+      </div>
+    )
+  };
+
   render() {
     const { props, state } = this;
 
@@ -331,43 +405,7 @@ export default class DevelopPanel extends Component {
 
     const upArrow = UI.symbols.up;
 
-    const done = UI.symbols.ok;
-    const cancel = UI.symbols.dot;
 
-    const improvements = productStore.getImprovementChances(id);
-    const webvisorStatus = improvements.hasWebvisor ? done : cancel;
-    const segmentingStatus = improvements.hasSegmenting ? done : cancel;
-    const feedbackStatus = improvements.hasFeedback ? done : cancel;
-
-    const clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
-
-    const cliTabDescription = improvements.clientModifier.clientsRange
-      .map((c, i) => {
-        const penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
-        const isActivated = i === improvements.clientModifier.index ? UI.symbols.ok : UI.symbols.dot;
-        return <div>
-          {isActivated} Клиентов больше, чем {c} - штраф {penalty}%
-        </div>
-      });
-
-    const testHypothesis = () => {
-      const time = 5;
-      const key = 'Тестирование гипотезы';
-      const necessaryPoints = productStore.getHypothesisPoints(id);
-
-      const { pp, mp } = necessaryPoints;
-
-      // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
-      // const ratingOverflow = current >= max;
-      // const currentXP = productStore.getXP(id);
-      //
-      // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
-
-      scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
-        playerActions.spendPoints(pp, mp);
-        productActions.testHypothesis(id, {}, 0)
-      });
-    };
 
     return (
       <div>
@@ -388,33 +426,10 @@ export default class DevelopPanel extends Component {
               Улучшая главные характеристики продукта, вы повышаете его рейтинг,
               что приводит к увеличению всех основных метрик
             </div>
+            {this.renderHypothesisTab(id)}
 
-            <div>
-              Запуская тестирование вы получите от {improvements.min} до {improvements.max} XP
-              (штраф -{clientSizePenalty}%)
-            </div>
-            <div className="offset-mid">
-              <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
-              <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
-              <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
-              <div>{segmentingStatus} Установлен модуль сегментации (+{improvements.segmentingBonus}XP)</div>
-            </div>
-            <div>Штраф за размер тестовой группы: {clientSizePenalty}%</div>
-            <div>
-              Текущий размер тестовой группы: {improvements.clientModifier.clients} клиентов
-            </div>
-            <div>Чтобы избавиться от этого штрафа, приведите больше клиентов</div>
-            <div className="offset-mid">
-              {cliTabDescription}
-            </div>
-            <div>
-              <UI.Button
-                text="Протестировать гипотезу"
-                onClick={testHypothesis}
-                primary
-              />
-            </div>
-
+            <br />
+            <hr />
             <div className="featureGroupBody">{featureList}</div>
             <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>
