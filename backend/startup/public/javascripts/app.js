@@ -7875,11 +7875,12 @@
 	          _productActions2.default.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
 	        };
 
-	        var notEnoughPPs = !_this.haveEnoughPointsToUpgrade(necessaryPoints);
+	        // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
 	        var ratingOverflow = current >= max;
 	        var currentXP = _productStore2.default.getXP(id);
 
-	        var disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
+	        // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
+	        var disabled = ratingOverflow || currentXP < 1000;
 
 	        // let text = <span>Протестировать гипотезу ({time} дней)</span>;
 	        // let text = <span>Улучшить характеристику за </span>;
@@ -8100,7 +8101,7 @@
 	      var upArrow = _UI2.default.symbols.up;
 
 	      var done = _UI2.default.symbols.ok;
-	      var cancel = 'X';
+	      var cancel = _UI2.default.symbols.dot;
 
 	      var improvements = _productStore2.default.getImprovementChances(id);
 	      var webvisorStatus = improvements.hasWebvisor ? done : cancel;
@@ -8193,11 +8194,12 @@
 	            ),
 	            (0, _preact.h)(
 	              'div',
-	              { className: 'offset-min' },
+	              { className: 'offset-mid' },
 	              (0, _preact.h)(
 	                'div',
 	                null,
-	                '\u0411\u0430\u0437\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ',
+	                done,
+	                ' \u0411\u0430\u0437\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ',
 	                improvements.basicBonus,
 	                'XP'
 	              ),
@@ -8247,7 +8249,7 @@
 	            ),
 	            (0, _preact.h)(
 	              'div',
-	              { className: 'offset-min' },
+	              { className: 'offset-mid' },
 	              cliTabDescription
 	            ),
 	            (0, _preact.h)(

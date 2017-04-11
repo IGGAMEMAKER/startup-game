@@ -289,3 +289,7 @@ textarea {
 .offset-min {
   padding-left: 10px;
 }
+
+.offset-mid {
+  padding-left: 20px;
+}

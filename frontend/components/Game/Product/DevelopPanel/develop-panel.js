@@ -153,11 +153,12 @@ export default class DevelopPanel extends Component {
       productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
     };
 
-    const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
+    // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
     const ratingOverflow = current >= max;
     const currentXP = productStore.getXP(id);
 
-    const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
+    // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
+    const disabled = ratingOverflow || currentXP < 1000;
 
     // let text = <span>Протестировать гипотезу ({time} дней)</span>;
     // let text = <span>Улучшить характеристику за </span>;
@@ -331,7 +332,7 @@ export default class DevelopPanel extends Component {
     const upArrow = UI.symbols.up;
 
     const done = UI.symbols.ok;
-    const cancel = 'X';
+    const cancel = UI.symbols.dot;
 
     const improvements = productStore.getImprovementChances(id);
     const webvisorStatus = improvements.hasWebvisor ? done : cancel;
@@ -392,8 +393,8 @@ export default class DevelopPanel extends Component {
               Запуская тестирование вы получите от {improvements.min} до {improvements.max} XP
               (штраф -{clientSizePenalty}%)
             </div>
-            <div className="offset-min">
-              <div>Базовое значение: {improvements.basicBonus}XP</div>
+            <div className="offset-mid">
+              <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
               <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
               <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
               <div>{segmentingStatus} Установлен модуль сегментации (+{improvements.segmentingBonus}XP)</div>
@@ -403,7 +404,7 @@ export default class DevelopPanel extends Component {
               Текущий размер тестовой группы: {improvements.clientModifier.clients} клиентов
             </div>
             <div>Чтобы избавиться от этого штрафа, приведите больше клиентов</div>
-            <div className="offset-min">
+            <div className="offset-mid">
               {cliTabDescription}
             </div>
             <div>
