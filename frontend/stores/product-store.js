@@ -367,20 +367,34 @@ class ProductStore extends EventEmitter {
     const CLIENTS_MID = 1000;
     const CLIENTS_LOW = 100;
 
+    let clientMin;
+    let clientMax;
+
     if (clients > CLIENTS_LOT) {
       factor = 1;
+      clientMax = CLIENTS_LOT;
+      clientMin = CLIENTS_LOT;
     } else if (clients > CLIENTS_MID) {
       factor = 0.9;
+      clientMax = CLIENTS_LOT;
+      clientMin = CLIENTS_MID;
     } else if (clients > CLIENTS_LOW) {
       factor = 0.8;
+      clientMax = CLIENTS_MID;
+      clientMin = CLIENTS_LOW;
     } else {
       factor = 0.3;
+      clientMax = CLIENTS_LOW;
+      clientMin = 0;
     }
 
     return {
       modifier: factor,
       clients: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW],
-      factors: [1, 0.9, 0.8, 0.3]
+      factors: [1, 0.9, 0.8, 0.3],
+      clientMax,
+      clientMin,
+      clients
     }
   }
 

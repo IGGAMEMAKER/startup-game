@@ -4,6 +4,8 @@ import * as c from '../constants/actions/schedule-actions';
 import payloads from '../constants/actions/payloads';
 import logger from '../helpers/logger/logger';
 
+import * as GAME_STAGES from '../constants/game-stages';
+
 import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../constants/work-speed';
 
 const EC = 'MAIN_EVENT_CHANGE';
@@ -33,6 +35,8 @@ let _tasks = [];
 // }];
 let _day = 0;
 let _workHours = 4;
+
+let _gameStage = GAME_STAGES.GAME_STAGE_INIT;
 
 class ScheduleStore extends EventEmitter {
   addChangeListener(cb:Function) {

@@ -6,6 +6,7 @@ type PropsType = {};
 import ProductDescriptions from '../../../../constants/products/product-descriptions';
 import Metrics from '../KPI/metrics';
 import Button from '../../../Shared/Button';
+import UI from '../../../UI';
 
 import * as PROFESSIONS from '../../../../constants/professions';
 
@@ -168,7 +169,7 @@ export default class DevelopPanel extends Component {
       <div key={`hypothesis${i}`} className="hypothesis-wrapper">
         <div>Стоимость улучшения: {mp}MP и {pp}PP</div>
         <div>Срок улучшения: {time} дней</div>
-        <Button
+        <UI.Button
           disabled={disabled}
           onClick={action}
           text="Улучшить"
@@ -177,6 +178,10 @@ export default class DevelopPanel extends Component {
       </div>
     )
   };
+
+  renderMainFeatureTab = () => {
+
+  }
 
   render() {
     const { props, state } = this;
@@ -214,7 +219,7 @@ export default class DevelopPanel extends Component {
       } else {
         return (
           <div key={key}>
-            {userOrientedFeatureName} (Улучшено) {'\u2713'}
+            {userOrientedFeatureName} (Улучшено) {UI.symbols.ok}
             <br />
             <div className="featureDescription">{description}</div>
             <br />
@@ -265,7 +270,7 @@ export default class DevelopPanel extends Component {
       if (isUpgraded) {
         return (
           <div key={key}>
-            {userOrientedFeatureName}: Улучшено {'\u2713'}
+            {userOrientedFeatureName}: Улучшено {UI.symbols.ok}
             <br />
             <div className="featureDescription">{description}</div>
             {separator}
@@ -288,7 +293,7 @@ export default class DevelopPanel extends Component {
               <span className={ppColors}>PP:{pp}</span>
             </div>
           </div>
-          <Button
+          <UI.Button
             text="Улучшить"
             disabled={!enoughPointsToUpgrade}
             onClick={upgradeFeature}
@@ -324,10 +329,18 @@ export default class DevelopPanel extends Component {
       .getPaymentFeatures(idea)
       .map(renderFeature('payment'));
 
-    // var arrow = saldo ? '\u2197' : '\u2198';
-    const upArrow = '\u2191';
+
+    const upArrow = UI.symbols.up;
+
+    const done = UI.symbols.ok;
+    const cancel = 'X';
 
     const improvements = productStore.getImprovementChances(id);
+    const webvisorStatus = improvements.hasWebvisor ? done : cancel;
+    const segmentingStatus = improvements.hasSegmenting ? done : cancel;
+    const feedbackStatus = improvements.hasFeedback ? done : cancel;
+
+    const clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
     return (
       <div>
         <b>Развитие продукта</b>
@@ -347,12 +360,18 @@ export default class DevelopPanel extends Component {
               Улучшая главные характеристики продукта, вы повышаете его рейтинг,
               что приводит к увеличению всех основных метрик
             </div>
-            <div>XP: {improvements.max}</div>
+
+            <div>Максимальное количество экспертизы (XP): {improvements.max}</div>
             <div>Базовое значение: {improvements.basicBonus}XP</div>
-            <div>Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
-            <div>Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
-            <div>Установлен модуль сегментации (+{improvements.segmentingBonus}XP)</div>
-            <div>Достоверность исследования: {improvements.clientModifier.modifier * 100}%</div>
+            <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
+            <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
+            <div>{segmentingStatus} Установлен модуль сегментации (+{improvements.segmentingBonus}XP)</div>
+            <div>
+              Штраф за размер тестовой группы ({improvements.clientModifier.clients})
+              : {clientSizePenalty}% (клиентов меньше, чем {improvements.clientModifier.clientMax})
+            </div>
+            <div>Чтобы избавиться от этого штрафа, приведите больше клиентов</div>
+
             <div className="featureGroupBody">{featureList}</div>
             <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>

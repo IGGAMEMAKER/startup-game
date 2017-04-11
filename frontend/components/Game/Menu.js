@@ -23,7 +23,7 @@ export default class Menu extends Component {
 
   render(props, state) {
     const saldo = moneyCalculator.saldo() > 0;
-    const arrow = saldo ? '\u2197' : '\u2198';
+    const arrow = saldo ? UI.symbols.upRight : UI.symbols.downRight;
 
     const s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
     const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
@@ -42,22 +42,6 @@ export default class Menu extends Component {
       </div>
     );
 
-
-  //   <div className={navigation}>
-  //     <UI.Button
-  //       text={paused ? '>' : '||'}
-  //       onClick={paused ? props.resumeGame : props.pauseGame}
-  //     />
-  //   </div>
-  //   <div className={navigation}>
-  //     <UI.Button
-  //   text=">>"
-  //   onClick={props.setGameSpeed(5)}
-  // />
-  // </div>
-  //   <div className={navigation}>
-  //     <UI.Button text=">>>" onClick={props.setGameSpeed(9)} />
-  // </div>
     return (
       <div>
         <div className={navigation}>

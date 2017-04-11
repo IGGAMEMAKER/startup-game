@@ -2903,6 +2903,10 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
+	var _gameStages = __webpack_require__(161);
+
+	var GAME_STAGES = _interopRequireWildcard(_gameStages);
+
 	var _workSpeed = __webpack_require__(99);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -2936,6 +2940,8 @@
 	// }];
 	var _day = 0;
 	var _workHours = 4;
+
+	var _gameStage = GAME_STAGES.GAME_STAGE_INIT;
 
 	var ScheduleStore = function (_EventEmitter) {
 	  (0, _inherits3.default)(ScheduleStore, _EventEmitter);
@@ -4903,7 +4909,7 @@
 	    key: 'render',
 	    value: function render(props, state) {
 	      var saldo = _moneyDifference2.default.saldo() > 0;
-	      var arrow = saldo ? '\u2197' : '\u2198';
+	      var arrow = saldo ? _UI2.default.symbols.upRight : _UI2.default.symbols.downRight;
 
 	      var s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
 	      var moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
@@ -4924,21 +4930,6 @@
 	        );
 	      };
 
-	      //   <div className={navigation}>
-	      //     <UI.Button
-	      //       text={paused ? '>' : '||'}
-	      //       onClick={paused ? props.resumeGame : props.pauseGame}
-	      //     />
-	      //   </div>
-	      //   <div className={navigation}>
-	      //     <UI.Button
-	      //   text=">>"
-	      //   onClick={props.setGameSpeed(5)}
-	      // />
-	      // </div>
-	      //   <div className={navigation}>
-	      //     <UI.Button text=">>>" onClick={props.setGameSpeed(9)} />
-	      // </div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -5097,6 +5088,10 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _defineProperty2 = __webpack_require__(163);
+
+	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
 	var _getPrototypeOf = __webpack_require__(40);
 
@@ -5551,21 +5546,34 @@
 	      var CLIENTS_MID = 1000;
 	      var CLIENTS_LOW = 100;
 
+	      var clientMin = void 0;
+	      var clientMax = void 0;
+
 	      if (clients > CLIENTS_LOT) {
 	        factor = 1;
+	        clientMax = CLIENTS_LOT;
+	        clientMin = CLIENTS_LOT;
 	      } else if (clients > CLIENTS_MID) {
 	        factor = 0.9;
+	        clientMax = CLIENTS_LOT;
+	        clientMin = CLIENTS_MID;
 	      } else if (clients > CLIENTS_LOW) {
 	        factor = 0.8;
+	        clientMax = CLIENTS_MID;
+	        clientMin = CLIENTS_LOW;
 	      } else {
 	        factor = 0.3;
+	        clientMax = CLIENTS_LOW;
+	        clientMin = 0;
 	      }
 
-	      return {
+	      return (0, _defineProperty3.default)({
 	        modifier: factor,
 	        clients: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW],
-	        factors: [1, 0.9, 0.8, 0.3]
-	      };
+	        factors: [1, 0.9, 0.8, 0.3],
+	        clientMax: clientMax,
+	        clientMin: clientMin
+	      }, 'clients', clients);
 	    }
 	  }, {
 	    key: 'getImprovementChances',
@@ -5888,13 +5896,18 @@
 
 	var _Select2 = _interopRequireDefault(_Select);
 
+	var _arrows = __webpack_require__(162);
+
+	var _arrows2 = _interopRequireDefault(_arrows);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = {
 	  Button: _Button2.default,
 	  Modal: _Modal2.default,
 	  Select: _Select2.default,
-	  Range: _Range2.default
+	  Range: _Range2.default,
+	  symbols: _arrows2.default
 	};
 
 /***/ },
@@ -7671,6 +7684,10 @@
 
 	var _Button2 = _interopRequireDefault(_Button);
 
+	var _UI = __webpack_require__(129);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
 	var _professions = __webpack_require__(152);
 
 	var PROFESSIONS = _interopRequireWildcard(_professions);
@@ -7708,8 +7725,6 @@
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
 
 	var DevelopPanel = function (_Component) {
 	  (0, _inherits3.default)(DevelopPanel, _Component);
@@ -7842,7 +7857,7 @@
 	            time,
 	            ' \u0434\u043D\u0435\u0439'
 	          ),
-	          (0, _preact.h)(_Button2.default, {
+	          (0, _preact.h)(_UI2.default.Button, {
 	            disabled: disabled,
 	            onClick: action,
 	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
@@ -7850,7 +7865,7 @@
 	          })
 	        );
 	      };
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    }, _this.renderMainFeatureTab = function () {}, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
 	  (0, _createClass3.default)(DevelopPanel, [{
@@ -7905,7 +7920,7 @@
 	              { key: key },
 	              userOrientedFeatureName,
 	              ' (\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E) ',
-	              '\u2713',
+	              _UI2.default.symbols.ok,
 	              (0, _preact.h)('br', null),
 	              (0, _preact.h)(
 	                'div',
@@ -7971,7 +7986,7 @@
 	              { key: key },
 	              userOrientedFeatureName,
 	              ': \u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E ',
-	              '\u2713',
+	              _UI2.default.symbols.ok,
 	              (0, _preact.h)('br', null),
 	              (0, _preact.h)(
 	                'div',
@@ -8017,7 +8032,7 @@
 	                )
 	              )
 	            ),
-	            (0, _preact.h)(_Button2.default, {
+	            (0, _preact.h)(_UI2.default.Button, {
 	              text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
 	              disabled: !enoughPointsToUpgrade,
 	              onClick: upgradeFeature,
@@ -8042,10 +8057,17 @@
 
 	      var payment = this.getPaymentFeatures(idea).map(renderFeature('payment'));
 
-	      // var arrow = saldo ? '\u2197' : '\u2198';
-	      var upArrow = '\u2191';
+	      var upArrow = _UI2.default.symbols.up;
+
+	      var done = _UI2.default.symbols.ok;
+	      var cancel = 'X';
 
 	      var improvements = _productStore2.default.getImprovementChances(id);
+	      var webvisorStatus = improvements.hasWebvisor ? done : cancel;
+	      var segmentingStatus = improvements.hasSegmenting ? done : cancel;
+	      var feedbackStatus = improvements.hasFeedback ? done : cancel;
+
+	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -8085,7 +8107,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              'XP: ',
+	              '\u041C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0435 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP): ',
 	              improvements.max
 	            ),
 	            (0, _preact.h)(
@@ -8098,30 +8120,42 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
+	              feedbackStatus,
+	              ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
 	              improvements.feedbackBonus,
 	              'XP)'
 	            ),
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
+	              webvisorStatus,
+	              ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
 	              improvements.webvisorBonus,
 	              'XP)'
 	            ),
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 (+',
+	              segmentingStatus,
+	              ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 (+',
 	              improvements.segmentingBonus,
 	              'XP)'
 	            ),
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0414\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u043E\u0441\u0442\u044C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F: ',
-	              improvements.clientModifier.modifier * 100,
-	              '%'
+	              '\u0428\u0442\u0440\u0430\u0444 \u0437\u0430 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u0441\u0442\u043E\u0432\u043E\u0439 \u0433\u0440\u0443\u043F\u043F\u044B (',
+	              improvements.clientModifier.clients,
+	              ') : ',
+	              clientSizePenalty,
+	              '% (\u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0435\u043D\u044C\u0448\u0435, \u0447\u0435\u043C ',
+	              improvements.clientModifier.clientMax,
+	              ')'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0427\u0442\u043E\u0431\u044B \u0438\u0437\u0431\u0430\u0432\u0438\u0442\u044C\u0441\u044F \u043E\u0442 \u044D\u0442\u043E\u0433\u043E \u0448\u0442\u0440\u0430\u0444\u0430, \u043F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -8234,6 +8268,7 @@
 	  }]);
 	  return DevelopPanel;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = DevelopPanel;
 
@@ -9175,6 +9210,62 @@
 	  scheduleActions: _scheduleActions2.default,
 	  messageActions: _messageActions2.default,
 	  productActions: _productActions2.default
+	};
+
+/***/ },
+/* 161 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var GAME_STAGE_INIT = exports.GAME_STAGE_INIT = 'GAME_STAGE_INIT';
+
+/***/ },
+/* 162 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {
+	  up: '\u2191',
+	  upRight: '\u2197',
+	  downRight: '\u2198',
+	  ok: '\u2713'
+	};
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	var _defineProperty = __webpack_require__(47);
+
+	var _defineProperty2 = _interopRequireDefault(_defineProperty);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (obj, key, value) {
+	  if (key in obj) {
+	    (0, _defineProperty2.default)(obj, key, {
+	      value: value,
+	      enumerable: true,
+	      configurable: true,
+	      writable: true
+	    });
+	  } else {
+	    obj[key] = value;
+	  }
+
+	  return obj;
 	};
 
 /***/ }

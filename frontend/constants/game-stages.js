@@ -1,0 +1,1 @@
+export const GAME_STAGE_INIT = 'GAME_STAGE_INIT';
