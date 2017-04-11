@@ -38,7 +38,7 @@ let _products = [{
 
     payment: {},
   },
-
+  XP: 0,
   KPI: {
     // accumulated values
     debt: 0, // technical debt. Shows, how fast can you implement new features
@@ -370,28 +370,35 @@ class ProductStore extends EventEmitter {
     let clientMin;
     let clientMax;
 
+    let index;
+
     if (clients > CLIENTS_LOT) {
       factor = 1;
       clientMax = CLIENTS_LOT;
       clientMin = CLIENTS_LOT;
+      index = 0;
     } else if (clients > CLIENTS_MID) {
       factor = 0.9;
       clientMax = CLIENTS_LOT;
       clientMin = CLIENTS_MID;
+      index = 1;
     } else if (clients > CLIENTS_LOW) {
       factor = 0.8;
       clientMax = CLIENTS_MID;
       clientMin = CLIENTS_LOW;
+      index = 2;
     } else {
       factor = 0.3;
       clientMax = CLIENTS_LOW;
       clientMin = 0;
+      index = 3;
     }
 
     return {
       modifier: factor,
-      clients: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW],
+      clientsRange: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW, 1],
       factors: [1, 0.9, 0.8, 0.3],
+      index,
       clientMax,
       clientMin,
       clients
@@ -469,22 +476,42 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
       _products[id].KPI = p.KPI;
       _products[id].features = p.features;
+      _products[id].XP = 0;
       break;
+
+    case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
+      _products[id].XP += p.value;
+      const features = productDescriptions(_products[id].idea).features;
+
+      let max = 0;
+      features.forEach(f => {
+        max += f.data;
+      });
+
+      if (_products[id].XP > max) {
+        _products[id].XP = max;
+      }
+      break;
+
     case c.PRODUCT_ACTIONS_SWITCH_STAGE:
       _products[id].stage = p.stage;
       break;
+
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
       let previous = _products[id].features[p.featureGroup][p.featureName] || 0;
       let sum = previous + p.value;
-      let max = p.max;
+      max = p.max;
       // _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
       _products[p.id].features[p.featureGroup][p.featureName] = sum > max ? max: sum;
+      _products[p.id].XP -= p.value;
       break;
+
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
       // let previous = _products[id].features[p.featureGroup][p.featureName];
       _products[id].features[p.featureGroup][p.featureName] = 1;
       logger.log('improved feature by points');
       break;
+
     case c.PRODUCT_ACTIONS_CLIENTS_ADD:
       // not all users will become our clients. Some of them will vanish
       // if you got them from ads, efficiency will be less than 1
@@ -494,11 +521,13 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].KPI.clients += clients;
       _products[id].KPI.newClients += clients;
       break;
+
     case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
       clients = p.clients;
       _products[id].KPI.clients += clients;
       _products[id].KPI.newClients = clients;
       break;
+
     case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
       // churn clients
       clients = p.clients;
@@ -508,8 +537,8 @@ Dispatcher.register((p: PayloadType) => {
       } else {
         _products[id].KPI.clients -= Math.floor(clients);
       }
-
       break;
+
     default:
       break;
   }

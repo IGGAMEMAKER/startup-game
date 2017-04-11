@@ -150,9 +150,9 @@ export default class DevelopPanel extends Component {
 
     const action = () => {
       playerActions.spendPoints(pp, mp);
-      scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
-        productActions.improveFeature(id, 'offer', featureName, hypothesis, max);
-      });
+      productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
+      // scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
+      // });
     };
 
     const chance = (hypothesis.baseChance + productStore.getAnalyticsValueForFeatureCreating(id)) * 100;
@@ -181,7 +181,7 @@ export default class DevelopPanel extends Component {
 
   renderMainFeatureTab = () => {
 
-  }
+  };
 
   render() {
     const { props, state } = this;
@@ -237,7 +237,6 @@ export default class DevelopPanel extends Component {
         </div>
       )
     };
-
 
 
     const renderFeature = featureGroup => (feature, i) => {
@@ -341,6 +340,24 @@ export default class DevelopPanel extends Component {
     const feedbackStatus = improvements.hasFeedback ? done : cancel;
 
     const clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
+
+    const cliTabDescription = improvements.clientModifier.clientsRange
+      .map((c, i) => {
+        const penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
+        const isActivated = i === improvements.clientModifier.index ? UI.symbols.ok : '';
+        return <div>
+          {isActivated} Клиентов больше, чем {c} - штраф {penalty}%
+        </div>
+      });
+
+    const testHypothesis = () => {
+      const time = 5;
+      const key = 'testing hypothesis';
+      scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
+        productActions.testHypothesis(id, {}, 0)
+      });
+    };
+
     return (
       <div>
         <b>Развитие продукта</b>
@@ -361,16 +378,27 @@ export default class DevelopPanel extends Component {
               что приводит к увеличению всех основных метрик
             </div>
 
+            <div>Текущие очки экспертизы (XP): {product.XP}</div>
             <div>Максимальное количество экспертизы (XP): {improvements.max}</div>
             <div>Базовое значение: {improvements.basicBonus}XP</div>
             <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
             <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
             <div>{segmentingStatus} Установлен модуль сегментации (+{improvements.segmentingBonus}XP)</div>
+            <div>Штраф за размер тестовой группы: {clientSizePenalty}%</div>
             <div>
-              Штраф за размер тестовой группы ({improvements.clientModifier.clients})
-              : {clientSizePenalty}% (клиентов меньше, чем {improvements.clientModifier.clientMax})
+              Текущий размер тестовой группы: {improvements.clientModifier.clients} клиентов
             </div>
             <div>Чтобы избавиться от этого штрафа, приведите больше клиентов</div>
+            <div>
+              {cliTabDescription}
+            </div>
+            <div>
+              <UI.Button
+                text="Протестировать гипотезу"
+                onClick={testHypothesis}
+                primary
+              />
+            </div>
 
             <div className="featureGroupBody">{featureList}</div>
             <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>

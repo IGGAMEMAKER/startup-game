@@ -5089,10 +5089,6 @@
 	  value: true
 	});
 
-	var _defineProperty2 = __webpack_require__(163);
-
-	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -5180,7 +5176,7 @@
 
 	    payment: {}
 	  },
-
+	  XP: 0,
 	  KPI: {
 	    // accumulated values
 	    debt: 0, // technical debt. Shows, how fast can you implement new features
@@ -5549,31 +5545,39 @@
 	      var clientMin = void 0;
 	      var clientMax = void 0;
 
+	      var index = void 0;
+
 	      if (clients > CLIENTS_LOT) {
 	        factor = 1;
 	        clientMax = CLIENTS_LOT;
 	        clientMin = CLIENTS_LOT;
+	        index = 0;
 	      } else if (clients > CLIENTS_MID) {
 	        factor = 0.9;
 	        clientMax = CLIENTS_LOT;
 	        clientMin = CLIENTS_MID;
+	        index = 1;
 	      } else if (clients > CLIENTS_LOW) {
 	        factor = 0.8;
 	        clientMax = CLIENTS_MID;
 	        clientMin = CLIENTS_LOW;
+	        index = 2;
 	      } else {
 	        factor = 0.3;
 	        clientMax = CLIENTS_LOW;
 	        clientMin = 0;
+	        index = 3;
 	      }
 
-	      return (0, _defineProperty3.default)({
+	      return {
 	        modifier: factor,
-	        clients: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW],
+	        clientsRange: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW, 1],
 	        factors: [1, 0.9, 0.8, 0.3],
+	        index: index,
 	        clientMax: clientMax,
-	        clientMin: clientMin
-	      }, 'clients', clients);
+	        clientMin: clientMin,
+	        clients: clients
+	      };
 	    }
 	  }, {
 	    key: 'getImprovementChances',
@@ -5651,22 +5655,42 @@
 	      _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
 	      _products[id].KPI = p.KPI;
 	      _products[id].features = p.features;
+	      _products[id].XP = 0;
 	      break;
+
+	    case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
+	      _products[id].XP += p.value;
+	      var features = (0, _productDescriptions2.default)(_products[id].idea).features;
+
+	      var max = 0;
+	      features.forEach(function (f) {
+	        max += f.data;
+	      });
+
+	      if (_products[id].XP > max) {
+	        _products[id].XP = max;
+	      }
+	      break;
+
 	    case c.PRODUCT_ACTIONS_SWITCH_STAGE:
 	      _products[id].stage = p.stage;
 	      break;
+
 	    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
 	      var previous = _products[id].features[p.featureGroup][p.featureName] || 0;
 	      var sum = previous + p.value;
-	      var max = p.max;
+	      max = p.max;
 	      // _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
 	      _products[p.id].features[p.featureGroup][p.featureName] = sum > max ? max : sum;
+	      _products[p.id].XP -= p.value;
 	      break;
+
 	    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
 	      // let previous = _products[id].features[p.featureGroup][p.featureName];
 	      _products[id].features[p.featureGroup][p.featureName] = 1;
 	      _logger2.default.log('improved feature by points');
 	      break;
+
 	    case c.PRODUCT_ACTIONS_CLIENTS_ADD:
 	      // not all users will become our clients. Some of them will vanish
 	      // if you got them from ads, efficiency will be less than 1
@@ -5676,11 +5700,13 @@
 	      _products[id].KPI.clients += clients;
 	      _products[id].KPI.newClients += clients;
 	      break;
+
 	    case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
 	      clients = p.clients;
 	      _products[id].KPI.clients += clients;
 	      _products[id].KPI.newClients = clients;
 	      break;
+
 	    case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
 	      // churn clients
 	      clients = p.clients;
@@ -5690,8 +5716,8 @@
 	      } else {
 	        _products[id].KPI.clients -= Math.floor(clients);
 	      }
-
 	      break;
+
 	    default:
 	      break;
 	  }
@@ -5717,6 +5743,7 @@
 	var PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS = exports.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS = 'PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS';
 	var PRODUCT_ACTIONS_SWITCH_STAGE = exports.PRODUCT_ACTIONS_SWITCH_STAGE = 'PRODUCT_ACTIONS_SWITCH_STAGE';
 	var PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = exports.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = 'PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS';
+	var PRODUCT_ACTIONS_TEST_HYPOTHESIS = exports.PRODUCT_ACTIONS_TEST_HYPOTHESIS = 'PRODUCT_ACTIONS_TEST_HYPOTHESIS';
 
 /***/ },
 /* 123 */
@@ -7572,18 +7599,25 @@
 	}
 
 	exports.default = {
-	  improveFeature: function improveFeature(id, featureGroup, featureName, h, max) {
-	    var range = _productStore2.default.getImprovementChances(id);
-
-	    var quality = Math.floor(getRandomRange(range.min, range.max));
-
+	  improveFeature: function improveFeature(id, featureGroup, featureName, h, max, XP) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
 	      id: id,
 	      featureGroup: featureGroup,
 	      featureName: featureName,
-	      value: quality,
+	      value: XP || 1000,
 	      max: max
+	    });
+	  },
+	  testHypothesis: function testHypothesis(id) {
+	    var range = _productStore2.default.getImprovementChances(id);
+
+	    var xp = Math.floor(getRandomRange(range.min, range.max));
+
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
+	      id: id,
+	      value: xp
 	    });
 	  },
 	  improveFeatureByPoints: function improveFeatureByPoints(id, featureGroup, featureName) {
@@ -7823,9 +7857,9 @@
 
 	        var action = function action() {
 	          _playerActions2.default.spendPoints(pp, mp);
-	          _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
-	            _productActions2.default.improveFeature(id, 'offer', featureName, hypothesis, max);
-	          });
+	          _productActions2.default.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
+	          // scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
+	          // });
 	        };
 
 	        var chance = (hypothesis.baseChance + _productStore2.default.getAnalyticsValueForFeatureCreating(id)) * 100;
@@ -8068,6 +8102,30 @@
 	      var feedbackStatus = improvements.hasFeedback ? done : cancel;
 
 	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
+
+	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i) {
+	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
+	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : '';
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          isActivated,
+	          ' \u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ',
+	          c,
+	          ' - \u0448\u0442\u0440\u0430\u0444 ',
+	          penalty,
+	          '%'
+	        );
+	      });
+
+	      var testHypothesis = function testHypothesis() {
+	        var time = 5;
+	        var key = 'testing hypothesis';
+	        _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
+	          _productActions2.default.testHypothesis(id, {}, 0);
+	        });
+	      };
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -8103,6 +8161,12 @@
 	              'div',
 	              { className: 'featureGroupDescription' },
 	              '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0432\u0441\u0435\u0445 \u043E\u0441\u043D\u043E\u0432\u043D\u044B\u0445 \u043C\u0435\u0442\u0440\u0438\u043A'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0422\u0435\u043A\u0443\u0449\u0438\u0435 \u043E\u0447\u043A\u0438 \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP): ',
+	              product.XP
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -8144,18 +8208,35 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0428\u0442\u0440\u0430\u0444 \u0437\u0430 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u0441\u0442\u043E\u0432\u043E\u0439 \u0433\u0440\u0443\u043F\u043F\u044B (',
-	              improvements.clientModifier.clients,
-	              ') : ',
+	              '\u0428\u0442\u0440\u0430\u0444 \u0437\u0430 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u0441\u0442\u043E\u0432\u043E\u0439 \u0433\u0440\u0443\u043F\u043F\u044B: ',
 	              clientSizePenalty,
-	              '% (\u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0435\u043D\u044C\u0448\u0435, \u0447\u0435\u043C ',
-	              improvements.clientModifier.clientMax,
-	              ')'
+	              '%'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u0440\u0430\u0437\u043C\u0435\u0440 \u0442\u0435\u0441\u0442\u043E\u0432\u043E\u0439 \u0433\u0440\u0443\u043F\u043F\u044B: ',
+	              improvements.clientModifier.clients,
+	              ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
 	            ),
 	            (0, _preact.h)(
 	              'div',
 	              null,
 	              '\u0427\u0442\u043E\u0431\u044B \u0438\u0437\u0431\u0430\u0432\u0438\u0442\u044C\u0441\u044F \u043E\u0442 \u044D\u0442\u043E\u0433\u043E \u0448\u0442\u0440\u0430\u0444\u0430, \u043F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              cliTabDescription
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              (0, _preact.h)(_UI2.default.Button, {
+	                text: '\u041F\u0440\u043E\u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u0443',
+	                onClick: testHypothesis,
+	                primary: true
+	              })
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -9237,35 +9318,6 @@
 	  upRight: '\u2197',
 	  downRight: '\u2198',
 	  ok: '\u2713'
-	};
-
-/***/ },
-/* 163 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports.__esModule = true;
-
-	var _defineProperty = __webpack_require__(47);
-
-	var _defineProperty2 = _interopRequireDefault(_defineProperty);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function (obj, key, value) {
-	  if (key in obj) {
-	    (0, _defineProperty2.default)(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-
-	  return obj;
 	};
 
 /***/ }

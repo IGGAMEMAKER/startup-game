@@ -9,18 +9,25 @@ function getRandomRange(min, max) {
 }
 
 export default {
-  improveFeature: (id, featureGroup, featureName, h, max) => {
-    const range = productStore.getImprovementChances(id);
-
-    const quality = Math.floor(getRandomRange(range.min, range.max));
-
+  improveFeature: (id, featureGroup, featureName, h, max, XP) => {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
       id,
       featureGroup,
       featureName,
-      value: quality,
+      value: XP || 1000,
       max
+    })
+  },
+  testHypothesis: (id) => {
+    const range = productStore.getImprovementChances(id);
+
+    const xp = Math.floor(getRandomRange(range.min, range.max));
+
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
+      id,
+      value: xp
     })
   },
   improveFeatureByPoints: (id, featureGroup, featureName) => {
