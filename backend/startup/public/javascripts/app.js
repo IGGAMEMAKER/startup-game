@@ -590,10 +590,6 @@
 
 	var _ProductMenu2 = _interopRequireDefault(_ProductMenu);
 
-	var _Schedule = __webpack_require__(97);
-
-	var _Schedule2 = _interopRequireDefault(_Schedule);
-
 	var _Staff = __webpack_require__(110);
 
 	var _Staff2 = _interopRequireDefault(_Staff);
@@ -622,14 +618,6 @@
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _playerStore = __webpack_require__(116);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _playerActions = __webpack_require__(114);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
 	var _game = __webpack_require__(157);
 
 	var _game2 = _interopRequireDefault(_game);
@@ -644,9 +632,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	// import React, { Component, PropTypes } from 'react';
 
-	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	var GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
 	var GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
 	var GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
@@ -821,7 +809,6 @@
 	          }),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null),
-	          (0, _preact.h)(_Schedule2.default, null),
 	          body,
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null)
@@ -2731,8 +2718,6 @@
 	          ' (\u0415\u0449\u0451 ',
 	          days,
 	          ' \u0434\u043D\u0435\u0439, ',
-	          progress,
-	          ', ',
 	          percentage,
 	          ')'
 	        );
@@ -7734,9 +7719,9 @@
 
 	var _metrics2 = _interopRequireDefault(_metrics);
 
-	var _Button = __webpack_require__(130);
+	var _Schedule = __webpack_require__(97);
 
-	var _Button2 = _interopRequireDefault(_Button);
+	var _Schedule2 = _interopRequireDefault(_Schedule);
 
 	var _UI = __webpack_require__(129);
 
@@ -7896,13 +7881,6 @@
 	        return (0, _preact.h)(
 	          'div',
 	          { key: 'hypothesis' + i, className: 'hypothesis-wrapper' },
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
-	            product.XP,
-	            ' / 1000 XP'
-	          ),
 	          (0, _preact.h)(_UI2.default.Button, {
 	            disabled: disabled,
 	            onClick: action,
@@ -8071,7 +8049,8 @@
 	            onClick: testHypothesis,
 	            primary: true,
 	            disabled: disabled
-	          })
+	          }),
+	          (0, _preact.h)(_Schedule2.default, null)
 	        )
 	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
@@ -8316,6 +8295,13 @@
 	              'div',
 	              { className: 'featureGroupDescription' },
 	              '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0441\u043D\u0438\u0436\u0435\u043D\u0438\u044E \u043E\u0442\u0442\u043E\u043A\u0430 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0434\u043E\u0445\u043E\u0434\u043E\u0432 \u0441 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
+	              product.XP,
+	              ' / 1000 XP'
 	            ),
 	            (0, _preact.h)(
 	              'div',

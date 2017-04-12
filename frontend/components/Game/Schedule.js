@@ -49,7 +49,7 @@ export default class Schedule extends Component {
 
     let result;
     if (task.inProgress) {
-      result = <b>{description} (Ещё {days} дней, {progress}, {percentage})</b>
+      result = <b>{description} (Ещё {days} дней, {percentage})</b>
     } else {
       result = <div>{description} (Ожидает выполнения: {progress}, {percentage})</div>
     }

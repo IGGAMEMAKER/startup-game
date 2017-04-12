@@ -2,7 +2,6 @@ import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
 import ProductMenu from '../Game/ProductMenu';
-import Schedule from '../Game/Schedule';
 import Staff from '../Game/Staff';
 import Menu from '../Game/Menu';
 import Economics from './Economics/Economics';
@@ -11,9 +10,6 @@ import Product from './Product';
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
 import messageStore from '../../stores/message-store';
-
-import playerStore from '../../stores/player-store';
-import playerActions from '../../actions/player-actions';
 
 import gameRunner from '../../game';
 
@@ -46,6 +42,8 @@ export default class Game extends Component {
   initialize = () => {
     this.getProductsFromStore();
     this.pickDataFromScheduleStore();
+
+    
   };
 
   runTimer = () => {
@@ -198,7 +196,6 @@ export default class Game extends Component {
           />
           <br />
           <hr />
-          <Schedule />
 
           {body}
           <br />

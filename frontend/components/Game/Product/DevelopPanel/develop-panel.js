@@ -5,7 +5,7 @@ type PropsType = {};
 
 import ProductDescriptions from '../../../../constants/products/product-descriptions';
 import Metrics from '../KPI/metrics';
-import Button from '../../../Shared/Button';
+import Schedule from '../../Schedule';
 import UI from '../../../UI';
 
 import * as PROFESSIONS from '../../../../constants/professions';
@@ -168,7 +168,6 @@ export default class DevelopPanel extends Component {
         // <div>Стоимость улучшения: {mp}MP и {pp}PP и 1000XP</div>
     return (
       <div key={`hypothesis${i}`} className="hypothesis-wrapper">
-        <div>Доступно: {product.XP} / 1000 XP</div>
         <UI.Button
           disabled={disabled}
           onClick={action}
@@ -259,6 +258,7 @@ export default class DevelopPanel extends Component {
             primary
             disabled={disabled}
           />
+          <Schedule />
         </div>
       </div>
     )
@@ -440,7 +440,7 @@ export default class DevelopPanel extends Component {
               Улучшая главные характеристики продукта, вы повышаете его рейтинг,
               что приводит к снижению оттока клиентов и увеличению доходов с продукта
             </div>
-
+            <div>Доступно: {product.XP} / 1000 XP</div>
             <div className="featureGroupBody">{featureList}</div>
             <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>
