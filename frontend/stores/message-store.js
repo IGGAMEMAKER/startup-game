@@ -76,6 +76,7 @@ const respond = (i, message) => {
 };
 
 const close = i => {
+  logger.debug('close ', i, 'message');
   _messages.splice(i, 1);
 };
 

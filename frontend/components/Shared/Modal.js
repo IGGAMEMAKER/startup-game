@@ -25,13 +25,13 @@ export default class Modal extends Component {
   renderModalBody = renderModal;
 
   render() {
-    const { state } = this;
+    const { state, props } = this;
 
     if (!state.drawable) return <div></div>;
 
     const message = state.messages[0];
 
-    let body = this.renderModalBody(message);
+    let body = this.renderModalBody(message, 0, props.onclose);
         // {JSON.stringify(message)}
 
     return (

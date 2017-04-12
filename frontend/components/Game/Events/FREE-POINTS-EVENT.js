@@ -17,16 +17,19 @@ export default class FreePointsEvent extends Component {
     const pickProgrammingPoints = () => {
       playerActions.increasePoints({ marketing: 0, programming: points * 2 });
       messageActions.closeEvent(id);
+      props.onclose();
     };
 
     const pickMarketingPoints = () => {
       playerActions.increasePoints({ marketing: points * 2, programming: 0 });
       messageActions.closeEvent(id);
+      props.onclose();
     };
 
     const pickBoth = () => {
       playerActions.increasePoints({ marketing: points, programming: points });
       messageActions.closeEvent(id);
+      props.onclose();
     };
 
     return (

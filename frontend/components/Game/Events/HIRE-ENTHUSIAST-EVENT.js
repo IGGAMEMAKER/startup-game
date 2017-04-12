@@ -22,10 +22,12 @@ export default class HireEnthusiastEvent extends Component {
     const hireEnthusiast = () => {
       playerActions.hireWorker(player);
       messageActions.closeEvent(id);
+      props.onclose();
     };
 
     const cancel = () => {
       messageActions.closeEvent(id);
+      props.onclose();
     };
 
     const specialization = teamHelper.getTranslatedSpecialization(player);

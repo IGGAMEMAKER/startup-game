@@ -16,6 +16,7 @@ export default class FreeMoneyEvent extends Component {
     const onClick = () => {
       playerActions.increaseMoney(money);
       messageActions.closeEvent(id);
+      props.onclose();
     };
 
     return (

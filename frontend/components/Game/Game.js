@@ -34,6 +34,7 @@ export default class Game extends Component {
     pause: true,
     gameSpeed: 3,
     timerId: null,
+    counter: 0,
 
     id: 0, // productID
     mode: GAME_MODE_PRODUCT,
@@ -43,7 +44,23 @@ export default class Game extends Component {
     this.getProductsFromStore();
     this.pickDataFromScheduleStore();
 
-    
+    this.runGame();
+  };
+
+  increaseCounter = () => {
+    const counter = this.state.counter;
+    this.setState({
+      counter: counter < 10 ? counter + 1 : 0
+    });
+  };
+
+  runGame = () => {
+    setInterval(() => {
+      if (!this.state.pause && this.state.counter < this.state.gameSpeed) {
+        gameRunner.run();
+      }
+      this.increaseCounter();
+    }, 100)
   };
 
   runTimer = () => {
@@ -59,32 +76,33 @@ export default class Game extends Component {
   };
 
   setGameSpeed = speed => () => {
-    const timerId = this.runTimer();
+    // const timerId = this.runTimer();
     // const object = { gameSpeed: speed };
 
     // object.timerId = timerId;
     // object.pause = false;
     // this.setState(object);
     this.setState({
-      timerId,
+      // timerId,
       pause: false,
       gameSpeed: speed
     });
   };
 
   pauseGame = () => {
-    let timerId = this.state.timerId;
-    clearInterval(timerId);
+    // let timerId = this.state.timerId;
+    // clearInterval(timerId);
     this.setState({ pause: true, timerId: null });
   };
 
   resumeGame = () => {
-    let timerId = this.runTimer();
+    // let timerId = this.runTimer();
     this.setState({
       pause: false,
-      timerId
+      // timerId
     })
   };
+
 
   componentWillMount() {
     this.initialize();
@@ -97,7 +115,7 @@ export default class Game extends Component {
   }
 
   getMessages = () => {
-    logger.debug('MessageStore callback pausing');
+    // logger.debug('MessageStore callback pausing');
     if (messageStore.isDrawable()) {
       this.pauseGame();
     }
@@ -181,7 +199,7 @@ export default class Game extends Component {
     // </div>
     return (
       <div className="body-background">
-        <UI.Modal />
+        <UI.Modal onclose={this.resumeGame} />
         <div className="body-wrapper">
           <Menu
             pauseGame={this.pauseGame}

@@ -664,12 +664,27 @@
 	      pause: true,
 	      gameSpeed: 3,
 	      timerId: null,
+	      counter: 0,
 
 	      id: 0, // productID
 	      mode: GAME_MODE_PRODUCT
 	    }, _this.initialize = function () {
 	      _this.getProductsFromStore();
 	      _this.pickDataFromScheduleStore();
+
+	      _this.runGame();
+	    }, _this.increaseCounter = function () {
+	      var counter = _this.state.counter;
+	      _this.setState({
+	        counter: counter < 10 ? counter + 1 : 0
+	      });
+	    }, _this.runGame = function () {
+	      setInterval(function () {
+	        if (!_this.state.pause && _this.state.counter < _this.state.gameSpeed) {
+	          _game2.default.run();
+	        }
+	        _this.increaseCounter();
+	      }, 100);
 	    }, _this.runTimer = function () {
 	      var timerId = _this.state.timerId;
 	      var speed = _this.state.gameSpeed;
@@ -682,30 +697,29 @@
 	      return timerId;
 	    }, _this.setGameSpeed = function (speed) {
 	      return function () {
-	        var timerId = _this.runTimer();
+	        // const timerId = this.runTimer();
 	        // const object = { gameSpeed: speed };
 
 	        // object.timerId = timerId;
 	        // object.pause = false;
 	        // this.setState(object);
 	        _this.setState({
-	          timerId: timerId,
+	          // timerId,
 	          pause: false,
 	          gameSpeed: speed
 	        });
 	      };
 	    }, _this.pauseGame = function () {
-	      var timerId = _this.state.timerId;
-	      clearInterval(timerId);
+	      // let timerId = this.state.timerId;
+	      // clearInterval(timerId);
 	      _this.setState({ pause: true, timerId: null });
 	    }, _this.resumeGame = function () {
-	      var timerId = _this.runTimer();
+	      // let timerId = this.runTimer();
 	      _this.setState({
-	        pause: false,
-	        timerId: timerId
+	        pause: false
 	      });
 	    }, _this.getMessages = function () {
-	      _logger2.default.debug('MessageStore callback pausing');
+	      // logger.debug('MessageStore callback pausing');
 	      if (_messageStore2.default.isDrawable()) {
 	        _this.pauseGame();
 	      }
@@ -792,7 +806,7 @@
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'body-background' },
-	        (0, _preact.h)(_UI2.default.Modal, null),
+	        (0, _preact.h)(_UI2.default.Modal, { onclose: this.resumeGame }),
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'body-wrapper' },
@@ -6107,14 +6121,15 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var state = this.state;
+	      var state = this.state,
+	          props = this.props;
 
 
 	      if (!state.drawable) return (0, _preact.h)('div', null);
 
 	      var message = state.messages[0];
 
-	      var body = this.renderModalBody(message);
+	      var body = this.renderModalBody(message, 0, props.onclose);
 	      // {JSON.stringify(message)}
 
 	      return (0, _preact.h)(
@@ -6274,6 +6289,7 @@
 	};
 
 	var close = function close(i) {
+	  _logger2.default.debug('close ', i, 'message');
 	  _messages.splice(i, 1);
 	};
 
@@ -6372,22 +6388,25 @@
 
 	var t = _interopRequireWildcard(_events);
 
+	var _logger = __webpack_require__(98);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// import React, { Component, PropTypes } from 'react';
+	exports.default = function (message, id, onClose) {
 
-	exports.default = function (message, id) {
 	  switch (message.data.type) {
 	    case t.GAME_EVENT_FREE_MONEY:
-	      return (0, _preact.h)(_FREEMONEYEVENT2.default, { message: message, id: id });
+	      return (0, _preact.h)(_FREEMONEYEVENT2.default, { message: message, id: id, onclose: onClose });
 	      break;
 	    case t.GAME_EVENT_FREE_POINTS:
-	      return (0, _preact.h)(_FREEPOINTSEVENT2.default, { message: message, id: id });
+	      return (0, _preact.h)(_FREEPOINTSEVENT2.default, { message: message, id: id, onclose: onClose });
 	      break;
 	    case t.GAME_EVENT_HIRE_ENTHUSIAST:
-	      return (0, _preact.h)(_HIREENTHUSIASTEVENT2.default, { message: message, id: id });
+	      return (0, _preact.h)(_HIREENTHUSIASTEVENT2.default, { message: message, id: id, onclose: onClose });
 	      break;
 	  }
 
@@ -6398,6 +6417,7 @@
 	    (0, _stringify2.default)(message)
 	  );
 	};
+	// import React, { Component, PropTypes } from 'react';
 
 /***/ },
 /* 136 */
@@ -6482,6 +6502,7 @@
 	      var onClick = function onClick() {
 	        _playerActions2.default.increaseMoney(money);
 	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
 	      };
 
 	      return (0, _preact.h)(
@@ -6626,16 +6647,19 @@
 	      var pickProgrammingPoints = function pickProgrammingPoints() {
 	        _playerActions2.default.increasePoints({ marketing: 0, programming: points * 2 });
 	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
 	      };
 
 	      var pickMarketingPoints = function pickMarketingPoints() {
 	        _playerActions2.default.increasePoints({ marketing: points * 2, programming: 0 });
 	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
 	      };
 
 	      var pickBoth = function pickBoth() {
 	        _playerActions2.default.increasePoints({ marketing: points, programming: points });
 	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
 	      };
 
 	      return (0, _preact.h)(
@@ -6746,10 +6770,12 @@
 	      var hireEnthusiast = function hireEnthusiast() {
 	        _playerActions2.default.hireWorker(player);
 	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
 	      };
 
 	      var cancel = function cancel() {
 	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
 	      };
 
 	      var specialization = _skills2.default.getTranslatedSpecialization(player);
@@ -9243,7 +9269,7 @@
 
 	var emit = function emit() {
 	  var rnd = Math.floor((0, _random2.default)(0, 30));
-
+	  // return;
 	  switch (rnd) {
 	    case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
 	      var money = Math.ceil((0, _random2.default)(2000, 15000));

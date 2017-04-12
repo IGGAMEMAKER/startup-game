@@ -8,7 +8,7 @@ import logger from '../../helpers/logger/logger';
 
 const emit = () => {
   const rnd = Math.floor(random(0, 30));
-
+  // return;
   switch (rnd) {
     case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
       let money = Math.ceil(random(2000, 15000));
