@@ -9,17 +9,18 @@ import * as t from '../../../constants/events';
 import logger from '../../../helpers/logger/logger';
 
 export default (message, id, onClose) => {
-
   switch (message.data.type) {
     case t.GAME_EVENT_FREE_MONEY:
       return <FreeMoneyEvent message={message} id={id} onclose={onClose} />;
-      break;
+    break;
+
     case t.GAME_EVENT_FREE_POINTS:
       return <FreePointEvent message={message} id={id} onclose={onClose} />;
-      break;
+    break;
+
     case t.GAME_EVENT_HIRE_ENTHUSIAST:
       return <HireEnthusiastEvent message={message} id={id} onclose={onClose} />;
-      break;
+    break;
   }
 
   return <div>render modal body {JSON.stringify(message)}</div>

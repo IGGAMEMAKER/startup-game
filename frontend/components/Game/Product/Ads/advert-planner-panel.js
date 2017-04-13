@@ -36,21 +36,30 @@ export default class AdvertPlannerPanel extends Component {
 
     const id = props.id;
     const costPerClient = productStore.getCostPerClient(id);
+    const competitors = [
+      { rating: 7.2, clients: 3000 },
+      { rating: 3.5, clients: 500 },
+      { rating: 6, clients: 2000 }
+    ];
 
+    const marketStats = productStore.getMaxAmountOfPossibleClients(id, playerStore.getMoney(), competitors);
+    const maxAvailableClients = marketStats.amount;
 
     const { possibleClients } = state;
 
-    const maxPossibleClients = Math.floor(playerStore.getMoney() / costPerClient);
+    const maxPossibleClients = maxAvailableClients; // Math.floor(playerStore.getMoney() / costPerClient);
     const campaignCost = Math.ceil(possibleClients * costPerClient);
 
     return (
       <div>
         <UI.Range min={0} max={maxPossibleClients} onDrag={this.onDrag} />
+        <div>market size: {marketStats.marketSize}</div>
+        <div>av cli: {marketStats.potentialClients}</div>
         <div>
-          <div>Invite {possibleClients} users to your website for {campaignCost}$</div>
+          <div>Пригласить {possibleClients} клиентов за {campaignCost}$</div>
           <UI.Button
             item="start-campaign"
-            text={`Start ad campaign for ${campaignCost}$`}
+            text="Начать рекламную кампанию"
             onClick={this.inviteUsers(id, possibleClients, campaignCost)}
             primary
           />

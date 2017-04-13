@@ -683,6 +683,7 @@
 	        if (!_this.state.pause && _this.state.counter < _this.state.gameSpeed) {
 	          _game2.default.run();
 	        }
+
 	        _this.increaseCounter();
 	      }, 100);
 	    }, _this.runTimer = function () {
@@ -5647,6 +5648,42 @@
 	    value: function getDescriptionOfProduc(id) {
 	      return (0, _productDescriptions2.default)(this.getIdea(id)).description;
 	    }
+	  }, {
+	    key: 'getMaxAmountOfPossibleClients',
+	    value: function getMaxAmountOfPossibleClients(id, money, competitors) {
+	      var maxMarketSize = (0, _productDescriptions2.default)(this.getIdea(id)).marketSize;
+	      var rating = this.getRating(id);
+	      var ourClients = this.getClients(id);
+	      var uncompeteableApps = competitors.filter(function (c) {
+	        return c.rating > rating - 1;
+	      });
+	      var frozen = ourClients + uncompeteableApps.map(function (c) {
+	        return c.clients;
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      });
+	      var availableForYou = maxMarketSize - frozen;
+
+	      var costPerClient = this.getCostPerClient(id);
+	      var canAffordClientsAmount = Math.floor(money / costPerClient);
+	      var result = void 0;
+
+	      if (canAffordClientsAmount > availableForYou) {
+	        // we can buy all available clients
+	        result = availableForYou;
+	      } else {
+	        // we cannot
+	        result = canAffordClientsAmount;
+	      }
+
+	      // return canAffordClientsAmount;
+
+	      return {
+	        marketSize: maxMarketSize,
+	        potentialClients: maxMarketSize - frozen,
+	        amount: result
+	      };
+	    }
 	  }]);
 	  return ProductStore;
 	}(_events.EventEmitter);
@@ -6289,7 +6326,7 @@
 	};
 
 	var close = function close(i) {
-	  _logger2.default.debug('close ', i, 'message');
+	  // logger.debug('close ', i, 'message');
 	  _messages.splice(i, 1);
 	};
 
@@ -6397,14 +6434,15 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = function (message, id, onClose) {
-
 	  switch (message.data.type) {
 	    case t.GAME_EVENT_FREE_MONEY:
 	      return (0, _preact.h)(_FREEMONEYEVENT2.default, { message: message, id: id, onclose: onClose });
 	      break;
+
 	    case t.GAME_EVENT_FREE_POINTS:
 	      return (0, _preact.h)(_FREEPOINTSEVENT2.default, { message: message, id: id, onclose: onClose });
 	      break;
+
 	    case t.GAME_EVENT_HIRE_ENTHUSIAST:
 	      return (0, _preact.h)(_HIREENTHUSIASTEVENT2.default, { message: message, id: id, onclose: onClose });
 	      break;
@@ -8890,11 +8928,15 @@
 
 	      var id = props.id;
 	      var costPerClient = _productStore2.default.getCostPerClient(id);
+	      var competitors = [{ rating: 7.2, clients: 3000 }, { rating: 3.5, clients: 500 }, { rating: 6, clients: 2000 }];
+
+	      var marketStats = _productStore2.default.getMaxAmountOfPossibleClients(id, _playerStore2.default.getMoney(), competitors);
+	      var maxAvailableClients = marketStats.amount;
 
 	      var possibleClients = state.possibleClients;
 
 
-	      var maxPossibleClients = Math.floor(_playerStore2.default.getMoney() / costPerClient);
+	      var maxPossibleClients = maxAvailableClients; // Math.floor(playerStore.getMoney() / costPerClient);
 	      var campaignCost = Math.ceil(possibleClients * costPerClient);
 
 	      return (0, _preact.h)(
@@ -8904,18 +8946,30 @@
 	        (0, _preact.h)(
 	          'div',
 	          null,
+	          'market size: ',
+	          marketStats.marketSize
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          'av cli: ',
+	          marketStats.potentialClients
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
 	          (0, _preact.h)(
 	            'div',
 	            null,
-	            'Invite ',
+	            '\u041F\u0440\u0438\u0433\u043B\u0430\u0441\u0438\u0442\u044C ',
 	            possibleClients,
-	            ' users to your website for ',
+	            ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0437\u0430 ',
 	            campaignCost,
 	            '$'
 	          ),
 	          (0, _preact.h)(_UI2.default.Button, {
 	            item: 'start-campaign',
-	            text: 'Start ad campaign for ' + campaignCost + '$',
+	            text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E',
 	            onClick: this.inviteUsers(id, possibleClients, campaignCost),
 	            primary: true
 	          })

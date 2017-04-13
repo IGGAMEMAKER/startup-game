@@ -59,6 +59,7 @@ export default class Game extends Component {
       if (!this.state.pause && this.state.counter < this.state.gameSpeed) {
         gameRunner.run();
       }
+
       this.increaseCounter();
     }, 100)
   };

@@ -468,6 +468,35 @@ class ProductStore extends EventEmitter {
   getDescriptionOfProduc(id) {
     return productDescriptions(this.getIdea(id)).description;
   }
+
+  getMaxAmountOfPossibleClients(id, money, competitors) {
+    const maxMarketSize = productDescriptions(this.getIdea(id)).marketSize;
+    const rating = this.getRating(id);
+    const ourClients = this.getClients(id);
+    const uncompeteableApps = competitors.filter(c => c.rating > rating - 1);
+    const frozen = ourClients + uncompeteableApps.map(c => c.clients).reduce((p, c) => p + c);
+    const availableForYou = maxMarketSize - frozen;
+
+    const costPerClient = this.getCostPerClient(id);
+    const canAffordClientsAmount = Math.floor(money / costPerClient);
+    let result;
+
+    if (canAffordClientsAmount > availableForYou) {
+      // we can buy all available clients
+      result = availableForYou;
+    } else {
+      // we cannot
+      result = canAffordClientsAmount;
+    }
+
+    // return canAffordClientsAmount;
+
+    return {
+      marketSize: maxMarketSize,
+      potentialClients: maxMarketSize - frozen,
+      amount: result
+    }
+  }
 }
 
 const store = new ProductStore();
