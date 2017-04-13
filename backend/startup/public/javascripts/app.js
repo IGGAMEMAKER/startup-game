@@ -5657,11 +5657,15 @@
 	      var uncompeteableApps = competitors.filter(function (c) {
 	        return c.rating > rating - 1;
 	      });
-	      var frozen = ourClients + uncompeteableApps.map(function (c) {
-	        return c.clients;
-	      }).reduce(function (p, c) {
-	        return p + c;
-	      });
+	      var frozen = ourClients;
+	      if (uncompeteableApps.length) {
+	        frozen += uncompeteableApps.map(function (c) {
+	          return c.clients;
+	        }).reduce(function (p, c) {
+	          return p + c;
+	        });
+	      }
+
 	      var availableForYou = maxMarketSize - frozen;
 
 	      var costPerClient = this.getCostPerClient(id);
@@ -5927,7 +5931,7 @@
 	  features: [{ name: 'scalability', influence: 2.5, description: '', shortDescription: 'Масштабируемость', data: 5000, time: 20 }, { name: 'website', influence: 7.5, description: '', shortDescription: 'Веб-сайт', data: 15000, time: 30 }],
 	  utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
 	  virality: 0.3, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
-	  price: 50,
+	  price: 10,
 	  CAC: 1,
 	  marketSize: 50000,
 	  mvp: {
@@ -7925,7 +7929,7 @@
 
 
 	        var action = function action() {
-	          _playerActions2.default.spendPoints(pp, mp);
+	          // playerActions.spendPoints(pp, mp);
 	          _productActions2.default.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
 	        };
 
@@ -8942,19 +8946,20 @@
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxPossibleClients, onDrag: this.onDrag }),
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          'market size: ',
-	          marketStats.marketSize
+	          '\u041E\u0431\u044A\u0451\u043C \u0440\u044B\u043D\u043A\u0430: ',
+	          marketStats.marketSize,
+	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
 	        ),
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          'av cli: ',
+	          '\u0412\u0430\u0448\u0430 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F: ',
 	          marketStats.potentialClients
 	        ),
+	        (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxPossibleClients, onDrag: this.onDrag }),
 	        (0, _preact.h)(
 	          'div',
 	          null,

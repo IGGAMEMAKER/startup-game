@@ -149,7 +149,7 @@ export default class DevelopPanel extends Component {
     const { pp, mp } = necessaryPoints;
 
     const action = () => {
-      playerActions.spendPoints(pp, mp);
+      // playerActions.spendPoints(pp, mp);
       productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
     };
 

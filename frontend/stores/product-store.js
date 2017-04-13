@@ -474,7 +474,11 @@ class ProductStore extends EventEmitter {
     const rating = this.getRating(id);
     const ourClients = this.getClients(id);
     const uncompeteableApps = competitors.filter(c => c.rating > rating - 1);
-    const frozen = ourClients + uncompeteableApps.map(c => c.clients).reduce((p, c) => p + c);
+    let frozen = ourClients;
+    if (uncompeteableApps.length) {
+      frozen += uncompeteableApps.map(c => c.clients).reduce((p, c) => p + c);
+    }
+
     const availableForYou = maxMarketSize - frozen;
 
     const costPerClient = this.getCostPerClient(id);

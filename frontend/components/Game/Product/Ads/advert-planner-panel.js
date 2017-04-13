@@ -52,9 +52,9 @@ export default class AdvertPlannerPanel extends Component {
 
     return (
       <div>
+        <div>Объём рынка: {marketStats.marketSize} человек</div>
+        <div>Ваша потенциальная аудитория: {marketStats.potentialClients}</div>
         <UI.Range min={0} max={maxPossibleClients} onDrag={this.onDrag} />
-        <div>market size: {marketStats.marketSize}</div>
-        <div>av cli: {marketStats.potentialClients}</div>
         <div>
           <div>Пригласить {possibleClients} клиентов за {campaignCost}$</div>
           <UI.Button
