@@ -55,13 +55,13 @@ export default class Game extends Component {
   };
 
   runGame = () => {
-    setInterval(() => {
-      if (!this.state.pause && this.state.counter < this.state.gameSpeed) {
-        gameRunner.run();
-      }
+    if (!this.state.pause) {
+      gameRunner.run();
+    }
 
-      this.increaseCounter();
-    }, 100)
+    setTimeout(() => {
+      this.runGame();
+    }, 1000 / this.state.gameSpeed);
   };
 
   runTimer = () => {

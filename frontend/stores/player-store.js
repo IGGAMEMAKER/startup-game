@@ -229,6 +229,8 @@ Dispatcher.register((p: PayloadType) => {
       break;
     case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
       _employees.push(p.player);
+      logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+      logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
       break;
     default:
       break;

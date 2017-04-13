@@ -679,13 +679,13 @@
 	        counter: counter < 10 ? counter + 1 : 0
 	      });
 	    }, _this.runGame = function () {
-	      setInterval(function () {
-	        if (!_this.state.pause && _this.state.counter < _this.state.gameSpeed) {
-	          _game2.default.run();
-	        }
+	      if (!_this.state.pause) {
+	        _game2.default.run();
+	      }
 
-	        _this.increaseCounter();
-	      }, 100);
+	      setTimeout(function () {
+	        _this.runGame();
+	      }, 1000 / _this.state.gameSpeed);
 	    }, _this.runTimer = function () {
 	      var timerId = _this.state.timerId;
 	      var speed = _this.state.gameSpeed;
@@ -4793,6 +4793,8 @@
 	      break;
 	    case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
 	      _employees.push(p.player);
+	      _logger2.default.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+	      _logger2.default.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
 	      break;
 	    default:
 	      break;
@@ -9380,14 +9382,16 @@
 	  if (day === 45) {
 	    var money = Math.ceil((0, _random2.default)(2000, 15000));
 	    _flux2.default.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_MONEY, { money: money });
+	    return;
 	  }
 
 	  if (day === 60) {
 	    var points = Math.ceil((0, _random2.default)(50, 275));
 	    _flux2.default.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points: points });
+	    return;
 	  }
 
-	  var rnd = Math.floor((0, _random2.default)(0, 180));
+	  var rnd = Math.floor((0, _random2.default)(0, 5));
 	  // return;
 	  switch (rnd) {
 	    // case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
@@ -9395,10 +9399,10 @@
 	    //   flux.messageActions.addGameEvent(rnd, { money });
 	    //   break;
 
-	    case GAME_EVENTS.GAME_EVENT_FREE_POINTS:
-	      var _points = Math.ceil((0, _random2.default)(50, 275));
-	      _flux2.default.messageActions.addGameEvent(rnd, { points: _points });
-	      break;
+	    // case GAME_EVENTS.GAME_EVENT_FREE_POINTS:
+	    //   let points = Math.ceil(random(50, 275));
+	    //   flux.messageActions.addGameEvent(rnd, { points });
+	    //   break;
 
 	    case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
 	      var teamCount = _flux2.default.playerStore.getTeam().length;
@@ -9437,17 +9441,17 @@
 	        // };
 
 	        var player = {
-	          player: {
-	            name: name,
-	            skills: {
-	              programming: programming,
-	              marketing: marketing,
-	              analyst: analyst
-	            },
-	            task: JOB.JOB_TASK_MARKETING_POINTS,
-	            jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-	            salary: salary
-	          }
+	          // player: {
+	          name: name,
+	          skills: {
+	            programming: programming,
+	            marketing: marketing,
+	            analyst: analyst
+	          },
+	          task: JOB.JOB_TASK_MARKETING_POINTS,
+	          jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+	          salary: salary
+	          // }
 	        };
 
 	        _flux2.default.playerActions.addEmployee(player);

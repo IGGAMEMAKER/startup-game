@@ -10,14 +10,16 @@ const emit = (day) => {
   if (day === 45) {
     let money = Math.ceil(random(2000, 15000));
     flux.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_MONEY, { money });
+    return;
   }
 
   if (day === 60) {
     let points = Math.ceil(random(50, 275));
     flux.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points });
+    return;
   }
 
-  const rnd = Math.floor(random(0, 180));
+  const rnd = Math.floor(random(0, 5));
   // return;
   switch (rnd) {
     // case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
@@ -25,10 +27,10 @@ const emit = (day) => {
     //   flux.messageActions.addGameEvent(rnd, { money });
     //   break;
 
-    case GAME_EVENTS.GAME_EVENT_FREE_POINTS:
-      let points = Math.ceil(random(50, 275));
-      flux.messageActions.addGameEvent(rnd, { points });
-      break;
+    // case GAME_EVENTS.GAME_EVENT_FREE_POINTS:
+    //   let points = Math.ceil(random(50, 275));
+    //   flux.messageActions.addGameEvent(rnd, { points });
+    //   break;
 
     case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
       const teamCount = flux.playerStore.getTeam().length;
@@ -67,7 +69,7 @@ const emit = (day) => {
         // };
 
         const player = {
-          player: {
+          // player: {
             name,
             skills: {
               programming,
@@ -77,7 +79,7 @@ const emit = (day) => {
             task: JOB.JOB_TASK_MARKETING_POINTS,
             jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
             salary
-          }
+          // }
         };
 
         flux.playerActions.addEmployee(player);
