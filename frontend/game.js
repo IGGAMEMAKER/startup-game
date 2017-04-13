@@ -109,7 +109,7 @@ const run = () => {
   }
 
   // try to make an event
-  eventGenerator.emit();
+  eventGenerator.emit(day);
 };
 
 export default {

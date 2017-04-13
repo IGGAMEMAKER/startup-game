@@ -26,6 +26,23 @@ let _points = {
   analyst: 1000
 };
 
+let _employees = [
+  {
+    name: 'Lynda',
+    skills: {
+      programming: 0,
+      marketing: 500,
+      analyst: 150
+    },
+    task: JOB.JOB_TASK_MARKETING_POINTS,
+    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+    salary: {
+      money: 500,
+      percent: 0
+    }
+  }
+];
+
 let _team = [
   {
     name: 'James',
@@ -41,17 +58,6 @@ let _team = [
     // на каком основании работает в проекте
     // за еду, за опыт, за процент с продаж, собственник бизнеса
   },
-  // {
-  //   name: 'Lynda',
-  //   skills: {
-  //     programming: 0,
-  //     marketing: 500,
-  //     analyst: 150,
-  //   },
-  //   task: JOB.JOB_TASK_MARKETING_POINTS,
-  //   jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-  //   salary: {}
-  // }
 ];
 
 let _reputation = 50; // neutral reputation
@@ -146,6 +152,10 @@ class PlayerStore extends EventEmitter {
 
     return this.getSkill(p.skills.programming) * programmingEfficiency;
   }
+
+  getEmployees() {
+    return _employees;
+  }
 }
 
 const store = new PlayerStore();
@@ -215,6 +225,10 @@ Dispatcher.register((p: PayloadType) => {
       break;
     case c.PLAYER_ACTIONS_HIRE_WORKER:
       _team.push(p.player);
+      _employees.splice(p.i, 1);
+      break;
+    case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
+      _employees.push(p.player);
       break;
     default:
       break;

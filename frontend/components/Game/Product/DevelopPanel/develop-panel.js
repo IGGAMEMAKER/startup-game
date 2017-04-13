@@ -160,12 +160,6 @@ export default class DevelopPanel extends Component {
     // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
     const disabled = ratingOverflow || currentXP < 1000;
 
-    // let text = <span>Протестировать гипотезу ({time} дней)</span>;
-    // let text = <span>Улучшить характеристику за </span>;
-
-        // <div className="hypothesis">Гипотеза (Ценность - {hypothesis.data}XP, {chance}% шанс)</div>
-        // <div>Срок улучшения: {time} дней</div>
-        // <div>Стоимость улучшения: {mp}MP и {pp}PP и 1000XP</div>
     return (
       <div key={`hypothesis${i}`} className="hypothesis-wrapper">
         <UI.Button

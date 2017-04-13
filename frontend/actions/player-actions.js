@@ -15,9 +15,16 @@ export default {
       amount
     })
   },
-  hireWorker: player => {
+  hireWorker: (player, i) => {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_HIRE_WORKER,
+      player,
+      i
+    })
+  },
+  addEmployee: player => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_ADD,
       player
     })
   },

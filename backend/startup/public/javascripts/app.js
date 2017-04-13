@@ -3975,6 +3975,10 @@
 	  value: true
 	});
 
+	var _stringify = __webpack_require__(136);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
+
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -4005,17 +4009,9 @@
 
 	var JOB = _interopRequireWildcard(_job);
 
-	var _percentify = __webpack_require__(100);
+	var _UI = __webpack_require__(129);
 
-	var _percentify2 = _interopRequireDefault(_percentify);
-
-	var _round = __webpack_require__(96);
-
-	var _round2 = _interopRequireDefault(_round);
-
-	var _specialization = __webpack_require__(112);
-
-	var _specialization2 = _interopRequireDefault(_specialization);
+	var _UI2 = _interopRequireDefault(_UI);
 
 	var _skills = __webpack_require__(113);
 
@@ -4024,6 +4020,10 @@
 	var _playerActions = __webpack_require__(114);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _flux = __webpack_require__(160);
+
+	var _flux2 = _interopRequireDefault(_flux);
 
 	var _Select = __webpack_require__(118);
 
@@ -4041,7 +4041,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// import React, { Component, PropTypes } from 'react';
 	var Staff = function (_Component) {
 	  (0, _inherits3.default)(Staff, _Component);
 
@@ -4058,10 +4057,12 @@
 
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Staff.__proto__ || (0, _getPrototypeOf2.default)(Staff)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
 	      staff: [],
+	      employees: [],
 	      collapse: false
 	    }, _this.getStaff = function () {
 	      _this.setState({
-	        staff: _playerStore2.default.getTeam()
+	        staff: _playerStore2.default.getTeam(),
+	        employees: _playerStore2.default.getEmployees()
 	      });
 	    }, _this.toggleStaff = function () {
 	      _this.setState({ collapse: !_this.state.collapse });
@@ -4072,7 +4073,9 @@
 	        { style: { color: _coloringRange2.default.standard(value, 10) } },
 	        value
 	      );
-	    }, _this.renderPerson = function (p, i) {
+	    }, _this.renderEmployee = function (p, i) {
+	      return _this.renderPerson(p, i, true);
+	    }, _this.renderPerson = function (p, i, isEmployee) {
 	      var specialization = _skills2.default.getTranslatedSpecialization(p);
 
 	      var motivation = '';
@@ -4090,18 +4093,28 @@
 	      var work = '';
 	      var value = '';
 
+	      var produces = isEmployee ? 'Может производить' : 'Производит';
+
 	      switch (p.task) {
 	        case JOB.JOB_TASK_MARKETING_POINTS:
 	          value = _playerStore2.default.getMarketingPointsProducedBy(p);
-	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442 ' + value + 'MP (Marketing Points) / month';
+	          work = produces + ' ' + value + 'MP (Marketing Points) / month';
 	          break;
 	        case JOB.JOB_TASK_PROGRAMMER_POINTS:
 	          value = _playerStore2.default.getProgrammingPointsProducedBy(p);
-	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442 ' + value + 'PP (Programming Points) / month';
+	          work = produces + ' ' + value + 'PP (Programming Points) / month';
 	          break;
 	      }
 
 	      var tasks = [{ text: 'Программирование', value: JOB.JOB_TASK_PROGRAMMER_POINTS }, { text: 'Маркетинг', value: JOB.JOB_TASK_MARKETING_POINTS }];
+
+	      var hireButton = '';
+	      if (isEmployee) {
+	        var hire = function hire() {
+	          _playerActions2.default.hireWorker(p, i);
+	        };
+	        hireButton = (0, _preact.h)(_UI2.default.Button, { onClick: hire, text: '\u041D\u0430\u043D\u044F\u0442\u044C' });
+	      }
 
 	      return (0, _preact.h)(
 	        'div',
@@ -4114,8 +4127,6 @@
 	          _this.getSkill(p.skills.programming),
 	          '/',
 	          _this.getSkill(p.skills.marketing),
-	          '/',
-	          _this.getSkill(p.skills.analyst),
 	          ')'
 	        ),
 	        (0, _preact.h)(
@@ -4155,6 +4166,12 @@
 	          '\u041C\u043E\u0442\u0438\u0432\u0430\u0446\u0438\u044F: ',
 	          motivation
 	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _stringify2.default)(p.salary)
+	        ),
+	        hireButton,
 	        (0, _preact.h)('br', null)
 	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
@@ -4177,8 +4194,13 @@
 
 	    // render(props: PropsType, state: StateType) {
 	    value: function render() {
+	      var _this3 = this;
+
 	      // return <div>MOCK</div>;
-	      var staff = this.state.staff;
+	      var _state = this.state,
+	          staff = _state.staff,
+	          employees = _state.employees;
+
 
 	      var collapse = this.state.collapse;
 	      return (0, _preact.h)(
@@ -4191,12 +4213,24 @@
 	          collapse ? staff.length : '-',
 	          ')'
 	        ),
-	        staff.length && !collapse ? staff.map(this.renderPerson) : ''
+	        staff.length && !collapse ? staff.map(function (p, i) {
+	          return _this3.renderPerson(p, i, false);
+	        }) : '',
+	        (0, _preact.h)(
+	          'h4',
+	          { onClick: this.toggleStaff },
+	          '\u0421\u043E\u0438\u0441\u043A\u0430\u0442\u0435\u043B\u0438 (',
+	          collapse ? staff.length : '-',
+	          ')'
+	        ),
+	        employees.length && !collapse ? employees.map(this.renderEmployee) : ''
 	      );
 	    }
 	  }]);
 	  return Staff;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
 
 	exports.default = Staff;
 	;
@@ -4342,9 +4376,16 @@
 	      amount: amount
 	    });
 	  },
-	  hireWorker: function hireWorker(player) {
+	  hireWorker: function hireWorker(player, i) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PLAYER_ACTIONS_HIRE_WORKER,
+	      player: player,
+	      i: i
+	    });
+	  },
+	  addEmployee: function addEmployee(player) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_ADD,
 	      player: player
 	    });
 	  },
@@ -4419,6 +4460,9 @@
 	var PLAYER_ACTIONS_BUY_MP = exports.PLAYER_ACTIONS_BUY_MP = 'PLAYER_ACTIONS_BUY_MP';
 	var PLAYER_ACTIONS_DECREASE_POINTS = exports.PLAYER_ACTIONS_DECREASE_POINTS = 'PLAYER_ACTIONS_DECREASE_POINTS';
 	var PLAYER_ACTIONS_HIRE_WORKER = exports.PLAYER_ACTIONS_HIRE_WORKER = 'PLAYER_ACTIONS_HIRE_WORKER';
+	var PLAYER_ACTIONS_FIRE_WORKER = exports.PLAYER_ACTIONS_FIRE_WORKER = 'PLAYER_ACTIONS_FIRE_WORKER';
+	var PLAYER_ACTIONS_EMPLOYEE_ADD = exports.PLAYER_ACTIONS_EMPLOYEE_ADD = 'PLAYER_ACTIONS_EMPLOYEE_ADD';
+	var PLAYER_ACTIONS_EMPLOYEE_REMOVE = exports.PLAYER_ACTIONS_EMPLOYEE_REMOVE = 'PLAYER_ACTIONS_EMPLOYEE_REMOVE';
 
 /***/ },
 /* 116 */
@@ -4500,6 +4544,21 @@
 	  marketing: 1000,
 	  analyst: 1000
 	};
+
+	var _employees = [{
+	  name: 'Lynda',
+	  skills: {
+	    programming: 0,
+	    marketing: 500,
+	    analyst: 150
+	  },
+	  task: JOB.JOB_TASK_MARKETING_POINTS,
+	  jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+	  salary: {
+	    money: 500,
+	    percent: 0
+	  }
+	}];
 
 	var _team = [{
 	  name: 'James',
@@ -4654,6 +4713,11 @@
 
 	      return this.getSkill(p.skills.programming) * programmingEfficiency;
 	    }
+	  }, {
+	    key: 'getEmployees',
+	    value: function getEmployees() {
+	      return _employees;
+	    }
 	  }]);
 	  return PlayerStore;
 	}(_events.EventEmitter);
@@ -4725,6 +4789,10 @@
 	      break;
 	    case c.PLAYER_ACTIONS_HIRE_WORKER:
 	      _team.push(p.player);
+	      _employees.splice(p.i, 1);
+	      break;
+	    case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
+	      _employees.push(p.player);
 	      break;
 	    default:
 	      break;
@@ -6783,23 +6851,11 @@
 	  (0, _inherits3.default)(HireEnthusiastEvent, _Component);
 
 	  function HireEnthusiastEvent() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
 	    (0, _classCallCheck3.default)(this, HireEnthusiastEvent);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = HireEnthusiastEvent.__proto__ || (0, _getPrototypeOf2.default)(HireEnthusiastEvent)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    return (0, _possibleConstructorReturn3.default)(this, (HireEnthusiastEvent.__proto__ || (0, _getPrototypeOf2.default)(HireEnthusiastEvent)).apply(this, arguments));
 	  }
 
 	  (0, _createClass3.default)(HireEnthusiastEvent, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var props = this.props;
@@ -7940,12 +7996,6 @@
 	        // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
 	        var disabled = ratingOverflow || currentXP < 1000;
 
-	        // let text = <span>Протестировать гипотезу ({time} дней)</span>;
-	        // let text = <span>Улучшить характеристику за </span>;
-
-	        // <div className="hypothesis">Гипотеза (Ценность - {hypothesis.data}XP, {chance}% шанс)</div>
-	        // <div>Срок улучшения: {time} дней</div>
-	        // <div>Стоимость улучшения: {mp}MP и {pp}PP и 1000XP</div>
 	        return (0, _preact.h)(
 	          'div',
 	          { key: 'hypothesis' + i, className: 'hypothesis-wrapper' },
@@ -9285,7 +9335,7 @@
 	  }
 
 	  // try to make an event
-	  _eventGenerator2.default.emit();
+	  _eventGenerator2.default.emit(day);
 	};
 
 	exports.default = {
@@ -9326,22 +9376,33 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var emit = function emit() {
-	  var rnd = Math.floor((0, _random2.default)(0, 30));
+	var emit = function emit(day) {
+	  if (day === 45) {
+	    var money = Math.ceil((0, _random2.default)(2000, 15000));
+	    _flux2.default.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_MONEY, { money: money });
+	  }
+
+	  if (day === 60) {
+	    var points = Math.ceil((0, _random2.default)(50, 275));
+	    _flux2.default.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points: points });
+	  }
+
+	  var rnd = Math.floor((0, _random2.default)(0, 180));
 	  // return;
 	  switch (rnd) {
-	    case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
-	      var money = Math.ceil((0, _random2.default)(2000, 15000));
-	      _flux2.default.messageActions.addGameEvent(rnd, { money: money });
-	      break;
+	    // case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
+	    //   let money = Math.ceil(random(2000, 15000));
+	    //   flux.messageActions.addGameEvent(rnd, { money });
+	    //   break;
 
 	    case GAME_EVENTS.GAME_EVENT_FREE_POINTS:
-	      var points = Math.ceil((0, _random2.default)(50, 275));
-	      _flux2.default.messageActions.addGameEvent(rnd, { points: points });
+	      var _points = Math.ceil((0, _random2.default)(50, 275));
+	      _flux2.default.messageActions.addGameEvent(rnd, { points: _points });
 	      break;
 
 	    case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
-	      if (_flux2.default.playerStore.getTeam().length < 4) {
+	      var teamCount = _flux2.default.playerStore.getTeam().length;
+	      if (teamCount < 4) {
 	        var names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella'];
 	        var index = Math.floor((0, _random2.default)(0, names.length));
 	        var name = names[index];
@@ -9350,7 +9411,32 @@
 	        var marketing = Math.floor((0, _random2.default)(0, 1000));
 	        var analyst = Math.floor((0, _random2.default)(0, 1000));
 
-	        _flux2.default.messageActions.addGameEvent(rnd, {
+	        var rating = programming + marketing;
+
+	        var salary = void 0;
+	        var pricingType = Math.floor((0, _random2.default)(0, 2));
+	        switch (pricingType) {
+	          case 0:
+	            // only percents
+	            salary = {
+	              money: 0,
+	              percent: Math.floor((0, _random2.default)(rating / 100, 50) / teamCount)
+	            };
+	            break;
+	          case 1:
+	            // only money
+	            salary = {
+	              money: Math.floor((0, _random2.default)(rating * 0.75, rating * 1.25)),
+	              percent: 0
+	            };
+	            break;
+	        }
+	        // let salary = {
+	        //   money: Math.floor(random(rating * 0.75, rating * 1.25)),
+	        //   percent: Math.floor(random(rating * 0.75, rating * 1.25))
+	        // };
+
+	        var player = {
 	          player: {
 	            name: name,
 	            skills: {
@@ -9360,9 +9446,12 @@
 	            },
 	            task: JOB.JOB_TASK_MARKETING_POINTS,
 	            jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-	            salary: {}
+	            salary: salary
 	          }
-	        });
+	        };
+
+	        _flux2.default.playerActions.addEmployee(player);
+	        // flux.messageActions.addGameEvent(rnd, );
 	      }
 	      break;
 	  }

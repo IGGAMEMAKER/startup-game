@@ -3,13 +3,12 @@ import { h, Component } from 'preact';
 import logger from '../../helpers/logger/logger';
 import * as JOB from '../../constants/job';
 
-import percentify from '../../helpers/math/percentify';
-import round from '../../helpers/math/round';
+import UI from '../UI';
 
-import getSpecialization from '../../helpers/team/specialization';
 import teamHelper from '../../helpers/team/skills';
 
 import actions from '../../actions/player-actions';
+import flux from '../../flux';
 
 import Select from '../Shared/Select';
 
@@ -26,6 +25,7 @@ import store from '../../stores/player-store';
 export default class Staff extends Component {
   state = {
     staff: [],
+    employees: [],
     collapse: false
   };
 
@@ -39,7 +39,8 @@ export default class Staff extends Component {
 
   getStaff = () => {
     this.setState({
-      staff: store.getTeam()
+      staff: store.getTeam(),
+      employees: store.getEmployees(),
     })
   };
 
@@ -52,7 +53,11 @@ export default class Staff extends Component {
     return <span style={{ color: coloringRange.standard(value, 10) }}>{value}</span>
   };
 
-  renderPerson = (p, i) => {
+  renderEmployee = (p, i) => {
+    return this.renderPerson(p, i, true);
+  };
+
+  renderPerson = (p, i, isEmployee) => {
     let specialization = teamHelper.getTranslatedSpecialization(p);
 
     let motivation = '';
@@ -66,14 +71,16 @@ export default class Staff extends Component {
     let work = '';
     let value = '';
 
+    const produces = isEmployee ? 'Может производить' : 'Производит';
+
     switch (p.task) {
       case JOB.JOB_TASK_MARKETING_POINTS:
         value = store.getMarketingPointsProducedBy(p);
-        work = `Производит ${value}MP (Marketing Points) / month`;
+        work = `${produces} ${value}MP (Marketing Points) / month`;
         break;
       case JOB.JOB_TASK_PROGRAMMER_POINTS:
         value = store.getProgrammingPointsProducedBy(p);
-        work = `Производит ${value}PP (Programming Points) / month`;
+        work = `${produces} ${value}PP (Programming Points) / month`;
         break;
     }
 
@@ -82,13 +89,20 @@ export default class Staff extends Component {
       { text: 'Маркетинг', value: JOB.JOB_TASK_MARKETING_POINTS },
     ];
 
+    let hireButton = '';
+    if (isEmployee) {
+      const hire = () => {
+        actions.hireWorker(p, i);
+      };
+      hireButton = <UI.Button onClick={hire} text="Нанять" />;
+    }
+
     return <div key={`person${i}`}>
       <div>
         {p.isPlayer ? 'Вы' : p.name}&nbsp;
         (
         {this.getSkill(p.skills.programming)}/
-        {this.getSkill(p.skills.marketing)}/
-        {this.getSkill(p.skills.analyst)}
+        {this.getSkill(p.skills.marketing)}
         )
       </div>
       <div>Специальность: {specialization}</div>
@@ -104,6 +118,8 @@ export default class Staff extends Component {
       </div>
       <div>{work}</div>
       <div>Мотивация: {motivation}</div>
+      <div>{JSON.stringify(p.salary)}</div>
+      {hireButton}
       <br />
     </div>;
   };
@@ -111,13 +127,15 @@ export default class Staff extends Component {
   // render(props: PropsType, state: StateType) {
   render() {
     // return <div>MOCK</div>;
-    const staff = this.state.staff;
+    const { staff, employees } = this.state;
 
     const collapse = this.state.collapse;
     return (
       <div>
         <h4 onClick={this.toggleStaff}>Команда ({collapse ? staff.length : '-'})</h4>
-        {staff.length && !collapse ? staff.map(this.renderPerson) : ''}
+        {staff.length && !collapse ? staff.map((p, i) => this.renderPerson(p, i, false)) : ''}
+        <h4 onClick={this.toggleStaff}>Соискатели ({collapse ? staff.length : '-'})</h4>
+        {employees.length && !collapse ? employees.map(this.renderEmployee) : ''}
       </div>
     );
   }

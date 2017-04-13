@@ -9,10 +9,6 @@ import messageActions from '../../../actions/message-actions';
 import teamHelper from '../../../helpers/team/skills';
 
 export default class HireEnthusiastEvent extends Component {
-  state = {};
-
-  componentWillMount() {}
-
   render() {
     const { props } = this;
     const id = props.id;
