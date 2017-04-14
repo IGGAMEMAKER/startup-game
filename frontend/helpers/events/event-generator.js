@@ -41,7 +41,7 @@ const emit = (day) => {
 
         const programming = Math.floor(random(0, 1000));
         const marketing = Math.floor(random(0, 1000));
-        const analyst = Math.floor(random(0, 1000));
+        const analyst = 0; // Math.floor(random(0, 1000));
 
         const rating = programming + marketing;
 

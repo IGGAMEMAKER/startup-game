@@ -48,18 +48,12 @@ export default class Staff extends Component {
     this.setState({ collapse: !this.state.collapse })
   };
 
-  getSkill = skill => {
+  getSkill(skill) {
     const value = Math.floor(skill / 100);
     return <span style={{ color: coloringRange.standard(value, 10) }}>{value}</span>
   };
 
-  renderEmployee = (p, i) => {
-    return this.renderPerson(p, i, true);
-  };
-
-  renderPerson = (p, i, isEmployee) => {
-    let specialization = teamHelper.getTranslatedSpecialization(p);
-
+  getMotivation(p) {
     let motivation = '';
     switch (p.jobMotivation) {
       case JOB.JOB_MOTIVATION_BUSINESS_OWNER: motivation = 'Владелец бизнеса'; break;
@@ -68,46 +62,79 @@ export default class Staff extends Component {
       case JOB.JOB_MOTIVATION_PERCENTAGE: motivation = 'За долю'; break;
     }
 
+    return motivation;
+  }
+
+  getWorkPhrase(p) {
     let work = '';
     let value = '';
-
-    const produces = isEmployee ? 'Может производить' : 'Производит';
 
     switch (p.task) {
       case JOB.JOB_TASK_MARKETING_POINTS:
         value = store.getMarketingPointsProducedBy(p);
-        work = `${produces} ${value}MP (Marketing Points) / month`;
+        work = `Производительность: ${value}MP в месяц`;
         break;
       case JOB.JOB_TASK_PROGRAMMER_POINTS:
         value = store.getProgrammingPointsProducedBy(p);
-        work = `${produces} ${value}PP (Programming Points) / month`;
+        work = `Производительность: ${value}PP в месяц`;
         break;
     }
+    return work;
+  };
+
+  renderSkills(p) {
+    return <span>({this.getSkill(p.skills.programming)}/{this.getSkill(p.skills.marketing)})</span>;
+  }
+
+  renderEmployee = (p, i) => {
+    return this.renderPerson(p, i, true);
+    // return <div>{JSON.stringify(p)}</div>
+    const specialization = teamHelper.getTranslatedSpecialization(p);
+
+    const motivation = this.getMotivation(p);
+
+    const work = this.getWorkPhrase(p);
+
+    const hire = () => {
+      actions.hireWorker(p, i);
+    };
+
+    return <div key={`employee${i}`}>
+      <div>
+        {p.name}&nbsp;
+        {this.renderSkills(p)}
+      </div>
+      <div>Специальность: {specialization}</div>
+      <div>{work}</div>
+      <div>Мотивация: {motivation}</div>
+      <div>{JSON.stringify(p.salary)}</div>
+      <UI.Button onClick={hire} text="Нанять" />
+      <br />
+    </div>;
+  };
+
+  renderPerson = (p, i, isEmployee) => {
+    const specialization = teamHelper.getTranslatedSpecialization(p);
+    const motivation = this.getMotivation(p);
+    const work = this.getWorkPhrase(p);
 
     const tasks = [
       { text: 'Программирование', value: JOB.JOB_TASK_PROGRAMMER_POINTS },
       { text: 'Маркетинг', value: JOB.JOB_TASK_MARKETING_POINTS },
     ];
 
+    let taskSettingTab;
     let hireButton = '';
     if (isEmployee) {
       const hire = () => {
         actions.hireWorker(p, i);
       };
       hireButton = <UI.Button onClick={hire} text="Нанять" />;
-    }
-
-    return <div key={`person${i}`}>
-      <div>
-        {p.isPlayer ? 'Вы' : p.name}&nbsp;
-        (
-        {this.getSkill(p.skills.programming)}/
-        {this.getSkill(p.skills.marketing)}
-        )
-      </div>
-      <div>Специальность: {specialization}</div>
-      <div>
-        <span>Задача: </span>
+      taskSettingTab = '';
+    } else {
+      taskSettingTab = (
+        <div>
+          <span>Задача: </span>
         <span>
           <Select
             onChange={(value) => { actions.setTaskForPerson(value, i); }}
@@ -115,7 +142,19 @@ export default class Staff extends Component {
             value={p.task}
           />
         </span>
+        </div>
+      );
+    }
+
+    const key = isEmployee ? 'employee' : 'person';
+
+    return <div key={`${key}${i}`}>
+      <div>
+        {p.isPlayer ? 'Вы' : p.name}&nbsp;
+        {this.renderSkills(p)}
       </div>
+      <div>Специальность: {specialization}</div>
+      {taskSettingTab}
       <div>{work}</div>
       <div>Мотивация: {motivation}</div>
       <div>{JSON.stringify(p.salary)}</div>
@@ -125,17 +164,22 @@ export default class Staff extends Component {
   };
 
   // render(props: PropsType, state: StateType) {
-  render() {
+  render(props, { staff, employees, collapse }) {
     // return <div>MOCK</div>;
-    const { staff, employees } = this.state;
+    // const  = this.state;
 
-    const collapse = this.state.collapse;
+    // const collapse = this.state.collapse;
+
+    const staffList = staff.map((p, i) => this.renderPerson(p, i, false));
+    const employeeList = employees.map(this.renderEmployee);
+
     return (
       <div>
         <h4 onClick={this.toggleStaff}>Команда ({collapse ? staff.length : '-'})</h4>
-        {staff.length && !collapse ? staff.map((p, i) => this.renderPerson(p, i, false)) : ''}
-        <h4 onClick={this.toggleStaff}>Соискатели ({collapse ? staff.length : '-'})</h4>
-        {employees.length && !collapse ? employees.map(this.renderEmployee) : ''}
+        {staff.length && !collapse ? staffList : ''}
+
+        <h4 onClick={this.toggleStaff}>Соискатели ({collapse ? employees.length : '-'})</h4>
+        {employees.length && !collapse ? employeeList : ''}
       </div>
     );
   }

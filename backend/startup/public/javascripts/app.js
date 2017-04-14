@@ -4066,68 +4066,28 @@
 	      });
 	    }, _this.toggleStaff = function () {
 	      _this.setState({ collapse: !_this.state.collapse });
-	    }, _this.getSkill = function (skill) {
-	      var value = Math.floor(skill / 100);
-	      return (0, _preact.h)(
-	        'span',
-	        { style: { color: _coloringRange2.default.standard(value, 10) } },
-	        value
-	      );
 	    }, _this.renderEmployee = function (p, i) {
 	      return _this.renderPerson(p, i, true);
-	    }, _this.renderPerson = function (p, i, isEmployee) {
+	      // return <div>{JSON.stringify(p)}</div>
 	      var specialization = _skills2.default.getTranslatedSpecialization(p);
 
-	      var motivation = '';
-	      switch (p.jobMotivation) {
-	        case JOB.JOB_MOTIVATION_BUSINESS_OWNER:
-	          motivation = 'Владелец бизнеса';break;
-	        case JOB.JOB_MOTIVATION_IDEA_FAN:
-	          motivation = 'Фанат проекта';break;
-	        case JOB.JOB_MOTIVATION_SALARY:
-	          motivation = 'За зарплату';break;
-	        case JOB.JOB_MOTIVATION_PERCENTAGE:
-	          motivation = 'За долю';break;
-	      }
+	      var motivation = _this.getMotivation(p);
 
-	      var work = '';
-	      var value = '';
+	      var work = _this.getWorkPhrase(p);
 
-	      var produces = isEmployee ? 'Может производить' : 'Производит';
-
-	      switch (p.task) {
-	        case JOB.JOB_TASK_MARKETING_POINTS:
-	          value = _playerStore2.default.getMarketingPointsProducedBy(p);
-	          work = produces + ' ' + value + 'MP (Marketing Points) / month';
-	          break;
-	        case JOB.JOB_TASK_PROGRAMMER_POINTS:
-	          value = _playerStore2.default.getProgrammingPointsProducedBy(p);
-	          work = produces + ' ' + value + 'PP (Programming Points) / month';
-	          break;
-	      }
-
-	      var tasks = [{ text: 'Программирование', value: JOB.JOB_TASK_PROGRAMMER_POINTS }, { text: 'Маркетинг', value: JOB.JOB_TASK_MARKETING_POINTS }];
-
-	      var hireButton = '';
-	      if (isEmployee) {
-	        var hire = function hire() {
-	          _playerActions2.default.hireWorker(p, i);
-	        };
-	        hireButton = (0, _preact.h)(_UI2.default.Button, { onClick: hire, text: '\u041D\u0430\u043D\u044F\u0442\u044C' });
-	      }
+	      var hire = function hire() {
+	        _playerActions2.default.hireWorker(p, i);
+	      };
 
 	      return (0, _preact.h)(
 	        'div',
-	        { key: 'person' + i },
+	        { key: 'employee' + i },
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          p.isPlayer ? 'Вы' : p.name,
-	          '\xA0 (',
-	          _this.getSkill(p.skills.programming),
-	          '/',
-	          _this.getSkill(p.skills.marketing),
-	          ')'
+	          p.name,
+	          '\xA0',
+	          _this.renderSkills(p)
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -4136,6 +4096,41 @@
 	          specialization
 	        ),
 	        (0, _preact.h)(
+	          'div',
+	          null,
+	          work
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041C\u043E\u0442\u0438\u0432\u0430\u0446\u0438\u044F: ',
+	          motivation
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _stringify2.default)(p.salary)
+	        ),
+	        (0, _preact.h)(_UI2.default.Button, { onClick: hire, text: '\u041D\u0430\u043D\u044F\u0442\u044C' }),
+	        (0, _preact.h)('br', null)
+	      );
+	    }, _this.renderPerson = function (p, i, isEmployee) {
+	      var specialization = _skills2.default.getTranslatedSpecialization(p);
+	      var motivation = _this.getMotivation(p);
+	      var work = _this.getWorkPhrase(p);
+
+	      var tasks = [{ text: 'Программирование', value: JOB.JOB_TASK_PROGRAMMER_POINTS }, { text: 'Маркетинг', value: JOB.JOB_TASK_MARKETING_POINTS }];
+
+	      var taskSettingTab = void 0;
+	      var hireButton = '';
+	      if (isEmployee) {
+	        var hire = function hire() {
+	          _playerActions2.default.hireWorker(p, i);
+	        };
+	        hireButton = (0, _preact.h)(_UI2.default.Button, { onClick: hire, text: '\u041D\u0430\u043D\u044F\u0442\u044C' });
+	        taskSettingTab = '';
+	      } else {
+	        taskSettingTab = (0, _preact.h)(
 	          'div',
 	          null,
 	          (0, _preact.h)(
@@ -4154,7 +4149,28 @@
 	              value: p.task
 	            })
 	          )
+	        );
+	      }
+
+	      var key = isEmployee ? 'employee' : 'person';
+
+	      return (0, _preact.h)(
+	        'div',
+	        { key: '' + key + i },
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          p.isPlayer ? 'Вы' : p.name,
+	          '\xA0',
+	          _this.renderSkills(p)
 	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0421\u043F\u0435\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ',
+	          specialization
+	        ),
+	        taskSettingTab,
 	        (0, _preact.h)(
 	          'div',
 	          null,
@@ -4189,20 +4205,85 @@
 	      });
 	    }
 	  }, {
+	    key: 'getSkill',
+	    value: function getSkill(skill) {
+	      var value = Math.floor(skill / 100);
+	      return (0, _preact.h)(
+	        'span',
+	        { style: { color: _coloringRange2.default.standard(value, 10) } },
+	        value
+	      );
+	    }
+	  }, {
+	    key: 'getMotivation',
+	    value: function getMotivation(p) {
+	      var motivation = '';
+	      switch (p.jobMotivation) {
+	        case JOB.JOB_MOTIVATION_BUSINESS_OWNER:
+	          motivation = 'Владелец бизнеса';break;
+	        case JOB.JOB_MOTIVATION_IDEA_FAN:
+	          motivation = 'Фанат проекта';break;
+	        case JOB.JOB_MOTIVATION_SALARY:
+	          motivation = 'За зарплату';break;
+	        case JOB.JOB_MOTIVATION_PERCENTAGE:
+	          motivation = 'За долю';break;
+	      }
+
+	      return motivation;
+	    }
+	  }, {
+	    key: 'getWorkPhrase',
+	    value: function getWorkPhrase(p) {
+	      var work = '';
+	      var value = '';
+
+	      switch (p.task) {
+	        case JOB.JOB_TASK_MARKETING_POINTS:
+	          value = _playerStore2.default.getMarketingPointsProducedBy(p);
+	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ' + value + 'MP \u0432 \u043C\u0435\u0441\u044F\u0446';
+	          break;
+	        case JOB.JOB_TASK_PROGRAMMER_POINTS:
+	          value = _playerStore2.default.getProgrammingPointsProducedBy(p);
+	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ' + value + 'PP \u0432 \u043C\u0435\u0441\u044F\u0446';
+	          break;
+	      }
+	      return work;
+	    }
+	  }, {
+	    key: 'renderSkills',
+	    value: function renderSkills(p) {
+	      return (0, _preact.h)(
+	        'span',
+	        null,
+	        '(',
+	        this.getSkill(p.skills.programming),
+	        '/',
+	        this.getSkill(p.skills.marketing),
+	        ')'
+	      );
+	    }
+	  }, {
 	    key: 'render',
 
 
 	    // render(props: PropsType, state: StateType) {
-	    value: function render() {
+	    value: function render(props, _ref2) {
 	      var _this3 = this;
 
+	      var staff = _ref2.staff,
+	          employees = _ref2.employees,
+	          collapse = _ref2.collapse;
+
 	      // return <div>MOCK</div>;
-	      var _state = this.state,
-	          staff = _state.staff,
-	          employees = _state.employees;
+	      // const  = this.state;
 
+	      // const collapse = this.state.collapse;
 
-	      var collapse = this.state.collapse;
+	      var staffList = staff.map(function (p, i) {
+	        return _this3.renderPerson(p, i, false);
+	      });
+	      var employeeList = employees.map(this.renderEmployee);
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -4213,17 +4294,15 @@
 	          collapse ? staff.length : '-',
 	          ')'
 	        ),
-	        staff.length && !collapse ? staff.map(function (p, i) {
-	          return _this3.renderPerson(p, i, false);
-	        }) : '',
+	        staff.length && !collapse ? staffList : '',
 	        (0, _preact.h)(
 	          'h4',
 	          { onClick: this.toggleStaff },
 	          '\u0421\u043E\u0438\u0441\u043A\u0430\u0442\u0435\u043B\u0438 (',
-	          collapse ? staff.length : '-',
+	          collapse ? employees.length : '-',
 	          ')'
 	        ),
-	        employees.length && !collapse ? employees.map(this.renderEmployee) : ''
+	        employees.length && !collapse ? employeeList : ''
 	      );
 	    }
 	  }]);
@@ -9413,7 +9492,7 @@
 
 	        var programming = Math.floor((0, _random2.default)(0, 1000));
 	        var marketing = Math.floor((0, _random2.default)(0, 1000));
-	        var analyst = Math.floor((0, _random2.default)(0, 1000));
+	        var analyst = 0; // Math.floor(random(0, 1000));
 
 	        var rating = programming + marketing;
 
