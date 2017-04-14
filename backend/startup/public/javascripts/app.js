@@ -4155,6 +4155,17 @@
 
 	      var key = isEmployee ? 'employee' : 'person';
 
+	      var salaryTab = (0, _stringify2.default)(p.salary);
+	      switch (p.salary.pricingType) {
+	        case 0:
+	          salaryTab = '\u0414\u043E\u043B\u044F \u0432 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0438: ' + p.salary.percent + '%';
+	          break;
+
+	        case 1:
+	          salaryTab = '\u0417\u0430\u0440\u043F\u043B\u0430\u0442\u0430: ' + p.salary.money + '$';
+	          break;
+	      }
+	      // <div>Мотивация: {motivation}</div>
 	      return (0, _preact.h)(
 	        'div',
 	        { key: '' + key + i },
@@ -4162,6 +4173,8 @@
 	          'div',
 	          null,
 	          p.isPlayer ? 'Вы' : p.name,
+	          ',',
+	          specialization,
 	          '\xA0',
 	          _this.renderSkills(p)
 	        ),
@@ -4180,13 +4193,7 @@
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u041C\u043E\u0442\u0438\u0432\u0430\u0446\u0438\u044F: ',
-	          motivation
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _stringify2.default)(p.salary)
+	          salaryTab
 	        ),
 	        hireButton,
 	        (0, _preact.h)('br', null)
@@ -9565,7 +9572,6 @@
 
 	        player.task = task;
 	        _flux2.default.playerActions.addEmployee(player);
-	        // flux.messageActions.addGameEvent(rnd, );
 	      }
 	      break;
 	  }

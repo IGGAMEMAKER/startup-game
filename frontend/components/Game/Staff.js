@@ -151,16 +151,26 @@ export default class Staff extends Component {
 
     const key = isEmployee ? 'employee' : 'person';
 
+    let salaryTab = JSON.stringify(p.salary);
+    switch (p.salary.pricingType) {
+      case 0:
+        salaryTab = `Доля в компании: ${p.salary.percent}%`;
+        break;
+
+      case 1:
+        salaryTab = `Зарплата: ${p.salary.money}$`;
+        break;
+    }
+    // <div>Мотивация: {motivation}</div>
     return <div key={`${key}${i}`}>
       <div>
-        {p.isPlayer ? 'Вы' : p.name}&nbsp;
+        {p.isPlayer ? 'Вы' : p.name},{specialization}&nbsp;
         {this.renderSkills(p)}
       </div>
       <div>Специальность: {specialization}</div>
       {taskSettingTab}
       <div>{work}</div>
-      <div>Мотивация: {motivation}</div>
-      <div>{JSON.stringify(p.salary)}</div>
+      <div>{salaryTab}</div>
       {hireButton}
       <br />
     </div>;

@@ -96,7 +96,6 @@ const emit = (day) => {
 
         player.task = task;
         flux.playerActions.addEmployee(player);
-        // flux.messageActions.addGameEvent(rnd, );
       }
       break;
   }
