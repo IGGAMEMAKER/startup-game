@@ -4059,14 +4059,19 @@
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Staff.__proto__ || (0, _getPrototypeOf2.default)(Staff)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
 	      staff: [],
 	      employees: [],
-	      collapse: false
+	      teamToggle: false,
+	      employeeToggle: false
 	    }, _this.getStaff = function () {
 	      _this.setState({
 	        staff: _playerStore2.default.getTeam(),
 	        employees: _playerStore2.default.getEmployees()
 	      });
-	    }, _this.toggleStaff = function () {
-	      _this.setState({ collapse: !_this.state.collapse });
+	    }, _this.toggle = function (name) {
+	      return function () {
+	        var obj = {};
+	        obj[name] = !_this.state[name];
+	        _this.setState(obj);
+	      };
 	    }, _this.renderEmployee = function (p, i) {
 	      return _this.renderPerson(p, i, true);
 	      // return <div>{JSON.stringify(p)}</div>
@@ -4128,7 +4133,25 @@
 	        var hire = function hire() {
 	          _playerActions2.default.hireWorker(p, i);
 	        };
-	        hireButton = (0, _preact.h)(_UI2.default.Button, { onClick: hire, text: '\u041D\u0430\u043D\u044F\u0442\u044C' });
+
+	        var reject = function reject() {
+	          _playerActions2.default.rejectEmployee(i);
+	        };
+
+	        hireButton = (0, _preact.h)(
+	          'div',
+	          { className: 'worker-button-container' },
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'worker-button' },
+	            (0, _preact.h)(_UI2.default.Button, { onClick: hire, text: '\u041D\u0430\u043D\u044F\u0442\u044C', primary: true })
+	          ),
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'worker-button' },
+	            (0, _preact.h)(_UI2.default.Button, { onClick: reject, text: '\u041E\u0442\u043A\u043B\u043E\u043D\u0438\u0442\u044C' })
+	          )
+	        );
 	        taskSettingTab = '';
 	      } else {
 	        taskSettingTab = (0, _preact.h)(
@@ -4165,24 +4188,18 @@
 	          salaryTab = '\u0417\u0430\u0440\u043F\u043B\u0430\u0442\u0430: ' + p.salary.money + '$';
 	          break;
 	      }
-	      // <div>Мотивация: {motivation}</div>
+
 	      return (0, _preact.h)(
 	        'div',
-	        { key: '' + key + i },
+	        { className: 'worker-item', key: '' + key + i },
 	        (0, _preact.h)(
 	          'div',
 	          null,
 	          p.isPlayer ? 'Вы' : p.name,
-	          ',',
+	          ', ',
 	          specialization,
 	          '\xA0',
 	          _this.renderSkills(p)
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0421\u043F\u0435\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ',
-	          specialization
 	        ),
 	        taskSettingTab,
 	        (0, _preact.h)(
@@ -4195,8 +4212,7 @@
 	          null,
 	          salaryTab
 	        ),
-	        hireButton,
-	        (0, _preact.h)('br', null)
+	        hireButton
 	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
@@ -4279,12 +4295,8 @@
 
 	      var staff = _ref2.staff,
 	          employees = _ref2.employees,
-	          collapse = _ref2.collapse;
-
-	      // return <div>MOCK</div>;
-	      // const  = this.state;
-
-	      // const collapse = this.state.collapse;
+	          teamToggle = _ref2.teamToggle,
+	          employeeToggle = _ref2.employeeToggle;
 
 	      var staffList = staff.map(function (p, i) {
 	        return _this3.renderPerson(p, i, false);
@@ -4296,20 +4308,20 @@
 	        null,
 	        (0, _preact.h)(
 	          'h4',
-	          { onClick: this.toggleStaff },
+	          { onClick: this.toggle('teamToggle') },
 	          '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 (',
-	          collapse ? staff.length : '-',
+	          teamToggle ? staff.length : '-',
 	          ')'
 	        ),
-	        staff.length && !collapse ? staffList : '',
+	        staff.length && !teamToggle ? staffList : '',
 	        (0, _preact.h)(
 	          'h4',
-	          { onClick: this.toggleStaff },
+	          { onClick: this.toggle('employeeToggle') },
 	          '\u0421\u043E\u0438\u0441\u043A\u0430\u0442\u0435\u043B\u0438 (',
-	          collapse ? employees.length : '-',
+	          employeeToggle ? employees.length : '-',
 	          ')'
 	        ),
-	        employees.length && !collapse ? employeeList : ''
+	        employees.length && !employeeToggle ? employeeList : ''
 	      );
 	    }
 	  }]);
@@ -4510,6 +4522,12 @@
 	      player: player
 	    });
 	  },
+	  rejectEmployee: function rejectEmployee(i) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_REMOVE,
+	      i: i
+	    });
+	  },
 
 	  increasePoints: function increasePoints(points) {
 	    _dispatcher2.default.dispatch({
@@ -4679,7 +4697,8 @@
 	  jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
 	  salary: {
 	    money: 500,
-	    percent: 0
+	    percent: 0,
+	    pricingType: 1
 	  }
 	}];
 
@@ -4692,7 +4711,11 @@
 	  },
 	  task: JOB.JOB_TASK_PROGRAMMER_POINTS,
 	  jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
-	  salary: {},
+	  salary: {
+	    percent: 100,
+	    money: 100,
+	    pricingType: 0
+	  },
 	  isPlayer: true
 	  // на каком основании работает в проекте
 	  // за еду, за опыт, за процент с продаж, собственник бизнеса
@@ -4891,8 +4914,11 @@
 	      break;
 	    case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
 	      _employees.push(p.player);
-	      _logger2.default.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
-	      _logger2.default.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+	      // logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+	      // logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+	      break;
+	    case c.PLAYER_ACTIONS_EMPLOYEE_REMOVE:
+	      _employees.splice(p.i, 1);
 	      break;
 	    default:
 	      break;

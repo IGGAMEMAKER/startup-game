@@ -28,7 +28,8 @@ export default class Staff extends Component {
   state = {
     staff: [],
     employees: [],
-    collapse: false
+    teamToggle: false,
+    employeeToggle: false,
   };
 
   componentWillMount() {
@@ -46,8 +47,10 @@ export default class Staff extends Component {
     })
   };
 
-  toggleStaff = () => {
-    this.setState({ collapse: !this.state.collapse })
+  toggle = (name) => () => {
+    const obj = {};
+    obj[name] = !this.state[name];
+    this.setState(obj)
   };
 
 
@@ -132,19 +135,29 @@ export default class Staff extends Component {
       const hire = () => {
         actions.hireWorker(p, i);
       };
-      hireButton = <UI.Button onClick={hire} text="Нанять" />;
+
+      const reject = () => {
+        actions.rejectEmployee(i);
+      };
+
+      hireButton = (
+        <div className="worker-button-container">
+          <span className="worker-button"><UI.Button onClick={hire} text="Нанять" primary /></span>
+          <span className="worker-button"><UI.Button onClick={reject} text="Отклонить" /></span>
+        </div>
+      );
       taskSettingTab = '';
     } else {
       taskSettingTab = (
         <div>
           <span>Задача: </span>
-        <span>
-          <Select
-            onChange={(value) => { actions.setTaskForPerson(value, i); }}
-            options={tasks}
-            value={p.task}
-          />
-        </span>
+          <span>
+            <Select
+              onChange={(value) => { actions.setTaskForPerson(value, i); }}
+              options={tasks}
+              value={p.task}
+            />
+          </span>
         </div>
       );
     }
@@ -161,38 +174,31 @@ export default class Staff extends Component {
         salaryTab = `Зарплата: ${p.salary.money}$`;
         break;
     }
-    // <div>Мотивация: {motivation}</div>
-    return <div key={`${key}${i}`}>
+
+    return <div className="worker-item" key={`${key}${i}`}>
       <div>
-        {p.isPlayer ? 'Вы' : p.name},{specialization}&nbsp;
+        {p.isPlayer ? 'Вы' : p.name}, {specialization}&nbsp;
         {this.renderSkills(p)}
       </div>
-      <div>Специальность: {specialization}</div>
       {taskSettingTab}
       <div>{work}</div>
       <div>{salaryTab}</div>
       {hireButton}
-      <br />
     </div>;
   };
 
   // render(props: PropsType, state: StateType) {
-  render(props, { staff, employees, collapse }) {
-    // return <div>MOCK</div>;
-    // const  = this.state;
-
-    // const collapse = this.state.collapse;
-
+  render(props, { staff, employees, teamToggle, employeeToggle }) {
     const staffList = staff.map((p, i) => this.renderPerson(p, i, false));
     const employeeList = employees.map(this.renderEmployee);
 
     return (
       <div>
-        <h4 onClick={this.toggleStaff}>Команда ({collapse ? staff.length : '-'})</h4>
-        {staff.length && !collapse ? staffList : ''}
+        <h4 onClick={this.toggle('teamToggle')}>Команда ({teamToggle ? staff.length : '-'})</h4>
+        {staff.length && !teamToggle ? staffList : ''}
 
-        <h4 onClick={this.toggleStaff}>Соискатели ({collapse ? employees.length : '-'})</h4>
-        {employees.length && !collapse ? employeeList : ''}
+        <h4 onClick={this.toggle('employeeToggle')}>Соискатели ({employeeToggle ? employees.length : '-'})</h4>
+        {employees.length && !employeeToggle ? employeeList : ''}
       </div>
     );
   }

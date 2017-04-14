@@ -268,6 +268,22 @@ textarea {
   padding-top: 10px;
 }
 
+.worker-button-container {
+  overflow: hidden;
+}
+
+.worker-button {
+  float: left;
+  margin-right: 15px;
+}
+
+.worker-item {
+  margin-bottom: 25px;
+  border-style: solid;
+  border-width: thin;
+  padding: 10px;
+}
+
 .messageTab {
   position: fixed;
   background-color: var(--modalBackground);

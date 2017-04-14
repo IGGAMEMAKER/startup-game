@@ -28,6 +28,12 @@ export default {
       player
     })
   },
+  rejectEmployee: i => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_REMOVE,
+      i
+    })
+  },
 
   increasePoints: (points) => {
     Dispatcher.dispatch({

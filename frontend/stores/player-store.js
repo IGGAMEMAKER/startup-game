@@ -39,7 +39,8 @@ let _employees = [
     jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
     salary: {
       money: 500,
-      percent: 0
+      percent: 0,
+      pricingType: 1
     }
   }
 ];
@@ -50,11 +51,15 @@ let _team = [
     skills: {
       programming: 1000,
       marketing: 150,
-      analyst: 300,
+      analyst: 300
     },
     task: JOB.JOB_TASK_PROGRAMMER_POINTS,
     jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
-    salary: {},
+    salary: {
+      percent: 100,
+      money: 100,
+      pricingType: 0
+    },
     isPlayer: true
     // на каком основании работает в проекте
     // за еду, за опыт, за процент с продаж, собственник бизнеса
@@ -216,8 +221,11 @@ Dispatcher.register((p: PayloadType) => {
       break;
     case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
       _employees.push(p.player);
-      logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
-      logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+      // logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+      // logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+      break;
+    case c.PLAYER_ACTIONS_EMPLOYEE_REMOVE:
+      _employees.splice(p.i, 1);
       break;
     default:
       break;
