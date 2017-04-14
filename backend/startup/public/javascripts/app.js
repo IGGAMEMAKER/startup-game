@@ -4041,6 +4041,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	// import React, { Component, PropTypes } from 'react';
 	var Staff = function (_Component) {
 	  (0, _inherits3.default)(Staff, _Component);
 
@@ -4205,16 +4206,6 @@
 	      });
 	    }
 	  }, {
-	    key: 'getSkill',
-	    value: function getSkill(skill) {
-	      var value = Math.floor(skill / 100);
-	      return (0, _preact.h)(
-	        'span',
-	        { style: { color: _coloringRange2.default.standard(value, 10) } },
-	        value
-	      );
-	    }
-	  }, {
 	    key: 'getMotivation',
 	    value: function getMotivation(p) {
 	      var motivation = '';
@@ -4239,11 +4230,11 @@
 
 	      switch (p.task) {
 	        case JOB.JOB_TASK_MARKETING_POINTS:
-	          value = _playerStore2.default.getMarketingPointsProducedBy(p);
+	          value = _skills2.default.getMarketingPointsProducedBy(p);
 	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ' + value + 'MP \u0432 \u043C\u0435\u0441\u044F\u0446';
 	          break;
 	        case JOB.JOB_TASK_PROGRAMMER_POINTS:
-	          value = _playerStore2.default.getProgrammingPointsProducedBy(p);
+	          value = _skills2.default.getProgrammingPointsProducedBy(p);
 	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ' + value + 'PP \u0432 \u043C\u0435\u0441\u044F\u0446';
 	          break;
 	      }
@@ -4252,13 +4243,22 @@
 	  }, {
 	    key: 'renderSkills',
 	    value: function renderSkills(p) {
+	      var renderSkill = function renderSkill(skill) {
+	        var value = Math.floor(skill / 100);
+	        return (0, _preact.h)(
+	          'span',
+	          { style: { color: _coloringRange2.default.standard(value, 10) } },
+	          value
+	        );
+	      };
+
 	      return (0, _preact.h)(
 	        'span',
 	        null,
 	        '(',
-	        this.getSkill(p.skills.programming),
+	        renderSkill(p.skills.programming),
 	        '/',
-	        this.getSkill(p.skills.marketing),
+	        renderSkill(p.skills.marketing),
 	        ')'
 	      );
 	    }
@@ -4308,8 +4308,6 @@
 	  }]);
 	  return Staff;
 	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
 
 	exports.default = Staff;
 	;
@@ -4397,6 +4395,7 @@
 	  plain: function plain(p) {
 	    return getSkill(p.skills.programming) + '/' + getSkill(p.skills.marketing) + '/' + getSkill(p.skills.analyst);
 	  },
+
 	  getSkill: getSkill,
 	  getTranslatedSpecialization: function getTranslatedSpecialization(p) {
 	    switch ((0, _specialization2.default)(p)) {
@@ -4409,6 +4408,42 @@
 	        return 'бездельник';
 	    }
 	  },
+	  isProgrammer: function isProgrammer(p) {
+	    return (0, _specialization2.default)(p) === JOB.PROFESSION_PROGRAMMER;
+	  },
+	  isMarketer: function isMarketer(p) {
+	    return (0, _specialization2.default)(p) === JOB.PROFESSION_MARKETER;
+	  },
+	  getMaxEfficiencyPhrase: function getMaxEfficiencyPhrase(p) {
+	    switch ((0, _specialization2.default)(p)) {
+	      case JOB.PROFESSION_PROGRAMMER:
+	        return this.getProgrammingPointsProducedBy(p) + ' PP';
+	        break;
+
+	      case JOB.PROFESSION_MARKETER:
+	        return this.getMarketingPointsProducedBy(p) + ' MP';
+	        break;
+
+	      case JOB.PROFESSION_ANALYST:
+	        return 'аналитик';
+	        break;
+
+	      default:
+	        return 'бездельник';
+	        break;
+	    }
+	  },
+	  getMarketingPointsProducedBy: function getMarketingPointsProducedBy(p) {
+	    var marketingEfficiency = 30;
+
+	    return getSkill(p.skills.marketing) * marketingEfficiency;
+	  },
+	  getProgrammingPointsProducedBy: function getProgrammingPointsProducedBy(p) {
+	    var programmingEfficiency = 30;
+
+	    return getSkill(p.skills.programming) * programmingEfficiency;
+	  },
+
 	  overall: function overall(p) {
 	    return getSkill(p.skills.programming) + getSkill(p.skills.marketing) + getSkill(p.skills.analyst);
 	  }
@@ -4603,6 +4638,8 @@
 
 	var _specialization2 = _interopRequireDefault(_specialization);
 
+	var _skills2 = __webpack_require__(113);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -4663,19 +4700,8 @@
 	  (0, _inherits3.default)(PlayerStore, _EventEmitter);
 
 	  function PlayerStore() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
 	    (0, _classCallCheck3.default)(this, PlayerStore);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = PlayerStore.__proto__ || (0, _getPrototypeOf2.default)(PlayerStore)).call.apply(_ref, [this].concat(args))), _this), _this.getSkill = function (skill) {
-	      return Math.floor(skill / 100);
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    return (0, _possibleConstructorReturn3.default)(this, (PlayerStore.__proto__ || (0, _getPrototypeOf2.default)(PlayerStore)).apply(this, arguments));
 	  }
 
 	  (0, _createClass3.default)(PlayerStore, [{
@@ -4777,20 +4803,6 @@
 	      return _team.filter(function (p) {
 	        return (0, _specialization2.default)(p) === JOB.PROFESSION_DESIGNER;
 	      });
-	    }
-	  }, {
-	    key: 'getMarketingPointsProducedBy',
-	    value: function getMarketingPointsProducedBy(p) {
-	      var marketingEfficiency = 30;
-
-	      return this.getSkill(p.skills.marketing) * marketingEfficiency;
-	    }
-	  }, {
-	    key: 'getProgrammingPointsProducedBy',
-	    value: function getProgrammingPointsProducedBy(p) {
-	      var programmingEfficiency = 30;
-
-	      return this.getSkill(p.skills.programming) * programmingEfficiency;
 	    }
 	  }, {
 	    key: 'getEmployees',
@@ -9315,6 +9327,10 @@
 
 	var _eventGenerator2 = _interopRequireDefault(_eventGenerator);
 
+	var _skills = __webpack_require__(113);
+
+	var _skills2 = _interopRequireDefault(_skills);
+
 	var _job = __webpack_require__(111);
 
 	var JOB = _interopRequireWildcard(_job);
@@ -9390,7 +9406,7 @@
 	    });
 
 	    var programmingPoints = ppProducers.length ? ppProducers.map(function (p) {
-	      return _playerStore2.default.getProgrammingPointsProducedBy(p);
+	      return _skills2.default.getProgrammingPointsProducedBy(p);
 	    }).reduce(function (p, c) {
 	      return p + c;
 	    }) : 0;
@@ -9400,7 +9416,7 @@
 	      return p.task === JOB.JOB_TASK_MARKETING_POINTS;
 	    });
 	    var marketingPoints = mpProducers.length ? mpProducers.map(function (p) {
-	      return _playerStore2.default.getMarketingPointsProducedBy(p);
+	      return _skills2.default.getMarketingPointsProducedBy(p);
 	    }).reduce(function (p, c) {
 	      return p + c;
 	    }) : 0;
@@ -9448,6 +9464,10 @@
 	var _flux = __webpack_require__(160);
 
 	var _flux2 = _interopRequireDefault(_flux);
+
+	var _skills = __webpack_require__(113);
+
+	var _skills2 = _interopRequireDefault(_skills);
 
 	var _logger = __webpack_require__(98);
 
@@ -9514,10 +9534,12 @@
 	            };
 	            break;
 	        }
+	        salary.pricingType = pricingType;
 	        // let salary = {
 	        //   money: Math.floor(random(rating * 0.75, rating * 1.25)),
 	        //   percent: Math.floor(random(rating * 0.75, rating * 1.25))
 	        // };
+
 
 	        var player = {
 	          // player: {
@@ -9527,12 +9549,21 @@
 	            marketing: marketing,
 	            analyst: analyst
 	          },
-	          task: JOB.JOB_TASK_MARKETING_POINTS,
 	          jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
 	          salary: salary
 	          // }
 	        };
+	        var task = void 0;
+	        if (_skills2.default.isMarketer(player)) {
+	          task = JOB.JOB_TASK_MARKETING_POINTS;
+	        } else if (_skills2.default.isProgrammer(player)) {
+	          task = JOB.JOB_TASK_PROGRAMMER_POINTS;
+	        } else {
+	          // by default - go to marketing
+	          task = JOB.JOB_TASK_MARKETING_POINTS;
+	        }
 
+	        player.task = task;
 	        _flux2.default.playerActions.addEmployee(player);
 	        // flux.messageActions.addGameEvent(rnd, );
 	      }

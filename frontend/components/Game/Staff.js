@@ -14,6 +14,8 @@ import Select from '../Shared/Select';
 
 import coloringRange from '../../helpers/coloring-range';
 
+import skillHelper from '../../helpers/team/skills';
+
 type StateType = {
   staff: Array
 };
@@ -48,10 +50,6 @@ export default class Staff extends Component {
     this.setState({ collapse: !this.state.collapse })
   };
 
-  getSkill(skill) {
-    const value = Math.floor(skill / 100);
-    return <span style={{ color: coloringRange.standard(value, 10) }}>{value}</span>
-  };
 
   getMotivation(p) {
     let motivation = '';
@@ -71,11 +69,11 @@ export default class Staff extends Component {
 
     switch (p.task) {
       case JOB.JOB_TASK_MARKETING_POINTS:
-        value = store.getMarketingPointsProducedBy(p);
+        value = skillHelper.getMarketingPointsProducedBy(p);
         work = `Производительность: ${value}MP в месяц`;
         break;
       case JOB.JOB_TASK_PROGRAMMER_POINTS:
-        value = store.getProgrammingPointsProducedBy(p);
+        value = skillHelper.getProgrammingPointsProducedBy(p);
         work = `Производительность: ${value}PP в месяц`;
         break;
     }
@@ -83,7 +81,12 @@ export default class Staff extends Component {
   };
 
   renderSkills(p) {
-    return <span>({this.getSkill(p.skills.programming)}/{this.getSkill(p.skills.marketing)})</span>;
+    const renderSkill = (skill) => {
+      const value = Math.floor(skill / 100);
+      return <span style={{ color: coloringRange.standard(value, 10) }}>{value}</span>
+    };
+
+    return <span>({renderSkill(p.skills.programming)}/{renderSkill(p.skills.marketing)})</span>;
   }
 
   renderEmployee = (p, i) => {

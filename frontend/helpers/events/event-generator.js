@@ -4,6 +4,8 @@ import * as JOB from '../../constants/job';
 
 import flux from '../../flux';
 
+import skillHelper from '../../helpers/team/skills';
+
 import logger from '../../helpers/logger/logger';
 
 const emit = (day) => {
@@ -63,10 +65,12 @@ const emit = (day) => {
             };
             break;
         }
+        salary.pricingType = pricingType;
         // let salary = {
         //   money: Math.floor(random(rating * 0.75, rating * 1.25)),
         //   percent: Math.floor(random(rating * 0.75, rating * 1.25))
         // };
+
 
         const player = {
           // player: {
@@ -76,12 +80,21 @@ const emit = (day) => {
               marketing,
               analyst
             },
-            task: JOB.JOB_TASK_MARKETING_POINTS,
             jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
             salary
           // }
         };
+        let task;
+        if (skillHelper.isMarketer(player)) {
+          task = JOB.JOB_TASK_MARKETING_POINTS;
+        } else if (skillHelper.isProgrammer(player)) {
+          task = JOB.JOB_TASK_PROGRAMMER_POINTS;
+        } else {
+          // by default - go to marketing
+          task = JOB.JOB_TASK_MARKETING_POINTS;
+        }
 
+        player.task = task;
         flux.playerActions.addEmployee(player);
         // flux.messageActions.addGameEvent(rnd, );
       }

@@ -8,6 +8,7 @@ import * as EXPENSES from '../constants/expenses';
 import * as JOB from '../constants/job';
 
 import getSpecialization from '../helpers/team/specialization';
+import { getSkill } from '../helpers/team/skills';
 
 const EC = 'PLAYER_EVENT_CHANGE';
 
@@ -137,20 +138,6 @@ class PlayerStore extends EventEmitter {
 
   getDesigners() {
     return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_DESIGNER)
-  }
-
-  getSkill = skill => Math.floor(skill / 100);
-
-  getMarketingPointsProducedBy(p) {
-    const marketingEfficiency = 30;
-
-    return this.getSkill(p.skills.marketing) * marketingEfficiency;
-  }
-
-  getProgrammingPointsProducedBy(p) {
-    const programmingEfficiency = 30;
-
-    return this.getSkill(p.skills.programming) * programmingEfficiency;
   }
 
   getEmployees() {

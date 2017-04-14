@@ -10,6 +10,7 @@ import logger from './helpers/logger/logger';
 
 import moneyCalculator from './helpers/economics/money-difference';
 import eventGenerator from './helpers/events/event-generator';
+import skillHelper from './helpers/team/skills';
 
 import * as JOB from './constants/job';
 
@@ -82,7 +83,7 @@ const run = () => {
 
     let programmingPoints = ppProducers.length ?
       ppProducers
-        .map(p => playerStore.getProgrammingPointsProducedBy(p))
+        .map(p => skillHelper.getProgrammingPointsProducedBy(p))
         .reduce((p, c) => p + c)
       :
       0;
@@ -93,7 +94,7 @@ const run = () => {
       .filter(p => p.task === JOB.JOB_TASK_MARKETING_POINTS);
     let marketingPoints = mpProducers.length ?
       mpProducers
-        .map(p => playerStore.getMarketingPointsProducedBy(p))
+        .map(p => skillHelper.getMarketingPointsProducedBy(p))
         .reduce((p, c) => p + c)
       :
       0;
