@@ -166,12 +166,15 @@ Dispatcher.register((p: PayloadType) => {
     case c.PLAYER_ACTIONS_INCREASE_MONEY:
       _money += p.amount;
       break;
+
     case c.PLAYER_ACTIONS_EXPENSES_ADD:
       _expenses.push(p.expense);
       break;
+
     case c.PLAYER_ACTIONS_EXPENSES_REMOVE:
       _expenses.splice(p.id, 1);
       break;
+
     case c.PLAYER_ACTIONS_LOANS_TAKE:
       logger.shit('LOAN SIZE MUST BASE ON YOUR INCOME!!!. stores player-store.js');
 
@@ -185,6 +188,7 @@ Dispatcher.register((p: PayloadType) => {
         regularity: 1
       });
       break;
+
     case c.PLAYER_ACTIONS_LOANS_REPAY:
       let loanSize = _expenses[p.id].price;
       if (loanSize <= _money) {
@@ -196,37 +200,51 @@ Dispatcher.register((p: PayloadType) => {
         change = false;
       }
       break;
+
     case c.PLAYER_ACTIONS_SET_TASK:
       _team[p.index].task = p.task;
       break;
+
     case c.PLAYER_ACTIONS_INCREASE_POINTS:
       _points.marketing += p.points.marketing;
       _points.programming += p.points.programming;
       break;
+
     case c.PLAYER_ACTIONS_BUY_PP:
       _points.programming += p.pp;
       _money -= p.pp * JOB.PRICE_OF_ONE_PP;
       break;
+
     case c.PLAYER_ACTIONS_BUY_MP:
       _points.marketing += p.mp;
       _money -= p.mp * JOB.PRICE_OF_ONE_MP;
       break;
+
     case c.PLAYER_ACTIONS_DECREASE_POINTS:
       _points.marketing -= p.mp;
       _points.programming -= p.pp;
       break;
+
     case c.PLAYER_ACTIONS_HIRE_WORKER:
       _team.push(p.player);
       _employees.splice(p.i, 1);
       break;
+
+    case c.PLAYER_ACTIONS_FIRE_WORKER:
+      _money -= _team[p.i].salary.money;
+      _team.splice(p.i, 1);
+      break;
+
     case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
       _employees.push(p.player);
       // logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
       // logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
       break;
+
     case c.PLAYER_ACTIONS_EMPLOYEE_REMOVE:
       _employees.splice(p.i, 1);
       break;
+
     default:
       break;
   }

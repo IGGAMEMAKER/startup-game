@@ -22,26 +22,32 @@ export default {
       i
     })
   },
-  addEmployee: player => {
+  fireWorker(i) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_FIRE_WORKER,
+      i
+    })
+  },
+  addEmployee(player) {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_ADD,
       player
     })
   },
-  rejectEmployee: i => {
+  rejectEmployee(i) {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_REMOVE,
       i
     })
   },
 
-  increasePoints: (points) => {
+  increasePoints(points) {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_INCREASE_POINTS,
       points
     })
   },
-  spendPoints: (pp, mp) => {
+  spendPoints(pp, mp) {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_DECREASE_POINTS,
       pp,

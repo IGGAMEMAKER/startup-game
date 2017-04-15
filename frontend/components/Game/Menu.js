@@ -22,7 +22,8 @@ export default class Menu extends Component {
   };
 
   render(props, state) {
-    const saldo = moneyCalculator.saldo() > 0;
+    const saldoValue = Math.floor(moneyCalculator.saldo());
+    const saldo = saldoValue  > 0;
     const arrow = saldo ? UI.symbols.upRight : UI.symbols.downRight;
 
     const s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
@@ -42,17 +43,19 @@ export default class Menu extends Component {
       </div>
     );
 
+    const moneyDifference = saldo ? `+${saldoValue}` : saldoValue;
+
     return (
       <div>
         <div className={navigation}>
-          <div className={moneyIndication}>${Math.floor(state.money)} {arrow}</div>
+          <div className={moneyIndication}>${Math.floor(state.money)} ({moneyDifference}$)</div>
         </div>
         <div className={navigation}>
           <div>День: {props.day}</div>
         </div>
-        {speeder(3, '>')}
-        {speeder(5, '>>')}
-        {speeder(9, '>>>')}
+        {speeder(1, '>')}
+        {speeder(4, '>>')}
+        {speeder(8, '>>>')}
         <div className={navigation}>MP: {state.points.marketing}</div>
         <div className={navigation}>PP: {state.points.programming}</div>
 

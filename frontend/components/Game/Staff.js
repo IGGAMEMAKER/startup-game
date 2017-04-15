@@ -148,6 +148,16 @@ export default class Staff extends Component {
       );
       taskSettingTab = '';
     } else {
+      const fire = () => {
+        actions.fireWorker(i);
+      };
+
+      hireButton = p.isPlayer ? '' : (
+        <div className="worker-button-container">
+          <span className="worker-button"><UI.Button onClick={fire} text="Уволить" secondary /></span>
+        </div>
+      );
+
       taskSettingTab = (
         <div>
           <span>Задача: </span>

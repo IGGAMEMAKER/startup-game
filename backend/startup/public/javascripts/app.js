@@ -4154,6 +4154,20 @@
 	        );
 	        taskSettingTab = '';
 	      } else {
+	        var fire = function fire() {
+	          _playerActions2.default.fireWorker(i);
+	        };
+
+	        hireButton = p.isPlayer ? '' : (0, _preact.h)(
+	          'div',
+	          { className: 'worker-button-container' },
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'worker-button' },
+	            (0, _preact.h)(_UI2.default.Button, { onClick: fire, text: '\u0423\u0432\u043E\u043B\u0438\u0442\u044C', secondary: true })
+	          )
+	        );
+
 	        taskSettingTab = (0, _preact.h)(
 	          'div',
 	          null,
@@ -4516,6 +4530,12 @@
 	      i: i
 	    });
 	  },
+	  fireWorker: function fireWorker(i) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PLAYER_ACTIONS_FIRE_WORKER,
+	      i: i
+	    });
+	  },
 	  addEmployee: function addEmployee(player) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_ADD,
@@ -4528,7 +4548,6 @@
 	      i: i
 	    });
 	  },
-
 	  increasePoints: function increasePoints(points) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PLAYER_ACTIONS_INCREASE_POINTS,
@@ -4542,6 +4561,7 @@
 	      mp: mp
 	    });
 	  },
+
 	  buyProgrammingPoints: function buyProgrammingPoints(pp) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PLAYER_ACTIONS_BUY_PP,
@@ -4859,12 +4879,15 @@
 	    case c.PLAYER_ACTIONS_INCREASE_MONEY:
 	      _money += p.amount;
 	      break;
+
 	    case c.PLAYER_ACTIONS_EXPENSES_ADD:
 	      _expenses.push(p.expense);
 	      break;
+
 	    case c.PLAYER_ACTIONS_EXPENSES_REMOVE:
 	      _expenses.splice(p.id, 1);
 	      break;
+
 	    case c.PLAYER_ACTIONS_LOANS_TAKE:
 	      _logger2.default.shit('LOAN SIZE MUST BASE ON YOUR INCOME!!!. stores player-store.js');
 
@@ -4878,6 +4901,7 @@
 	        regularity: 1
 	      });
 	      break;
+
 	    case c.PLAYER_ACTIONS_LOANS_REPAY:
 	      var loanSize = _expenses[p.id].price;
 	      if (loanSize <= _money) {
@@ -4889,37 +4913,51 @@
 	        change = false;
 	      }
 	      break;
+
 	    case c.PLAYER_ACTIONS_SET_TASK:
 	      _team[p.index].task = p.task;
 	      break;
+
 	    case c.PLAYER_ACTIONS_INCREASE_POINTS:
 	      _points.marketing += p.points.marketing;
 	      _points.programming += p.points.programming;
 	      break;
+
 	    case c.PLAYER_ACTIONS_BUY_PP:
 	      _points.programming += p.pp;
 	      _money -= p.pp * JOB.PRICE_OF_ONE_PP;
 	      break;
+
 	    case c.PLAYER_ACTIONS_BUY_MP:
 	      _points.marketing += p.mp;
 	      _money -= p.mp * JOB.PRICE_OF_ONE_MP;
 	      break;
+
 	    case c.PLAYER_ACTIONS_DECREASE_POINTS:
 	      _points.marketing -= p.mp;
 	      _points.programming -= p.pp;
 	      break;
+
 	    case c.PLAYER_ACTIONS_HIRE_WORKER:
 	      _team.push(p.player);
 	      _employees.splice(p.i, 1);
 	      break;
+
+	    case c.PLAYER_ACTIONS_FIRE_WORKER:
+	      _money -= _team[p.i].salary.money;
+	      _team.splice(p.i, 1);
+	      break;
+
 	    case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
 	      _employees.push(p.player);
 	      // logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
 	      // logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
 	      break;
+
 	    case c.PLAYER_ACTIONS_EMPLOYEE_REMOVE:
 	      _employees.splice(p.i, 1);
 	      break;
+
 	    default:
 	      break;
 	  }
@@ -5102,7 +5140,8 @@
 	  }, {
 	    key: 'render',
 	    value: function render(props, state) {
-	      var saldo = _moneyDifference2.default.saldo() > 0;
+	      var saldoValue = Math.floor(_moneyDifference2.default.saldo());
+	      var saldo = saldoValue > 0;
 	      var arrow = saldo ? _UI2.default.symbols.upRight : _UI2.default.symbols.downRight;
 
 	      var s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
@@ -5124,6 +5163,8 @@
 	        );
 	      };
 
+	      var moneyDifference = saldo ? '+' + saldoValue : saldoValue;
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -5135,8 +5176,9 @@
 	            { className: moneyIndication },
 	            '$',
 	            Math.floor(state.money),
-	            ' ',
-	            arrow
+	            ' (',
+	            moneyDifference,
+	            '$)'
 	          )
 	        ),
 	        (0, _preact.h)(
@@ -5149,9 +5191,9 @@
 	            props.day
 	          )
 	        ),
-	        speeder(3, '>'),
-	        speeder(5, '>>'),
-	        speeder(9, '>>>'),
+	        speeder(1, '>'),
+	        speeder(4, '>>'),
+	        speeder(8, '>>>'),
 	        (0, _preact.h)(
 	          'div',
 	          { className: navigation },
@@ -9550,7 +9592,7 @@
 	        var rating = programming + marketing;
 
 	        var salary = void 0;
-	        var pricingType = Math.floor((0, _random2.default)(0, 2));
+	        var pricingType = 1; // Math.floor(random(0, 2));
 	        switch (pricingType) {
 	          case 0:
 	            // only percents

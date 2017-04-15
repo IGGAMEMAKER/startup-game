@@ -48,7 +48,7 @@ const emit = (day) => {
         const rating = programming + marketing;
 
         let salary;
-        const pricingType = Math.floor(random(0, 2));
+        const pricingType = 1; // Math.floor(random(0, 2));
         switch (pricingType) {
           case 0:
             // only percents
