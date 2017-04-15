@@ -25,8 +25,10 @@ const calculate = () => {
     .reduce((p, c) => p + c);
 
   const loans = playerStore.getLoanPaymentAmount();
+  
+  const teamExpenses = playerStore.getTeamExpenses();
 
-  const expenses = nonProductExpenses + productExpenses + loans;
+  const expenses = nonProductExpenses + productExpenses + loans + teamExpenses;
 
   const byProductIncome = products
     .map((p, i) => ({ name: p.name, income: productStore.getProductIncome(i) }));
@@ -35,12 +37,13 @@ const calculate = () => {
     nonProductExpenses,
     productExpenses,
     loans,
+    teamExpenses,
 
 
     expenses,
     income,
     byProductIncome,
-    
+
     saldo: income - expenses
   }
 };

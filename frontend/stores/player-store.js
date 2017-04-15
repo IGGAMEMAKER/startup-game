@@ -63,13 +63,17 @@ let _team = [
     isPlayer: true
     // на каком основании работает в проекте
     // за еду, за опыт, за процент с продаж, собственник бизнеса
-  },
+  }
 ];
 
 let _reputation = 50; // neutral reputation
 let _fame = 0; // nobody knows you
 
 let _loan = 0; // no loans;
+
+function isMercenary(worker) {
+  return worker.salary.pricingType === 1;
+}
 
 class PlayerStore extends EventEmitter {
   addChangeListener(cb:Function) {
@@ -113,6 +117,10 @@ class PlayerStore extends EventEmitter {
 
   getTeam() {
     return _team;
+  }
+
+  getTeamExpenses() {
+    return this.getTeam().filter(isMercenary).map(worker => worker.salary.money).reduce((p, c) => p + c, 0);
   }
 
   getMaxPossibleFreelanceMarketingPoints() {

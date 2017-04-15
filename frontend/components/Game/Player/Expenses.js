@@ -11,48 +11,24 @@ import Button from '../../Shared/Button';
 
 type PropsType = {};
 
-type StateType = {};
-
-type ResponseType = {};
-
 export default class Expenses extends Component {
-  componentWillMount() {
-    this.setExpenses();
-
-    playerStore.addChangeListener(this.setExpenses);
-  }
-
-  setExpenses = () => {
-    this.setState({
-      expenses: playerStore.getExpenses()
-    });
+  renderProductExpense(e, i) {
+    return (
+      <div key={`product-expense${i}`}>
+        Затраты на проект {e.name}
+        <ul>
+          <li>
+            Затраты на ведение блога: {e.blog}
+          </li>
+          <li>
+            Затраты на техподдержку: {e.support}
+          </li>
+        </ul>
+      </div>
+    );
   };
 
-  // render(props: PropsType, state: StateType) {
-  render() {
-    const { props } = this;
-    const state = this.state;
-
-    const productExpenses = props.expenses;
-    const basicExpenses = state.expenses;
-
-    const renderExpense = (e, i) => {
-      return (
-        <div key={`product-expense${i}`}>
-          Затраты на проект {e.name}
-          <ul>
-            <li>
-              Затраты на ведение блога: {e.blog}
-            </li>
-            <li>
-              Затраты на техподдержку: {e.support}
-            </li>
-          </ul>
-        </div>
-      );
-    };
-
-
+  render({ productExpenses, basicExpenses, teamExpenses }, state) {
     let loanIndex = 0;
     const renderBasicExpense = (e, i) => {
       let phrase = '';
@@ -69,21 +45,18 @@ export default class Expenses extends Component {
         </div>
       }
 
-      return (
-        <div key={`basic-expense${i}`}>
-          {phrase}
-        </div>
-      );
+      return <div key={`basic-expense${i}`}>{phrase}</div>;
     };
 
-        // {JSON.stringify(state.expenses)}
     return (
       <div>
         <h4>Расходы</h4>
         <h5>Базовые расходы</h5>
         {basicExpenses.map(renderBasicExpense)}
+        <h5>Расходы на содержание команды</h5>
+        <div>{teamExpenses}$</div>
         <h5>Продуктовые расходы</h5>
-        {productExpenses.map(renderExpense)}
+        {productExpenses.map(this.renderProductExpense)}
       </div>
     )
   }

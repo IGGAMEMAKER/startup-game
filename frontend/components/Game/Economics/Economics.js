@@ -24,8 +24,8 @@ export default class Economics extends Component {
     this.pickProducts();
     this.pickMoney();
 
-    playerStore.addChangeListener(this.pickMoney)
-    productStore.addChangeListener(this.pickProducts)
+    playerStore.addChangeListener(this.pickMoney);
+    productStore.addChangeListener(this.pickProducts);
   }
 
   pickProducts = () => {
@@ -36,7 +36,8 @@ export default class Economics extends Component {
 
   pickMoney = () => {
     this.setState({
-      money: playerStore.getMoney()
+      money: playerStore.getMoney(),
+      basicExpenses: playerStore.getExpenses(),
     })
   };
 
@@ -58,9 +59,18 @@ export default class Economics extends Component {
   };
 
   renderExpenses = state => {
-    const expenses = state.products.map((p, i) => productStore.getProductExpensesStructure(i));
+    const productExpenses = state.products.map((p, i) => productStore.getProductExpensesStructure(i));
+    const basicExpenses = state.basicExpenses;
+    const teamExpenses = moneyCalculator.structured().teamExpenses;
 
-    return <div><Expenses expenses={expenses} /><hr /></div>;
+    return <div>
+      <Expenses
+        productExpenses={productExpenses}
+        basicExpenses={basicExpenses}
+        teamExpenses={teamExpenses}
+      />
+      <hr />
+    </div>;
   };
 
   takeLoan = amount => {

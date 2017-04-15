@@ -4746,6 +4746,10 @@
 
 	var _loan = 0; // no loans;
 
+	function isMercenary(worker) {
+	  return worker.salary.pricingType === 1;
+	}
+
 	var PlayerStore = function (_EventEmitter) {
 	  (0, _inherits3.default)(PlayerStore, _EventEmitter);
 
@@ -4808,6 +4812,15 @@
 	    key: 'getTeam',
 	    value: function getTeam() {
 	      return _team;
+	    }
+	  }, {
+	    key: 'getTeamExpenses',
+	    value: function getTeamExpenses() {
+	      return this.getTeam().filter(isMercenary).map(function (worker) {
+	        return worker.salary.money;
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
 	    }
 	  }, {
 	    key: 'getMaxPossibleFreelanceMarketingPoints',
@@ -5288,7 +5301,9 @@
 
 	  var loans = _playerStore2.default.getLoanPaymentAmount();
 
-	  var expenses = nonProductExpenses + productExpenses + loans;
+	  var teamExpenses = _playerStore2.default.getTeamExpenses();
+
+	  var expenses = nonProductExpenses + productExpenses + loans + teamExpenses;
 
 	  var byProductIncome = products.map(function (p, i) {
 	    return { name: p.name, income: _productStore2.default.getProductIncome(i) };
@@ -5298,6 +5313,7 @@
 	    nonProductExpenses: nonProductExpenses,
 	    productExpenses: productExpenses,
 	    loans: loans,
+	    teamExpenses: teamExpenses,
 
 	    expenses: expenses,
 	    income: income,
@@ -7214,7 +7230,8 @@
 	      });
 	    }, _this.pickMoney = function () {
 	      _this.setState({
-	        money: _playerStore2.default.getMoney()
+	        money: _playerStore2.default.getMoney(),
+	        basicExpenses: _playerStore2.default.getExpenses()
 	      });
 	    }, _this.renderIncome = function (state) {
 	      // {JSON.stringify(state.income)}
@@ -7253,14 +7270,20 @@
 	        (0, _preact.h)('hr', null)
 	      );
 	    }, _this.renderExpenses = function (state) {
-	      var expenses = state.products.map(function (p, i) {
+	      var productExpenses = state.products.map(function (p, i) {
 	        return _productStore2.default.getProductExpensesStructure(i);
 	      });
+	      var basicExpenses = state.basicExpenses;
+	      var teamExpenses = _moneyDifference2.default.structured().teamExpenses;
 
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)(_Expenses2.default, { expenses: expenses }),
+	        (0, _preact.h)(_Expenses2.default, {
+	          productExpenses: productExpenses,
+	          basicExpenses: basicExpenses,
+	          teamExpenses: teamExpenses
+	        }),
 	        (0, _preact.h)('hr', null)
 	      );
 	    }, _this.takeLoan = function (amount) {
@@ -7434,67 +7457,42 @@
 	  (0, _inherits3.default)(Expenses, _Component);
 
 	  function Expenses() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
 	    (0, _classCallCheck3.default)(this, Expenses);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Expenses.__proto__ || (0, _getPrototypeOf2.default)(Expenses)).call.apply(_ref, [this].concat(args))), _this), _this.setExpenses = function () {
-	      _this.setState({
-	        expenses: _playerStore2.default.getExpenses()
-	      });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    return (0, _possibleConstructorReturn3.default)(this, (Expenses.__proto__ || (0, _getPrototypeOf2.default)(Expenses)).apply(this, arguments));
 	  }
 
 	  (0, _createClass3.default)(Expenses, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.setExpenses();
-
-	      _playerStore2.default.addChangeListener(this.setExpenses);
+	    key: 'renderProductExpense',
+	    value: function renderProductExpense(e, i) {
+	      return (0, _preact.h)(
+	        'div',
+	        { key: 'product-expense' + i },
+	        '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u043F\u0440\u043E\u0435\u043A\u0442 ',
+	        e.name,
+	        (0, _preact.h)(
+	          'ul',
+	          null,
+	          (0, _preact.h)(
+	            'li',
+	            null,
+	            '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0432\u0435\u0434\u0435\u043D\u0438\u0435 \u0431\u043B\u043E\u0433\u0430: ',
+	            e.blog
+	          ),
+	          (0, _preact.h)(
+	            'li',
+	            null,
+	            '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0442\u0435\u0445\u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0443: ',
+	            e.support
+	          )
+	        )
+	      );
 	    }
 	  }, {
 	    key: 'render',
-
-
-	    // render(props: PropsType, state: StateType) {
-	    value: function render() {
-	      var props = this.props;
-
-	      var state = this.state;
-
-	      var productExpenses = props.expenses;
-	      var basicExpenses = state.expenses;
-
-	      var renderExpense = function renderExpense(e, i) {
-	        return (0, _preact.h)(
-	          'div',
-	          { key: 'product-expense' + i },
-	          '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u043F\u0440\u043E\u0435\u043A\u0442 ',
-	          e.name,
-	          (0, _preact.h)(
-	            'ul',
-	            null,
-	            (0, _preact.h)(
-	              'li',
-	              null,
-	              '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0432\u0435\u0434\u0435\u043D\u0438\u0435 \u0431\u043B\u043E\u0433\u0430: ',
-	              e.blog
-	            ),
-	            (0, _preact.h)(
-	              'li',
-	              null,
-	              '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0442\u0435\u0445\u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0443: ',
-	              e.support
-	            )
-	          )
-	        );
-	      };
+	    value: function render(_ref, state) {
+	      var productExpenses = _ref.productExpenses,
+	          basicExpenses = _ref.basicExpenses,
+	          teamExpenses = _ref.teamExpenses;
 
 	      var loanIndex = 0;
 	      var renderBasicExpense = function renderBasicExpense(e, i) {
@@ -7526,7 +7524,6 @@
 	        );
 	      };
 
-	      // {JSON.stringify(state.expenses)}
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -7544,9 +7541,20 @@
 	        (0, _preact.h)(
 	          'h5',
 	          null,
+	          '\u0420\u0430\u0441\u0445\u043E\u0434\u044B \u043D\u0430 \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u043D\u0438\u0435 \u043A\u043E\u043C\u0430\u043D\u0434\u044B'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          teamExpenses,
+	          '$'
+	        ),
+	        (0, _preact.h)(
+	          'h5',
+	          null,
 	          '\u041F\u0440\u043E\u0434\u0443\u043A\u0442\u043E\u0432\u044B\u0435 \u0440\u0430\u0441\u0445\u043E\u0434\u044B'
 	        ),
-	        productExpenses.map(renderExpense)
+	        productExpenses.map(this.renderProductExpense)
 	      );
 	    }
 	  }]);
