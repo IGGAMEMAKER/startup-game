@@ -43,7 +43,7 @@ export default class PointShop extends Component {
           text={`Купить ${pp} PP за ${JOB.PRICE_OF_ONE_PP * pp}$`}
           onClick={() => { playerActions.buyProgrammingPoints(pp) }}
         />
-
+        <br />
         <span>{minMP}</span>
         <span>
           <UI.Range min={minMP} max={maxMP} onDrag={mp => { this.setState({ mp }) }} />

@@ -475,9 +475,10 @@ class ProductStore extends EventEmitter {
     const ourClients = this.getClients(id);
     const uncompeteableApps = competitors.filter(c => c.rating > rating - 1);
     let frozen = ourClients;
-    if (uncompeteableApps.length) {
-      frozen += uncompeteableApps.map(c => c.clients).reduce((p, c) => p + c);
-    }
+    const unbeatableClients = uncompeteableApps.map(c => c.clients).reduce((p, c) => p + c, 0);
+    // if (uncompeteableApps.length) {
+      frozen += unbeatableClients;
+    // }
 
     const availableForYou = maxMarketSize - frozen;
 
@@ -498,7 +499,10 @@ class ProductStore extends EventEmitter {
     return {
       marketSize: maxMarketSize,
       potentialClients: maxMarketSize - frozen,
-      amount: result
+      amount: result,
+      ourClients,
+      competitors,
+      unbeatableClients
     }
   }
 }

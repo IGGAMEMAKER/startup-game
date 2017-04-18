@@ -590,43 +590,43 @@
 
 	var _ProductMenu2 = _interopRequireDefault(_ProductMenu);
 
-	var _Staff = __webpack_require__(110);
+	var _Staff = __webpack_require__(97);
 
 	var _Staff2 = _interopRequireDefault(_Staff);
 
-	var _Menu = __webpack_require__(119);
+	var _Menu = __webpack_require__(145);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Economics = __webpack_require__(143);
+	var _Economics = __webpack_require__(147);
 
 	var _Economics2 = _interopRequireDefault(_Economics);
 
-	var _Product = __webpack_require__(145);
+	var _Product = __webpack_require__(149);
 
 	var _Product2 = _interopRequireDefault(_Product);
 
-	var _productStore = __webpack_require__(121);
+	var _productStore = __webpack_require__(134);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _scheduleStore = __webpack_require__(101);
+	var _scheduleStore = __webpack_require__(130);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
-	var _messageStore = __webpack_require__(132);
+	var _messageStore = __webpack_require__(105);
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _game = __webpack_require__(157);
+	var _game = __webpack_require__(161);
 
 	var _game2 = _interopRequireDefault(_game);
 
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _UI = __webpack_require__(129);
+	var _UI = __webpack_require__(102);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -2651,1331 +2651,7 @@
 	  value: true
 	});
 
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _logger = __webpack_require__(98);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _workSpeed = __webpack_require__(99);
-
-	var _percentify = __webpack_require__(100);
-
-	var _percentify2 = _interopRequireDefault(_percentify);
-
-	var _round = __webpack_require__(96);
-
-	var _round2 = _interopRequireDefault(_round);
-
-	var _scheduleStore = __webpack_require__(101);
-
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Schedule = function (_Component) {
-	  (0, _inherits3.default)(Schedule, _Component);
-
-	  function Schedule() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Schedule);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Schedule.__proto__ || (0, _getPrototypeOf2.default)(Schedule)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      tasks: [],
-	      collapse: false
-	    }, _this.getTasks = function () {
-	      _this.setState({
-	        tasks: _scheduleStore2.default.getTasks()
-	      });
-	    }, _this.toggleTasks = function () {
-	      _this.setState({ collapse: !_this.state.collapse });
-	    }, _this.renderTask = function (task, i) {
-	      var description = task.description;
-	      var progress = task.progress + '/' + task.timecost;
-
-	      var percentage = Math.floor(task.progress * 100 / task.timecost) + ' %';
-
-	      var days = Math.ceil((task.timecost - task.progress) / task.speed);
-
-	      var result = void 0;
-	      if (task.inProgress) {
-	        result = (0, _preact.h)(
-	          'b',
-	          null,
-	          description,
-	          ' (\u0415\u0449\u0451 ',
-	          days,
-	          ' \u0434\u043D\u0435\u0439, ',
-	          percentage,
-	          ')'
-	        );
-	      } else {
-	        result = (0, _preact.h)(
-	          'div',
-	          null,
-	          description,
-	          ' (\u041E\u0436\u0438\u0434\u0430\u0435\u0442 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F: ',
-	          progress,
-	          ', ',
-	          percentage,
-	          ')'
-	        );
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        { key: 'task' + i },
-	        result
-	      );
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Schedule, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      var _this2 = this;
-
-	      this.getTasks();
-
-	      _scheduleStore2.default.addChangeListener(function () {
-	        _this2.getTasks();
-	      });
-	    }
-	  }, {
-	    key: 'render',
-
-
-	    // render(props: PropsType, state: StateType) {
-	    value: function render() {
-	      var tasks = this.state.tasks;
-
-	      var collapse = this.state.collapse;
-
-	      if (!tasks.length) return (0, _preact.h)('div', null);
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'h4',
-	          { onClick: this.toggleTasks },
-	          '\u0422\u0435\u043A\u0443\u0449\u0438\u0435 \u0437\u0430\u0434\u0430\u0447\u0438 (',
-	          collapse ? tasks.length : '-',
-	          ')'
-	        ),
-	        tasks.length && !collapse ? tasks.map(this.renderTask) : '',
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)('hr', null)
-	      );
-	    }
-	  }]);
-	  return Schedule;
-	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
-
-	exports.default = Schedule;
-	;
-
-/***/ },
-/* 98 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  log: console.log,
-	  debug: console.log,
-	  error: console.error,
-	  shit: function shit(text) {
-	    // console.log(`GOVNOKOD ${text}`);
-	  },
-	  actions: function actions(sessionId, userId, action) {}
-
-	};
-
-/***/ },
-/* 99 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	// export const HOURS_A_DAY = 8;
-	var WORK_SPEED_NORMAL = exports.WORK_SPEED_NORMAL = 8;
-	var WORK_SPEED_HAS_MAIN_JOB = exports.WORK_SPEED_HAS_MAIN_JOB = 3;
-
-/***/ },
-/* 100 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (value) {
-	  return Math.ceil(value * 10000) / 100;
-	};
-
-/***/ },
-/* 101 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _assign = __webpack_require__(3);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _events = __webpack_require__(102);
-
-	var _dispatcher = __webpack_require__(103);
-
-	var _dispatcher2 = _interopRequireDefault(_dispatcher);
-
-	var _scheduleActions = __webpack_require__(108);
-
-	var c = _interopRequireWildcard(_scheduleActions);
-
-	var _payloads = __webpack_require__(109);
-
-	var _payloads2 = _interopRequireDefault(_payloads);
-
-	var _logger = __webpack_require__(98);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _gameStages = __webpack_require__(161);
-
-	var GAME_STAGES = _interopRequireWildcard(_gameStages);
-
-	var _workSpeed = __webpack_require__(99);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var EC = 'MAIN_EVENT_CHANGE';
-
-	var _tasks = [];
-	// let _tasks = [{
-	//   description: 'improve main feature',
-	//   inProgress: true,
-	//   isSynchronous: true,
-	//   progress: 1,
-	//   timecost: 15 * WORK_SPEED_HAS_MAIN_JOB,
-	//   speed: WORK_SPEED_HAS_MAIN_JOB,
-	// }, {
-	//   description: 'improve secondary feature',
-	//   inProgress: true,
-	//   isSynchronous: false,
-	//   progress: 8,
-	//   timecost: 2 * WORK_SPEED_NORMAL,
-	//   speed: WORK_SPEED_NORMAL
-	// }, {
-	//   description: 'improve analytics',
-	//   inProgress: false,
-	//   isSynchronous: true,
-	//   progress: 1,
-	//   timecost: 2 * WORK_SPEED_NORMAL,
-	//   speed: WORK_SPEED_NORMAL
-	// }];
-	var _day = 0;
-	var _workHours = 4;
-
-	var _gameStage = GAME_STAGES.GAME_STAGE_INIT;
-
-	var ScheduleStore = function (_EventEmitter) {
-	  (0, _inherits3.default)(ScheduleStore, _EventEmitter);
-
-	  function ScheduleStore() {
-	    (0, _classCallCheck3.default)(this, ScheduleStore);
-	    return (0, _possibleConstructorReturn3.default)(this, (ScheduleStore.__proto__ || (0, _getPrototypeOf2.default)(ScheduleStore)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(ScheduleStore, [{
-	    key: 'addChangeListener',
-	    value: function addChangeListener(cb) {
-	      this.addListener(EC, cb);
-	    }
-	  }, {
-	    key: 'removeChangeListener',
-	    value: function removeChangeListener(cb) {
-	      this.removeListener(EC, cb);
-	    }
-	  }, {
-	    key: 'emitChange',
-	    value: function emitChange() {
-	      this.emit(EC);
-	    }
-	  }, {
-	    key: 'getTasks',
-	    value: function getTasks() {
-	      return _tasks;
-	    }
-	  }, {
-	    key: 'getDay',
-	    value: function getDay() {
-	      return _day;
-	    }
-	  }]);
-	  return ScheduleStore;
-	}(_events.EventEmitter);
-
-	var addTask = function addTask(task) {
-	  var queue = task.queue,
-	      days = task.days,
-	      description = task.description,
-	      cb = task.cb,
-	      performance = task.performance;
-
-
-	  var start = _day;
-	  var finish = _day + days;
-	  var inProgress = true;
-
-	  if (queue) {
-	    _tasks.filter(function (t) {
-	      return t.isSynchronous;
-	    }).forEach(function (t, i) {
-	      if (t.inProgress) {
-	        inProgress = false;
-	      }
-	    });
-	  }
-
-	  var object = {
-	    added: _day,
-	    days: days, cb: cb, description: description,
-	    isSynchronous: queue,
-	    start: start, finish: finish,
-	    progress: 0, inProgress: inProgress,
-	    timecost: days * _workSpeed.WORK_SPEED_NORMAL,
-	    speed: performance
-	  };
-
-	  _tasks.push(object);
-	};
-
-	var store = new ScheduleStore();
-
-	var payload = _payloads2.default.scheduleStorePayload;
-
-
-	_dispatcher2.default.register(function (p) {
-	  if (!p.type) {
-	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
-	    return;
-	  }
-
-	  var change = true;
-	  switch (p.type) {
-	    case c.SCHEDULE_ACTIONS_DAY_TICK:
-	      _day++;
-	      break;
-	    case c.SCHEDULE_ACTIONS_TASKS_ADD:
-	      var task = p.task;
-	      addTask(task);
-	      break;
-	    case c.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS:
-	      // it's considered, that this increase will not complete task and there is at least one day left
-	      var taskId = p.taskId;
-	      var speed = _tasks[taskId].speed;
-
-	      _tasks[taskId].progress += speed;
-	      break;
-	    case c.SCHEDULE_ACTIONS_TASKS_REMOVE:
-	      // let tasks = [10, 1, 3, 2]; // p.tasks.sort((a, b) => a - b);
-	      var tasks = p.tasks.sort(function (a, b) {
-	        return b - a;
-	      });
-
-	      tasks.forEach(function (taskId, i) {
-	        // const callback = _tasks[taskId].cb;
-
-	        // if (callback) {
-	        //   callback();
-	        // }
-
-	        _tasks.splice(taskId, 1);
-	      });
-
-	      var synchronous = _tasks.map(function (t, taskId) {
-	        return (0, _assign2.default)(t, { taskId: taskId });
-	      }).filter(function (t) {
-	        return t.isSynchronous;
-	      });
-
-	      if (synchronous.length) {
-	        if (!synchronous.filter(function (t) {
-	          return t.inProgress;
-	        }).length) {
-	          // we HAVE synchronous tasks, but we didn't set any of them in progress
-
-	          var newSynchronousTaskId = synchronous[0].taskId;
-	          _tasks[newSynchronousTaskId].inProgress = true;
-	        }
-	      }
-	      break;
-	    default:
-	      break;
-	  }
-
-	  if (change) store.emitChange();
-	});
-
-	exports.default = store;
-
-/***/ },
-/* 102 */
-/***/ function(module, exports) {
-
-	// Copyright Joyent, Inc. and other Node contributors.
-	//
-	// Permission is hereby granted, free of charge, to any person obtaining a
-	// copy of this software and associated documentation files (the
-	// "Software"), to deal in the Software without restriction, including
-	// without limitation the rights to use, copy, modify, merge, publish,
-	// distribute, sublicense, and/or sell copies of the Software, and to permit
-	// persons to whom the Software is furnished to do so, subject to the
-	// following conditions:
-	//
-	// The above copyright notice and this permission notice shall be included
-	// in all copies or substantial portions of the Software.
-	//
-	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-	// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-	// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-	// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-	// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-	function EventEmitter() {
-	  this._events = this._events || {};
-	  this._maxListeners = this._maxListeners || undefined;
-	}
-	module.exports = EventEmitter;
-
-	// Backwards-compat with node 0.10.x
-	EventEmitter.EventEmitter = EventEmitter;
-
-	EventEmitter.prototype._events = undefined;
-	EventEmitter.prototype._maxListeners = undefined;
-
-	// By default EventEmitters will print a warning if more than 10 listeners are
-	// added to it. This is a useful default which helps finding memory leaks.
-	EventEmitter.defaultMaxListeners = 10;
-
-	// Obviously not all Emitters should be limited to 10. This function allows
-	// that to be increased. Set to zero for unlimited.
-	EventEmitter.prototype.setMaxListeners = function(n) {
-	  if (!isNumber(n) || n < 0 || isNaN(n))
-	    throw TypeError('n must be a positive number');
-	  this._maxListeners = n;
-	  return this;
-	};
-
-	EventEmitter.prototype.emit = function(type) {
-	  var er, handler, len, args, i, listeners;
-
-	  if (!this._events)
-	    this._events = {};
-
-	  // If there is no 'error' event listener then throw.
-	  if (type === 'error') {
-	    if (!this._events.error ||
-	        (isObject(this._events.error) && !this._events.error.length)) {
-	      er = arguments[1];
-	      if (er instanceof Error) {
-	        throw er; // Unhandled 'error' event
-	      } else {
-	        // At least give some kind of context to the user
-	        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
-	        err.context = er;
-	        throw err;
-	      }
-	    }
-	  }
-
-	  handler = this._events[type];
-
-	  if (isUndefined(handler))
-	    return false;
-
-	  if (isFunction(handler)) {
-	    switch (arguments.length) {
-	      // fast cases
-	      case 1:
-	        handler.call(this);
-	        break;
-	      case 2:
-	        handler.call(this, arguments[1]);
-	        break;
-	      case 3:
-	        handler.call(this, arguments[1], arguments[2]);
-	        break;
-	      // slower
-	      default:
-	        args = Array.prototype.slice.call(arguments, 1);
-	        handler.apply(this, args);
-	    }
-	  } else if (isObject(handler)) {
-	    args = Array.prototype.slice.call(arguments, 1);
-	    listeners = handler.slice();
-	    len = listeners.length;
-	    for (i = 0; i < len; i++)
-	      listeners[i].apply(this, args);
-	  }
-
-	  return true;
-	};
-
-	EventEmitter.prototype.addListener = function(type, listener) {
-	  var m;
-
-	  if (!isFunction(listener))
-	    throw TypeError('listener must be a function');
-
-	  if (!this._events)
-	    this._events = {};
-
-	  // To avoid recursion in the case that type === "newListener"! Before
-	  // adding it to the listeners, first emit "newListener".
-	  if (this._events.newListener)
-	    this.emit('newListener', type,
-	              isFunction(listener.listener) ?
-	              listener.listener : listener);
-
-	  if (!this._events[type])
-	    // Optimize the case of one listener. Don't need the extra array object.
-	    this._events[type] = listener;
-	  else if (isObject(this._events[type]))
-	    // If we've already got an array, just append.
-	    this._events[type].push(listener);
-	  else
-	    // Adding the second element, need to change to array.
-	    this._events[type] = [this._events[type], listener];
-
-	  // Check for listener leak
-	  if (isObject(this._events[type]) && !this._events[type].warned) {
-	    if (!isUndefined(this._maxListeners)) {
-	      m = this._maxListeners;
-	    } else {
-	      m = EventEmitter.defaultMaxListeners;
-	    }
-
-	    if (m && m > 0 && this._events[type].length > m) {
-	      this._events[type].warned = true;
-	      console.error('(node) warning: possible EventEmitter memory ' +
-	                    'leak detected. %d listeners added. ' +
-	                    'Use emitter.setMaxListeners() to increase limit.',
-	                    this._events[type].length);
-	      if (typeof console.trace === 'function') {
-	        // not supported in IE 10
-	        console.trace();
-	      }
-	    }
-	  }
-
-	  return this;
-	};
-
-	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-	EventEmitter.prototype.once = function(type, listener) {
-	  if (!isFunction(listener))
-	    throw TypeError('listener must be a function');
-
-	  var fired = false;
-
-	  function g() {
-	    this.removeListener(type, g);
-
-	    if (!fired) {
-	      fired = true;
-	      listener.apply(this, arguments);
-	    }
-	  }
-
-	  g.listener = listener;
-	  this.on(type, g);
-
-	  return this;
-	};
-
-	// emits a 'removeListener' event iff the listener was removed
-	EventEmitter.prototype.removeListener = function(type, listener) {
-	  var list, position, length, i;
-
-	  if (!isFunction(listener))
-	    throw TypeError('listener must be a function');
-
-	  if (!this._events || !this._events[type])
-	    return this;
-
-	  list = this._events[type];
-	  length = list.length;
-	  position = -1;
-
-	  if (list === listener ||
-	      (isFunction(list.listener) && list.listener === listener)) {
-	    delete this._events[type];
-	    if (this._events.removeListener)
-	      this.emit('removeListener', type, listener);
-
-	  } else if (isObject(list)) {
-	    for (i = length; i-- > 0;) {
-	      if (list[i] === listener ||
-	          (list[i].listener && list[i].listener === listener)) {
-	        position = i;
-	        break;
-	      }
-	    }
-
-	    if (position < 0)
-	      return this;
-
-	    if (list.length === 1) {
-	      list.length = 0;
-	      delete this._events[type];
-	    } else {
-	      list.splice(position, 1);
-	    }
-
-	    if (this._events.removeListener)
-	      this.emit('removeListener', type, listener);
-	  }
-
-	  return this;
-	};
-
-	EventEmitter.prototype.removeAllListeners = function(type) {
-	  var key, listeners;
-
-	  if (!this._events)
-	    return this;
-
-	  // not listening for removeListener, no need to emit
-	  if (!this._events.removeListener) {
-	    if (arguments.length === 0)
-	      this._events = {};
-	    else if (this._events[type])
-	      delete this._events[type];
-	    return this;
-	  }
-
-	  // emit removeListener for all listeners on all events
-	  if (arguments.length === 0) {
-	    for (key in this._events) {
-	      if (key === 'removeListener') continue;
-	      this.removeAllListeners(key);
-	    }
-	    this.removeAllListeners('removeListener');
-	    this._events = {};
-	    return this;
-	  }
-
-	  listeners = this._events[type];
-
-	  if (isFunction(listeners)) {
-	    this.removeListener(type, listeners);
-	  } else if (listeners) {
-	    // LIFO order
-	    while (listeners.length)
-	      this.removeListener(type, listeners[listeners.length - 1]);
-	  }
-	  delete this._events[type];
-
-	  return this;
-	};
-
-	EventEmitter.prototype.listeners = function(type) {
-	  var ret;
-	  if (!this._events || !this._events[type])
-	    ret = [];
-	  else if (isFunction(this._events[type]))
-	    ret = [this._events[type]];
-	  else
-	    ret = this._events[type].slice();
-	  return ret;
-	};
-
-	EventEmitter.prototype.listenerCount = function(type) {
-	  if (this._events) {
-	    var evlistener = this._events[type];
-
-	    if (isFunction(evlistener))
-	      return 1;
-	    else if (evlistener)
-	      return evlistener.length;
-	  }
-	  return 0;
-	};
-
-	EventEmitter.listenerCount = function(emitter, type) {
-	  return emitter.listenerCount(type);
-	};
-
-	function isFunction(arg) {
-	  return typeof arg === 'function';
-	}
-
-	function isNumber(arg) {
-	  return typeof arg === 'number';
-	}
-
-	function isObject(arg) {
-	  return typeof arg === 'object' && arg !== null;
-	}
-
-	function isUndefined(arg) {
-	  return arg === void 0;
-	}
-
-
-/***/ },
-/* 103 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _flux = __webpack_require__(104);
-
-	exports.default = new _flux.Dispatcher();
-
-/***/ },
-/* 104 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright (c) 2014-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
-	module.exports.Dispatcher = __webpack_require__(105);
-
-
-/***/ },
-/* 105 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright (c) 2014-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule Dispatcher
-	 * 
-	 * @preventMunge
-	 */
-
-	'use strict';
-
-	exports.__esModule = true;
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var invariant = __webpack_require__(107);
-
-	var _prefix = 'ID_';
-
-	/**
-	 * Dispatcher is used to broadcast payloads to registered callbacks. This is
-	 * different from generic pub-sub systems in two ways:
-	 *
-	 *   1) Callbacks are not subscribed to particular events. Every payload is
-	 *      dispatched to every registered callback.
-	 *   2) Callbacks can be deferred in whole or part until other callbacks have
-	 *      been executed.
-	 *
-	 * For example, consider this hypothetical flight destination form, which
-	 * selects a default city when a country is selected:
-	 *
-	 *   var flightDispatcher = new Dispatcher();
-	 *
-	 *   // Keeps track of which country is selected
-	 *   var CountryStore = {country: null};
-	 *
-	 *   // Keeps track of which city is selected
-	 *   var CityStore = {city: null};
-	 *
-	 *   // Keeps track of the base flight price of the selected city
-	 *   var FlightPriceStore = {price: null}
-	 *
-	 * When a user changes the selected city, we dispatch the payload:
-	 *
-	 *   flightDispatcher.dispatch({
-	 *     actionType: 'city-update',
-	 *     selectedCity: 'paris'
-	 *   });
-	 *
-	 * This payload is digested by `CityStore`:
-	 *
-	 *   flightDispatcher.register(function(payload) {
-	 *     if (payload.actionType === 'city-update') {
-	 *       CityStore.city = payload.selectedCity;
-	 *     }
-	 *   });
-	 *
-	 * When the user selects a country, we dispatch the payload:
-	 *
-	 *   flightDispatcher.dispatch({
-	 *     actionType: 'country-update',
-	 *     selectedCountry: 'australia'
-	 *   });
-	 *
-	 * This payload is digested by both stores:
-	 *
-	 *   CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
-	 *     if (payload.actionType === 'country-update') {
-	 *       CountryStore.country = payload.selectedCountry;
-	 *     }
-	 *   });
-	 *
-	 * When the callback to update `CountryStore` is registered, we save a reference
-	 * to the returned token. Using this token with `waitFor()`, we can guarantee
-	 * that `CountryStore` is updated before the callback that updates `CityStore`
-	 * needs to query its data.
-	 *
-	 *   CityStore.dispatchToken = flightDispatcher.register(function(payload) {
-	 *     if (payload.actionType === 'country-update') {
-	 *       // `CountryStore.country` may not be updated.
-	 *       flightDispatcher.waitFor([CountryStore.dispatchToken]);
-	 *       // `CountryStore.country` is now guaranteed to be updated.
-	 *
-	 *       // Select the default city for the new country
-	 *       CityStore.city = getDefaultCityForCountry(CountryStore.country);
-	 *     }
-	 *   });
-	 *
-	 * The usage of `waitFor()` can be chained, for example:
-	 *
-	 *   FlightPriceStore.dispatchToken =
-	 *     flightDispatcher.register(function(payload) {
-	 *       switch (payload.actionType) {
-	 *         case 'country-update':
-	 *         case 'city-update':
-	 *           flightDispatcher.waitFor([CityStore.dispatchToken]);
-	 *           FlightPriceStore.price =
-	 *             getFlightPriceStore(CountryStore.country, CityStore.city);
-	 *           break;
-	 *     }
-	 *   });
-	 *
-	 * The `country-update` payload will be guaranteed to invoke the stores'
-	 * registered callbacks in order: `CountryStore`, `CityStore`, then
-	 * `FlightPriceStore`.
-	 */
-
-	var Dispatcher = (function () {
-	  function Dispatcher() {
-	    _classCallCheck(this, Dispatcher);
-
-	    this._callbacks = {};
-	    this._isDispatching = false;
-	    this._isHandled = {};
-	    this._isPending = {};
-	    this._lastID = 1;
-	  }
-
-	  /**
-	   * Registers a callback to be invoked with every dispatched payload. Returns
-	   * a token that can be used with `waitFor()`.
-	   */
-
-	  Dispatcher.prototype.register = function register(callback) {
-	    var id = _prefix + this._lastID++;
-	    this._callbacks[id] = callback;
-	    return id;
-	  };
-
-	  /**
-	   * Removes a callback based on its token.
-	   */
-
-	  Dispatcher.prototype.unregister = function unregister(id) {
-	    !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.unregister(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
-	    delete this._callbacks[id];
-	  };
-
-	  /**
-	   * Waits for the callbacks specified to be invoked before continuing execution
-	   * of the current callback. This method should only be used by a callback in
-	   * response to a dispatched payload.
-	   */
-
-	  Dispatcher.prototype.waitFor = function waitFor(ids) {
-	    !this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Must be invoked while dispatching.') : invariant(false) : undefined;
-	    for (var ii = 0; ii < ids.length; ii++) {
-	      var id = ids[ii];
-	      if (this._isPending[id]) {
-	        !this._isHandled[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Circular dependency detected while ' + 'waiting for `%s`.', id) : invariant(false) : undefined;
-	        continue;
-	      }
-	      !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
-	      this._invokeCallback(id);
-	    }
-	  };
-
-	  /**
-	   * Dispatches a payload to all registered callbacks.
-	   */
-
-	  Dispatcher.prototype.dispatch = function dispatch(payload) {
-	    !!this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.') : invariant(false) : undefined;
-	    this._startDispatching(payload);
-	    try {
-	      for (var id in this._callbacks) {
-	        if (this._isPending[id]) {
-	          continue;
-	        }
-	        this._invokeCallback(id);
-	      }
-	    } finally {
-	      this._stopDispatching();
-	    }
-	  };
-
-	  /**
-	   * Is this Dispatcher currently dispatching.
-	   */
-
-	  Dispatcher.prototype.isDispatching = function isDispatching() {
-	    return this._isDispatching;
-	  };
-
-	  /**
-	   * Call the callback stored with the given id. Also do some internal
-	   * bookkeeping.
-	   *
-	   * @internal
-	   */
-
-	  Dispatcher.prototype._invokeCallback = function _invokeCallback(id) {
-	    this._isPending[id] = true;
-	    this._callbacks[id](this._pendingPayload);
-	    this._isHandled[id] = true;
-	  };
-
-	  /**
-	   * Set up bookkeeping needed when dispatching.
-	   *
-	   * @internal
-	   */
-
-	  Dispatcher.prototype._startDispatching = function _startDispatching(payload) {
-	    for (var id in this._callbacks) {
-	      this._isPending[id] = false;
-	      this._isHandled[id] = false;
-	    }
-	    this._pendingPayload = payload;
-	    this._isDispatching = true;
-	  };
-
-	  /**
-	   * Clear bookkeeping used for dispatching.
-	   *
-	   * @internal
-	   */
-
-	  Dispatcher.prototype._stopDispatching = function _stopDispatching() {
-	    delete this._pendingPayload;
-	    this._isDispatching = false;
-	  };
-
-	  return Dispatcher;
-	})();
-
-	module.exports = Dispatcher;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(106)))
-
-/***/ },
-/* 106 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-	var process = module.exports = {};
-
-	// cached from whatever global is present so that test runners that stub it
-	// don't break things.  But we need to wrap it in a try catch in case it is
-	// wrapped in strict mode code which doesn't define any globals.  It's inside a
-	// function because try/catches deoptimize in certain engines.
-
-	var cachedSetTimeout;
-	var cachedClearTimeout;
-
-	function defaultSetTimout() {
-	    throw new Error('setTimeout has not been defined');
-	}
-	function defaultClearTimeout () {
-	    throw new Error('clearTimeout has not been defined');
-	}
-	(function () {
-	    try {
-	        if (typeof setTimeout === 'function') {
-	            cachedSetTimeout = setTimeout;
-	        } else {
-	            cachedSetTimeout = defaultSetTimout;
-	        }
-	    } catch (e) {
-	        cachedSetTimeout = defaultSetTimout;
-	    }
-	    try {
-	        if (typeof clearTimeout === 'function') {
-	            cachedClearTimeout = clearTimeout;
-	        } else {
-	            cachedClearTimeout = defaultClearTimeout;
-	        }
-	    } catch (e) {
-	        cachedClearTimeout = defaultClearTimeout;
-	    }
-	} ())
-	function runTimeout(fun) {
-	    if (cachedSetTimeout === setTimeout) {
-	        //normal enviroments in sane situations
-	        return setTimeout(fun, 0);
-	    }
-	    // if setTimeout wasn't available but was latter defined
-	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-	        cachedSetTimeout = setTimeout;
-	        return setTimeout(fun, 0);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedSetTimeout(fun, 0);
-	    } catch(e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-	            return cachedSetTimeout.call(null, fun, 0);
-	        } catch(e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-	            return cachedSetTimeout.call(this, fun, 0);
-	        }
-	    }
-
-
-	}
-	function runClearTimeout(marker) {
-	    if (cachedClearTimeout === clearTimeout) {
-	        //normal enviroments in sane situations
-	        return clearTimeout(marker);
-	    }
-	    // if clearTimeout wasn't available but was latter defined
-	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-	        cachedClearTimeout = clearTimeout;
-	        return clearTimeout(marker);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedClearTimeout(marker);
-	    } catch (e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-	            return cachedClearTimeout.call(null, marker);
-	        } catch (e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-	            return cachedClearTimeout.call(this, marker);
-	        }
-	    }
-
-
-
-	}
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-
-	function cleanUpNextTick() {
-	    if (!draining || !currentQueue) {
-	        return;
-	    }
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = runTimeout(cleanUpNextTick);
-	    draining = true;
-
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    runClearTimeout(timeout);
-	}
-
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        runTimeout(drainQueue);
-	    }
-	};
-
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ },
-/* 107 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	/**
-	 * Use invariant() to assert state which your program assumes to be true.
-	 *
-	 * Provide sprintf-style format (only %s is supported) and arguments
-	 * to provide information about what broke and what you were
-	 * expecting.
-	 *
-	 * The invariant message will be stripped in production, but the invariant
-	 * will remain to ensure logic does not differ in production.
-	 */
-
-	var validateFormat = function validateFormat(format) {};
-
-	if (process.env.NODE_ENV !== 'production') {
-	  validateFormat = function validateFormat(format) {
-	    if (format === undefined) {
-	      throw new Error('invariant requires an error message argument');
-	    }
-	  };
-	}
-
-	function invariant(condition, format, a, b, c, d, e, f) {
-	  validateFormat(format);
-
-	  if (!condition) {
-	    var error;
-	    if (format === undefined) {
-	      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
-	    } else {
-	      var args = [a, b, c, d, e, f];
-	      var argIndex = 0;
-	      error = new Error(format.replace(/%s/g, function () {
-	        return args[argIndex++];
-	      }));
-	      error.name = 'Invariant Violation';
-	    }
-
-	    error.framesToPop = 1; // we don't care about invariant's own frame
-	    throw error;
-	  }
-	}
-
-	module.exports = invariant;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(106)))
-
-/***/ },
-/* 108 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var SCHEDULE_ACTIONS_DAY_TICK = exports.SCHEDULE_ACTIONS_DAY_TICK = 'SCHEDULE_ACTIONS_DAY_TICK';
-	var SCHEDULE_ACTIONS_TASKS_ADD = exports.SCHEDULE_ACTIONS_TASKS_ADD = 'SCHEDULE_ACTIONS_TASKS_ADD';
-	var SCHEDULE_ACTIONS_TASKS_REMOVE = exports.SCHEDULE_ACTIONS_TASKS_REMOVE = 'SCHEDULE_ACTIONS_TASKS_REMOVE';
-	var SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = exports.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = 'SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS';
-
-/***/ },
-/* 109 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  productStorePayload: {
-	    name: 'productStorePayload',
-	    type: {
-	      type: String,
-	      id: Number, // product id
-	      featureGroup: String,
-	      featureName: String,
-	      value: Number
-	    }
-	  },
-	  scheduleStorePayload: {
-	    name: 'scheduleStorePayload',
-	    type: {
-	      type: String,
-	      task: Object,
-	      id: Number
-	    }
-	  },
-
-	  playerStorePayload: {
-	    name: 'playerStorePayload',
-	    type: {
-	      type: String,
-	      amount: Number
-	    }
-	  },
-	  messageStorePayload: {
-	    name: 'messageStorePayload',
-	    type: {
-	      type: String,
-	      amount: Number
-	    }
-	  }
-	};
-
-/***/ },
-/* 110 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _stringify = __webpack_require__(136);
+	var _stringify = __webpack_require__(98);
 
 	var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -4001,39 +2677,39 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _job = __webpack_require__(111);
+	var _job = __webpack_require__(101);
 
 	var JOB = _interopRequireWildcard(_job);
 
-	var _UI = __webpack_require__(129);
+	var _UI = __webpack_require__(102);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _skills = __webpack_require__(113);
+	var _skills = __webpack_require__(122);
 
 	var _skills2 = _interopRequireDefault(_skills);
 
-	var _playerActions = __webpack_require__(114);
+	var _playerActions = __webpack_require__(117);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _flux = __webpack_require__(160);
+	var _flux = __webpack_require__(129);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _Select = __webpack_require__(118);
+	var _Select = __webpack_require__(127);
 
 	var _Select2 = _interopRequireDefault(_Select);
 
-	var _coloringRange = __webpack_require__(159);
+	var _coloringRange = __webpack_require__(144);
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
-	var _playerStore = __webpack_require__(116);
+	var _playerStore = __webpack_require__(119);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
@@ -4346,7 +3022,43 @@
 	;
 
 /***/ },
-/* 111 */
+/* 98 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(99), __esModule: true };
+
+/***/ },
+/* 99 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var core  = __webpack_require__(8)
+	  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
+	module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+	  return $JSON.stringify.apply($JSON, arguments);
+	};
+
+/***/ },
+/* 100 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {
+	  log: console.log,
+	  debug: console.log,
+	  error: console.error,
+	  shit: function shit(text) {
+	    // console.log(`GOVNOKOD ${text}`);
+	  },
+	  actions: function actions(sessionId, userId, action) {}
+
+	};
+
+/***/ },
+/* 101 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4371,7 +3083,7 @@
 	var PRICE_OF_ONE_PP = exports.PRICE_OF_ONE_PP = 30;
 
 /***/ },
-/* 112 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4380,27 +3092,38 @@
 	  value: true
 	});
 
-	var _job = __webpack_require__(111);
+	var _Button = __webpack_require__(103);
 
-	var JOB = _interopRequireWildcard(_job);
+	var _Button2 = _interopRequireDefault(_Button);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var _Modal = __webpack_require__(104);
 
-	exports.default = function (p) {
-	  var skills = [{ s: 'programming', value: p.skills.programming }, { s: 'analytics', value: p.skills.analyst }, { s: 'marketing', value: p.skills.marketing }];
+	var _Modal2 = _interopRequireDefault(_Modal);
 
-	  var specialisation = skills.sort(function (a, b) {
-	    return a.value < b.value;
-	  })[0].s;
-	  if (specialisation === 'programming') return JOB.PROFESSION_PROGRAMMER;
-	  if (specialisation === 'analytics') return JOB.PROFESSION_ANALYST;
-	  if (specialisation === 'marketing') return JOB.PROFESSION_MARKETER;
+	var _Range = __webpack_require__(126);
 
-	  return '';
+	var _Range2 = _interopRequireDefault(_Range);
+
+	var _Select = __webpack_require__(127);
+
+	var _Select2 = _interopRequireDefault(_Select);
+
+	var _arrows = __webpack_require__(128);
+
+	var _arrows2 = _interopRequireDefault(_arrows);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = {
+	  Button: _Button2.default,
+	  Modal: _Modal2.default,
+	  Select: _Select2.default,
+	  Range: _Range2.default,
+	  symbols: _arrows2.default
 	};
 
 /***/ },
-/* 113 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4409,11 +3132,238 @@
 	  value: true
 	});
 
-	var _specialization = __webpack_require__(112);
+	var _extends2 = __webpack_require__(94);
 
-	var _specialization2 = _interopRequireDefault(_specialization);
+	var _extends3 = _interopRequireDefault(_extends2);
 
-	var _job = __webpack_require__(111);
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import React, { Component, PropTypes } from 'react';
+
+	var Button = function (_Component) {
+	  (0, _inherits3.default)(Button, _Component);
+
+	  function Button() {
+	    (0, _classCallCheck3.default)(this, Button);
+	    return (0, _possibleConstructorReturn3.default)(this, (Button.__proto__ || (0, _getPrototypeOf2.default)(Button)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Button, [{
+	    key: 'render',
+	    value: function render() {
+	      // props: PropsType, state: StateType
+	      var props = this.props;
+
+	      // send info to server, that user pressed the button with some id
+	      var item = props.item;
+
+	      if (!item) item = 'unknownButton';
+
+	      var className = '';
+
+	      if (props.primary) {
+	        className = 'btn btn-primary';
+	      }
+
+	      if (props.secondary) {
+	        className = 'btn btn-success';
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'button',
+	          (0, _extends3.default)({}, props, { className: 'btn ' + className }),
+	          props.text
+	        )
+	      );
+	    }
+	  }]);
+	  return Button;
+	}(_preact.Component);
+
+	exports.default = Button;
+
+/***/ },
+/* 104 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _messageStore = __webpack_require__(105);
+
+	var _messageStore2 = _interopRequireDefault(_messageStore);
+
+	var _messageActions = __webpack_require__(112);
+
+	var c = _interopRequireWildcard(_messageActions);
+
+	var _eventRenderer = __webpack_require__(115);
+
+	var _eventRenderer2 = _interopRequireDefault(_eventRenderer);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Modal = function (_Component) {
+	  (0, _inherits3.default)(Modal, _Component);
+
+	  function Modal() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Modal);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Modal.__proto__ || (0, _getPrototypeOf2.default)(Modal)).call.apply(_ref, [this].concat(args))), _this), _this.getMessages = function () {
+	      _this.setState({
+	        messages: _messageStore2.default.getMessages(),
+	        drawable: _messageStore2.default.isDrawable()
+	      });
+	    }, _this.renderModalBody = _eventRenderer2.default, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Modal, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.getMessages();
+
+	      _messageStore2.default.addChangeListener(this.getMessages);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var state = this.state,
+	          props = this.props;
+
+
+	      if (!state.drawable) return (0, _preact.h)('div', null);
+
+	      var message = state.messages[0];
+
+	      var body = this.renderModalBody(message, 0, props.onclose);
+	      // {JSON.stringify(message)}
+
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'messageTab' },
+	        body
+	      );
+	    }
+	  }]);
+	  return Modal;
+	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
+	exports.default = Modal;
+
+/***/ },
+/* 105 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _events = __webpack_require__(106);
+
+	var _dispatcher = __webpack_require__(107);
+
+	var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+	var _messageActions = __webpack_require__(112);
+
+	var c = _interopRequireWildcard(_messageActions);
+
+	var _events2 = __webpack_require__(113);
+
+	var t = _interopRequireWildcard(_events2);
+
+	var _payloads = __webpack_require__(114);
+
+	var _payloads2 = _interopRequireDefault(_payloads);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _job = __webpack_require__(101);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -4421,69 +3371,435 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var getSkill = function getSkill(skill) {
-	  return Math.floor(skill / 100);
-	};
-	exports.default = {
-	  plain: function plain(p) {
-	    return getSkill(p.skills.programming) + '/' + getSkill(p.skills.marketing) + '/' + getSkill(p.skills.analyst);
-	  },
+	var EC = 'MAIN_EVENT_CHANGE';
 
-	  getSkill: getSkill,
-	  getTranslatedSpecialization: function getTranslatedSpecialization(p) {
-	    switch ((0, _specialization2.default)(p)) {
-	      case JOB.PROFESSION_PROGRAMMER:
-	        return 'программист';break;
-	      case JOB.PROFESSION_MARKETER:
-	        return 'маркетолог';break;
-	      case JOB.PROFESSION_ANALYST:
-	        return 'аналитик';break;
-	        return 'бездельник';
-	    }
-	  },
-	  isProgrammer: function isProgrammer(p) {
-	    return (0, _specialization2.default)(p) === JOB.PROFESSION_PROGRAMMER;
-	  },
-	  isMarketer: function isMarketer(p) {
-	    return (0, _specialization2.default)(p) === JOB.PROFESSION_MARKETER;
-	  },
-	  getMaxEfficiencyPhrase: function getMaxEfficiencyPhrase(p) {
-	    switch ((0, _specialization2.default)(p)) {
-	      case JOB.PROFESSION_PROGRAMMER:
-	        return this.getProgrammingPointsProducedBy(p) + ' PP';
-	        break;
+	var _messages = [
+	  // {
+	  //   type: c.MESSAGE_TYPE_GAME_EVENT,
+	  //   data: {
+	  //     type: t.GAME_EVENT_HIRE_ENTHUSIAST,
+	  //     player: {
+	  //       name: 'Jessie',
+	  //       skills: {
+	  //         programming: 0,
+	  //         marketing: 800,
+	  //         analyst: 50
+	  //       },
+	  //       task: JOB.JOB_TASK_MARKETING_POINTS,
+	  //       jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+	  //       salary: {}
+	  //     }
+	  //   }
+	  // },
 
-	      case JOB.PROFESSION_MARKETER:
-	        return this.getMarketingPointsProducedBy(p) + ' MP';
-	        break;
+	  // {
+	  //   type: c.MESSAGE_TYPE_GAME_EVENT,
+	  //   data: {
+	  //     type: t.GAME_EVENT_FREE_POINTS,
+	  //     points: 100,
+	  //   }
+	  // },
+	  // {
+	  //   type: c.MESSAGE_TYPE_GAME_EVENT,
+	  //   data: {
+	  //     type: t.GAME_EVENT_FREE_MONEY,
+	  //     money: 32000,
+	  //   }
+	  // }
+	];
 
-	      case JOB.PROFESSION_ANALYST:
-	        return 'аналитик';
-	        break;
+	var ScheduleStore = function (_EventEmitter) {
+	  (0, _inherits3.default)(ScheduleStore, _EventEmitter);
 
-	      default:
-	        return 'бездельник';
-	        break;
-	    }
-	  },
-	  getMarketingPointsProducedBy: function getMarketingPointsProducedBy(p) {
-	    var marketingEfficiency = 30;
-
-	    return getSkill(p.skills.marketing) * marketingEfficiency;
-	  },
-	  getProgrammingPointsProducedBy: function getProgrammingPointsProducedBy(p) {
-	    var programmingEfficiency = 30;
-
-	    return getSkill(p.skills.programming) * programmingEfficiency;
-	  },
-
-	  overall: function overall(p) {
-	    return getSkill(p.skills.programming) + getSkill(p.skills.marketing) + getSkill(p.skills.analyst);
+	  function ScheduleStore() {
+	    (0, _classCallCheck3.default)(this, ScheduleStore);
+	    return (0, _possibleConstructorReturn3.default)(this, (ScheduleStore.__proto__ || (0, _getPrototypeOf2.default)(ScheduleStore)).apply(this, arguments));
 	  }
+
+	  (0, _createClass3.default)(ScheduleStore, [{
+	    key: 'addChangeListener',
+	    value: function addChangeListener(cb) {
+	      this.addListener(EC, cb);
+	    }
+	  }, {
+	    key: 'removeChangeListener',
+	    value: function removeChangeListener(cb) {
+	      this.removeListener(EC, cb);
+	    }
+	  }, {
+	    key: 'emitChange',
+	    value: function emitChange() {
+	      this.emit(EC);
+	    }
+	  }, {
+	    key: 'getMessages',
+	    value: function getMessages() {
+	      return _messages;
+	    }
+	  }, {
+	    key: 'isDrawable',
+	    value: function isDrawable() {
+	      return _messages.length;
+	    }
+	  }]);
+	  return ScheduleStore;
+	}(_events.EventEmitter);
+
+	var add = function add(message) {
+	  _messages.push(message);
 	};
+
+	var respond = function respond(i, message) {
+	  _messages.cb(message);
+	  _messages.splice(i, 1);
+	};
+
+	var close = function close(i) {
+	  // logger.debug('close ', i, 'message');
+	  _messages.splice(i, 1);
+	};
+
+	var store = new ScheduleStore();
+
+	var payload = _payloads2.default.messageStorePayload;
+
+
+	_dispatcher2.default.register(function (p) {
+	  if (!p.type) {
+	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
+	    return;
+	  }
+
+	  var change = true;
+	  switch (p.type) {
+	    case c.GAME_EVENT_ADD:
+	      add(p.message);
+	      break;
+	    case c.GAME_EVENT_CHOOSE_ANSWER:
+	      respond(p.message);
+	      break;
+	    case c.GAME_EVENT_CLOSE_TAB:
+	      close(p.id);
+	      break;
+	    default:
+	      break;
+	  }
+
+	  if (change) store.emitChange();
+	});
+
+	exports.default = store;
 
 /***/ },
-/* 114 */
+/* 106 */
+/***/ function(module, exports) {
+
+	// Copyright Joyent, Inc. and other Node contributors.
+	//
+	// Permission is hereby granted, free of charge, to any person obtaining a
+	// copy of this software and associated documentation files (the
+	// "Software"), to deal in the Software without restriction, including
+	// without limitation the rights to use, copy, modify, merge, publish,
+	// distribute, sublicense, and/or sell copies of the Software, and to permit
+	// persons to whom the Software is furnished to do so, subject to the
+	// following conditions:
+	//
+	// The above copyright notice and this permission notice shall be included
+	// in all copies or substantial portions of the Software.
+	//
+	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+	// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+	// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+	// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	function EventEmitter() {
+	  this._events = this._events || {};
+	  this._maxListeners = this._maxListeners || undefined;
+	}
+	module.exports = EventEmitter;
+
+	// Backwards-compat with node 0.10.x
+	EventEmitter.EventEmitter = EventEmitter;
+
+	EventEmitter.prototype._events = undefined;
+	EventEmitter.prototype._maxListeners = undefined;
+
+	// By default EventEmitters will print a warning if more than 10 listeners are
+	// added to it. This is a useful default which helps finding memory leaks.
+	EventEmitter.defaultMaxListeners = 10;
+
+	// Obviously not all Emitters should be limited to 10. This function allows
+	// that to be increased. Set to zero for unlimited.
+	EventEmitter.prototype.setMaxListeners = function(n) {
+	  if (!isNumber(n) || n < 0 || isNaN(n))
+	    throw TypeError('n must be a positive number');
+	  this._maxListeners = n;
+	  return this;
+	};
+
+	EventEmitter.prototype.emit = function(type) {
+	  var er, handler, len, args, i, listeners;
+
+	  if (!this._events)
+	    this._events = {};
+
+	  // If there is no 'error' event listener then throw.
+	  if (type === 'error') {
+	    if (!this._events.error ||
+	        (isObject(this._events.error) && !this._events.error.length)) {
+	      er = arguments[1];
+	      if (er instanceof Error) {
+	        throw er; // Unhandled 'error' event
+	      } else {
+	        // At least give some kind of context to the user
+	        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+	        err.context = er;
+	        throw err;
+	      }
+	    }
+	  }
+
+	  handler = this._events[type];
+
+	  if (isUndefined(handler))
+	    return false;
+
+	  if (isFunction(handler)) {
+	    switch (arguments.length) {
+	      // fast cases
+	      case 1:
+	        handler.call(this);
+	        break;
+	      case 2:
+	        handler.call(this, arguments[1]);
+	        break;
+	      case 3:
+	        handler.call(this, arguments[1], arguments[2]);
+	        break;
+	      // slower
+	      default:
+	        args = Array.prototype.slice.call(arguments, 1);
+	        handler.apply(this, args);
+	    }
+	  } else if (isObject(handler)) {
+	    args = Array.prototype.slice.call(arguments, 1);
+	    listeners = handler.slice();
+	    len = listeners.length;
+	    for (i = 0; i < len; i++)
+	      listeners[i].apply(this, args);
+	  }
+
+	  return true;
+	};
+
+	EventEmitter.prototype.addListener = function(type, listener) {
+	  var m;
+
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+
+	  if (!this._events)
+	    this._events = {};
+
+	  // To avoid recursion in the case that type === "newListener"! Before
+	  // adding it to the listeners, first emit "newListener".
+	  if (this._events.newListener)
+	    this.emit('newListener', type,
+	              isFunction(listener.listener) ?
+	              listener.listener : listener);
+
+	  if (!this._events[type])
+	    // Optimize the case of one listener. Don't need the extra array object.
+	    this._events[type] = listener;
+	  else if (isObject(this._events[type]))
+	    // If we've already got an array, just append.
+	    this._events[type].push(listener);
+	  else
+	    // Adding the second element, need to change to array.
+	    this._events[type] = [this._events[type], listener];
+
+	  // Check for listener leak
+	  if (isObject(this._events[type]) && !this._events[type].warned) {
+	    if (!isUndefined(this._maxListeners)) {
+	      m = this._maxListeners;
+	    } else {
+	      m = EventEmitter.defaultMaxListeners;
+	    }
+
+	    if (m && m > 0 && this._events[type].length > m) {
+	      this._events[type].warned = true;
+	      console.error('(node) warning: possible EventEmitter memory ' +
+	                    'leak detected. %d listeners added. ' +
+	                    'Use emitter.setMaxListeners() to increase limit.',
+	                    this._events[type].length);
+	      if (typeof console.trace === 'function') {
+	        // not supported in IE 10
+	        console.trace();
+	      }
+	    }
+	  }
+
+	  return this;
+	};
+
+	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+	EventEmitter.prototype.once = function(type, listener) {
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+
+	  var fired = false;
+
+	  function g() {
+	    this.removeListener(type, g);
+
+	    if (!fired) {
+	      fired = true;
+	      listener.apply(this, arguments);
+	    }
+	  }
+
+	  g.listener = listener;
+	  this.on(type, g);
+
+	  return this;
+	};
+
+	// emits a 'removeListener' event iff the listener was removed
+	EventEmitter.prototype.removeListener = function(type, listener) {
+	  var list, position, length, i;
+
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+
+	  if (!this._events || !this._events[type])
+	    return this;
+
+	  list = this._events[type];
+	  length = list.length;
+	  position = -1;
+
+	  if (list === listener ||
+	      (isFunction(list.listener) && list.listener === listener)) {
+	    delete this._events[type];
+	    if (this._events.removeListener)
+	      this.emit('removeListener', type, listener);
+
+	  } else if (isObject(list)) {
+	    for (i = length; i-- > 0;) {
+	      if (list[i] === listener ||
+	          (list[i].listener && list[i].listener === listener)) {
+	        position = i;
+	        break;
+	      }
+	    }
+
+	    if (position < 0)
+	      return this;
+
+	    if (list.length === 1) {
+	      list.length = 0;
+	      delete this._events[type];
+	    } else {
+	      list.splice(position, 1);
+	    }
+
+	    if (this._events.removeListener)
+	      this.emit('removeListener', type, listener);
+	  }
+
+	  return this;
+	};
+
+	EventEmitter.prototype.removeAllListeners = function(type) {
+	  var key, listeners;
+
+	  if (!this._events)
+	    return this;
+
+	  // not listening for removeListener, no need to emit
+	  if (!this._events.removeListener) {
+	    if (arguments.length === 0)
+	      this._events = {};
+	    else if (this._events[type])
+	      delete this._events[type];
+	    return this;
+	  }
+
+	  // emit removeListener for all listeners on all events
+	  if (arguments.length === 0) {
+	    for (key in this._events) {
+	      if (key === 'removeListener') continue;
+	      this.removeAllListeners(key);
+	    }
+	    this.removeAllListeners('removeListener');
+	    this._events = {};
+	    return this;
+	  }
+
+	  listeners = this._events[type];
+
+	  if (isFunction(listeners)) {
+	    this.removeListener(type, listeners);
+	  } else if (listeners) {
+	    // LIFO order
+	    while (listeners.length)
+	      this.removeListener(type, listeners[listeners.length - 1]);
+	  }
+	  delete this._events[type];
+
+	  return this;
+	};
+
+	EventEmitter.prototype.listeners = function(type) {
+	  var ret;
+	  if (!this._events || !this._events[type])
+	    ret = [];
+	  else if (isFunction(this._events[type]))
+	    ret = [this._events[type]];
+	  else
+	    ret = this._events[type].slice();
+	  return ret;
+	};
+
+	EventEmitter.prototype.listenerCount = function(type) {
+	  if (this._events) {
+	    var evlistener = this._events[type];
+
+	    if (isFunction(evlistener))
+	      return 1;
+	    else if (evlistener)
+	      return evlistener.length;
+	  }
+	  return 0;
+	};
+
+	EventEmitter.listenerCount = function(emitter, type) {
+	  return emitter.listenerCount(type);
+	};
+
+	function isFunction(arg) {
+	  return typeof arg === 'function';
+	}
+
+	function isNumber(arg) {
+	  return typeof arg === 'number';
+	}
+
+	function isObject(arg) {
+	  return typeof arg === 'object' && arg !== null;
+	}
+
+	function isUndefined(arg) {
+	  return arg === void 0;
+	}
+
+
+/***/ },
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4492,19 +3808,765 @@
 	  value: true
 	});
 
-	var _dispatcher = __webpack_require__(103);
+	var _flux = __webpack_require__(108);
 
-	var _dispatcher2 = _interopRequireDefault(_dispatcher);
+	exports.default = new _flux.Dispatcher();
 
-	var _playerActions = __webpack_require__(115);
+/***/ },
+/* 108 */
+/***/ function(module, exports, __webpack_require__) {
 
-	var ACTIONS = _interopRequireWildcard(_playerActions);
+	/**
+	 * Copyright (c) 2014-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
 
-	var _logger = __webpack_require__(98);
+	module.exports.Dispatcher = __webpack_require__(109);
+
+
+/***/ },
+/* 109 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright (c) 2014-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule Dispatcher
+	 * 
+	 * @preventMunge
+	 */
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var invariant = __webpack_require__(111);
+
+	var _prefix = 'ID_';
+
+	/**
+	 * Dispatcher is used to broadcast payloads to registered callbacks. This is
+	 * different from generic pub-sub systems in two ways:
+	 *
+	 *   1) Callbacks are not subscribed to particular events. Every payload is
+	 *      dispatched to every registered callback.
+	 *   2) Callbacks can be deferred in whole or part until other callbacks have
+	 *      been executed.
+	 *
+	 * For example, consider this hypothetical flight destination form, which
+	 * selects a default city when a country is selected:
+	 *
+	 *   var flightDispatcher = new Dispatcher();
+	 *
+	 *   // Keeps track of which country is selected
+	 *   var CountryStore = {country: null};
+	 *
+	 *   // Keeps track of which city is selected
+	 *   var CityStore = {city: null};
+	 *
+	 *   // Keeps track of the base flight price of the selected city
+	 *   var FlightPriceStore = {price: null}
+	 *
+	 * When a user changes the selected city, we dispatch the payload:
+	 *
+	 *   flightDispatcher.dispatch({
+	 *     actionType: 'city-update',
+	 *     selectedCity: 'paris'
+	 *   });
+	 *
+	 * This payload is digested by `CityStore`:
+	 *
+	 *   flightDispatcher.register(function(payload) {
+	 *     if (payload.actionType === 'city-update') {
+	 *       CityStore.city = payload.selectedCity;
+	 *     }
+	 *   });
+	 *
+	 * When the user selects a country, we dispatch the payload:
+	 *
+	 *   flightDispatcher.dispatch({
+	 *     actionType: 'country-update',
+	 *     selectedCountry: 'australia'
+	 *   });
+	 *
+	 * This payload is digested by both stores:
+	 *
+	 *   CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
+	 *     if (payload.actionType === 'country-update') {
+	 *       CountryStore.country = payload.selectedCountry;
+	 *     }
+	 *   });
+	 *
+	 * When the callback to update `CountryStore` is registered, we save a reference
+	 * to the returned token. Using this token with `waitFor()`, we can guarantee
+	 * that `CountryStore` is updated before the callback that updates `CityStore`
+	 * needs to query its data.
+	 *
+	 *   CityStore.dispatchToken = flightDispatcher.register(function(payload) {
+	 *     if (payload.actionType === 'country-update') {
+	 *       // `CountryStore.country` may not be updated.
+	 *       flightDispatcher.waitFor([CountryStore.dispatchToken]);
+	 *       // `CountryStore.country` is now guaranteed to be updated.
+	 *
+	 *       // Select the default city for the new country
+	 *       CityStore.city = getDefaultCityForCountry(CountryStore.country);
+	 *     }
+	 *   });
+	 *
+	 * The usage of `waitFor()` can be chained, for example:
+	 *
+	 *   FlightPriceStore.dispatchToken =
+	 *     flightDispatcher.register(function(payload) {
+	 *       switch (payload.actionType) {
+	 *         case 'country-update':
+	 *         case 'city-update':
+	 *           flightDispatcher.waitFor([CityStore.dispatchToken]);
+	 *           FlightPriceStore.price =
+	 *             getFlightPriceStore(CountryStore.country, CityStore.city);
+	 *           break;
+	 *     }
+	 *   });
+	 *
+	 * The `country-update` payload will be guaranteed to invoke the stores'
+	 * registered callbacks in order: `CountryStore`, `CityStore`, then
+	 * `FlightPriceStore`.
+	 */
+
+	var Dispatcher = (function () {
+	  function Dispatcher() {
+	    _classCallCheck(this, Dispatcher);
+
+	    this._callbacks = {};
+	    this._isDispatching = false;
+	    this._isHandled = {};
+	    this._isPending = {};
+	    this._lastID = 1;
+	  }
+
+	  /**
+	   * Registers a callback to be invoked with every dispatched payload. Returns
+	   * a token that can be used with `waitFor()`.
+	   */
+
+	  Dispatcher.prototype.register = function register(callback) {
+	    var id = _prefix + this._lastID++;
+	    this._callbacks[id] = callback;
+	    return id;
+	  };
+
+	  /**
+	   * Removes a callback based on its token.
+	   */
+
+	  Dispatcher.prototype.unregister = function unregister(id) {
+	    !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.unregister(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
+	    delete this._callbacks[id];
+	  };
+
+	  /**
+	   * Waits for the callbacks specified to be invoked before continuing execution
+	   * of the current callback. This method should only be used by a callback in
+	   * response to a dispatched payload.
+	   */
+
+	  Dispatcher.prototype.waitFor = function waitFor(ids) {
+	    !this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Must be invoked while dispatching.') : invariant(false) : undefined;
+	    for (var ii = 0; ii < ids.length; ii++) {
+	      var id = ids[ii];
+	      if (this._isPending[id]) {
+	        !this._isHandled[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Circular dependency detected while ' + 'waiting for `%s`.', id) : invariant(false) : undefined;
+	        continue;
+	      }
+	      !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
+	      this._invokeCallback(id);
+	    }
+	  };
+
+	  /**
+	   * Dispatches a payload to all registered callbacks.
+	   */
+
+	  Dispatcher.prototype.dispatch = function dispatch(payload) {
+	    !!this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.') : invariant(false) : undefined;
+	    this._startDispatching(payload);
+	    try {
+	      for (var id in this._callbacks) {
+	        if (this._isPending[id]) {
+	          continue;
+	        }
+	        this._invokeCallback(id);
+	      }
+	    } finally {
+	      this._stopDispatching();
+	    }
+	  };
+
+	  /**
+	   * Is this Dispatcher currently dispatching.
+	   */
+
+	  Dispatcher.prototype.isDispatching = function isDispatching() {
+	    return this._isDispatching;
+	  };
+
+	  /**
+	   * Call the callback stored with the given id. Also do some internal
+	   * bookkeeping.
+	   *
+	   * @internal
+	   */
+
+	  Dispatcher.prototype._invokeCallback = function _invokeCallback(id) {
+	    this._isPending[id] = true;
+	    this._callbacks[id](this._pendingPayload);
+	    this._isHandled[id] = true;
+	  };
+
+	  /**
+	   * Set up bookkeeping needed when dispatching.
+	   *
+	   * @internal
+	   */
+
+	  Dispatcher.prototype._startDispatching = function _startDispatching(payload) {
+	    for (var id in this._callbacks) {
+	      this._isPending[id] = false;
+	      this._isHandled[id] = false;
+	    }
+	    this._pendingPayload = payload;
+	    this._isDispatching = true;
+	  };
+
+	  /**
+	   * Clear bookkeeping used for dispatching.
+	   *
+	   * @internal
+	   */
+
+	  Dispatcher.prototype._stopDispatching = function _stopDispatching() {
+	    delete this._pendingPayload;
+	    this._isDispatching = false;
+	  };
+
+	  return Dispatcher;
+	})();
+
+	module.exports = Dispatcher;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(110)))
+
+/***/ },
+/* 110 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 111 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	'use strict';
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var validateFormat = function validateFormat(format) {};
+
+	if (process.env.NODE_ENV !== 'production') {
+	  validateFormat = function validateFormat(format) {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  };
+	}
+
+	function invariant(condition, format, a, b, c, d, e, f) {
+	  validateFormat(format);
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(format.replace(/%s/g, function () {
+	        return args[argIndex++];
+	      }));
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	}
+
+	module.exports = invariant;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(110)))
+
+/***/ },
+/* 112 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var GAME_EVENT_ADD = exports.GAME_EVENT_ADD = 'GAME_EVENT_ADD';
+	var GAME_EVENT_CHOOSE_ANSWER = exports.GAME_EVENT_CHOOSE_ANSWER = 'GAME_EVENT_CHOOSE_ANSWER';
+	var GAME_EVENT_CLOSE_TAB = exports.GAME_EVENT_CLOSE_TAB = 'GAME_EVENT_CLOSE_TAB';
+
+	var MESSAGE_TYPE_GAME_EVENT = exports.MESSAGE_TYPE_GAME_EVENT = 'MESSAGE_TYPE_GAME_EVENT';
+	var MESSAGE_TYPE_INFO = exports.MESSAGE_TYPE_INFO = 'MESSAGE_TYPE_INFO';
+	var MESSAGE_TYPE_POLL = exports.MESSAGE_TYPE_POLL = 'MESSAGE_TYPE_POLL';
+
+/***/ },
+/* 113 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var GAME_EVENT_HIRE_ENTHUSIAST = exports.GAME_EVENT_HIRE_ENTHUSIAST = 1;
+	var GAME_EVENT_HIRE_RELATIVE = exports.GAME_EVENT_HIRE_RELATIVE = 2;
+	var GAME_EVENT_FREE_MONEY = exports.GAME_EVENT_FREE_MONEY = 3;
+	var GAME_EVENT_FREE_POINTS = exports.GAME_EVENT_FREE_POINTS = 4;
+	var GAME_EVENT_BANKRUPT = exports.GAME_EVENT_BANKRUPT = 5;
+
+/***/ },
+/* 114 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {
+	  productStorePayload: {
+	    name: 'productStorePayload',
+	    type: {
+	      type: String,
+	      id: Number, // product id
+	      featureGroup: String,
+	      featureName: String,
+	      value: Number
+	    }
+	  },
+	  scheduleStorePayload: {
+	    name: 'scheduleStorePayload',
+	    type: {
+	      type: String,
+	      task: Object,
+	      id: Number
+	    }
+	  },
+
+	  playerStorePayload: {
+	    name: 'playerStorePayload',
+	    type: {
+	      type: String,
+	      amount: Number
+	    }
+	  },
+	  messageStorePayload: {
+	    name: 'messageStorePayload',
+	    type: {
+	      type: String,
+	      amount: Number
+	    }
+	  }
+	};
+
+/***/ },
+/* 115 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _stringify = __webpack_require__(98);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
+
+	var _preact = __webpack_require__(1);
+
+	var _FREEMONEYEVENT = __webpack_require__(116);
+
+	var _FREEMONEYEVENT2 = _interopRequireDefault(_FREEMONEYEVENT);
+
+	var _FREEPOINTSEVENT = __webpack_require__(124);
+
+	var _FREEPOINTSEVENT2 = _interopRequireDefault(_FREEPOINTSEVENT);
+
+	var _HIREENTHUSIASTEVENT = __webpack_require__(125);
+
+	var _HIREENTHUSIASTEVENT2 = _interopRequireDefault(_HIREENTHUSIASTEVENT);
+
+	var _events = __webpack_require__(113);
+
+	var t = _interopRequireWildcard(_events);
+
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _playerStore = __webpack_require__(116);
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (message, id, onClose) {
+	  switch (message.data.type) {
+	    case t.GAME_EVENT_FREE_MONEY:
+	      return (0, _preact.h)(_FREEMONEYEVENT2.default, { message: message, id: id, onclose: onClose });
+	      break;
+
+	    case t.GAME_EVENT_FREE_POINTS:
+	      return (0, _preact.h)(_FREEPOINTSEVENT2.default, { message: message, id: id, onclose: onClose });
+	      break;
+
+	    case t.GAME_EVENT_HIRE_ENTHUSIAST:
+	      return (0, _preact.h)(_HIREENTHUSIASTEVENT2.default, { message: message, id: id, onclose: onClose });
+	      break;
+	  }
+
+	  return (0, _preact.h)(
+	    'div',
+	    null,
+	    'render modal body ',
+	    (0, _stringify2.default)(message)
+	  );
+	};
+	// import React, { Component, PropTypes } from 'react';
+
+/***/ },
+/* 116 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _Button = __webpack_require__(103);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _messageActions = __webpack_require__(123);
+
+	var _messageActions2 = _interopRequireDefault(_messageActions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var FreeMoneyEvent = function (_Component) {
+	  (0, _inherits3.default)(FreeMoneyEvent, _Component);
+
+	  function FreeMoneyEvent() {
+	    (0, _classCallCheck3.default)(this, FreeMoneyEvent);
+	    return (0, _possibleConstructorReturn3.default)(this, (FreeMoneyEvent.__proto__ || (0, _getPrototypeOf2.default)(FreeMoneyEvent)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(FreeMoneyEvent, [{
+	    key: 'render',
+	    value: function render() {
+	      var props = this.props;
+
+	      var id = props.id;
+	      var data = props.message.data;
+
+	      var money = data.money;
+
+	      var onClick = function onClick() {
+	        _playerActions2.default.increaseMoney(money);
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'text' },
+	          '\u041D\u0435\u043A\u0442\u043E, \u043F\u043E\u0436\u0435\u043B\u0430\u0432\u0448\u0438\u0439 \u043E\u0441\u0442\u0430\u0442\u044C\u0441\u044F \u043D\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043D\u044B\u043C, \u043F\u043E\u0436\u0435\u0440\u0442\u0432\u043E\u0432\u0430\u043B \u0432 \u0432\u0430\u0448 \u043F\u0440\u043E\u0435\u043A\u0442 ',
+	          money,
+	          '$'
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { onClick: onClick, text: '\u041F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0445\u0430\u043B\u044F\u0432\u043D\u044B\u0435 ' + money + '$ !', primary: true })
+	      );
+	    }
+	  }]);
+	  return FreeMoneyEvent;
+	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
+	exports.default = FreeMoneyEvent;
+
+/***/ },
+/* 117 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _dispatcher = __webpack_require__(107);
+
+	var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+	var _playerActions = __webpack_require__(118);
+
+	var ACTIONS = _interopRequireWildcard(_playerActions);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _playerStore = __webpack_require__(119);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
@@ -4599,7 +4661,7 @@
 	};
 
 /***/ },
-/* 115 */
+/* 118 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4624,7 +4686,7 @@
 	var PLAYER_ACTIONS_EMPLOYEE_REMOVE = exports.PLAYER_ACTIONS_EMPLOYEE_REMOVE = 'PLAYER_ACTIONS_EMPLOYEE_REMOVE';
 
 /***/ },
-/* 116 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4653,37 +4715,37 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _events = __webpack_require__(102);
+	var _events = __webpack_require__(106);
 
-	var _dispatcher = __webpack_require__(103);
+	var _dispatcher = __webpack_require__(107);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _playerActions = __webpack_require__(115);
+	var _playerActions = __webpack_require__(118);
 
 	var c = _interopRequireWildcard(_playerActions);
 
-	var _payloads = __webpack_require__(109);
+	var _payloads = __webpack_require__(114);
 
 	var _payloads2 = _interopRequireDefault(_payloads);
 
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _expenses2 = __webpack_require__(117);
+	var _expenses2 = __webpack_require__(120);
 
 	var EXPENSES = _interopRequireWildcard(_expenses2);
 
-	var _job = __webpack_require__(111);
+	var _job = __webpack_require__(101);
 
 	var JOB = _interopRequireWildcard(_job);
 
-	var _specialization = __webpack_require__(112);
+	var _specialization = __webpack_require__(121);
 
 	var _specialization2 = _interopRequireDefault(_specialization);
 
-	var _skills2 = __webpack_require__(113);
+	var _skills2 = __webpack_require__(122);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -4981,7 +5043,7 @@
 	exports.default = store;
 
 /***/ },
-/* 117 */
+/* 120 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4993,7 +5055,445 @@
 	var EXPENSES_LOAN = exports.EXPENSES_LOAN = 'EXPENSES_LOAN';
 
 /***/ },
-/* 118 */
+/* 121 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _job = __webpack_require__(101);
+
+	var JOB = _interopRequireWildcard(_job);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	exports.default = function (p) {
+	  var skills = [{ s: 'programming', value: p.skills.programming }, { s: 'analytics', value: p.skills.analyst }, { s: 'marketing', value: p.skills.marketing }];
+
+	  var specialisation = skills.sort(function (a, b) {
+	    return a.value < b.value;
+	  })[0].s;
+	  if (specialisation === 'programming') return JOB.PROFESSION_PROGRAMMER;
+	  if (specialisation === 'analytics') return JOB.PROFESSION_ANALYST;
+	  if (specialisation === 'marketing') return JOB.PROFESSION_MARKETER;
+
+	  return '';
+	};
+
+/***/ },
+/* 122 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _specialization = __webpack_require__(121);
+
+	var _specialization2 = _interopRequireDefault(_specialization);
+
+	var _job = __webpack_require__(101);
+
+	var JOB = _interopRequireWildcard(_job);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var getSkill = function getSkill(skill) {
+	  return Math.floor(skill / 100);
+	};
+	exports.default = {
+	  plain: function plain(p) {
+	    return getSkill(p.skills.programming) + '/' + getSkill(p.skills.marketing) + '/' + getSkill(p.skills.analyst);
+	  },
+
+	  getSkill: getSkill,
+	  getTranslatedSpecialization: function getTranslatedSpecialization(p) {
+	    switch ((0, _specialization2.default)(p)) {
+	      case JOB.PROFESSION_PROGRAMMER:
+	        return 'программист';break;
+	      case JOB.PROFESSION_MARKETER:
+	        return 'маркетолог';break;
+	      case JOB.PROFESSION_ANALYST:
+	        return 'аналитик';break;
+	        return 'бездельник';
+	    }
+	  },
+	  isProgrammer: function isProgrammer(p) {
+	    return (0, _specialization2.default)(p) === JOB.PROFESSION_PROGRAMMER;
+	  },
+	  isMarketer: function isMarketer(p) {
+	    return (0, _specialization2.default)(p) === JOB.PROFESSION_MARKETER;
+	  },
+	  getMaxEfficiencyPhrase: function getMaxEfficiencyPhrase(p) {
+	    switch ((0, _specialization2.default)(p)) {
+	      case JOB.PROFESSION_PROGRAMMER:
+	        return this.getProgrammingPointsProducedBy(p) + ' PP';
+	        break;
+
+	      case JOB.PROFESSION_MARKETER:
+	        return this.getMarketingPointsProducedBy(p) + ' MP';
+	        break;
+
+	      case JOB.PROFESSION_ANALYST:
+	        return 'аналитик';
+	        break;
+
+	      default:
+	        return 'бездельник';
+	        break;
+	    }
+	  },
+	  getMarketingPointsProducedBy: function getMarketingPointsProducedBy(p) {
+	    var marketingEfficiency = 30;
+
+	    return getSkill(p.skills.marketing) * marketingEfficiency;
+	  },
+	  getProgrammingPointsProducedBy: function getProgrammingPointsProducedBy(p) {
+	    var programmingEfficiency = 30;
+
+	    return getSkill(p.skills.programming) * programmingEfficiency;
+	  },
+
+	  overall: function overall(p) {
+	    return getSkill(p.skills.programming) + getSkill(p.skills.marketing) + getSkill(p.skills.analyst);
+	  }
+	};
+
+/***/ },
+/* 123 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _assign = __webpack_require__(3);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
+	var _dispatcher = __webpack_require__(107);
+
+	var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+	var _messageActions = __webpack_require__(112);
+
+	var ACTIONS = _interopRequireWildcard(_messageActions);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _messageStore = __webpack_require__(105);
+
+	var _messageStore2 = _interopRequireDefault(_messageStore);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = {
+	  addGameEvent: function addGameEvent(eventType, data) {
+	    var obj = (0, _assign2.default)({}, data, { type: eventType });
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.GAME_EVENT_ADD,
+	      message: {
+	        type: eventType,
+	        data: obj
+	      }
+	    });
+	  },
+
+	  closeEvent: function closeEvent(id) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.GAME_EVENT_CLOSE_TAB,
+	      id: id
+	    });
+	  }
+	};
+
+/***/ },
+/* 124 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _Button = __webpack_require__(103);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _messageActions = __webpack_require__(123);
+
+	var _messageActions2 = _interopRequireDefault(_messageActions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var FreePointsEvent = function (_Component) {
+	  (0, _inherits3.default)(FreePointsEvent, _Component);
+
+	  function FreePointsEvent() {
+	    (0, _classCallCheck3.default)(this, FreePointsEvent);
+	    return (0, _possibleConstructorReturn3.default)(this, (FreePointsEvent.__proto__ || (0, _getPrototypeOf2.default)(FreePointsEvent)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(FreePointsEvent, [{
+	    key: 'render',
+	    value: function render() {
+	      var props = this.props;
+
+	      var id = props.id;
+	      var data = props.message.data;
+
+	      var points = data.points;
+
+	      var pickProgrammingPoints = function pickProgrammingPoints() {
+	        _playerActions2.default.increasePoints({ marketing: 0, programming: points * 2 });
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      var pickMarketingPoints = function pickMarketingPoints() {
+	        _playerActions2.default.increasePoints({ marketing: points * 2, programming: 0 });
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      var pickBoth = function pickBoth() {
+	        _playerActions2.default.increasePoints({ marketing: points, programming: points });
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'text' },
+	          '\u0412 \u0441\u0432\u043E\u0431\u043E\u0434\u043D\u043E\u0435 \u043E\u0442 \u0440\u0430\u0431\u043E\u0442\u044B \u0432\u0440\u0435\u043C\u044F \u0432\u044B \u043C\u043D\u043E\u0433\u043E \u0447\u0438\u0442\u0430\u0435\u0442\u0435 \u0438 \u044D\u0442\u043E \u043F\u0440\u0438\u043D\u043E\u0441\u0438\u0442 \u043F\u043B\u043E\u0434\u044B! \u041D\u0430 \u0447\u0442\u043E \u0441\u0434\u0435\u043B\u0430\u0435\u0442\u0435 \u0441\u0442\u0430\u0432\u043A\u0443?'
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickMarketingPoints, text: '\u041C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433 \u043D\u0430\u0448\u0435 \u0432\u0441\u0451! (+' + points * 2 + 'MP)', primary: true }),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickProgrammingPoints, text: '\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438 \u0440\u0443\u043B\u044F\u0442! (+' + points * 2 + 'PP)', primary: true }),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickBoth, text: '\u0411\u0430\u043B\u0430\u043D\u0441 \u0432\u043E \u0432\u0441\u0451\u043C! (+' + points + 'PP \u0438 +' + points + 'MP)', primary: true })
+	      );
+	    }
+	  }]);
+	  return FreePointsEvent;
+	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
+	exports.default = FreePointsEvent;
+
+/***/ },
+/* 125 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _Button = __webpack_require__(103);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _messageActions = __webpack_require__(123);
+
+	var _messageActions2 = _interopRequireDefault(_messageActions);
+
+	var _skills = __webpack_require__(122);
+
+	var _skills2 = _interopRequireDefault(_skills);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import React, { Component, PropTypes } from 'react';
+
+	var HireEnthusiastEvent = function (_Component) {
+	  (0, _inherits3.default)(HireEnthusiastEvent, _Component);
+
+	  function HireEnthusiastEvent() {
+	    (0, _classCallCheck3.default)(this, HireEnthusiastEvent);
+	    return (0, _possibleConstructorReturn3.default)(this, (HireEnthusiastEvent.__proto__ || (0, _getPrototypeOf2.default)(HireEnthusiastEvent)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(HireEnthusiastEvent, [{
+	    key: 'render',
+	    value: function render() {
+	      var props = this.props;
+
+	      var id = props.id;
+	      var data = props.message.data;
+
+	      var player = data.player;
+
+	      var hireEnthusiast = function hireEnthusiast() {
+	        _playerActions2.default.hireWorker(player);
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      var cancel = function cancel() {
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      var specialization = _skills2.default.getTranslatedSpecialization(player);
+	      var hireText = '\u041D\u0430\u043D\u044F\u0442\u044C ' + player.name + ', ' + specialization + ', (' + _skills2.default.plain(player) + ')';
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'text' },
+	          '\u041E\u043E! \u041E\u0434\u0438\u043D \u0438\u0437 \u043D\u0430\u0448\u0438\u0445 \u0444\u0430\u043D\u0430\u0442\u043E\u0432 \u043D\u0430\u0448\u0435\u0433\u043E \u043F\u0440\u043E\u0435\u043A\u0442\u0430 \u0445\u043E\u0447\u0435\u0442 \u043F\u043E\u043C\u043E\u0447\u044C \u0432 \u0440\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0435 \u0411\u0415\u0421\u041F\u041B\u0410\u0422\u041D\u041E!'
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: hireEnthusiast, text: hireText, primary: true }),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: cancel, text: '\u0423\u0432\u044B, \u043D\u0430\u0448\u0430 \u043A\u043E\u043C\u0430\u043D\u0434\u0430 \u0443\u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0442\u043E\u0432\u0430\u043D\u0430', primary: true })
+	      );
+	    }
+	  }]);
+	  return HireEnthusiastEvent;
+	}(_preact.Component);
+
+	exports.default = HireEnthusiastEvent;
+
+/***/ },
+/* 126 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import React, { Component, PropTypes } from 'react';
+	var Range = function (_Component) {
+	  (0, _inherits3.default)(Range, _Component);
+
+	  function Range() {
+	    (0, _classCallCheck3.default)(this, Range);
+	    return (0, _possibleConstructorReturn3.default)(this, (Range.__proto__ || (0, _getPrototypeOf2.default)(Range)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Range, [{
+	    key: "render",
+	    value: function render() {
+	      var props = this.props;
+
+	      return (0, _preact.h)("input", {
+	        type: "range",
+	        min: props.min,
+	        max: props.max,
+	        onInput: function onInput(event) {
+	          props.onDrag(parseInt(event.target.value));
+	        }
+	      });
+	    }
+	  }]);
+	  return Range;
+	}(_preact.Component);
+
+	exports.default = Range;
+
+/***/ },
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5070,7 +5570,24 @@
 	exports.default = Select;
 
 /***/ },
-/* 119 */
+/* 128 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {
+	  up: '\u2191',
+	  upRight: '\u2197',
+	  downRight: '\u2198',
+	  ok: '\u2713',
+	  dot: '\xB7'
+	};
+
+/***/ },
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5078,6 +5595,65 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _playerStore = __webpack_require__(119);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _scheduleStore = __webpack_require__(130);
+
+	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
+
+	var _messageStore = __webpack_require__(105);
+
+	var _messageStore2 = _interopRequireDefault(_messageStore);
+
+	var _productStore = __webpack_require__(134);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _scheduleActions = __webpack_require__(142);
+
+	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
+
+	var _messageActions = __webpack_require__(123);
+
+	var _messageActions2 = _interopRequireDefault(_messageActions);
+
+	var _productActions = __webpack_require__(143);
+
+	var _productActions2 = _interopRequireDefault(_productActions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = {
+	  playerStore: _playerStore2.default,
+	  scheduleStore: _scheduleStore2.default,
+	  messageStore: _messageStore2.default,
+	  productStore: _productStore2.default,
+	  playerActions: _playerActions2.default,
+	  scheduleActions: _scheduleActions2.default,
+	  messageActions: _messageActions2.default,
+	  productActions: _productActions2.default
+	};
+
+/***/ },
+/* 130 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _assign = __webpack_require__(3);
+
+	var _assign2 = _interopRequireDefault(_assign);
 
 	var _getPrototypeOf = __webpack_require__(40);
 
@@ -5099,240 +5675,245 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _preact = __webpack_require__(1);
+	var _events = __webpack_require__(106);
 
-	var _moneyDifference = __webpack_require__(120);
+	var _dispatcher = __webpack_require__(107);
 
-	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
+	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _scheduleStore = __webpack_require__(101);
+	var _scheduleActions = __webpack_require__(131);
 
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
+	var c = _interopRequireWildcard(_scheduleActions);
 
-	var _playerStore = __webpack_require__(116);
+	var _payloads = __webpack_require__(114);
 
-	var _playerStore2 = _interopRequireDefault(_playerStore);
+	var _payloads2 = _interopRequireDefault(_payloads);
 
-	var _UI = __webpack_require__(129);
+	var _logger = __webpack_require__(100);
 
-	var _UI2 = _interopRequireDefault(_UI);
+	var _logger2 = _interopRequireDefault(_logger);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _gameStages = __webpack_require__(132);
 
-	// import React, { Component, PropTypes } from 'react';
+	var GAME_STAGES = _interopRequireWildcard(_gameStages);
 
-	var Menu = function (_Component) {
-	  (0, _inherits3.default)(Menu, _Component);
-
-	  function Menu() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Menu);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Menu.__proto__ || (0, _getPrototypeOf2.default)(Menu)).call.apply(_ref, [this].concat(args))), _this), _this.getPlayerInfoFromStore = function () {
-	      _this.setState({
-	        money: _playerStore2.default.getMoney(),
-	        points: _playerStore2.default.getPoints()
-	      });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Menu, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.getPlayerInfoFromStore();
-
-	      _playerStore2.default.addChangeListener(this.getPlayerInfoFromStore);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render(props, state) {
-	      var saldoValue = Math.floor(_moneyDifference2.default.saldo());
-	      var saldo = saldoValue > 0;
-	      var arrow = saldo ? _UI2.default.symbols.upRight : _UI2.default.symbols.downRight;
-
-	      var s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
-	      var moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
-
-	      var navigation = s.navigation;
-
-	      var isRunning = !props.pause;
-	      var gameSpeed = props.gameSpeed;
-
-	      var speeder = function speeder(speed, text) {
-	        return (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: isRunning && gameSpeed === speed ? '||' : text,
-	            onClick: isRunning && gameSpeed === speed ? props.pauseGame : props.setGameSpeed(speed)
-	          })
-	        );
-	      };
-
-	      var moneyDifference = saldo ? '+' + saldoValue : saldoValue;
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          (0, _preact.h)(
-	            'div',
-	            { className: moneyIndication },
-	            '$',
-	            Math.floor(state.money),
-	            ' (',
-	            moneyDifference,
-	            '$)'
-	          )
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0414\u0435\u043D\u044C: ',
-	            props.day
-	          )
-	        ),
-	        speeder(1, '>'),
-	        speeder(4, '>>'),
-	        speeder(8, '>>>'),
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          'MP: ',
-	          state.points.marketing
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          'PP: ',
-	          state.points.programming
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            { className: navigation, onClick: props.onRenderProjectsMenu },
-	            '\u041F\u0440\u043E\u0435\u043A\u0442\u044B'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: navigation, onClick: props.onRenderEconomicsMenu },
-	            '\u042D\u043A\u043E\u043D\u043E\u043C\u0438\u043A\u0430'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: navigation, onClick: props.onRenderStaffMenu },
-	            '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	  return Menu;
-	}(_preact.Component);
-
-	exports.default = Menu;
-
-/***/ },
-/* 120 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _productStore = __webpack_require__(121);
-
-	var _productStore2 = _interopRequireDefault(_productStore);
-
-	var _playerStore = __webpack_require__(116);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _expenses = __webpack_require__(117);
-
-	var EXPENSES = _interopRequireWildcard(_expenses);
+	var _workSpeed = __webpack_require__(133);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var calculate = function calculate() {
-	  var products = _productStore2.default.getProducts();
+	var EC = 'MAIN_EVENT_CHANGE';
 
-	  // check income
-	  var jobIncome = 5000;
+	var _tasks = [];
+	// let _tasks = [{
+	//   description: 'improve main feature',
+	//   inProgress: true,
+	//   isSynchronous: true,
+	//   progress: 1,
+	//   timecost: 15 * WORK_SPEED_HAS_MAIN_JOB,
+	//   speed: WORK_SPEED_HAS_MAIN_JOB,
+	// }, {
+	//   description: 'improve secondary feature',
+	//   inProgress: true,
+	//   isSynchronous: false,
+	//   progress: 8,
+	//   timecost: 2 * WORK_SPEED_NORMAL,
+	//   speed: WORK_SPEED_NORMAL
+	// }, {
+	//   description: 'improve analytics',
+	//   inProgress: false,
+	//   isSynchronous: true,
+	//   progress: 1,
+	//   timecost: 2 * WORK_SPEED_NORMAL,
+	//   speed: WORK_SPEED_NORMAL
+	// }];
+	var _day = 0;
+	var _workHours = 4;
 
-	  var income = jobIncome + products.map(function (p, i) {
-	    return _productStore2.default.getProductIncome(i);
-	  }).reduce(function (p, c) {
-	    return p + c;
-	  });
+	var _gameStage = GAME_STAGES.GAME_STAGE_INIT;
 
-	  // check expenses
-	  var nonProductExpenses = _playerStore2.default.getExpenses().filter(function (e) {
-	    return e.type !== EXPENSES.EXPENSES_LOAN;
-	  }).map(function (e, i) {
-	    return e.price;
-	  }).reduce(function (p, c) {
-	    return p + c;
-	  });
+	var ScheduleStore = function (_EventEmitter) {
+	  (0, _inherits3.default)(ScheduleStore, _EventEmitter);
 
-	  var productExpenses = products.map(function (p, i) {
-	    return _productStore2.default.getProductExpenses(i);
-	  }).reduce(function (p, c) {
-	    return p + c;
-	  });
-
-	  var loans = _playerStore2.default.getLoanPaymentAmount();
-
-	  var teamExpenses = _playerStore2.default.getTeamExpenses();
-
-	  var expenses = nonProductExpenses + productExpenses + loans + teamExpenses;
-
-	  var byProductIncome = products.map(function (p, i) {
-	    return { name: p.name, income: _productStore2.default.getProductIncome(i) };
-	  });
-
-	  return {
-	    nonProductExpenses: nonProductExpenses,
-	    productExpenses: productExpenses,
-	    loans: loans,
-	    teamExpenses: teamExpenses,
-
-	    expenses: expenses,
-	    income: income,
-	    byProductIncome: byProductIncome,
-
-	    saldo: income - expenses
-	  };
-	};
-
-	exports.default = {
-	  structured: calculate,
-
-	  saldo: function saldo() {
-	    return calculate().saldo;
+	  function ScheduleStore() {
+	    (0, _classCallCheck3.default)(this, ScheduleStore);
+	    return (0, _possibleConstructorReturn3.default)(this, (ScheduleStore.__proto__ || (0, _getPrototypeOf2.default)(ScheduleStore)).apply(this, arguments));
 	  }
+
+	  (0, _createClass3.default)(ScheduleStore, [{
+	    key: 'addChangeListener',
+	    value: function addChangeListener(cb) {
+	      this.addListener(EC, cb);
+	    }
+	  }, {
+	    key: 'removeChangeListener',
+	    value: function removeChangeListener(cb) {
+	      this.removeListener(EC, cb);
+	    }
+	  }, {
+	    key: 'emitChange',
+	    value: function emitChange() {
+	      this.emit(EC);
+	    }
+	  }, {
+	    key: 'getTasks',
+	    value: function getTasks() {
+	      return _tasks;
+	    }
+	  }, {
+	    key: 'getDay',
+	    value: function getDay() {
+	      return _day;
+	    }
+	  }]);
+	  return ScheduleStore;
+	}(_events.EventEmitter);
+
+	var addTask = function addTask(task) {
+	  var queue = task.queue,
+	      days = task.days,
+	      description = task.description,
+	      cb = task.cb,
+	      performance = task.performance;
+
+
+	  var start = _day;
+	  var finish = _day + days;
+	  var inProgress = true;
+
+	  if (queue) {
+	    _tasks.filter(function (t) {
+	      return t.isSynchronous;
+	    }).forEach(function (t, i) {
+	      if (t.inProgress) {
+	        inProgress = false;
+	      }
+	    });
+	  }
+
+	  var object = {
+	    added: _day,
+	    days: days, cb: cb, description: description,
+	    isSynchronous: queue,
+	    start: start, finish: finish,
+	    progress: 0, inProgress: inProgress,
+	    timecost: days * _workSpeed.WORK_SPEED_NORMAL,
+	    speed: performance
+	  };
+
+	  _tasks.push(object);
 	};
+
+	var store = new ScheduleStore();
+
+	var payload = _payloads2.default.scheduleStorePayload;
+
+
+	_dispatcher2.default.register(function (p) {
+	  if (!p.type) {
+	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
+	    return;
+	  }
+
+	  var change = true;
+	  switch (p.type) {
+	    case c.SCHEDULE_ACTIONS_DAY_TICK:
+	      _day++;
+	      break;
+	    case c.SCHEDULE_ACTIONS_TASKS_ADD:
+	      var task = p.task;
+	      addTask(task);
+	      break;
+	    case c.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS:
+	      // it's considered, that this increase will not complete task and there is at least one day left
+	      var taskId = p.taskId;
+	      var speed = _tasks[taskId].speed;
+
+	      _tasks[taskId].progress += speed;
+	      break;
+	    case c.SCHEDULE_ACTIONS_TASKS_REMOVE:
+	      // let tasks = [10, 1, 3, 2]; // p.tasks.sort((a, b) => a - b);
+	      var tasks = p.tasks.sort(function (a, b) {
+	        return b - a;
+	      });
+
+	      tasks.forEach(function (taskId, i) {
+	        // const callback = _tasks[taskId].cb;
+
+	        // if (callback) {
+	        //   callback();
+	        // }
+
+	        _tasks.splice(taskId, 1);
+	      });
+
+	      var synchronous = _tasks.map(function (t, taskId) {
+	        return (0, _assign2.default)(t, { taskId: taskId });
+	      }).filter(function (t) {
+	        return t.isSynchronous;
+	      });
+
+	      if (synchronous.length) {
+	        if (!synchronous.filter(function (t) {
+	          return t.inProgress;
+	        }).length) {
+	          // we HAVE synchronous tasks, but we didn't set any of them in progress
+
+	          var newSynchronousTaskId = synchronous[0].taskId;
+	          _tasks[newSynchronousTaskId].inProgress = true;
+	        }
+	      }
+	      break;
+	    default:
+	      break;
+	  }
+
+	  if (change) store.emitChange();
+	});
+
+	exports.default = store;
 
 /***/ },
-/* 121 */
+/* 131 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var SCHEDULE_ACTIONS_DAY_TICK = exports.SCHEDULE_ACTIONS_DAY_TICK = 'SCHEDULE_ACTIONS_DAY_TICK';
+	var SCHEDULE_ACTIONS_TASKS_ADD = exports.SCHEDULE_ACTIONS_TASKS_ADD = 'SCHEDULE_ACTIONS_TASKS_ADD';
+	var SCHEDULE_ACTIONS_TASKS_REMOVE = exports.SCHEDULE_ACTIONS_TASKS_REMOVE = 'SCHEDULE_ACTIONS_TASKS_REMOVE';
+	var SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = exports.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = 'SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS';
+
+/***/ },
+/* 132 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var GAME_STAGE_INIT = exports.GAME_STAGE_INIT = 'GAME_STAGE_INIT';
+
+/***/ },
+/* 133 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// export const HOURS_A_DAY = 8;
+	var WORK_SPEED_NORMAL = exports.WORK_SPEED_NORMAL = 8;
+	var WORK_SPEED_HAS_MAIN_JOB = exports.WORK_SPEED_HAS_MAIN_JOB = 3;
+
+/***/ },
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5361,21 +5942,21 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _events = __webpack_require__(102);
+	var _events = __webpack_require__(106);
 
-	var _dispatcher = __webpack_require__(103);
+	var _dispatcher = __webpack_require__(107);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _productActions = __webpack_require__(122);
+	var _productActions = __webpack_require__(135);
 
 	var c = _interopRequireWildcard(_productActions);
 
-	var _payloads = __webpack_require__(109);
+	var _payloads = __webpack_require__(114);
 
 	var _payloads2 = _interopRequireDefault(_payloads);
 
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -5383,19 +5964,19 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _ideas = __webpack_require__(123);
+	var _ideas = __webpack_require__(136);
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
-	var _computeRating = __webpack_require__(124);
+	var _computeRating = __webpack_require__(137);
 
 	var _computeRating2 = _interopRequireDefault(_computeRating);
 
-	var _productDescriptions = __webpack_require__(125);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _productStages = __webpack_require__(128);
+	var _productStages = __webpack_require__(141);
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
@@ -5910,13 +6491,14 @@
 	        return c.rating > rating - 1;
 	      });
 	      var frozen = ourClients;
-	      if (uncompeteableApps.length) {
-	        frozen += uncompeteableApps.map(function (c) {
-	          return c.clients;
-	        }).reduce(function (p, c) {
-	          return p + c;
-	        });
-	      }
+	      var unbeatableClients = uncompeteableApps.map(function (c) {
+	        return c.clients;
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
+	      // if (uncompeteableApps.length) {
+	      frozen += unbeatableClients;
+	      // }
 
 	      var availableForYou = maxMarketSize - frozen;
 
@@ -5937,7 +6519,10 @@
 	      return {
 	        marketSize: maxMarketSize,
 	        potentialClients: maxMarketSize - frozen,
-	        amount: result
+	        amount: result,
+	        ourClients: ourClients,
+	        competitors: competitors,
+	        unbeatableClients: unbeatableClients
 	      };
 	    }
 	  }]);
@@ -6036,7 +6621,7 @@
 	exports.default = store;
 
 /***/ },
-/* 122 */
+/* 135 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6054,7 +6639,7 @@
 	var PRODUCT_ACTIONS_TEST_HYPOTHESIS = exports.PRODUCT_ACTIONS_TEST_HYPOTHESIS = 'PRODUCT_ACTIONS_TEST_HYPOTHESIS';
 
 /***/ },
-/* 123 */
+/* 136 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6066,7 +6651,7 @@
 	var IDEA_WEB_HOSTING = exports.IDEA_WEB_HOSTING = 'IDEA_WEB_HOSTING';
 
 /***/ },
-/* 124 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6075,11 +6660,11 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(125);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -6108,7 +6693,7 @@
 	};
 
 /***/ },
-/* 125 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6128,15 +6713,15 @@
 	  }
 	};
 
-	var _ideas = __webpack_require__(123);
+	var _ideas = __webpack_require__(136);
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
-	var _WEBSTUDIO = __webpack_require__(126);
+	var _WEBSTUDIO = __webpack_require__(139);
 
 	var _WEBSTUDIO2 = _interopRequireDefault(_WEBSTUDIO);
 
-	var _WEBHOSTING = __webpack_require__(127);
+	var _WEBHOSTING = __webpack_require__(140);
 
 	var _WEBHOSTING2 = _interopRequireDefault(_WEBHOSTING);
 
@@ -6147,7 +6732,7 @@
 	;
 
 /***/ },
-/* 126 */
+/* 139 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6170,7 +6755,7 @@
 	};
 
 /***/ },
-/* 127 */
+/* 140 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6197,7 +6782,7 @@
 	};
 
 /***/ },
-/* 128 */
+/* 141 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6210,7 +6795,7 @@
 	var PRODUCT_STAGE_NORMAL = exports.PRODUCT_STAGE_NORMAL = 'PRODUCT_STAGE_NORMAL';
 
 /***/ },
-/* 129 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6219,932 +6804,71 @@
 	  value: true
 	});
 
-	var _Button = __webpack_require__(130);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
-	var _Modal = __webpack_require__(131);
-
-	var _Modal2 = _interopRequireDefault(_Modal);
-
-	var _Range = __webpack_require__(142);
-
-	var _Range2 = _interopRequireDefault(_Range);
-
-	var _Select = __webpack_require__(118);
-
-	var _Select2 = _interopRequireDefault(_Select);
-
-	var _arrows = __webpack_require__(162);
-
-	var _arrows2 = _interopRequireDefault(_arrows);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = {
-	  Button: _Button2.default,
-	  Modal: _Modal2.default,
-	  Select: _Select2.default,
-	  Range: _Range2.default,
-	  symbols: _arrows2.default
-	};
-
-/***/ },
-/* 130 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends2 = __webpack_require__(94);
-
-	var _extends3 = _interopRequireDefault(_extends2);
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
-
-	var Button = function (_Component) {
-	  (0, _inherits3.default)(Button, _Component);
-
-	  function Button() {
-	    (0, _classCallCheck3.default)(this, Button);
-	    return (0, _possibleConstructorReturn3.default)(this, (Button.__proto__ || (0, _getPrototypeOf2.default)(Button)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Button, [{
-	    key: 'render',
-	    value: function render() {
-	      // props: PropsType, state: StateType
-	      var props = this.props;
-
-	      // send info to server, that user pressed the button with some id
-	      var item = props.item;
-
-	      if (!item) item = 'unknownButton';
-
-	      var className = '';
-
-	      if (props.primary) {
-	        className = 'btn btn-primary';
-	      }
-
-	      if (props.secondary) {
-	        className = 'btn btn-success';
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'button',
-	          (0, _extends3.default)({}, props, { className: 'btn ' + className }),
-	          props.text
-	        )
-	      );
-	    }
-	  }]);
-	  return Button;
-	}(_preact.Component);
-
-	exports.default = Button;
-
-/***/ },
-/* 131 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _messageStore = __webpack_require__(132);
-
-	var _messageStore2 = _interopRequireDefault(_messageStore);
-
-	var _messageActions = __webpack_require__(133);
-
-	var c = _interopRequireWildcard(_messageActions);
-
-	var _eventRenderer = __webpack_require__(135);
-
-	var _eventRenderer2 = _interopRequireDefault(_eventRenderer);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Modal = function (_Component) {
-	  (0, _inherits3.default)(Modal, _Component);
-
-	  function Modal() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Modal);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Modal.__proto__ || (0, _getPrototypeOf2.default)(Modal)).call.apply(_ref, [this].concat(args))), _this), _this.getMessages = function () {
-	      _this.setState({
-	        messages: _messageStore2.default.getMessages(),
-	        drawable: _messageStore2.default.isDrawable()
-	      });
-	    }, _this.renderModalBody = _eventRenderer2.default, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Modal, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.getMessages();
-
-	      _messageStore2.default.addChangeListener(this.getMessages);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var state = this.state,
-	          props = this.props;
-
-
-	      if (!state.drawable) return (0, _preact.h)('div', null);
-
-	      var message = state.messages[0];
-
-	      var body = this.renderModalBody(message, 0, props.onclose);
-	      // {JSON.stringify(message)}
-
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'messageTab' },
-	        body
-	      );
-	    }
-	  }]);
-	  return Modal;
-	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
-	exports.default = Modal;
-
-/***/ },
-/* 132 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _events = __webpack_require__(102);
-
-	var _dispatcher = __webpack_require__(103);
+	var _dispatcher = __webpack_require__(107);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _messageActions = __webpack_require__(133);
+	var _scheduleActions = __webpack_require__(131);
 
-	var c = _interopRequireWildcard(_messageActions);
+	var ACTIONS = _interopRequireWildcard(_scheduleActions);
 
-	var _events2 = __webpack_require__(134);
-
-	var t = _interopRequireWildcard(_events2);
-
-	var _payloads = __webpack_require__(109);
-
-	var _payloads2 = _interopRequireDefault(_payloads);
-
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _job = __webpack_require__(111);
+	var _scheduleStore = __webpack_require__(130);
 
-	var JOB = _interopRequireWildcard(_job);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var EC = 'MAIN_EVENT_CHANGE';
-
-	var _messages = [
-	  // {
-	  //   type: c.MESSAGE_TYPE_GAME_EVENT,
-	  //   data: {
-	  //     type: t.GAME_EVENT_HIRE_ENTHUSIAST,
-	  //     player: {
-	  //       name: 'Jessie',
-	  //       skills: {
-	  //         programming: 0,
-	  //         marketing: 800,
-	  //         analyst: 50
-	  //       },
-	  //       task: JOB.JOB_TASK_MARKETING_POINTS,
-	  //       jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-	  //       salary: {}
-	  //     }
-	  //   }
-	  // },
-
-	  // {
-	  //   type: c.MESSAGE_TYPE_GAME_EVENT,
-	  //   data: {
-	  //     type: t.GAME_EVENT_FREE_POINTS,
-	  //     points: 100,
-	  //   }
-	  // },
-	  // {
-	  //   type: c.MESSAGE_TYPE_GAME_EVENT,
-	  //   data: {
-	  //     type: t.GAME_EVENT_FREE_MONEY,
-	  //     money: 32000,
-	  //   }
-	  // }
-	];
-
-	var ScheduleStore = function (_EventEmitter) {
-	  (0, _inherits3.default)(ScheduleStore, _EventEmitter);
-
-	  function ScheduleStore() {
-	    (0, _classCallCheck3.default)(this, ScheduleStore);
-	    return (0, _possibleConstructorReturn3.default)(this, (ScheduleStore.__proto__ || (0, _getPrototypeOf2.default)(ScheduleStore)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(ScheduleStore, [{
-	    key: 'addChangeListener',
-	    value: function addChangeListener(cb) {
-	      this.addListener(EC, cb);
-	    }
-	  }, {
-	    key: 'removeChangeListener',
-	    value: function removeChangeListener(cb) {
-	      this.removeListener(EC, cb);
-	    }
-	  }, {
-	    key: 'emitChange',
-	    value: function emitChange() {
-	      this.emit(EC);
-	    }
-	  }, {
-	    key: 'getMessages',
-	    value: function getMessages() {
-	      return _messages;
-	    }
-	  }, {
-	    key: 'isDrawable',
-	    value: function isDrawable() {
-	      return _messages.length;
-	    }
-	  }]);
-	  return ScheduleStore;
-	}(_events.EventEmitter);
-
-	var add = function add(message) {
-	  _messages.push(message);
-	};
-
-	var respond = function respond(i, message) {
-	  _messages.cb(message);
-	  _messages.splice(i, 1);
-	};
-
-	var close = function close(i) {
-	  // logger.debug('close ', i, 'message');
-	  _messages.splice(i, 1);
-	};
-
-	var store = new ScheduleStore();
-
-	var payload = _payloads2.default.messageStorePayload;
-
-
-	_dispatcher2.default.register(function (p) {
-	  if (!p.type) {
-	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
-	    return;
-	  }
-
-	  var change = true;
-	  switch (p.type) {
-	    case c.GAME_EVENT_ADD:
-	      add(p.message);
-	      break;
-	    case c.GAME_EVENT_CHOOSE_ANSWER:
-	      respond(p.message);
-	      break;
-	    case c.GAME_EVENT_CLOSE_TAB:
-	      close(p.id);
-	      break;
-	    default:
-	      break;
-	  }
-
-	  if (change) store.emitChange();
-	});
-
-	exports.default = store;
-
-/***/ },
-/* 133 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var GAME_EVENT_ADD = exports.GAME_EVENT_ADD = 'GAME_EVENT_ADD';
-	var GAME_EVENT_CHOOSE_ANSWER = exports.GAME_EVENT_CHOOSE_ANSWER = 'GAME_EVENT_CHOOSE_ANSWER';
-	var GAME_EVENT_CLOSE_TAB = exports.GAME_EVENT_CLOSE_TAB = 'GAME_EVENT_CLOSE_TAB';
-
-	var MESSAGE_TYPE_GAME_EVENT = exports.MESSAGE_TYPE_GAME_EVENT = 'MESSAGE_TYPE_GAME_EVENT';
-	var MESSAGE_TYPE_INFO = exports.MESSAGE_TYPE_INFO = 'MESSAGE_TYPE_INFO';
-	var MESSAGE_TYPE_POLL = exports.MESSAGE_TYPE_POLL = 'MESSAGE_TYPE_POLL';
-
-/***/ },
-/* 134 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var GAME_EVENT_HIRE_ENTHUSIAST = exports.GAME_EVENT_HIRE_ENTHUSIAST = 1;
-	var GAME_EVENT_HIRE_RELATIVE = exports.GAME_EVENT_HIRE_RELATIVE = 2;
-	var GAME_EVENT_FREE_MONEY = exports.GAME_EVENT_FREE_MONEY = 3;
-	var GAME_EVENT_FREE_POINTS = exports.GAME_EVENT_FREE_POINTS = 4;
-	var GAME_EVENT_BANKRUPT = exports.GAME_EVENT_BANKRUPT = 5;
-
-/***/ },
-/* 135 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _stringify = __webpack_require__(136);
-
-	var _stringify2 = _interopRequireDefault(_stringify);
-
-	var _preact = __webpack_require__(1);
-
-	var _FREEMONEYEVENT = __webpack_require__(138);
-
-	var _FREEMONEYEVENT2 = _interopRequireDefault(_FREEMONEYEVENT);
-
-	var _FREEPOINTSEVENT = __webpack_require__(140);
-
-	var _FREEPOINTSEVENT2 = _interopRequireDefault(_FREEPOINTSEVENT);
-
-	var _HIREENTHUSIASTEVENT = __webpack_require__(141);
-
-	var _HIREENTHUSIASTEVENT2 = _interopRequireDefault(_HIREENTHUSIASTEVENT);
-
-	var _events = __webpack_require__(134);
-
-	var t = _interopRequireWildcard(_events);
-
-	var _logger = __webpack_require__(98);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function (message, id, onClose) {
-	  switch (message.data.type) {
-	    case t.GAME_EVENT_FREE_MONEY:
-	      return (0, _preact.h)(_FREEMONEYEVENT2.default, { message: message, id: id, onclose: onClose });
-	      break;
-
-	    case t.GAME_EVENT_FREE_POINTS:
-	      return (0, _preact.h)(_FREEPOINTSEVENT2.default, { message: message, id: id, onclose: onClose });
-	      break;
-
-	    case t.GAME_EVENT_HIRE_ENTHUSIAST:
-	      return (0, _preact.h)(_HIREENTHUSIASTEVENT2.default, { message: message, id: id, onclose: onClose });
-	      break;
-	  }
-
-	  return (0, _preact.h)(
-	    'div',
-	    null,
-	    'render modal body ',
-	    (0, _stringify2.default)(message)
-	  );
-	};
-	// import React, { Component, PropTypes } from 'react';
-
-/***/ },
-/* 136 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(137), __esModule: true };
-
-/***/ },
-/* 137 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var core  = __webpack_require__(8)
-	  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
-	module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
-	  return $JSON.stringify.apply($JSON, arguments);
-	};
-
-/***/ },
-/* 138 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _Button = __webpack_require__(130);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
-	var _playerActions = __webpack_require__(114);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _messageActions = __webpack_require__(139);
-
-	var _messageActions2 = _interopRequireDefault(_messageActions);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var FreeMoneyEvent = function (_Component) {
-	  (0, _inherits3.default)(FreeMoneyEvent, _Component);
-
-	  function FreeMoneyEvent() {
-	    (0, _classCallCheck3.default)(this, FreeMoneyEvent);
-	    return (0, _possibleConstructorReturn3.default)(this, (FreeMoneyEvent.__proto__ || (0, _getPrototypeOf2.default)(FreeMoneyEvent)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(FreeMoneyEvent, [{
-	    key: 'render',
-	    value: function render() {
-	      var props = this.props;
-
-	      var id = props.id;
-	      var data = props.message.data;
-
-	      var money = data.money;
-
-	      var onClick = function onClick() {
-	        _playerActions2.default.increaseMoney(money);
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'text' },
-	          '\u041D\u0435\u043A\u0442\u043E, \u043F\u043E\u0436\u0435\u043B\u0430\u0432\u0448\u0438\u0439 \u043E\u0441\u0442\u0430\u0442\u044C\u0441\u044F \u043D\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043D\u044B\u043C, \u043F\u043E\u0436\u0435\u0440\u0442\u0432\u043E\u0432\u0430\u043B \u0432 \u0432\u0430\u0448 \u043F\u0440\u043E\u0435\u043A\u0442 ',
-	          money,
-	          '$'
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { onClick: onClick, text: '\u041F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0445\u0430\u043B\u044F\u0432\u043D\u044B\u0435 ' + money + '$ !', primary: true })
-	      );
-	    }
-	  }]);
-	  return FreeMoneyEvent;
-	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
-	exports.default = FreeMoneyEvent;
-
-/***/ },
-/* 139 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _assign = __webpack_require__(3);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
-	var _dispatcher = __webpack_require__(103);
-
-	var _dispatcher2 = _interopRequireDefault(_dispatcher);
-
-	var _messageActions = __webpack_require__(133);
-
-	var ACTIONS = _interopRequireWildcard(_messageActions);
-
-	var _logger = __webpack_require__(98);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _messageStore = __webpack_require__(132);
-
-	var _messageStore2 = _interopRequireDefault(_messageStore);
+	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = {
-	  addGameEvent: function addGameEvent(eventType, data) {
-	    var obj = (0, _assign2.default)({}, data, { type: eventType });
+	  increaseDay: function increaseDay() {
 	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.GAME_EVENT_ADD,
-	      message: {
-	        type: eventType,
-	        data: obj
+	      type: ACTIONS.SCHEDULE_ACTIONS_DAY_TICK
+	    });
+	  },
+
+	  increaseProgress: function increaseProgress(taskId, speed) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS,
+	      speed: speed,
+	      taskId: taskId
+	    });
+	  },
+
+	  addTask: function addTask(days, queue, performance, description, cb) {
+	    // days: amount of days, that you need to complete the task. While working fulltime
+	    // if you have a job/freelance, you need more days to complete it.
+	    // it's considered, that you can work 8 h/day
+
+	    // queue - if true (it means, that you run task synchronously) start date of task won't be today
+	    // it will start, when the last task will be done and this task will be pending
+	    // if false (it means, that you run task in parallel)
+	    // you paid someone to do it and it doesn't block your work)
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.SCHEDULE_ACTIONS_TASKS_ADD,
+	      task: {
+	        days: days,
+	        queue: queue,
+	        cb: cb,
+	        description: description,
+	        performance: performance
 	      }
 	    });
 	  },
 
-	  closeEvent: function closeEvent(id) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.GAME_EVENT_CLOSE_TAB,
-	      id: id
-	    });
-	  }
-	};
-
-/***/ },
-/* 140 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _Button = __webpack_require__(130);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
-	var _playerActions = __webpack_require__(114);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _messageActions = __webpack_require__(139);
-
-	var _messageActions2 = _interopRequireDefault(_messageActions);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var FreePointsEvent = function (_Component) {
-	  (0, _inherits3.default)(FreePointsEvent, _Component);
-
-	  function FreePointsEvent() {
-	    (0, _classCallCheck3.default)(this, FreePointsEvent);
-	    return (0, _possibleConstructorReturn3.default)(this, (FreePointsEvent.__proto__ || (0, _getPrototypeOf2.default)(FreePointsEvent)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(FreePointsEvent, [{
-	    key: 'render',
-	    value: function render() {
-	      var props = this.props;
-
-	      var id = props.id;
-	      var data = props.message.data;
-
-	      var points = data.points;
-
-	      var pickProgrammingPoints = function pickProgrammingPoints() {
-	        _playerActions2.default.increasePoints({ marketing: 0, programming: points * 2 });
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      var pickMarketingPoints = function pickMarketingPoints() {
-	        _playerActions2.default.increasePoints({ marketing: points * 2, programming: 0 });
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      var pickBoth = function pickBoth() {
-	        _playerActions2.default.increasePoints({ marketing: points, programming: points });
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'text' },
-	          '\u0412 \u0441\u0432\u043E\u0431\u043E\u0434\u043D\u043E\u0435 \u043E\u0442 \u0440\u0430\u0431\u043E\u0442\u044B \u0432\u0440\u0435\u043C\u044F \u0432\u044B \u043C\u043D\u043E\u0433\u043E \u0447\u0438\u0442\u0430\u0435\u0442\u0435 \u0438 \u044D\u0442\u043E \u043F\u0440\u0438\u043D\u043E\u0441\u0438\u0442 \u043F\u043B\u043E\u0434\u044B! \u041D\u0430 \u0447\u0442\u043E \u0441\u0434\u0435\u043B\u0430\u0435\u0442\u0435 \u0441\u0442\u0430\u0432\u043A\u0443?'
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickMarketingPoints, text: '\u041C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433 \u043D\u0430\u0448\u0435 \u0432\u0441\u0451! (+' + points * 2 + 'MP)', primary: true }),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickProgrammingPoints, text: '\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438 \u0440\u0443\u043B\u044F\u0442! (+' + points * 2 + 'PP)', primary: true }),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickBoth, text: '\u0411\u0430\u043B\u0430\u043D\u0441 \u0432\u043E \u0432\u0441\u0451\u043C! (+' + points + 'PP \u0438 +' + points + 'MP)', primary: true })
-	      );
-	    }
-	  }]);
-	  return FreePointsEvent;
-	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
-	exports.default = FreePointsEvent;
-
-/***/ },
-/* 141 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _Button = __webpack_require__(130);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
-	var _playerActions = __webpack_require__(114);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _messageActions = __webpack_require__(139);
-
-	var _messageActions2 = _interopRequireDefault(_messageActions);
-
-	var _skills = __webpack_require__(113);
-
-	var _skills2 = _interopRequireDefault(_skills);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
-
-	var HireEnthusiastEvent = function (_Component) {
-	  (0, _inherits3.default)(HireEnthusiastEvent, _Component);
-
-	  function HireEnthusiastEvent() {
-	    (0, _classCallCheck3.default)(this, HireEnthusiastEvent);
-	    return (0, _possibleConstructorReturn3.default)(this, (HireEnthusiastEvent.__proto__ || (0, _getPrototypeOf2.default)(HireEnthusiastEvent)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(HireEnthusiastEvent, [{
-	    key: 'render',
-	    value: function render() {
-	      var props = this.props;
-
-	      var id = props.id;
-	      var data = props.message.data;
-
-	      var player = data.player;
-
-	      var hireEnthusiast = function hireEnthusiast() {
-	        _playerActions2.default.hireWorker(player);
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      var cancel = function cancel() {
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      var specialization = _skills2.default.getTranslatedSpecialization(player);
-	      var hireText = '\u041D\u0430\u043D\u044F\u0442\u044C ' + player.name + ', ' + specialization + ', (' + _skills2.default.plain(player) + ')';
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'text' },
-	          '\u041E\u043E! \u041E\u0434\u0438\u043D \u0438\u0437 \u043D\u0430\u0448\u0438\u0445 \u0444\u0430\u043D\u0430\u0442\u043E\u0432 \u043D\u0430\u0448\u0435\u0433\u043E \u043F\u0440\u043E\u0435\u043A\u0442\u0430 \u0445\u043E\u0447\u0435\u0442 \u043F\u043E\u043C\u043E\u0447\u044C \u0432 \u0440\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0435 \u0411\u0415\u0421\u041F\u041B\u0410\u0422\u041D\u041E!'
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: hireEnthusiast, text: hireText, primary: true }),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: cancel, text: '\u0423\u0432\u044B, \u043D\u0430\u0448\u0430 \u043A\u043E\u043C\u0430\u043D\u0434\u0430 \u0443\u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0442\u043E\u0432\u0430\u043D\u0430', primary: true })
-	      );
-	    }
-	  }]);
-	  return HireEnthusiastEvent;
-	}(_preact.Component);
-
-	exports.default = HireEnthusiastEvent;
-
-/***/ },
-/* 142 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
-	var Range = function (_Component) {
-	  (0, _inherits3.default)(Range, _Component);
-
-	  function Range() {
-	    (0, _classCallCheck3.default)(this, Range);
-	    return (0, _possibleConstructorReturn3.default)(this, (Range.__proto__ || (0, _getPrototypeOf2.default)(Range)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Range, [{
-	    key: "render",
-	    value: function render() {
-	      var props = this.props;
-
-	      return (0, _preact.h)("input", {
-	        type: "range",
-	        min: props.min,
-	        max: props.max,
-	        onInput: function onInput(event) {
-	          props.onDrag(parseInt(event.target.value));
-	        }
+	  removeTasks: function removeTasks(taskIdList) {
+	    if (taskIdList.length) {
+	      _dispatcher2.default.dispatch({
+	        type: ACTIONS.SCHEDULE_ACTIONS_TASKS_REMOVE,
+	        tasks: taskIdList
 	      });
 	    }
-	  }]);
-	  return Range;
-	}(_preact.Component);
-
-	exports.default = Range;
+	  }
+	};
 
 /***/ },
 /* 143 */
@@ -7155,6 +6879,119 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	var _arguments = arguments;
+
+	var _dispatcher = __webpack_require__(107);
+
+	var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+	var _productActions = __webpack_require__(135);
+
+	var ACTIONS = _interopRequireWildcard(_productActions);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _productStore = __webpack_require__(134);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getRandomRange(min, max) {
+	  return Math.random() * (max - min) + min;
+	}
+
+	exports.default = {
+	  improveFeature: function improveFeature(id, featureGroup, featureName, h, max, XP) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
+	      id: id,
+	      featureGroup: featureGroup,
+	      featureName: featureName,
+	      value: XP || 1000,
+	      max: max
+	    });
+	  },
+	  testHypothesis: function testHypothesis(id) {
+	    var range = _productStore2.default.getImprovementChances(id);
+
+	    var xp = Math.floor(getRandomRange(range.min, range.max));
+
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
+	      id: id,
+	      value: xp
+	    });
+	  },
+	  improveFeatureByPoints: function improveFeatureByPoints(id, featureGroup, featureName) {
+	    _logger2.default.debug('improveFeatureByPoints', _arguments);
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
+	      id: id,
+	      featureGroup: featureGroup,
+	      featureName: featureName
+	    });
+	  },
+	  setInitialProductSettings: function setInitialProductSettings(id, features, KPI) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS,
+	      id: id, features: features, KPI: KPI
+	    });
+	  },
+	  addClients: function addClients(id, clients) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,
+	      id: id,
+	      clients: clients
+	    });
+	  },
+	  viralClients: function viralClients(id, clients) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD,
+	      id: id,
+	      clients: clients
+	    });
+	  },
+	  removeClients: function removeClients(id, clients) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_REMOVE,
+	      id: id,
+	      clients: clients
+	    });
+	  }
+	};
+
+/***/ },
+/* 144 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {
+	  standard: function standard(value, range) {
+	    var green = Math.floor(value * 160 / range);
+	    var red = 255 - Math.floor(value * 255 / range);
+
+	    return "rgba(" + red + ", " + green + ", 0, 1)"; //`rgba(${red}, ${green}, 0, 1)`;
+	  }
+	};
+
+/***/ },
+/* 145 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _getPrototypeOf = __webpack_require__(40);
 
@@ -7178,27 +7015,289 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _UI = __webpack_require__(129);
-
-	var _UI2 = _interopRequireDefault(_UI);
-
-	var _moneyDifference = __webpack_require__(120);
+	var _moneyDifference = __webpack_require__(146);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _playerStore = __webpack_require__(116);
+	var _scheduleStore = __webpack_require__(130);
+
+	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
+
+	var _playerStore = __webpack_require__(119);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productStore = __webpack_require__(121);
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import React, { Component, PropTypes } from 'react';
+
+	var Menu = function (_Component) {
+	  (0, _inherits3.default)(Menu, _Component);
+
+	  function Menu() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Menu);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Menu.__proto__ || (0, _getPrototypeOf2.default)(Menu)).call.apply(_ref, [this].concat(args))), _this), _this.getPlayerInfoFromStore = function () {
+	      _this.setState({
+	        money: _playerStore2.default.getMoney(),
+	        points: _playerStore2.default.getPoints()
+	      });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Menu, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.getPlayerInfoFromStore();
+
+	      _playerStore2.default.addChangeListener(this.getPlayerInfoFromStore);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(props, state) {
+	      var saldoValue = Math.floor(_moneyDifference2.default.saldo());
+	      var saldo = saldoValue > 0;
+	      var arrow = saldo ? _UI2.default.symbols.upRight : _UI2.default.symbols.downRight;
+
+	      var s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
+	      var moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
+
+	      var navigation = s.navigation;
+
+	      var isRunning = !props.pause;
+	      var gameSpeed = props.gameSpeed;
+
+	      var speeder = function speeder(speed, text) {
+	        return (0, _preact.h)(
+	          'div',
+	          { className: navigation },
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: isRunning && gameSpeed === speed ? '||' : text,
+	            onClick: isRunning && gameSpeed === speed ? props.pauseGame : props.setGameSpeed(speed)
+	          })
+	        );
+	      };
+
+	      var moneyDifference = saldo ? '+' + saldoValue : saldoValue;
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: navigation },
+	          (0, _preact.h)(
+	            'div',
+	            { className: moneyIndication },
+	            '$',
+	            Math.floor(state.money),
+	            ' (',
+	            moneyDifference,
+	            '$)'
+	          )
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: navigation },
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0414\u0435\u043D\u044C: ',
+	            props.day
+	          )
+	        ),
+	        speeder(1, '>'),
+	        speeder(4, '>>'),
+	        speeder(8, '>>>'),
+	        (0, _preact.h)(
+	          'div',
+	          { className: navigation },
+	          'MP: ',
+	          state.points.marketing
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: navigation },
+	          'PP: ',
+	          state.points.programming
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation, onClick: props.onRenderProjectsMenu },
+	            '\u041F\u0440\u043E\u0435\u043A\u0442\u044B'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation, onClick: props.onRenderEconomicsMenu },
+	            '\u042D\u043A\u043E\u043D\u043E\u043C\u0438\u043A\u0430'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation, onClick: props.onRenderStaffMenu },
+	            '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return Menu;
+	}(_preact.Component);
+
+	exports.default = Menu;
+
+/***/ },
+/* 146 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _productStore = __webpack_require__(134);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _playerActions = __webpack_require__(114);
+	var _playerStore = __webpack_require__(119);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _expenses = __webpack_require__(120);
+
+	var EXPENSES = _interopRequireWildcard(_expenses);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var calculate = function calculate() {
+	  var products = _productStore2.default.getProducts();
+
+	  // check income
+	  var jobIncome = 5000;
+
+	  var income = jobIncome + products.map(function (p, i) {
+	    return _productStore2.default.getProductIncome(i);
+	  }).reduce(function (p, c) {
+	    return p + c;
+	  });
+
+	  // check expenses
+	  var nonProductExpenses = _playerStore2.default.getExpenses().filter(function (e) {
+	    return e.type !== EXPENSES.EXPENSES_LOAN;
+	  }).map(function (e, i) {
+	    return e.price;
+	  }).reduce(function (p, c) {
+	    return p + c;
+	  });
+
+	  var productExpenses = products.map(function (p, i) {
+	    return _productStore2.default.getProductExpenses(i);
+	  }).reduce(function (p, c) {
+	    return p + c;
+	  });
+
+	  var loans = _playerStore2.default.getLoanPaymentAmount();
+
+	  var teamExpenses = _playerStore2.default.getTeamExpenses();
+
+	  var expenses = nonProductExpenses + productExpenses + loans + teamExpenses;
+
+	  var byProductIncome = products.map(function (p, i) {
+	    return { name: p.name, income: _productStore2.default.getProductIncome(i) };
+	  });
+
+	  return {
+	    nonProductExpenses: nonProductExpenses,
+	    productExpenses: productExpenses,
+	    loans: loans,
+	    teamExpenses: teamExpenses,
+
+	    expenses: expenses,
+	    income: income,
+	    byProductIncome: byProductIncome,
+
+	    saldo: income - expenses
+	  };
+	};
+
+	exports.default = {
+	  structured: calculate,
+
+	  saldo: function saldo() {
+	    return calculate().saldo;
+	  }
+	};
+
+/***/ },
+/* 147 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	var _moneyDifference = __webpack_require__(146);
+
+	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
+
+	var _playerStore = __webpack_require__(119);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _productStore = __webpack_require__(134);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	var _playerActions = __webpack_require__(117);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _Expenses = __webpack_require__(144);
+	var _Expenses = __webpack_require__(148);
 
 	var _Expenses2 = _interopRequireDefault(_Expenses);
 
@@ -7398,7 +7497,7 @@
 	exports.default = Economics;
 
 /***/ },
-/* 144 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7429,23 +7528,23 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _playerStore = __webpack_require__(116);
+	var _playerStore = __webpack_require__(119);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productStore = __webpack_require__(121);
+	var _productStore = __webpack_require__(134);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _playerActions = __webpack_require__(114);
+	var _playerActions = __webpack_require__(117);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _expenses = __webpack_require__(117);
+	var _expenses = __webpack_require__(120);
 
 	var EXPENSES = _interopRequireWildcard(_expenses);
 
-	var _Button = __webpack_require__(130);
+	var _Button = __webpack_require__(103);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
@@ -7566,7 +7665,7 @@
 	;
 
 /***/ },
-/* 145 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7597,23 +7696,23 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productStages = __webpack_require__(128);
+	var _productStages = __webpack_require__(141);
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
-	var _InitialProductTab = __webpack_require__(146);
+	var _InitialProductTab = __webpack_require__(150);
 
 	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
 
-	var _developPanel = __webpack_require__(150);
+	var _developPanel = __webpack_require__(153);
 
 	var _developPanel2 = _interopRequireDefault(_developPanel);
 
-	var _advertPlannerPanel = __webpack_require__(155);
+	var _advertPlannerPanel = __webpack_require__(159);
 
 	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
 
-	var _PointShop = __webpack_require__(156);
+	var _PointShop = __webpack_require__(160);
 
 	var _PointShop2 = _interopRequireDefault(_PointShop);
 
@@ -7659,8 +7758,7 @@
 	              ),
 	              (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
 	              (0, _preact.h)('br', null)
-	            ),
-	            (0, _preact.h)(_PointShop2.default, null)
+	            )
 	          );
 	          break;
 	      }
@@ -7674,7 +7772,7 @@
 	exports.default = Product;
 
 /***/ },
-/* 146 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7705,15 +7803,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Button = __webpack_require__(130);
+	var _Button = __webpack_require__(103);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _mvpCreator = __webpack_require__(147);
+	var _mvpCreator = __webpack_require__(151);
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _productDescriptions = __webpack_require__(125);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -7772,7 +7870,7 @@
 	exports.default = InitialProductTab;
 
 /***/ },
-/* 147 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7781,27 +7879,27 @@
 	  value: true
 	});
 
-	var _productActions = __webpack_require__(148);
+	var _productActions = __webpack_require__(143);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _playerActions = __webpack_require__(114);
+	var _playerActions = __webpack_require__(117);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _playerStore = __webpack_require__(116);
+	var _playerStore = __webpack_require__(119);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productDescriptions = __webpack_require__(125);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _random = __webpack_require__(149);
+	var _random = __webpack_require__(152);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -7869,102 +7967,7 @@
 	};
 
 /***/ },
-/* 148 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var _arguments = arguments;
-
-	var _dispatcher = __webpack_require__(103);
-
-	var _dispatcher2 = _interopRequireDefault(_dispatcher);
-
-	var _productActions = __webpack_require__(122);
-
-	var ACTIONS = _interopRequireWildcard(_productActions);
-
-	var _logger = __webpack_require__(98);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _productStore = __webpack_require__(121);
-
-	var _productStore2 = _interopRequireDefault(_productStore);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function getRandomRange(min, max) {
-	  return Math.random() * (max - min) + min;
-	}
-
-	exports.default = {
-	  improveFeature: function improveFeature(id, featureGroup, featureName, h, max, XP) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
-	      id: id,
-	      featureGroup: featureGroup,
-	      featureName: featureName,
-	      value: XP || 1000,
-	      max: max
-	    });
-	  },
-	  testHypothesis: function testHypothesis(id) {
-	    var range = _productStore2.default.getImprovementChances(id);
-
-	    var xp = Math.floor(getRandomRange(range.min, range.max));
-
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
-	      id: id,
-	      value: xp
-	    });
-	  },
-	  improveFeatureByPoints: function improveFeatureByPoints(id, featureGroup, featureName) {
-	    _logger2.default.debug('improveFeatureByPoints', _arguments);
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
-	      id: id,
-	      featureGroup: featureGroup,
-	      featureName: featureName
-	    });
-	  },
-	  setInitialProductSettings: function setInitialProductSettings(id, features, KPI) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS,
-	      id: id, features: features, KPI: KPI
-	    });
-	  },
-	  addClients: function addClients(id, clients) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,
-	      id: id,
-	      clients: clients
-	    });
-	  },
-	  viralClients: function viralClients(id, clients) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD,
-	      id: id,
-	      clients: clients
-	    });
-	  },
-	  removeClients: function removeClients(id, clients) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_REMOVE,
-	      id: id,
-	      clients: clients
-	    });
-	  }
-	};
-
-/***/ },
-/* 149 */
+/* 152 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7980,7 +7983,7 @@
 	;
 
 /***/ },
-/* 150 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8011,53 +8014,53 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productDescriptions = __webpack_require__(125);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _metrics = __webpack_require__(151);
+	var _metrics = __webpack_require__(154);
 
 	var _metrics2 = _interopRequireDefault(_metrics);
 
-	var _Schedule = __webpack_require__(97);
+	var _Schedule = __webpack_require__(156);
 
 	var _Schedule2 = _interopRequireDefault(_Schedule);
 
-	var _UI = __webpack_require__(129);
+	var _UI = __webpack_require__(102);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _professions = __webpack_require__(152);
+	var _professions = __webpack_require__(157);
 
 	var PROFESSIONS = _interopRequireWildcard(_professions);
 
-	var _productActions = __webpack_require__(148);
+	var _productActions = __webpack_require__(143);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _productStore = __webpack_require__(121);
+	var _productStore = __webpack_require__(134);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _featurePrice = __webpack_require__(153);
+	var _featurePrice = __webpack_require__(158);
 
 	var _featurePrice2 = _interopRequireDefault(_featurePrice);
 
-	var _scheduleActions = __webpack_require__(154);
+	var _scheduleActions = __webpack_require__(142);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
-	var _workSpeed = __webpack_require__(99);
+	var _workSpeed = __webpack_require__(133);
 
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _playerStore = __webpack_require__(116);
+	var _playerStore = __webpack_require__(119);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _playerActions = __webpack_require__(114);
+	var _playerActions = __webpack_require__(117);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
@@ -8713,7 +8716,7 @@
 	exports.default = DevelopPanel;
 
 /***/ },
-/* 151 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8744,15 +8747,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productStore = __webpack_require__(121);
+	var _productStore = __webpack_require__(134);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _coloringRange = __webpack_require__(159);
+	var _coloringRange = __webpack_require__(144);
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
-	var _percentify = __webpack_require__(100);
+	var _percentify = __webpack_require__(155);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
@@ -8958,262 +8961,18 @@
 	;
 
 /***/ },
-/* 152 */
+/* 155 */
 /***/ function(module, exports) {
 
 	"use strict";
 
-/***/ },
-/* 153 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 
-	var _assign = __webpack_require__(3);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function (cost) {
-	  return function (e) {
-	    return (0, _assign2.default)(e, { cost: e.time * cost });
-	  };
+	exports.default = function (value) {
+	  return Math.ceil(value * 10000) / 100;
 	};
-	// export default cost => e => e;
-
-/***/ },
-/* 154 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _dispatcher = __webpack_require__(103);
-
-	var _dispatcher2 = _interopRequireDefault(_dispatcher);
-
-	var _scheduleActions = __webpack_require__(108);
-
-	var ACTIONS = _interopRequireWildcard(_scheduleActions);
-
-	var _logger = __webpack_require__(98);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _scheduleStore = __webpack_require__(101);
-
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = {
-	  increaseDay: function increaseDay() {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.SCHEDULE_ACTIONS_DAY_TICK
-	    });
-	  },
-
-	  increaseProgress: function increaseProgress(taskId, speed) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS,
-	      speed: speed,
-	      taskId: taskId
-	    });
-	  },
-
-	  addTask: function addTask(days, queue, performance, description, cb) {
-	    // days: amount of days, that you need to complete the task. While working fulltime
-	    // if you have a job/freelance, you need more days to complete it.
-	    // it's considered, that you can work 8 h/day
-
-	    // queue - if true (it means, that you run task synchronously) start date of task won't be today
-	    // it will start, when the last task will be done and this task will be pending
-	    // if false (it means, that you run task in parallel)
-	    // you paid someone to do it and it doesn't block your work)
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.SCHEDULE_ACTIONS_TASKS_ADD,
-	      task: {
-	        days: days,
-	        queue: queue,
-	        cb: cb,
-	        description: description,
-	        performance: performance
-	      }
-	    });
-	  },
-
-	  removeTasks: function removeTasks(taskIdList) {
-	    if (taskIdList.length) {
-	      _dispatcher2.default.dispatch({
-	        type: ACTIONS.SCHEDULE_ACTIONS_TASKS_REMOVE,
-	        tasks: taskIdList
-	      });
-	    }
-	  }
-	};
-
-/***/ },
-/* 155 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _UI = __webpack_require__(129);
-
-	var _UI2 = _interopRequireDefault(_UI);
-
-	var _productActions = __webpack_require__(148);
-
-	var _productActions2 = _interopRequireDefault(_productActions);
-
-	var _playerActions = __webpack_require__(114);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _productStore = __webpack_require__(121);
-
-	var _productStore2 = _interopRequireDefault(_productStore);
-
-	var _playerStore = __webpack_require__(116);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var AdvertPlannerPanel = function (_Component) {
-	  (0, _inherits3.default)(AdvertPlannerPanel, _Component);
-
-	  function AdvertPlannerPanel() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, AdvertPlannerPanel);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = AdvertPlannerPanel.__proto__ || (0, _getPrototypeOf2.default)(AdvertPlannerPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      possibleClients: 0
-	    }, _this.onDrag = function (possibleClients) {
-	      _this.setState({ possibleClients: possibleClients });
-	    }, _this.inviteUsers = function (id, amountOfUsers, cost) {
-	      return function () {
-	        if (_playerStore2.default.getMoney() >= cost) {
-	          _productActions2.default.addClients(id, amountOfUsers);
-	          _playerActions2.default.increaseMoney(-cost);
-
-	          _this.onDrag(0);
-	        }
-	      };
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(AdvertPlannerPanel, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var props = this.props,
-	          state = this.state;
-
-
-	      var id = props.id;
-	      var costPerClient = _productStore2.default.getCostPerClient(id);
-	      var competitors = [{ rating: 7.2, clients: 3000 }, { rating: 3.5, clients: 500 }, { rating: 6, clients: 2000 }];
-
-	      var marketStats = _productStore2.default.getMaxAmountOfPossibleClients(id, _playerStore2.default.getMoney(), competitors);
-	      var maxAvailableClients = marketStats.amount;
-
-	      var possibleClients = state.possibleClients;
-
-
-	      var maxPossibleClients = maxAvailableClients; // Math.floor(playerStore.getMoney() / costPerClient);
-	      var campaignCost = Math.ceil(possibleClients * costPerClient);
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041E\u0431\u044A\u0451\u043C \u0440\u044B\u043D\u043A\u0430: ',
-	          marketStats.marketSize,
-	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0412\u0430\u0448\u0430 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F: ',
-	          marketStats.potentialClients
-	        ),
-	        (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxPossibleClients, onDrag: this.onDrag }),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041F\u0440\u0438\u0433\u043B\u0430\u0441\u0438\u0442\u044C ',
-	            possibleClients,
-	            ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0437\u0430 ',
-	            campaignCost,
-	            '$'
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, {
-	            item: 'start-campaign',
-	            text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E',
-	            onClick: this.inviteUsers(id, possibleClients, campaignCost),
-	            primary: true
-	          })
-	        )
-	      );
-	    }
-	  }]);
-	  return AdvertPlannerPanel;
-	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
-	exports.default = AdvertPlannerPanel;
-	;
 
 /***/ },
 /* 156 */
@@ -9247,19 +9006,431 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _playerStore = __webpack_require__(116);
+	var _logger = __webpack_require__(100);
 
-	var _playerStore2 = _interopRequireDefault(_playerStore);
+	var _logger2 = _interopRequireDefault(_logger);
 
-	var _playerActions = __webpack_require__(114);
+	var _workSpeed = __webpack_require__(133);
 
-	var _playerActions2 = _interopRequireDefault(_playerActions);
+	var _percentify = __webpack_require__(155);
 
-	var _UI = __webpack_require__(129);
+	var _percentify2 = _interopRequireDefault(_percentify);
+
+	var _round = __webpack_require__(96);
+
+	var _round2 = _interopRequireDefault(_round);
+
+	var _scheduleStore = __webpack_require__(130);
+
+	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Schedule = function (_Component) {
+	  (0, _inherits3.default)(Schedule, _Component);
+
+	  function Schedule() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Schedule);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Schedule.__proto__ || (0, _getPrototypeOf2.default)(Schedule)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      tasks: [],
+	      collapse: false
+	    }, _this.getTasks = function () {
+	      _this.setState({
+	        tasks: _scheduleStore2.default.getTasks()
+	      });
+	    }, _this.toggleTasks = function () {
+	      _this.setState({ collapse: !_this.state.collapse });
+	    }, _this.renderTask = function (task, i) {
+	      var description = task.description;
+	      var progress = task.progress + '/' + task.timecost;
+
+	      var percentage = Math.floor(task.progress * 100 / task.timecost) + ' %';
+
+	      var days = Math.ceil((task.timecost - task.progress) / task.speed);
+
+	      var result = void 0;
+	      if (task.inProgress) {
+	        result = (0, _preact.h)(
+	          'b',
+	          null,
+	          description,
+	          ' (\u0415\u0449\u0451 ',
+	          days,
+	          ' \u0434\u043D\u0435\u0439, ',
+	          percentage,
+	          ')'
+	        );
+	      } else {
+	        result = (0, _preact.h)(
+	          'div',
+	          null,
+	          description,
+	          ' (\u041E\u0436\u0438\u0434\u0430\u0435\u0442 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F: ',
+	          progress,
+	          ', ',
+	          percentage,
+	          ')'
+	        );
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        { key: 'task' + i },
+	        result
+	      );
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Schedule, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _this2 = this;
+
+	      this.getTasks();
+
+	      _scheduleStore2.default.addChangeListener(function () {
+	        _this2.getTasks();
+	      });
+	    }
+	  }, {
+	    key: 'render',
+
+
+	    // render(props: PropsType, state: StateType) {
+	    value: function render() {
+	      var tasks = this.state.tasks;
+
+	      var collapse = this.state.collapse;
+
+	      if (!tasks.length) return (0, _preact.h)('div', null);
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'h4',
+	          { onClick: this.toggleTasks },
+	          '\u0422\u0435\u043A\u0443\u0449\u0438\u0435 \u0437\u0430\u0434\u0430\u0447\u0438 (',
+	          collapse ? tasks.length : '-',
+	          ')'
+	        ),
+	        tasks.length && !collapse ? tasks.map(this.renderTask) : '',
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)('hr', null)
+	      );
+	    }
+	  }]);
+	  return Schedule;
+	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
+
+	exports.default = Schedule;
+	;
+
+/***/ },
+/* 157 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+/***/ },
+/* 158 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _assign = __webpack_require__(3);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (cost) {
+	  return function (e) {
+	    return (0, _assign2.default)(e, { cost: e.time * cost });
+	  };
+	};
+	// export default cost => e => e;
+
+/***/ },
+/* 159 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _UI = __webpack_require__(102);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _job = __webpack_require__(111);
+	var _productActions = __webpack_require__(143);
+
+	var _productActions2 = _interopRequireDefault(_productActions);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _productStore = __webpack_require__(134);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	var _playerStore = __webpack_require__(119);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var AdvertPlannerPanel = function (_Component) {
+	  (0, _inherits3.default)(AdvertPlannerPanel, _Component);
+
+	  function AdvertPlannerPanel() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, AdvertPlannerPanel);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = AdvertPlannerPanel.__proto__ || (0, _getPrototypeOf2.default)(AdvertPlannerPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      possibleClients: 0,
+	      toggle: true
+	    }, _this.onDrag = function (possibleClients) {
+	      _this.setState({ possibleClients: possibleClients });
+	    }, _this.inviteUsers = function (id, amountOfUsers, cost) {
+	      return function () {
+	        if (_playerStore2.default.getMoney() >= cost) {
+	          _productActions2.default.addClients(id, amountOfUsers);
+	          _playerActions2.default.increaseMoney(-cost);
+
+	          _this.onDrag(0);
+	        }
+	      };
+	    }, _this.renderCompetitor = function (rating) {
+	      return function (c, i) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'offset-min' },
+	            c.name,
+	            ': ',
+	            c.rating,
+	            '/10'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'offset-mid' },
+	            '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	            c.clients,
+	            ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
+	          )
+	        );
+	      };
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(AdvertPlannerPanel, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'renderCompetitors',
+	    value: function renderCompetitors(competitors, rating) {
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'h6',
+	          null,
+	          '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442\u044B'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          competitors.map(this.renderCompetitor(rating))
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(_ref2, _ref3) {
+	      var id = _ref2.id;
+	      var possibleClients = _ref3.possibleClients;
+
+	      var costPerClient = _productStore2.default.getCostPerClient(id);
+	      var competitors = [{ rating: 7.2, clients: 3000, name: 'WEB HOSTING 1' }, { rating: 3.5, clients: 500, name: 'WEB HOSTING 2' }, { rating: 6, clients: 2000, name: 'WEB HOSTING 3' }];
+
+	      var marketStats = _productStore2.default.getMaxAmountOfPossibleClients(id, _playerStore2.default.getMoney(), competitors);
+	      var potentialClients = marketStats.potentialClients,
+	          marketSize = marketStats.marketSize,
+	          ourClients = marketStats.ourClients,
+	          unbeatableClients = marketStats.unbeatableClients,
+	          amount = marketStats.amount;
+
+
+	      var maxPossibleClients = amount; // Math.floor(playerStore.getMoney() / costPerClient);
+	      var campaignCost = Math.ceil(possibleClients * costPerClient);
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041E\u0431\u044A\u0451\u043C \u0440\u044B\u043D\u043A\u0430: ',
+	          marketSize,
+	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	          ourClients,
+	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041A\u043B\u0438\u0435\u043D\u0442\u044B, \u043A\u043E\u0442\u043E\u0440\u044B\u0445 \u043C\u044B \u043D\u0435 \u043C\u043E\u0436\u0435\u043C \u043F\u0435\u0440\u0435\u043C\u0430\u043D\u0438\u0442\u044C: ',
+	          unbeatableClients,
+	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          this.renderCompetitors(competitors, _productStore2.default.getRating(id))
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0412\u0430\u0448\u0430 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F:',
+	          potentialClients,
+	          ' (',
+	          marketSize,
+	          ' - ',
+	          ourClients,
+	          ' - ',
+	          unbeatableClients,
+	          ')'
+	        ),
+	        (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxPossibleClients, onDrag: this.onDrag }),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041F\u0440\u0438\u0433\u043B\u0430\u0441\u0438\u0442\u044C ',
+	            possibleClients,
+	            ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0437\u0430 ',
+	            campaignCost,
+	            '$'
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, {
+	            item: 'start-campaign',
+	            text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E',
+	            onClick: this.inviteUsers(id, possibleClients, campaignCost),
+	            primary: true
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	  return AdvertPlannerPanel;
+	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
+	exports.default = AdvertPlannerPanel;
+	;
+
+/***/ },
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _playerStore = __webpack_require__(119);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	var _job = __webpack_require__(101);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -9333,6 +9504,7 @@
 	            _playerActions2.default.buyProgrammingPoints(pp);
 	          }
 	        }),
+	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'span',
 	          null,
@@ -9365,7 +9537,7 @@
 	exports.default = PointShop;
 
 /***/ },
-/* 157 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9374,47 +9546,47 @@
 	  value: true
 	});
 
-	var _productStore = __webpack_require__(121);
+	var _productStore = __webpack_require__(134);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _scheduleStore = __webpack_require__(101);
+	var _scheduleStore = __webpack_require__(130);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
-	var _playerStore = __webpack_require__(116);
+	var _playerStore = __webpack_require__(119);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productActions = __webpack_require__(148);
+	var _productActions = __webpack_require__(143);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _scheduleActions = __webpack_require__(154);
+	var _scheduleActions = __webpack_require__(142);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
-	var _playerActions = __webpack_require__(114);
+	var _playerActions = __webpack_require__(117);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _moneyDifference = __webpack_require__(120);
+	var _moneyDifference = __webpack_require__(146);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _eventGenerator = __webpack_require__(158);
+	var _eventGenerator = __webpack_require__(162);
 
 	var _eventGenerator2 = _interopRequireDefault(_eventGenerator);
 
-	var _skills = __webpack_require__(113);
+	var _skills = __webpack_require__(122);
 
 	var _skills2 = _interopRequireDefault(_skills);
 
-	var _job = __webpack_require__(111);
+	var _job = __webpack_require__(101);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -9523,7 +9695,7 @@
 	};
 
 /***/ },
-/* 158 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9532,27 +9704,27 @@
 	  value: true
 	});
 
-	var _random = __webpack_require__(149);
+	var _random = __webpack_require__(152);
 
 	var _random2 = _interopRequireDefault(_random);
 
-	var _events = __webpack_require__(134);
+	var _events = __webpack_require__(113);
 
 	var GAME_EVENTS = _interopRequireWildcard(_events);
 
-	var _job = __webpack_require__(111);
+	var _job = __webpack_require__(101);
 
 	var JOB = _interopRequireWildcard(_job);
 
-	var _flux = __webpack_require__(160);
+	var _flux = __webpack_require__(129);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _skills = __webpack_require__(113);
+	var _skills = __webpack_require__(122);
 
 	var _skills2 = _interopRequireDefault(_skills);
 
-	var _logger = __webpack_require__(98);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -9655,107 +9827,6 @@
 
 	exports.default = {
 	  emit: emit
-	};
-
-/***/ },
-/* 159 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  standard: function standard(value, range) {
-	    var green = Math.floor(value * 160 / range);
-	    var red = 255 - Math.floor(value * 255 / range);
-
-	    return "rgba(" + red + ", " + green + ", 0, 1)"; //`rgba(${red}, ${green}, 0, 1)`;
-	  }
-	};
-
-/***/ },
-/* 160 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _playerStore = __webpack_require__(116);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _scheduleStore = __webpack_require__(101);
-
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
-
-	var _messageStore = __webpack_require__(132);
-
-	var _messageStore2 = _interopRequireDefault(_messageStore);
-
-	var _productStore = __webpack_require__(121);
-
-	var _productStore2 = _interopRequireDefault(_productStore);
-
-	var _playerActions = __webpack_require__(114);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _scheduleActions = __webpack_require__(154);
-
-	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
-
-	var _messageActions = __webpack_require__(139);
-
-	var _messageActions2 = _interopRequireDefault(_messageActions);
-
-	var _productActions = __webpack_require__(148);
-
-	var _productActions2 = _interopRequireDefault(_productActions);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = {
-	  playerStore: _playerStore2.default,
-	  scheduleStore: _scheduleStore2.default,
-	  messageStore: _messageStore2.default,
-	  productStore: _productStore2.default,
-	  playerActions: _playerActions2.default,
-	  scheduleActions: _scheduleActions2.default,
-	  messageActions: _messageActions2.default,
-	  productActions: _productActions2.default
-	};
-
-/***/ },
-/* 161 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var GAME_STAGE_INIT = exports.GAME_STAGE_INIT = 'GAME_STAGE_INIT';
-
-/***/ },
-/* 162 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  up: '\u2191',
-	  upRight: '\u2197',
-	  downRight: '\u2198',
-	  ok: '\u2713',
-	  dot: '\xB7'
 	};
 
 /***/ }
