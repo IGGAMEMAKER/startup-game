@@ -42,15 +42,17 @@ export default {
     }
   },
   getMarketingPointsProducedBy(p) {
-    const marketingEfficiency = 30;
+    const marketingEfficiency = 5;
+    const modifier = Math.floor(Math.pow(getSkill(p.skills.marketing), 1.43));
 
-    return getSkill(p.skills.marketing) * marketingEfficiency;
+    return modifier * marketingEfficiency;
   },
 
   getProgrammingPointsProducedBy(p) {
-    const programmingEfficiency = 30;
+    const programmingEfficiency = 5;
+    const modifier = Math.floor(Math.pow(getSkill(p.skills.programming), 1.43));
 
-    return getSkill(p.skills.programming) * programmingEfficiency;
+    return modifier * programmingEfficiency;
   },
   overall: p => {
     return getSkill(p.skills.programming) + getSkill(p.skills.marketing) + getSkill(p.skills.analyst);

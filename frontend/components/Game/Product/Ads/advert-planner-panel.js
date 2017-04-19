@@ -42,9 +42,15 @@ export default class AdvertPlannerPanel extends Component {
   }
 
   renderCompetitor = rating => (c, i) => {
+    const needToCompeteRating = c.rating + 1;
+    const canWeCompeteThem = needToCompeteRating < rating ?
+      'Мы можем переманить их клиентов'
+      :
+      `Добейтесь рейтинга ${needToCompeteRating} и их пользователи выберут наш продукт`;
+
     return (
       <div>
-        <div className="offset-min">{c.name}: {c.rating}/10</div>
+        <div className="offset-min">{c.name}: {c.rating}/10 ({canWeCompeteThem})</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
       </div>
     )
@@ -53,9 +59,9 @@ export default class AdvertPlannerPanel extends Component {
   render({ id }, { possibleClients }) {
     const costPerClient = productStore.getCostPerClient(id);
     const competitors = [
-      { rating: 7.2, clients: 3000, name: 'WEB HOSTING 1' },
-      { rating: 3.5, clients: 500, name: 'WEB HOSTING 2' },
-      { rating: 6, clients: 2000, name: 'WEB HOSTING 3' }
+      { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
+      { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
+      { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
     ];
 
     const marketStats = productStore.getMaxAmountOfPossibleClients(id, playerStore.getMoney(), competitors);

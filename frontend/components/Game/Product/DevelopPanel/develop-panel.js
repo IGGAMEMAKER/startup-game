@@ -434,7 +434,7 @@ export default class DevelopPanel extends Component {
               Улучшая главные характеристики продукта, вы повышаете его рейтинг,
               что приводит к снижению оттока клиентов и увеличению доходов с продукта
             </div>
-            <div>Доступно: {product.XP} / 1000 XP</div>
+            <div>Доступно: {product.XP} XP</div>
             <div className="featureGroupBody">{featureList}</div>
             <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
           </div>

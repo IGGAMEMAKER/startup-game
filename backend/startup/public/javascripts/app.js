@@ -5151,14 +5151,16 @@
 	    }
 	  },
 	  getMarketingPointsProducedBy: function getMarketingPointsProducedBy(p) {
-	    var marketingEfficiency = 30;
+	    var marketingEfficiency = 5;
+	    var modifier = Math.floor(Math.pow(getSkill(p.skills.marketing), 1.43));
 
-	    return getSkill(p.skills.marketing) * marketingEfficiency;
+	    return modifier * marketingEfficiency;
 	  },
 	  getProgrammingPointsProducedBy: function getProgrammingPointsProducedBy(p) {
-	    var programmingEfficiency = 30;
+	    var programmingEfficiency = 5;
+	    var modifier = Math.floor(Math.pow(getSkill(p.skills.programming), 1.43));
 
-	    return getSkill(p.skills.programming) * programmingEfficiency;
+	    return modifier * programmingEfficiency;
 	  },
 
 	  overall: function overall(p) {
@@ -8598,7 +8600,7 @@
 	              null,
 	              '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
 	              product.XP,
-	              ' / 1000 XP'
+	              ' XP'
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -9250,6 +9252,9 @@
 	      };
 	    }, _this.renderCompetitor = function (rating) {
 	      return function (c, i) {
+	        var needToCompeteRating = c.rating + 1;
+	        var canWeCompeteThem = needToCompeteRating < rating ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + needToCompeteRating + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
+
 	        return (0, _preact.h)(
 	          'div',
 	          null,
@@ -9259,7 +9264,9 @@
 	            c.name,
 	            ': ',
 	            c.rating,
-	            '/10'
+	            '/10 (',
+	            canWeCompeteThem,
+	            ')'
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -9301,7 +9308,7 @@
 	      var possibleClients = _ref3.possibleClients;
 
 	      var costPerClient = _productStore2.default.getCostPerClient(id);
-	      var competitors = [{ rating: 7.2, clients: 3000, name: 'WEB HOSTING 1' }, { rating: 3.5, clients: 500, name: 'WEB HOSTING 2' }, { rating: 6, clients: 2000, name: 'WEB HOSTING 3' }];
+	      var competitors = [{ rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' }, { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' }, { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }];
 
 	      var marketStats = _productStore2.default.getMaxAmountOfPossibleClients(id, _playerStore2.default.getMoney(), competitors);
 	      var potentialClients = marketStats.potentialClients,
