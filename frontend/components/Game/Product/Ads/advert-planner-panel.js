@@ -32,10 +32,11 @@ export default class AdvertPlannerPanel extends Component {
     }
   };
 
-  renderCompetitors(competitors, rating) {
+  renderCompetitors(competitors, rating, freeClients) {
     return (
       <div>
         <h6>Конкуренты</h6>
+        <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
         <div>{competitors.map(this.renderCompetitor(rating))}</div>
       </div>
     )
@@ -43,14 +44,22 @@ export default class AdvertPlannerPanel extends Component {
 
   renderCompetitor = rating => (c, i) => {
     const needToCompeteRating = c.rating + 1;
-    const canWeCompeteThem = needToCompeteRating < rating ?
+    const competeable = needToCompeteRating < rating;
+    const canWeCompeteThem = competeable ?
       'Мы можем переманить их клиентов'
       :
       `Добейтесь рейтинга ${needToCompeteRating} и их пользователи выберут наш продукт`;
 
+    let background = 'competitor ';
+    if (competeable) {
+      background += 'competeable';
+    } else {
+      background += 'uncompeteable';
+    }
+        // <hr width="80%" />
     return (
-      <div>
-        <div className="offset-min">{c.name}: {c.rating}/10 ({canWeCompeteThem})</div>
+      <div className={background}>
+        <div className="offset-min">{c.name} -  рейтинг: {c.rating} ({canWeCompeteThem})</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
       </div>
     )
@@ -62,7 +71,7 @@ export default class AdvertPlannerPanel extends Component {
       { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
       { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
       { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
-    ];
+    ].sort((a, b) => a.rating > b.rating);
 
     const marketStats = productStore.getMaxAmountOfPossibleClients(id, playerStore.getMoney(), competitors);
     const {
@@ -70,7 +79,8 @@ export default class AdvertPlannerPanel extends Component {
       marketSize,
       ourClients,
       unbeatableClients,
-      amount
+      amount,
+      freeClients,
     } = marketStats;
 
     const maxPossibleClients = amount; // Math.floor(playerStore.getMoney() / costPerClient);
@@ -81,8 +91,8 @@ export default class AdvertPlannerPanel extends Component {
         <div>Объём рынка: {marketSize} человек</div>
         <div>Наши клиенты: {ourClients} человек</div>
         <div>Клиенты, которых мы не можем переманить: {unbeatableClients} человек</div>
-        <div>{this.renderCompetitors(competitors, productStore.getRating(id))}</div>
-        <div>Ваша потенциальная аудитория:
+        <div>{this.renderCompetitors(competitors, productStore.getRating(id), freeClients)}</div>
+        <div>Наша потенциальная аудитория:
           {potentialClients} ({marketSize} - {ourClients} - {unbeatableClients})
         </div>
 

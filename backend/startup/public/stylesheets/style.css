@@ -3,6 +3,11 @@
   --negative: red;
   --link: blue;
 
+  /*--light-green: #00cc99;*/
+  --light-green: rgba(0, 204, 37, 0.22);
+  --light-red: rgba(200, 0, 0, 0.22);
+  /*--light-red: #8b454f;*/
+
   --modalMainText: black;
   --modalBackground: rgba(135,135,135, 0.9);
   --font-family-base: Arial;
@@ -315,3 +320,16 @@ textarea {
 .offset-mid {
   padding-left: 20px;
 }
+
+.competitor {
+  padding-bottom: 9px;
+}
+
+.competitor.competeable {
+  background-color: var(--light-green)
+}
+
+.competitor.uncompeteable {
+  background-color: var(--light-red)
+}
+

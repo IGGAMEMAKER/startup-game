@@ -6427,10 +6427,10 @@
 	      var clientModifier = this.getClientAnalyticsModifier(i);
 	      // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
 
-	      var feedbackBonus = 2000;
-	      var webvisorBonus = 3000;
-	      var segmentingBonus = 4000;
-	      var basicBonus = 1000;
+	      var feedbackBonus = 1000;
+	      var webvisorBonus = 1500;
+	      var segmentingBonus = 2000;
+	      var basicBonus = 500;
 
 	      var maxXP = basicBonus;
 	      if (feedback) {
@@ -6492,6 +6492,11 @@
 	      var uncompeteableApps = competitors.filter(function (c) {
 	        return c.rating > rating - 1;
 	      });
+	      var totalClients = ourClients + competitors.map(function (c) {
+	        return c.clients;
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
 	      var frozen = ourClients;
 	      var unbeatableClients = uncompeteableApps.map(function (c) {
 	        return c.clients;
@@ -6524,7 +6529,8 @@
 	        amount: result,
 	        ourClients: ourClients,
 	        competitors: competitors,
-	        unbeatableClients: unbeatableClients
+	        unbeatableClients: unbeatableClients,
+	        freeClients: maxMarketSize - totalClients
 	      };
 	    }
 	  }]);
@@ -9253,18 +9259,26 @@
 	    }, _this.renderCompetitor = function (rating) {
 	      return function (c, i) {
 	        var needToCompeteRating = c.rating + 1;
-	        var canWeCompeteThem = needToCompeteRating < rating ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + needToCompeteRating + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
+	        var competeable = needToCompeteRating < rating;
+	        var canWeCompeteThem = competeable ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + needToCompeteRating + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
 
+	        var background = 'competitor ';
+	        if (competeable) {
+	          background += 'competeable';
+	        } else {
+	          background += 'uncompeteable';
+	        }
+	        // <hr width="80%" />
 	        return (0, _preact.h)(
 	          'div',
-	          null,
+	          { className: background },
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'offset-min' },
 	            c.name,
-	            ': ',
+	            ' -  \u0440\u0435\u0439\u0442\u0438\u043D\u0433: ',
 	            c.rating,
-	            '/10 (',
+	            ' (',
 	            canWeCompeteThem,
 	            ')'
 	          ),
@@ -9285,7 +9299,7 @@
 	    value: function componentWillMount() {}
 	  }, {
 	    key: 'renderCompetitors',
-	    value: function renderCompetitors(competitors, rating) {
+	    value: function renderCompetitors(competitors, rating, freeClients) {
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -9293,6 +9307,12 @@
 	          'h6',
 	          null,
 	          '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442\u044B'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-min competitor competeable' },
+	          '\u0421\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	          freeClients
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -9308,14 +9328,17 @@
 	      var possibleClients = _ref3.possibleClients;
 
 	      var costPerClient = _productStore2.default.getCostPerClient(id);
-	      var competitors = [{ rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' }, { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' }, { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }];
+	      var competitors = [{ rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' }, { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' }, { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }].sort(function (a, b) {
+	        return a.rating > b.rating;
+	      });
 
 	      var marketStats = _productStore2.default.getMaxAmountOfPossibleClients(id, _playerStore2.default.getMoney(), competitors);
 	      var potentialClients = marketStats.potentialClients,
 	          marketSize = marketStats.marketSize,
 	          ourClients = marketStats.ourClients,
 	          unbeatableClients = marketStats.unbeatableClients,
-	          amount = marketStats.amount;
+	          amount = marketStats.amount,
+	          freeClients = marketStats.freeClients;
 
 
 	      var maxPossibleClients = amount; // Math.floor(playerStore.getMoney() / costPerClient);
@@ -9348,12 +9371,12 @@
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          this.renderCompetitors(competitors, _productStore2.default.getRating(id))
+	          this.renderCompetitors(competitors, _productStore2.default.getRating(id), freeClients)
 	        ),
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u0412\u0430\u0448\u0430 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F:',
+	          '\u041D\u0430\u0448\u0430 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F:',
 	          potentialClients,
 	          ' (',
 	          marketSize,

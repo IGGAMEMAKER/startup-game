@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 
-type PropsType = {}
+type PropsType = {};
 
-type StateType = {}
+type StateType = {};
 
 import * as PRODUCT_STAGES from '../../../constants/products/product-stages';
 

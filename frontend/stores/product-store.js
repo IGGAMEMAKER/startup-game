@@ -416,10 +416,10 @@ class ProductStore extends EventEmitter {
     const clientModifier = this.getClientAnalyticsModifier(i);
     // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
 
-    const feedbackBonus = 2000;
-    const webvisorBonus = 3000;
-    const segmentingBonus = 4000;
-    const basicBonus = 1000;
+    const feedbackBonus = 1000;
+    const webvisorBonus = 1500;
+    const segmentingBonus = 2000;
+    const basicBonus = 500;
 
     let maxXP = basicBonus;
     if (feedback) {
@@ -474,6 +474,7 @@ class ProductStore extends EventEmitter {
     const rating = this.getRating(id);
     const ourClients = this.getClients(id);
     const uncompeteableApps = competitors.filter(c => c.rating > rating - 1);
+    const totalClients = ourClients + competitors.map(c => c.clients).reduce((p, c) => p + c, 0);
     let frozen = ourClients;
     const unbeatableClients = uncompeteableApps.map(c => c.clients).reduce((p, c) => p + c, 0);
     // if (uncompeteableApps.length) {
@@ -502,7 +503,8 @@ class ProductStore extends EventEmitter {
       amount: result,
       ourClients,
       competitors,
-      unbeatableClients
+      unbeatableClients,
+      freeClients: maxMarketSize - totalClients
     }
   }
 }
