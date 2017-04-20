@@ -3112,6 +3112,10 @@
 
 	var _arrows2 = _interopRequireDefault(_arrows);
 
+	var _Info = __webpack_require__(163);
+
+	var _Info2 = _interopRequireDefault(_Info);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = {
@@ -3119,7 +3123,8 @@
 	  Modal: _Modal2.default,
 	  Select: _Select2.default,
 	  Range: _Range2.default,
-	  symbols: _arrows2.default
+	  symbols: _arrows2.default,
+	  Info: _Info2.default
 	};
 
 /***/ },
@@ -3286,10 +3291,7 @@
 	    }
 	  }, {
 	    key: 'render',
-	    value: function render() {
-	      var state = this.state,
-	          props = this.props;
-
+	    value: function render(props, state) {
 
 	      if (!state.drawable) return (0, _preact.h)('div', null);
 
@@ -6479,8 +6481,8 @@
 	      return (0, _productDescriptions2.default)(idea).hypothesis;
 	    }
 	  }, {
-	    key: 'getDescriptionOfProduc',
-	    value: function getDescriptionOfProduc(id) {
+	    key: 'getDescriptionOfProduct',
+	    value: function getDescriptionOfProduct(id) {
 	      return (0, _productDescriptions2.default)(this.getIdea(id)).description;
 	    }
 	  }, {
@@ -6497,6 +6499,7 @@
 	      }).reduce(function (p, c) {
 	        return p + c;
 	      }, 0);
+
 	      var frozen = ourClients;
 	      var unbeatableClients = uncompeteableApps.map(function (c) {
 	        return c.clients;
@@ -8050,6 +8053,14 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
+	var _playerStore = __webpack_require__(119);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
 	var _featurePrice = __webpack_require__(158);
 
 	var _featurePrice2 = _interopRequireDefault(_featurePrice);
@@ -8063,14 +8074,6 @@
 	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
-
-	var _playerStore = __webpack_require__(119);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _playerActions = __webpack_require__(117);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -8104,12 +8107,22 @@
 	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 50%',
 	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 15%',
 	        points: { marketing: 50, programming: 100 }, time: 10 }, { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
-	        points: { marketing: 50, programming: 100 }, time: 7 }].map((0, _featurePrice2.default)(cost));
+	        points: { marketing: 50, programming: 100 }, time: 7 }];
+	      // ].map(computeFeatureCost(cost));
 	    }, _this.getDevelopmentFeatureList = function (idea) {
 	      var cost = 50 * _workSpeed.WORK_SPEED_NORMAL;
 
 	      return [{ name: 'backups', description: '' }, { name: 'clusters', description: '' }, { name: 'tests', description: '' }, { name: 'mobiles', description: '' } // ios android apps
-	      ].map((0, _featurePrice2.default)(cost));
+	      ];
+	      // ].map(computeFeatureCost(cost));
+	    }, _this.getHypothesisAnalyticsFeatures = function (idea) {
+	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
+	        points: { programming: 50 }
+	      }, { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
+	        points: { programming: 50 }
+	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+	        points: { programming: 150, marketing: 100 }
+	      }];
 	    }, _this.getAnalyticFeatures = function (idea) {
 	      var cost = 30 * _workSpeed.WORK_SPEED_NORMAL;
 
@@ -8165,7 +8178,7 @@
 	    }, _this.renderHypothesisItem = function (id, featureName, time, current, max, product) {
 	      return function (hypothesis, i) {
 	        var necessaryPoints = hypothesis.points;
-	        var key = '' + featureName;
+	        var key = 'hypothesis' + i;
 
 	        var pp = necessaryPoints.pp,
 	            mp = necessaryPoints.mp;
@@ -8185,7 +8198,7 @@
 
 	        return (0, _preact.h)(
 	          'div',
-	          { key: 'hypothesis' + i, className: 'hypothesis-wrapper' },
+	          { key: key, className: 'hypothesis-wrapper' },
 	          (0, _preact.h)(_UI2.default.Button, {
 	            disabled: disabled,
 	            onClick: action,
@@ -8194,14 +8207,14 @@
 	          })
 	        );
 	      };
-	    }, _this.renderMainFeatureTab = function () {}, _this.renderHypothesisTab = function (id) {
+	    }, _this.renderHypothesisTab = function (id, idea) {
 	      var done = _UI2.default.symbols.ok;
 	      var cancel = _UI2.default.symbols.dot;
 
 	      var improvements = _productStore2.default.getImprovementChances(id);
-	      var webvisorStatus = improvements.hasWebvisor ? done : cancel;
-	      var segmentingStatus = improvements.hasSegmenting ? done : cancel;
-	      var feedbackStatus = improvements.hasFeedback ? done : cancel;
+	      var webvisorStatus = improvements.hasWebvisor ? done : cancel + ' \u041D\u0435';
+	      var segmentingStatus = improvements.hasSegmenting ? done : cancel + ' \u041D\u0435';
+	      var feedbackStatus = improvements.hasFeedback ? done : cancel + ' \u041D\u0435';
 
 	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
 
@@ -8268,19 +8281,8 @@
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'smallText' },
-	            '\u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043E\u0447\u043A\u043E\u0432 \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B \u0437\u0430\u0432\u0438\u0441\u0438\u0442 \u043E\u0442 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0438 \u0438 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u0430 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'smallText' },
-	            '\u0415\u0441\u043B\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0430\u043B\u043E, \u0442\u043E \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u044B \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0439 \u043C\u043E\u0433\u0443\u0442 \u0431\u044B\u0442\u044C \u043D\u0435\u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u044B (\u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u0448\u0442\u0440\u0430\u0444)'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'smallText' },
-	            '\u0427\u0442\u043E\u0431\u044B \u0438\u0437\u0431\u0430\u0432\u0438\u0442\u044C\u0441\u044F \u043E\u0442 \u044D\u0442\u043E\u0433\u043E \u0448\u0442\u0440\u0430\u0444\u0430, \u043F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (\u0422\u0435\u043A\u0443\u0449\u0435\u0435 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432: ',
-	            improvements.clientModifier.clients,
-	            ')'
+	            '\u0415\u0441\u043B\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0430\u043B\u043E, \u0442\u043E \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u044B \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0439 \u043C\u043E\u0433\u0443\u0442 \u0431\u044B\u0442\u044C \u043D\u0435\u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u044B (\u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u0448\u0442\u0440\u0430\u0444)\xA0',
+	            (0, _preact.h)(_UI2.default.Info, null)
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -8319,6 +8321,7 @@
 	            improvements.feedbackBonus,
 	            'XP)'
 	          ),
+	          _this.getFeedbackButton(idea, id),
 	          (0, _preact.h)(
 	            'div',
 	            null,
@@ -8327,6 +8330,7 @@
 	            improvements.webvisorBonus,
 	            'XP)'
 	          ),
+	          _this.getWebvisorButton(idea, id),
 	          (0, _preact.h)(
 	            'div',
 	            null,
@@ -8334,7 +8338,8 @@
 	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (+',
 	            improvements.segmentingBonus,
 	            'XP)'
-	          )
+	          ),
+	          _this.getSegmentingButton(idea, id)
 	        ),
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
@@ -8358,23 +8363,334 @@
 	          (0, _preact.h)(_Schedule2.default, null)
 	        )
 	      );
+	    }, _this.renderHypothesisAnalytics = function (id) {
+	      return function (feature, i) {
+	        var featureGroup = 'analytics';
+	        var featureName = feature.name;
+
+	        var key = 'feature' + featureGroup + featureName + 'ii' + i;
+
+	        var standardPoints = feature.points || {};
+	        var mp = standardPoints.marketing || 0;
+	        var pp = standardPoints.programming || 0;
+	        var points = _playerStore2.default.getPoints();
+
+	        var enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
+
+	        var upgradeFeature = function upgradeFeature(event) {
+	          _logger2.default.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
+
+	          if (enoughPointsToUpgrade) {
+	            _playerActions2.default.spendPoints(pp, mp);
+	            _productActions2.default.improveFeatureByPoints(id, featureGroup, featureName);
+	          }
+	        };
+
+	        var description = feature.description || '';
+	        var isUpgraded = _productStore2.default.getFeatureStatus(id, featureGroup, featureName);
+
+	        var separator = (0, _preact.h)('hr', { width: '60%' });
+
+	        var userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
+	        if (isUpgraded) {
+	          return (0, _preact.h)(
+	            'div',
+	            { key: key },
+	            userOrientedFeatureName,
+	            ': \u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E ',
+	            _UI2.default.symbols.ok,
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'featureDescription' },
+	              description
+	            ),
+	            separator
+	          );
+	        }
+
+	        var mpColors = points.marketing < mp ? "noPoints" : "enoughPoints";
+	        var ppColors = points.programming < pp ? "noPoints" : "enoughPoints";
+
+	        return (0, _preact.h)(
+	          'div',
+	          { key: key },
+	          userOrientedFeatureName,
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureDescription' },
+	            description
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F - \xA0',
+	              (0, _preact.h)(
+	                'span',
+	                { className: mpColors },
+	                'MP:',
+	                mp,
+	                '\xA0'
+	              ),
+	              (0, _preact.h)(
+	                'span',
+	                { className: ppColors },
+	                'PP:',
+	                pp
+	              )
+	            )
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
+	            disabled: !enoughPointsToUpgrade,
+	            onClick: upgradeFeature,
+	            secondary: true
+	          }),
+	          separator
+	        );
+	      };
+	    }, _this.renderPaymentTab = function (state, id, idea) {
+	      var payment = _this.getPaymentFeatures(idea).map(_this.renderFeature('payment', id, idea));
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          {
+	            className: 'featureGroupTitle',
+	            onClick: _this.togglePaymentTab
+	          },
+	          '4) \u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          {
+	            className: 'featureGroupDescriptionWrapper',
+	            style: { display: state.payment ? 'block' : 'none' }
+	          },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u043F\u043E\u0432\u044B\u0441\u0438\u0442\u044C \u0434\u043E\u0445\u043E\u0434\u044B \u0441 \u043F\u0440\u043E\u0434\u0430\u0436'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            payment
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'hide', onClick: _this.togglePaymentTab },
+	            '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
+	            _UI2.default.symbols.up
+	          )
+	        )
+	      );
+	    }, _this.renderAnalyticsTab = function (state, id, idea) {
+	      var analytics = _this.getAnalyticFeatures(idea).map(_this.renderFeature('analytics', id, idea));
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          {
+	            className: 'featureGroupTitle',
+	            onClick: _this.toggleAnalyticsTab
+	          },
+	          '2) \u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          {
+	            className: 'featureGroupDescriptionWrapper',
+	            style: { display: state.analytics ? 'block' : 'none' }
+	          },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0431\u044B\u0441\u0442\u0440\u0435\u0435 \u0443\u043B\u0443\u0447\u0448\u0430\u0442\u044C \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0435\u043A\u0442\u0430'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            analytics
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'hide', onClick: _this.toggleAnalyticsTab },
+	            '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
+	            _UI2.default.symbols.up
+	          )
+	        )
+	      );
+	    }, _this.renderClientTab = function (state, id, idea) {
+	      var marketing = _this.getMarketingFeatureList(idea).map(_this.renderFeature('marketing', id, idea));
+
+	      var tab = '';
+	      if (state.marketing) {
+	        tab = (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupDescriptionWrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0441\u043D\u0438\u0437\u0438\u0442\u044C \u043E\u0442\u0442\u043E\u043A \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u043E\u0432\u044B\u0448\u0430\u044F \u0438\u0445 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            marketing
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'hide', onClick: _this.toggleMarketingTab },
+	            '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
+	            _UI2.default.symbols.up
+	          )
+	        );
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupTitle', onClick: _this.toggleMarketingTab },
+	          '3) \u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
+	        ),
+	        tab
+	      );
+	    }, _this.renderFeature = function (featureGroup, id, idea) {
+	      return function (feature, i) {
+	        var featureName = feature.name;
+
+	        var key = 'feature' + featureGroup + featureName + i;
+
+	        var standardPoints = feature.points || {};
+	        var mp = standardPoints.marketing || 0;
+	        var pp = standardPoints.programming || 0;
+	        var points = _playerStore2.default.getPoints();
+
+	        var enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
+
+	        var upgradeFeature = function upgradeFeature(event) {
+	          _logger2.default.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
+
+	          if (enoughPointsToUpgrade) {
+	            _playerActions2.default.spendPoints(pp, mp);
+	            _productActions2.default.improveFeatureByPoints(id, featureGroup, featureName);
+	          }
+	        };
+
+	        var description = feature.description || '';
+	        var isUpgraded = _productStore2.default.getFeatureStatus(id, featureGroup, featureName);
+
+	        var separator = (0, _preact.h)('hr', { width: '60%' });
+
+	        var userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
+	        if (isUpgraded) {
+	          return (0, _preact.h)(
+	            'div',
+	            { key: key },
+	            userOrientedFeatureName,
+	            ': \u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E ',
+	            _UI2.default.symbols.ok,
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'featureDescription' },
+	              description
+	            ),
+	            separator
+	          );
+	        }
+
+	        var mpColors = points.marketing < mp ? "noPoints" : "enoughPoints";
+	        var ppColors = points.programming < pp ? "noPoints" : "enoughPoints";
+
+	        return (0, _preact.h)(
+	          'div',
+	          { key: key },
+	          userOrientedFeatureName,
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureDescription' },
+	            description
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F - \xA0',
+	              (0, _preact.h)(
+	                'span',
+	                { className: mpColors },
+	                'MP:',
+	                mp,
+	                '\xA0'
+	              ),
+	              (0, _preact.h)(
+	                'span',
+	                { className: ppColors },
+	                'PP:',
+	                pp
+	              )
+	            )
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
+	            disabled: !enoughPointsToUpgrade,
+	            onClick: upgradeFeature,
+	            secondary: true
+	          }),
+	          separator
+	        );
+	      };
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
 	  (0, _createClass3.default)(DevelopPanel, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-
-	    // computeMarketingBonus
-
+	    key: 'getFeedbackButton',
+	    value: function getFeedbackButton(idea, id) {
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'offset-mid' },
+	        this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)
+	      );
+	    }
+	  }, {
+	    key: 'getWebvisorButton',
+	    value: function getWebvisorButton(idea, id) {
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'offset-mid' },
+	        this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)
+	      );
+	    }
+	  }, {
+	    key: 'getSegmentingButton',
+	    value: function getSegmentingButton(idea, id) {
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'offset-mid' },
+	        this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
+	      );
+	    }
 	  }, {
 	    key: 'render',
-	    value: function render() {
+	    value: function render(_ref2, state) {
 	      var _this2 = this;
 
-	      var props = this.props,
-	          state = this.state;
-	      var product = props.product;
+	      var product = _ref2.product;
 	      var idea = product.idea;
 
 
@@ -8445,112 +8761,12 @@
 	        };
 	      };
 
-	      var renderFeature = function renderFeature(featureGroup) {
-	        return function (feature, i) {
-	          var featureName = feature.name;
-
-	          var key = 'feature' + featureGroup + featureName + i;
-
-	          var standardPoints = feature.points || {};
-	          var mp = standardPoints.marketing || 0;
-	          var pp = standardPoints.programming || 0;
-	          var points = _playerStore2.default.getPoints();
-
-	          var enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
-
-	          var upgradeFeature = function upgradeFeature(event) {
-	            _logger2.default.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
-
-	            if (enoughPointsToUpgrade) {
-	              _playerActions2.default.spendPoints(pp, mp);
-	              _productActions2.default.improveFeatureByPoints(id, featureGroup, featureName);
-	            }
-	          };
-
-	          var description = feature.description || '';
-	          var isUpgraded = _productStore2.default.getFeatureStatus(id, featureGroup, featureName);
-
-	          var separator = (0, _preact.h)('hr', { width: '60%' });
-
-	          var userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
-	          if (isUpgraded) {
-	            return (0, _preact.h)(
-	              'div',
-	              { key: key },
-	              userOrientedFeatureName,
-	              ': \u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E ',
-	              _UI2.default.symbols.ok,
-	              (0, _preact.h)('br', null),
-	              (0, _preact.h)(
-	                'div',
-	                { className: 'featureDescription' },
-	                description
-	              ),
-	              separator
-	            );
-	          }
-
-	          var mpColors = points.marketing < mp ? "noPoints" : "enoughPoints";
-	          var ppColors = points.programming < pp ? "noPoints" : "enoughPoints";
-
-	          return (0, _preact.h)(
-	            'div',
-	            { key: key },
-	            userOrientedFeatureName,
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureDescription' },
-	              description
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              (0, _preact.h)(
-	                'div',
-	                null,
-	                '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F - \xA0',
-	                (0, _preact.h)(
-	                  'span',
-	                  { className: mpColors },
-	                  'MP:',
-	                  mp,
-	                  '\xA0'
-	                ),
-	                (0, _preact.h)(
-	                  'span',
-	                  { className: ppColors },
-	                  'PP:',
-	                  pp
-	                )
-	              )
-	            ),
-	            (0, _preact.h)(_UI2.default.Button, {
-	              text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
-	              disabled: !enoughPointsToUpgrade,
-	              onClick: upgradeFeature,
-	              secondary: true
-	            }),
-	            separator
-	          );
-	        };
-	      };
-
 	      // console.log('product', product);
 	      var featureList = this.getSpecificProductFeatureListByIdea(idea).map(renderMainFeature('offer'));
 
-	      var marketing = this.getMarketingFeatureList(idea).map(renderFeature('marketing'));
-
-	      var development = this.getDevelopmentFeatureList(idea).map(renderFeature('development'));
-
-	      // <b>Разработка</b>
-	      // {development}
-
-	      var analytics = this.getAnalyticFeatures(idea).map(renderFeature('analytics'));
-
-	      var payment = this.getPaymentFeatures(idea).map(renderFeature('payment'));
-
-	      var upArrow = _UI2.default.symbols.up;
+	      // const development = this
+	      //   .getDevelopmentFeatureList(idea)
+	      //   .map(this.renderFeature('development'));
 
 	      return (0, _preact.h)(
 	        'div',
@@ -8566,7 +8782,7 @@
 	          'div',
 	          null,
 	          '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
-	          _productStore2.default.getDescriptionOfProduc(id)
+	          _productStore2.default.getDescriptionOfProduct(id)
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -8579,7 +8795,7 @@
 	          (0, _preact.h)(_metrics2.default, { product: product, id: id }),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null),
-	          this.renderHypothesisTab(id),
+	          this.renderHypothesisTab(id, idea),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null),
 	          (0, _preact.h)(
@@ -8606,7 +8822,7 @@
 	              null,
 	              '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
 	              product.XP,
-	              ' XP'
+	              'XP'
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -8617,102 +8833,12 @@
 	              'div',
 	              { className: 'hide', onClick: this.toggleMainFeatureTab },
 	              '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	              upArrow
+	              _UI2.default.symbols.up
 	            )
 	          ),
-	          (0, _preact.h)(
-	            'div',
-	            {
-	              className: 'featureGroupTitle',
-	              onClick: this.toggleAnalyticsTab
-	            },
-	            '2) \u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            {
-	              className: 'featureGroupDescriptionWrapper',
-	              style: { display: state.analytics ? 'block' : 'none' }
-	            },
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureGroupDescription' },
-	              '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0431\u044B\u0441\u0442\u0440\u0435\u0435 \u0443\u043B\u0443\u0447\u0448\u0430\u0442\u044C \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0435\u043A\u0442\u0430'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureGroupBody' },
-	              analytics
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'hide', onClick: this.toggleAnalyticsTab },
-	              '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	              upArrow
-	            )
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            {
-	              className: 'featureGroupTitle',
-	              onClick: this.toggleMarketingTab
-	            },
-	            '3) \u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            {
-	              className: 'featureGroupDescriptionWrapper',
-	              style: { display: state.marketing ? 'block' : 'none' }
-	            },
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureGroupDescription' },
-	              '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0441\u043D\u0438\u0437\u0438\u0442\u044C \u043E\u0442\u0442\u043E\u043A \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u043E\u0432\u044B\u0448\u0430\u044F \u0438\u0445 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureGroupBody' },
-	              marketing
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'hide', onClick: this.toggleMarketingTab },
-	              '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	              upArrow
-	            )
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            {
-	              className: 'featureGroupTitle',
-	              onClick: this.togglePaymentTab
-	            },
-	            '4) \u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            {
-	              className: 'featureGroupDescriptionWrapper',
-	              style: { display: state.payment ? 'block' : 'none' }
-	            },
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureGroupDescription' },
-	              '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u043F\u043E\u0432\u044B\u0441\u0438\u0442\u044C \u0434\u043E\u0445\u043E\u0434\u044B \u0441 \u043F\u0440\u043E\u0434\u0430\u0436'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureGroupBody' },
-	              payment
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'hide', onClick: this.togglePaymentTab },
-	              '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	              upArrow
-	            )
-	          )
+	          this.renderAnalyticsTab(state, id, idea),
+	          this.renderClientTab(state, id, idea),
+	          this.renderPaymentTab(state, id, idea)
 	        )
 	      );
 	    }
@@ -9210,23 +9336,13 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _productActions = __webpack_require__(143);
+	var _flux = __webpack_require__(129);
 
-	var _productActions2 = _interopRequireDefault(_productActions);
-
-	var _playerActions = __webpack_require__(117);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _productStore = __webpack_require__(134);
-
-	var _productStore2 = _interopRequireDefault(_productStore);
-
-	var _playerStore = __webpack_require__(119);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
+	var _flux2 = _interopRequireDefault(_flux);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import React, { Component, PropTypes } from 'react';
 
 	var AdvertPlannerPanel = function (_Component) {
 	  (0, _inherits3.default)(AdvertPlannerPanel, _Component);
@@ -9249,9 +9365,9 @@
 	      _this.setState({ possibleClients: possibleClients });
 	    }, _this.inviteUsers = function (id, amountOfUsers, cost) {
 	      return function () {
-	        if (_playerStore2.default.getMoney() >= cost) {
-	          _productActions2.default.addClients(id, amountOfUsers);
-	          _playerActions2.default.increaseMoney(-cost);
+	        if (_flux2.default.playerStore.getMoney() >= cost) {
+	          _flux2.default.productActions.addClients(id, amountOfUsers);
+	          _flux2.default.playerActions.increaseMoney(-cost);
 
 	          _this.onDrag(0);
 	        }
@@ -9327,19 +9443,19 @@
 	      var id = _ref2.id;
 	      var possibleClients = _ref3.possibleClients;
 
-	      var costPerClient = _productStore2.default.getCostPerClient(id);
+	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
 	      var competitors = [{ rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' }, { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' }, { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }].sort(function (a, b) {
 	        return a.rating > b.rating;
 	      });
 
-	      var marketStats = _productStore2.default.getMaxAmountOfPossibleClients(id, _playerStore2.default.getMoney(), competitors);
+	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney(), competitors);
 	      var potentialClients = marketStats.potentialClients,
 	          marketSize = marketStats.marketSize,
 	          ourClients = marketStats.ourClients,
 	          unbeatableClients = marketStats.unbeatableClients,
-	          amount = marketStats.amount,
-	          freeClients = marketStats.freeClients;
+	          amount = marketStats.amount;
 
+	      var freeClients = marketSize - ourClients - unbeatableClients;
 
 	      var maxPossibleClients = amount; // Math.floor(playerStore.getMoney() / costPerClient);
 	      var campaignCost = Math.ceil(possibleClients * costPerClient);
@@ -9371,14 +9487,14 @@
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          this.renderCompetitors(competitors, _productStore2.default.getRating(id), freeClients)
+	          this.renderCompetitors(competitors, _flux2.default.productStore.getRating(id), freeClients)
 	        ),
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u041D\u0430\u0448\u0430 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F:',
+	          '\u041D\u0430\u0448\u0430 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F: ',
 	          potentialClients,
-	          ' (',
+	          '(',
 	          marketSize,
 	          ' - ',
 	          ourClients,
@@ -9411,7 +9527,6 @@
 	  }]);
 	  return AdvertPlannerPanel;
 	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = AdvertPlannerPanel;
 	;
@@ -9769,13 +9884,13 @@
 	    return;
 	  }
 
-	  if (day === 60) {
+	  if (day === 100) {
 	    var points = Math.ceil((0, _random2.default)(50, 275));
 	    _flux2.default.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points: points });
 	    return;
 	  }
 
-	  var rnd = Math.floor((0, _random2.default)(0, 5));
+	  var rnd = Math.floor((0, _random2.default)(0, 50));
 	  // return;
 	  switch (rnd) {
 	    // case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
@@ -9857,6 +9972,98 @@
 
 	exports.default = {
 	  emit: emit
+	};
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _objectDestructuringEmpty2 = __webpack_require__(164);
+
+	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Info = function (_Component) {
+	  (0, _inherits3.default)(Info, _Component);
+
+	  function Info() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Info);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Info.__proto__ || (0, _getPrototypeOf2.default)(Info)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Info, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'render',
+	    value: function render(_ref2, _ref3) {
+	      var content = _ref2.content;
+	      (0, _objectDestructuringEmpty3.default)(_ref3);
+
+	      return (0, _preact.h)(
+	        'span',
+	        { className: 'info' },
+	        '?'
+	      );
+	    }
+	  }]);
+	  return Info;
+	}(_preact.Component);
+
+	exports.default = Info;
+
+/***/ },
+/* 164 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	exports.default = function (obj) {
+	  if (obj == null) throw new TypeError("Cannot destructure undefined");
 	};
 
 /***/ }

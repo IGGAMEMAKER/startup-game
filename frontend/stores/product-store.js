@@ -465,7 +465,7 @@ class ProductStore extends EventEmitter {
     return productDescriptions(idea).hypothesis;
   }
 
-  getDescriptionOfProduc(id) {
+  getDescriptionOfProduct(id) {
     return productDescriptions(this.getIdea(id)).description;
   }
 
@@ -475,6 +475,7 @@ class ProductStore extends EventEmitter {
     const ourClients = this.getClients(id);
     const uncompeteableApps = competitors.filter(c => c.rating > rating - 1);
     const totalClients = ourClients + competitors.map(c => c.clients).reduce((p, c) => p + c, 0);
+
     let frozen = ourClients;
     const unbeatableClients = uncompeteableApps.map(c => c.clients).reduce((p, c) => p + c, 0);
     // if (uncompeteableApps.length) {

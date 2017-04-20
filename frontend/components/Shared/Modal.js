@@ -24,8 +24,7 @@ export default class Modal extends Component {
 
   renderModalBody = renderModal;
 
-  render() {
-    const { state, props } = this;
+  render(props, state) {
 
     if (!state.drawable) return <div></div>;
 

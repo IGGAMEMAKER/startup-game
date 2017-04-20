@@ -13,6 +13,10 @@ import * as PROFESSIONS from '../../../../constants/professions';
 import productActions from '../../../../actions/product-actions';
 
 import productStore from '../../../../stores/product-store';
+
+import playerStore from '../../../../stores/player-store';
+import playerActions from '../../../../actions/player-actions';
+
 import computeFeatureCost from '../../../../helpers/products/feature-price';
 
 import scheduleActions from '../../../../actions/schedule-actions';
@@ -21,9 +25,6 @@ import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../../../../constant
 
 import logger from '../../../../helpers/logger/logger';
 
-import playerStore from '../../../../stores/player-store';
-import playerActions from '../../../../actions/player-actions';
-
 export default class DevelopPanel extends Component {
   state = {
     marketing: false,
@@ -31,8 +32,6 @@ export default class DevelopPanel extends Component {
     analytics: false,
     features: true
   };
-
-  componentWillMount() {}
 
   getSpecificProductFeatureListByIdea = idea => {
     return ProductDescriptions(idea).features;
@@ -51,7 +50,8 @@ export default class DevelopPanel extends Component {
 
       { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
         points: { marketing: 50, programming: 100 }, time: 7 }
-    ].map(computeFeatureCost(cost));
+    ];
+    // ].map(computeFeatureCost(cost));
   };
 
   getDevelopmentFeatureList = idea => {
@@ -62,7 +62,46 @@ export default class DevelopPanel extends Component {
       { name: 'clusters', description: ''},
       { name: 'tests', description: ''},
       { name: 'mobiles', description: ''} // ios android apps
-    ].map(computeFeatureCost(cost));
+    ];
+    // ].map(computeFeatureCost(cost));
+  };
+
+  getFeedbackButton(idea, id) {
+    return (
+      <div className="offset-mid">
+        {this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)}
+      </div>
+    );
+  }
+
+  getWebvisorButton(idea, id) {
+    return (
+      <div className="offset-mid">
+        {this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)}
+      </div>
+    );
+  }
+
+  getSegmentingButton(idea, id) {
+    return (
+      <div className="offset-mid">
+        {this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)}
+      </div>
+    );
+  }
+
+  getHypothesisAnalyticsFeatures = idea => {
+    return [
+      { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
+        points: { programming: 50 }
+      },
+      { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
+        points: { programming: 50 }
+      },
+      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+        points: { programming: 150, marketing: 100 }
+      }
+    ];
   };
 
   getAnalyticFeatures = idea => {
@@ -115,8 +154,6 @@ export default class DevelopPanel extends Component {
     }
   };
 
-  // computeMarketingBonus
-
   toggleMainFeatureTab = () => {
     const value = this.state.features;
     this.setState({ features: !value });
@@ -144,7 +181,7 @@ export default class DevelopPanel extends Component {
 
   renderHypothesisItem = (id, featureName, time, current, max, product) => (hypothesis, i) => {
     const necessaryPoints = hypothesis.points;
-    const key = `${featureName}`;
+    const key = `hypothesis${i}`;
 
     const { pp, mp } = necessaryPoints;
 
@@ -161,7 +198,7 @@ export default class DevelopPanel extends Component {
     const disabled = ratingOverflow || currentXP < 1000;
 
     return (
-      <div key={`hypothesis${i}`} className="hypothesis-wrapper">
+      <div key={key} className="hypothesis-wrapper">
         <UI.Button
           disabled={disabled}
           onClick={action}
@@ -172,18 +209,14 @@ export default class DevelopPanel extends Component {
     )
   };
 
-  renderMainFeatureTab = () => {
-
-  };
-
-  renderHypothesisTab = (id) => {
+  renderHypothesisTab = (id, idea) => {
     const done = UI.symbols.ok;
     const cancel = UI.symbols.dot;
 
     const improvements = productStore.getImprovementChances(id);
-    const webvisorStatus = improvements.hasWebvisor ? done : cancel;
-    const segmentingStatus = improvements.hasSegmenting ? done : cancel;
-    const feedbackStatus = improvements.hasFeedback ? done : cancel;
+    const webvisorStatus = improvements.hasWebvisor ? done : `${cancel} Не`;
+    const segmentingStatus = improvements.hasSegmenting ? done : `${cancel} Не`;
+    const feedbackStatus = improvements.hasFeedback ? done : `${cancel} Не`;
 
     const clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
 
@@ -224,10 +257,11 @@ export default class DevelopPanel extends Component {
         <div className="featureGroupDescription">
           <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
           <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
-          <div className="smallText">Количество очков экспертизы зависит от аналитики и количества клиентов</div>
-          <div className="smallText">Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)</div>
-          <div className="smallText">Чтобы избавиться от этого штрафа, приведите больше клиентов
-            (Текущее количество клиентов: {improvements.clientModifier.clients})</div>
+
+          <div className="smallText">
+            Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;
+            <UI.Info />
+          </div>
           <div className="offset-mid">
             {cliTabDescription}
           </div>
@@ -240,8 +274,11 @@ export default class DevelopPanel extends Component {
         <div className="offset-mid">
           <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
           <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
+          {this.getFeedbackButton(idea, id)}
           <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
+          {this.getWebvisorButton(idea, id)}
           <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
+          {this.getSegmentingButton(idea, id)}
         </div>
         <br />
         <div>
@@ -258,10 +295,207 @@ export default class DevelopPanel extends Component {
     )
   };
 
-  render() {
-    const { props, state } = this;
+  renderHypothesisAnalytics = (id) => (feature, i) => {
+    const featureGroup = 'analytics';
+    const featureName = feature.name;
 
-    const { product } = props;
+    const key = `feature${featureGroup}${featureName}ii${i}`;
+
+    const standardPoints = feature.points || {};
+    const mp = standardPoints.marketing || 0;
+    const pp = standardPoints.programming || 0;
+    const points = playerStore.getPoints();
+
+    const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
+
+    const upgradeFeature = event => {
+      logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
+
+      if (enoughPointsToUpgrade) {
+        playerActions.spendPoints(pp, mp);
+        productActions.improveFeatureByPoints(id, featureGroup, featureName);
+      }
+    };
+
+    const description = feature.description || '';
+    const isUpgraded = productStore.getFeatureStatus(id, featureGroup, featureName);
+
+    const separator = <hr width="60%" />;
+
+    const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
+    if (isUpgraded) {
+      return (
+        <div key={key}>
+          {userOrientedFeatureName}: Улучшено {UI.symbols.ok}
+          <br />
+          <div className="featureDescription">{description}</div>
+          {separator}
+        </div>
+      );
+    }
+
+    const mpColors = points.marketing < mp ? "noPoints": "enoughPoints";
+    const ppColors = points.programming < pp ? "noPoints": "enoughPoints";
+
+    return (
+      <div key={key}>
+        {userOrientedFeatureName}
+        <br />
+        <div className="featureDescription">{description}</div>
+        <div>
+          <div>
+            Стоимость улучшения - &nbsp;
+            <span className={mpColors}>MP:{mp}&nbsp;</span>
+            <span className={ppColors}>PP:{pp}</span>
+          </div>
+        </div>
+        <UI.Button
+          text="Улучшить"
+          disabled={!enoughPointsToUpgrade}
+          onClick={upgradeFeature}
+          secondary
+        />
+        {separator}
+      </div>
+    )
+  };
+
+
+  renderPaymentTab = (state, id, idea) => {
+    const payment = this
+      .getPaymentFeatures(idea)
+      .map(this.renderFeature('payment', id, idea));
+
+    return (
+      <div>
+        <div
+          className="featureGroupTitle"
+          onClick={this.togglePaymentTab}
+        >4) Монетизация</div>
+        <div
+          className="featureGroupDescriptionWrapper"
+          style={{ display: state.payment ? 'block' : 'none' }}
+        >
+          <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
+          <div className="featureGroupBody">{payment}</div>
+          <div className="hide" onClick={this.togglePaymentTab}>Свернуть {UI.symbols.up}</div>
+        </div>
+      </div>
+    )
+  };
+
+  renderAnalyticsTab = (state, id, idea) => {
+    const analytics = this
+      .getAnalyticFeatures(idea)
+      .map(this.renderFeature('analytics', id, idea));
+
+    return (
+      <div>
+        <div
+          className="featureGroupTitle"
+          onClick={this.toggleAnalyticsTab}
+        >2) Аналитика</div>
+        <div
+          className="featureGroupDescriptionWrapper"
+          style={{ display: state.analytics ? 'block' : 'none' }}
+        >
+          <div className="featureGroupDescription">Позволяет быстрее улучшать главные характеристики проекта</div>
+          <div className="featureGroupBody">{analytics}</div>
+          <div className="hide" onClick={this.toggleAnalyticsTab}>Свернуть {UI.symbols.up}</div>
+        </div>
+      </div>
+    );
+  };
+
+  renderClientTab = (state, id, idea) => {
+    const marketing = this.getMarketingFeatureList(idea).map(this.renderFeature('marketing', id, idea));
+
+    let tab = '';
+    if (state.marketing) {
+      tab = (
+        <div className="featureGroupDescriptionWrapper">
+          <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
+          <div className="featureGroupBody">{marketing}</div>
+          <div className="hide" onClick={this.toggleMarketingTab}>Свернуть {UI.symbols.up}</div>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <div className="featureGroupTitle" onClick={this.toggleMarketingTab}>3) Работа с клиентами</div>
+        {tab}
+      </div>
+    );
+  };
+
+
+  renderFeature = (featureGroup, id, idea) => (feature, i) => {
+    const featureName = feature.name;
+
+    const key = `feature${featureGroup}${featureName}${i}`;
+
+    const standardPoints = feature.points || {};
+    const mp = standardPoints.marketing || 0;
+    const pp = standardPoints.programming || 0;
+    const points = playerStore.getPoints();
+
+    const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
+
+    const upgradeFeature = event => {
+      logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
+
+      if (enoughPointsToUpgrade) {
+        playerActions.spendPoints(pp, mp);
+        productActions.improveFeatureByPoints(id, featureGroup, featureName);
+      }
+    };
+
+    const description = feature.description || '';
+    const isUpgraded = productStore.getFeatureStatus(id, featureGroup, featureName);
+
+    const separator = <hr width="60%" />;
+
+    const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
+    if (isUpgraded) {
+      return (
+        <div key={key}>
+          {userOrientedFeatureName}: Улучшено {UI.symbols.ok}
+          <br />
+          <div className="featureDescription">{description}</div>
+          {separator}
+        </div>
+      );
+    }
+
+    const mpColors = points.marketing < mp ? "noPoints": "enoughPoints";
+    const ppColors = points.programming < pp ? "noPoints": "enoughPoints";
+
+    return (
+      <div key={key}>
+        {userOrientedFeatureName}
+        <br />
+        <div className="featureDescription">{description}</div>
+        <div>
+          <div>
+            Стоимость улучшения - &nbsp;
+            <span className={mpColors}>MP:{mp}&nbsp;</span>
+            <span className={ppColors}>PP:{pp}</span>
+          </div>
+        </div>
+        <UI.Button
+          text="Улучшить"
+          disabled={!enoughPointsToUpgrade}
+          onClick={upgradeFeature}
+          secondary
+        />
+        {separator}
+      </div>
+    )
+  };
+
+
+  render({ product }, state) {
     const { idea } = product;
 
     const id = 0; // TODO FIX PRODUCT ID
@@ -313,103 +547,19 @@ export default class DevelopPanel extends Component {
       )
     };
 
-
-    const renderFeature = featureGroup => (feature, i) => {
-      const featureName = feature.name;
-
-      const key = `feature${featureGroup}${featureName}${i}`;
-
-      const standardPoints = feature.points || {};
-      const mp = standardPoints.marketing || 0;
-      const pp = standardPoints.programming || 0;
-      const points = playerStore.getPoints();
-
-      const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
-
-      const upgradeFeature = event => {
-        logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
-
-        if (enoughPointsToUpgrade) {
-          playerActions.spendPoints(pp, mp);
-          productActions.improveFeatureByPoints(id, featureGroup, featureName);
-        }
-      };
-
-      const description = feature.description || '';
-      const isUpgraded = productStore.getFeatureStatus(id, featureGroup, featureName);
-
-      const separator = <hr width="60%" />;
-
-      const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
-      if (isUpgraded) {
-        return (
-          <div key={key}>
-            {userOrientedFeatureName}: Улучшено {UI.symbols.ok}
-            <br />
-            <div className="featureDescription">{description}</div>
-            {separator}
-          </div>
-        );
-      }
-
-      const mpColors = points.marketing < mp ? "noPoints": "enoughPoints";
-      const ppColors = points.programming < pp ? "noPoints": "enoughPoints";
-
-      return (
-        <div key={key}>
-          {userOrientedFeatureName}
-          <br />
-          <div className="featureDescription">{description}</div>
-          <div>
-            <div>
-              Стоимость улучшения - &nbsp;
-              <span className={mpColors}>MP:{mp}&nbsp;</span>
-              <span className={ppColors}>PP:{pp}</span>
-            </div>
-          </div>
-          <UI.Button
-            text="Улучшить"
-            disabled={!enoughPointsToUpgrade}
-            onClick={upgradeFeature}
-            secondary
-          />
-          {separator}
-        </div>
-      )
-    };
-
     // console.log('product', product);
     const featureList = this
       .getSpecificProductFeatureListByIdea(idea)
       .map(renderMainFeature('offer'));
 
-    const marketing = this
-      .getMarketingFeatureList(idea)
-      .map(renderFeature('marketing'));
-
-    const development = this
-      .getDevelopmentFeatureList(idea)
-      .map(renderFeature('development'));
-
-    // <b>Разработка</b>
-    // {development}
-
-    const analytics = this
-      .getAnalyticFeatures(idea)
-      .map(renderFeature('analytics'));
-
-
-    const payment = this
-      .getPaymentFeatures(idea)
-      .map(renderFeature('payment'));
-
-
-    const upArrow = UI.symbols.up;
+    // const development = this
+    //   .getDevelopmentFeatureList(idea)
+    //   .map(this.renderFeature('development'));
 
     return (
       <div>
         <b>Развитие продукта "{product.name}"</b>
-        <div>Описание продукта: {productStore.getDescriptionOfProduc(id)}</div>
+        <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
         <div style={{padding: '15px'}}>
           <b>Основные показатели продукта</b>
           <Metrics product={product} id={id} />
@@ -417,7 +567,7 @@ export default class DevelopPanel extends Component {
           <br />
           <hr />
 
-          {this.renderHypothesisTab(id)}
+          {this.renderHypothesisTab(id, idea)}
 
           <br />
           <hr />
@@ -434,51 +584,14 @@ export default class DevelopPanel extends Component {
               Улучшая главные характеристики продукта, вы повышаете его рейтинг,
               что приводит к снижению оттока клиентов и увеличению доходов с продукта
             </div>
-            <div>Доступно: {product.XP} XP</div>
+            <div>Доступно: {product.XP}XP</div>
             <div className="featureGroupBody">{featureList}</div>
-            <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {upArrow}</div>
+            <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {UI.symbols.up}</div>
           </div>
 
-          <div
-            className="featureGroupTitle"
-            onClick={this.toggleAnalyticsTab}
-          >2) Аналитика</div>
-          <div
-            className="featureGroupDescriptionWrapper"
-            style={{ display: state.analytics ? 'block' : 'none' }}
-          >
-            <div className="featureGroupDescription">Позволяет быстрее улучшать главные характеристики проекта</div>
-            <div className="featureGroupBody">{analytics}</div>
-            <div className="hide" onClick={this.toggleAnalyticsTab}>Свернуть {upArrow}</div>
-          </div>
-
-
-          <div
-            className="featureGroupTitle"
-            onClick={this.toggleMarketingTab}
-          >3) Работа с клиентами</div>
-          <div
-            className="featureGroupDescriptionWrapper"
-            style={{ display: state.marketing ? 'block' : 'none' }}
-          >
-            <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
-            <div className="featureGroupBody">{marketing}</div>
-            <div className="hide" onClick={this.toggleMarketingTab}>Свернуть {upArrow}</div>
-          </div>
-
-
-          <div
-            className="featureGroupTitle"
-            onClick={this.togglePaymentTab}
-          >4) Монетизация</div>
-          <div
-            className="featureGroupDescriptionWrapper"
-            style={{ display: state.payment ? 'block' : 'none' }}
-          >
-            <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
-            <div className="featureGroupBody">{payment}</div>
-            <div className="hide" onClick={this.togglePaymentTab}>Свернуть {upArrow}</div>
-          </div>
+          {this.renderAnalyticsTab(state, id, idea)}
+          {this.renderClientTab(state, id, idea)}
+          {this.renderPaymentTab(state, id, idea)}
 
         </div>
       </div>

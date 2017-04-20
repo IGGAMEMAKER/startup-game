@@ -1,20 +1,15 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-type PropsType = {};
-
 import UI from '../../../UI';
 
-import productActions from '../../../../actions/product-actions';
-import playerActions from '../../../../actions/player-actions';
+import flux from '../../../../flux';
 
-import productStore from '../../../../stores/product-store';
-import playerStore from '../../../../stores/player-store';
 
 export default class AdvertPlannerPanel extends Component {
   state = {
     possibleClients: 0,
-    toggle: true,
+    toggle: true
   };
 
   componentWillMount() {}
@@ -24,9 +19,9 @@ export default class AdvertPlannerPanel extends Component {
   };
 
   inviteUsers = (id, amountOfUsers, cost) => () => {
-    if (playerStore.getMoney() >= cost) {
-      productActions.addClients(id, amountOfUsers);
-      playerActions.increaseMoney(-cost);
+    if (flux.playerStore.getMoney() >= cost) {
+      flux.productActions.addClients(id, amountOfUsers);
+      flux.playerActions.increaseMoney(-cost);
 
       this.onDrag(0);
     }
@@ -66,22 +61,23 @@ export default class AdvertPlannerPanel extends Component {
   };
 
   render({ id }, { possibleClients }) {
-    const costPerClient = productStore.getCostPerClient(id);
+    const costPerClient = flux.productStore.getCostPerClient(id);
     const competitors = [
       { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
       { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
       { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
     ].sort((a, b) => a.rating > b.rating);
 
-    const marketStats = productStore.getMaxAmountOfPossibleClients(id, playerStore.getMoney(), competitors);
+    const marketStats = flux.productStore.getMaxAmountOfPossibleClients(id, flux.playerStore.getMoney(), competitors);
     const {
       potentialClients,
       marketSize,
       ourClients,
       unbeatableClients,
       amount,
-      freeClients,
+      // freeClients,
     } = marketStats;
+    const freeClients = marketSize - ourClients - unbeatableClients;
 
     const maxPossibleClients = amount; // Math.floor(playerStore.getMoney() / costPerClient);
     const campaignCost = Math.ceil(possibleClients * costPerClient);
@@ -91,9 +87,9 @@ export default class AdvertPlannerPanel extends Component {
         <div>Объём рынка: {marketSize} человек</div>
         <div>Наши клиенты: {ourClients} человек</div>
         <div>Клиенты, которых мы не можем переманить: {unbeatableClients} человек</div>
-        <div>{this.renderCompetitors(competitors, productStore.getRating(id), freeClients)}</div>
-        <div>Наша потенциальная аудитория:
-          {potentialClients} ({marketSize} - {ourClients} - {unbeatableClients})
+        <div>{this.renderCompetitors(competitors, flux.productStore.getRating(id), freeClients)}</div>
+        <div>Наша потенциальная аудитория: {potentialClients}
+          ({marketSize} - {ourClients} - {unbeatableClients})
         </div>
 
         <UI.Range min={0} max={maxPossibleClients} onDrag={this.onDrag} />

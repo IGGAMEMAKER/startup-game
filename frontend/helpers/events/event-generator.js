@@ -15,13 +15,13 @@ const emit = (day) => {
     return;
   }
 
-  if (day === 60) {
+  if (day === 100) {
     let points = Math.ceil(random(50, 275));
     flux.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points });
     return;
   }
 
-  const rnd = Math.floor(random(0, 5));
+  const rnd = Math.floor(random(0, 50));
   // return;
   switch (rnd) {
     // case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
