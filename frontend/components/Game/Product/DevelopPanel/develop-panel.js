@@ -25,12 +25,22 @@ import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../../../../constant
 
 import logger from '../../../../helpers/logger/logger';
 
+import AdsPanel from '../Ads/advert-planner-panel';
+
+
+const MODE_HYPOTHESIS = 'PRODUCT_MENU_HYPOTHESIS';
+const MODE_ADS = 'PRODUCT_MENU_ADS';
+const MODE_MARKETING = 'PRODUCT_MENU_MARKETING';
+const MODE_PAYMENTS = 'PRODUCT_MENU_PAYMENTS';
+
 export default class DevelopPanel extends Component {
   state = {
     marketing: false,
     payment: false,
     analytics: false,
-    features: true
+    features: true,
+
+    mode: MODE_HYPOTHESIS
   };
 
   getSpecificProductFeatureListByIdea = idea => {
@@ -92,13 +102,13 @@ export default class DevelopPanel extends Component {
 
   getHypothesisAnalyticsFeatures = idea => {
     return [
-      { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
-        points: { programming: 50 }
+      { name: 'feedback', shortDescription: 'Форма для комментариев', description: '', // 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез',
+        points: { programming: 50, marketing: 0 }
       },
-      { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
-        points: { programming: 50 }
+      { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
+        points: { programming: 50, marketing: 0 }
       },
-      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
         points: { programming: 150, marketing: 100 }
       }
     ];
@@ -108,20 +118,20 @@ export default class DevelopPanel extends Component {
     const cost = 30 * WORK_SPEED_NORMAL;
 
     return [
-      { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
-        points: { programming: 50 }
-      },
-      { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
-        points: { programming: 50 }
-      },
-      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
-        points: { programming: 150, marketing: 100 }
-      },
+      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
+      //   points: { programming: 50, marketing: 0 }
+      // },
+      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
+      //   points: { programming: 50, marketing: 0 }
+      // },
+      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+      //   points: { programming: 150, marketing: 100 }
+      // },
       { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-        points: { programming: 50 }
+        points: { programming: 50, marketing: 0 }
       },
       { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрики "процент платящих" и "ежемесячный доход"',
-        points: { programming: 50 }
+        points: { programming: 50, marketing: 0 }
       }
     ];
     // ].map(computeFeatureCost(cost));
@@ -268,11 +278,12 @@ export default class DevelopPanel extends Component {
         </div>
         <br />
         <div>
-          Запуская тестирование вы получите от {improvements.min} до {improvements.max} XP
+          Запуская тестирование вы получите от 0 до {improvements.max} XP
           (штраф -{clientSizePenalty}%)
         </div>
         <div className="offset-mid">
           <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
+
           <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
           {this.getFeedbackButton(idea, id)}
           <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
@@ -371,7 +382,7 @@ export default class DevelopPanel extends Component {
         <div
           className="featureGroupTitle"
           onClick={this.togglePaymentTab}
-        >4) Монетизация</div>
+        >3) Монетизация</div>
         <div
           className="featureGroupDescriptionWrapper"
           style={{ display: state.payment ? 'block' : 'none' }}
@@ -423,7 +434,7 @@ export default class DevelopPanel extends Component {
 
     return (
       <div>
-        <div className="featureGroupTitle" onClick={this.toggleMarketingTab}>3) Работа с клиентами</div>
+        <div className="featureGroupTitle" onClick={this.toggleMarketingTab}>2) Работа с клиентами</div>
         {tab}
       </div>
     );
@@ -496,6 +507,7 @@ export default class DevelopPanel extends Component {
 
 
   render({ product }, state) {
+    const { mode } = state;
     const { idea } = product;
 
     const id = 0; // TODO FIX PRODUCT ID
@@ -552,9 +564,60 @@ export default class DevelopPanel extends Component {
       .getSpecificProductFeatureListByIdea(idea)
       .map(renderMainFeature('offer'));
 
-    // const development = this
-    //   .getDevelopmentFeatureList(idea)
-    //   .map(this.renderFeature('development'));
+    let body = '';
+
+    switch (mode) {
+      case MODE_PAYMENTS:
+        body = this.renderPaymentTab(state, id, idea);
+        break;
+
+      case MODE_MARKETING:
+        body = this.renderClientTab(state, id, idea);
+        break;
+
+      case MODE_ADS:
+        body = (
+          <div>
+            <br />
+            <hr />
+            <div>
+              <b>Рекламная кампания</b>
+              <AdsPanel product={product} id={id} />
+              <br />
+            </div>
+          </div>
+        );
+        break;
+
+      default:
+        body = (
+          <div>
+            {this.renderHypothesisTab(id, idea)}
+
+            <br />
+            <hr />
+
+            <div
+              className="featureGroupTitle"
+              onClick={this.toggleMainFeatureTab}
+            >1) Основные характеристики продукта</div>
+            <div
+              className="featureGroupDescriptionWrapper"
+              style={{ display: state.features ? 'block' : 'none' }}
+            >
+              <div className="featureGroupDescription">
+                Улучшая главные характеристики продукта, вы повышаете его рейтинг,
+                что приводит к снижению оттока клиентов и увеличению доходов с продукта
+              </div>
+              <div>Доступно: {product.XP}XP</div>
+              <div className="featureGroupBody">{featureList}</div>
+              <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {UI.symbols.up}</div>
+            </div>
+          </div>
+        );
+        break;
+    }
+
 
     return (
       <div>
@@ -567,32 +630,7 @@ export default class DevelopPanel extends Component {
           <br />
           <hr />
 
-          {this.renderHypothesisTab(id, idea)}
-
-          <br />
-          <hr />
-
-          <div
-            className="featureGroupTitle"
-            onClick={this.toggleMainFeatureTab}
-          >1) Основные характеристики продукта</div>
-          <div
-            className="featureGroupDescriptionWrapper"
-            style={{ display: state.features ? 'block' : 'none' }}
-          >
-            <div className="featureGroupDescription">
-              Улучшая главные характеристики продукта, вы повышаете его рейтинг,
-              что приводит к снижению оттока клиентов и увеличению доходов с продукта
-            </div>
-            <div>Доступно: {product.XP}XP</div>
-            <div className="featureGroupBody">{featureList}</div>
-            <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {UI.symbols.up}</div>
-          </div>
-
-          {this.renderAnalyticsTab(state, id, idea)}
-          {this.renderClientTab(state, id, idea)}
-          {this.renderPaymentTab(state, id, idea)}
-
+          {body}
         </div>
       </div>
     );

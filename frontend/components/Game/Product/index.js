@@ -8,7 +8,6 @@ import * as PRODUCT_STAGES from '../../../constants/products/product-stages';
 
 import InitialProductTab from './InitialPanel/InitialProductTab';
 import DevelopPanel from './DevelopPanel/develop-panel';
-import AdsPanel from './Ads/advert-planner-panel';
 import PointShop from '../Player/Point-shop';
 
 export default class Product extends Component {
@@ -25,13 +24,6 @@ export default class Product extends Component {
         body = (
           <div>
             <DevelopPanel product={product} id={id} />
-            <br />
-            <hr />
-            <div>
-              <b>Рекламная кампания</b>
-              <AdsPanel product={product} id={id} />
-              <br />
-            </div>
           </div>
         );
         break;

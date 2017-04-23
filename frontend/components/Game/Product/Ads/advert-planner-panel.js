@@ -30,7 +30,6 @@ export default class AdvertPlannerPanel extends Component {
   renderCompetitors(competitors, rating, freeClients) {
     return (
       <div>
-        <h6>Конкуренты</h6>
         <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
         <div>{competitors.map(this.renderCompetitor(rating))}</div>
       </div>
@@ -54,8 +53,12 @@ export default class AdvertPlannerPanel extends Component {
         // <hr width="80%" />
     return (
       <div className={background}>
-        <div className="offset-min">{c.name} -  рейтинг: {c.rating} ({canWeCompeteThem})</div>
+        <div className="offset-min">Конкурент №{i + 1} - "{c.name}"</div>
+        <div className="offset-min">Рейтинг: {c.rating} ({canWeCompeteThem})</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
+        <div className="offset-mid">
+          <hr width="80%" />
+        </div>
       </div>
     )
   };
