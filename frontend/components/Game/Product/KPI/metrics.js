@@ -91,6 +91,7 @@ export default class Metrics extends Component {
     }
 
     let incomeTab;
+    canShowIncomeTab = true;
     if (canShowIncomeTab) {
       incomeTab = <li>
         <b>Ежемесячный доход: {income}$</b>

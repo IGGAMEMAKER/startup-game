@@ -6537,11 +6537,12 @@
 	        maxXP += segmentingBonus;
 	      }
 
-	      maxXP *= clientModifier.modifier;
+	      // maxXP *= clientModifier.modifier;
 
 	      return {
-	        min: 0.1 * maxXP,
-	        max: maxXP,
+	        min: 0,
+	        max: maxXP * clientModifier.modifier,
+	        maxXPWithoutBonuses: maxXP,
 	        webvisorBonus: webvisorBonus,
 	        feedbackBonus: feedbackBonus,
 	        segmentingBonus: segmentingBonus,
@@ -8310,7 +8311,7 @@
 
 	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
 
-	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i) {
+	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i, arr) {
 	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
 	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
 	        return (0, _preact.h)(
@@ -8429,7 +8430,19 @@
 	            improvements.segmentingBonus,
 	            'XP)'
 	          ),
-	          _this.getSegmentingButton(idea, id)
+	          _this.getSegmentingButton(idea, id),
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0418\u0442\u043E\u0433\u043E: ',
+	            improvements.maxXPWithoutBonuses,
+	            'XP - ',
+	            clientSizePenalty,
+	            '% = ',
+	            improvements.max,
+	            'XP'
+	          )
 	        ),
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
@@ -8764,7 +8777,7 @@
 	          (0, _preact.h)('br', null)
 	        );
 	      };
-	    }, _this.renderFeature = function (featureGroup, id, idea) {
+	    }, _this.renderFeature = function (featureGroup, id, idea, hideOnComplete) {
 	      return function (feature, i) {
 	        var featureName = feature.name;
 
@@ -8793,6 +8806,10 @@
 
 	        var userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
 	        if (isUpgraded) {
+	          if (hideOnComplete) {
+	            return (0, _preact.h)('div', { key: key });
+	          }
+
 	          return (0, _preact.h)(
 	            'div',
 	            { key: key },
@@ -8864,7 +8881,7 @@
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)
+	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)
 	      );
 	    }
 	  }, {
@@ -8873,7 +8890,7 @@
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)
+	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)
 	      );
 	    }
 	  }, {
@@ -8882,7 +8899,7 @@
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
+	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
 	      );
 	    }
 	  }, {
@@ -9182,6 +9199,7 @@
 	      }
 
 	      var incomeTab = void 0;
+	      canShowIncomeTab = true;
 	      if (canShowIncomeTab) {
 	        incomeTab = (0, _preact.h)(
 	          'li',

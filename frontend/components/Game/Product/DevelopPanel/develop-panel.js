@@ -79,7 +79,7 @@ export default class DevelopPanel extends Component {
   getFeedbackButton(idea, id) {
     return (
       <div className="offset-mid">
-        {this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)}
+        {this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)}
       </div>
     );
   }
@@ -87,7 +87,7 @@ export default class DevelopPanel extends Component {
   getWebvisorButton(idea, id) {
     return (
       <div className="offset-mid">
-        {this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)}
+        {this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)}
       </div>
     );
   }
@@ -95,7 +95,7 @@ export default class DevelopPanel extends Component {
   getSegmentingButton(idea, id) {
     return (
       <div className="offset-mid">
-        {this.renderFeature('analytics', id, idea)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)}
+        {this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)}
       </div>
     );
   }
@@ -231,7 +231,7 @@ export default class DevelopPanel extends Component {
     const clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
 
     const cliTabDescription = improvements.clientModifier.clientsRange
-      .map((c, i) => {
+      .map((c, i, arr) => {
         const penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
         const isActivated = i === improvements.clientModifier.index ? UI.symbols.ok : UI.symbols.dot;
         return <div className="smallText">
@@ -290,6 +290,8 @@ export default class DevelopPanel extends Component {
           {this.getWebvisorButton(idea, id)}
           <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
           {this.getSegmentingButton(idea, id)}
+          <br />
+          <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
         </div>
         <br />
         <div>
@@ -515,7 +517,7 @@ export default class DevelopPanel extends Component {
   };
 
 
-  renderFeature = (featureGroup, id, idea) => (feature, i) => {
+  renderFeature = (featureGroup, id, idea, hideOnComplete) => (feature, i) => {
     const featureName = feature.name;
 
     const key = `feature${featureGroup}${featureName}${i}`;
@@ -543,6 +545,10 @@ export default class DevelopPanel extends Component {
 
     const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
     if (isUpgraded) {
+      if (hideOnComplete) {
+        return <div key={key}></div>;
+      }
+
       return (
         <div key={key}>
           {userOrientedFeatureName}: Улучшено {UI.symbols.ok}

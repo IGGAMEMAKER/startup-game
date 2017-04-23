@@ -432,11 +432,12 @@ class ProductStore extends EventEmitter {
       maxXP += segmentingBonus;
     }
 
-    maxXP *= clientModifier.modifier;
+    // maxXP *= clientModifier.modifier;
 
     return {
-      min: 0.1 * maxXP,
-      max: maxXP,
+      min: 0,
+      max: maxXP * clientModifier.modifier,
+      maxXPWithoutBonuses: maxXP,
       webvisorBonus,
       feedbackBonus,
       segmentingBonus,
