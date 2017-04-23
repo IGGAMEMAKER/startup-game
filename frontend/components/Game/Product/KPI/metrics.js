@@ -12,11 +12,14 @@ type PropsType = {};
 type StateType = {};
 
 export default class Metrics extends Component {
-  render() {
-    const { props } = this;
-    const id = props.id;
-
-    const { product } = props;
+  render({
+    product,
+    id,
+    onRatingPressed,
+    onClientsPressed,
+    onPaymentsPressed,
+    onAdsPressed
+  }, {}) {
     const { idea } = product;
 
     const debt = product.KPI.debt;
@@ -51,14 +54,19 @@ export default class Metrics extends Component {
     let ratingTab;
     canShowRatingTab = true;
     if (canShowRatingTab) {
-      ratingTab = <li><b>Рейтинг: <span style={{ color: ratingColor }}>{rating}</span>/10</b></li>;
+      ratingTab = <li>
+        <b>Рейтинг: <span style={{ color: ratingColor }}>{rating}</span>/10</b>
+        <span className="metric-link" onClick={onRatingPressed}>Улучшить</span>
+      </li>
     } else {
       ratingTab = <li><b>Рейтинг: ???</b></li>;
     }
 
     let churnTab;
     if (canShowChurnTab) {
-      churnTab = <li><b>Отток клиентов: {churn}% ({disloyalClients})</b></li>;
+      churnTab = <li><b>Отток клиентов: {churn}% ({disloyalClients})</b>
+        <span className="metric-link" onClick={onClientsPressed}>Улучшить</span>
+      </li>;
     }
 
     let viralityTab;
@@ -87,6 +95,7 @@ export default class Metrics extends Component {
     if (canShowClientsTab) {
       clientsTab = <li>
         <b>Клиенты: {clients}</b>
+        <span className="metric-link" onClick={onAdsPressed}>Привлечь клиентов</span>
       </li>
     }
 
@@ -95,6 +104,7 @@ export default class Metrics extends Component {
     if (canShowIncomeTab) {
       incomeTab = <li>
         <b>Ежемесячный доход: {income}$</b>
+        <span className="metric-link" onClick={onPaymentsPressed}>Повысить</span>
       </li>
     }
 

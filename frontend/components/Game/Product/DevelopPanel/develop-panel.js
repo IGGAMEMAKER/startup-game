@@ -234,8 +234,15 @@ export default class DevelopPanel extends Component {
       .map((c, i, arr) => {
         const penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
         const isActivated = i === improvements.clientModifier.index ? UI.symbols.ok : UI.symbols.dot;
+
+        let phrase;
+        if (i === 0) {
+          phrase = `Клиентов больше, чем ${c}`;
+        } else {
+          phrase = `Клиентов меньше, чем ${arr[i - 1]} - штраф ${penalty}%`;
+        }
         return <div className="smallText">
-          {isActivated} Клиентов больше, чем {c} - штраф {penalty}%
+          {isActivated} {phrase}
         </div>
       });
 
@@ -610,13 +617,9 @@ export default class DevelopPanel extends Component {
       case MODE_ADS:
         body = (
           <div>
+            <b>Рекламная кампания</b>
+            <AdsPanel product={product} id={id} />
             <br />
-            <hr />
-            <div>
-              <b>Рекламная кампания</b>
-              <AdsPanel product={product} id={id} />
-              <br />
-            </div>
           </div>
         );
         break;
@@ -640,7 +643,14 @@ export default class DevelopPanel extends Component {
         <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
         <div style={{padding: '15px'}}>
           <b>Основные показатели продукта</b>
-          <Metrics product={product} id={id} />
+          <Metrics
+            product={product}
+            id={id}
+            onRatingPressed={() => this.setMode(MODE_HYPOTHESIS)}
+            onClientsPressed={() => this.setMode(MODE_MARKETING)}
+            onPaymentsPressed={() => this.setMode(MODE_PAYMENTS)}
+            onAdsPressed={() => this.setMode(MODE_ADS)}
+          />
 
           <br />
           <hr />

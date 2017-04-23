@@ -8314,15 +8314,19 @@
 	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i, arr) {
 	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
 	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
+
+	        var phrase = void 0;
+	        if (i === 0) {
+	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ' + c;
+	        } else {
+	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0435\u043D\u044C\u0448\u0435, \u0447\u0435\u043C ' + arr[i - 1] + ' - \u0448\u0442\u0440\u0430\u0444 ' + penalty + '%';
+	        }
 	        return (0, _preact.h)(
 	          'div',
 	          { className: 'smallText' },
 	          isActivated,
-	          ' \u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ',
-	          c,
-	          ' - \u0448\u0442\u0440\u0430\u0444 ',
-	          penalty,
-	          '%'
+	          ' ',
+	          phrase
 	        );
 	      });
 
@@ -8905,6 +8909,8 @@
 	  }, {
 	    key: 'render',
 	    value: function render(_ref2, state) {
+	      var _this2 = this;
+
 	      var product = _ref2.product;
 	      var mode = state.mode;
 	      var idea = product.idea;
@@ -8928,19 +8934,13 @@
 	          body = (0, _preact.h)(
 	            'div',
 	            null,
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)('hr', null),
 	            (0, _preact.h)(
-	              'div',
+	              'b',
 	              null,
-	              (0, _preact.h)(
-	                'b',
-	                null,
-	                '\u0420\u0435\u043A\u043B\u0430\u043C\u043D\u0430\u044F \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F'
-	              ),
-	              (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
-	              (0, _preact.h)('br', null)
-	            )
+	              '\u0420\u0435\u043A\u043B\u0430\u043C\u043D\u0430\u044F \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F'
+	            ),
+	            (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
+	            (0, _preact.h)('br', null)
 	          );
 	          break;
 
@@ -8981,7 +8981,22 @@
 	            null,
 	            '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
 	          ),
-	          (0, _preact.h)(_metrics2.default, { product: product, id: id }),
+	          (0, _preact.h)(_metrics2.default, {
+	            product: product,
+	            id: id,
+	            onRatingPressed: function onRatingPressed() {
+	              return _this2.setMode(MODE_HYPOTHESIS);
+	            },
+	            onClientsPressed: function onClientsPressed() {
+	              return _this2.setMode(MODE_MARKETING);
+	            },
+	            onPaymentsPressed: function onPaymentsPressed() {
+	              return _this2.setMode(MODE_PAYMENTS);
+	            },
+	            onAdsPressed: function onAdsPressed() {
+	              return _this2.setMode(MODE_ADS);
+	            }
+	          }),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null),
 	          body
@@ -9003,6 +9018,10 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _objectDestructuringEmpty2 = __webpack_require__(130);
+
+	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
 
 	var _getPrototypeOf = __webpack_require__(40);
 
@@ -9056,12 +9075,14 @@
 
 	  (0, _createClass3.default)(Metrics, [{
 	    key: 'render',
-	    value: function render() {
-	      var props = this.props;
-
-	      var id = props.id;
-
-	      var product = props.product;
+	    value: function render(_ref, _ref2) {
+	      var product = _ref.product,
+	          id = _ref.id,
+	          onRatingPressed = _ref.onRatingPressed,
+	          onClientsPressed = _ref.onClientsPressed,
+	          onPaymentsPressed = _ref.onPaymentsPressed,
+	          onAdsPressed = _ref.onAdsPressed;
+	      (0, _objectDestructuringEmpty3.default)(_ref2);
 	      var idea = product.idea;
 
 
@@ -9106,6 +9127,11 @@
 	              rating
 	            ),
 	            '/10'
+	          ),
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'metric-link', onClick: onRatingPressed },
+	            '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C'
 	          )
 	        );
 	      } else {
@@ -9133,6 +9159,11 @@
 	            '% (',
 	            disloyalClients,
 	            ')'
+	          ),
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'metric-link', onClick: onClientsPressed },
+	            '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C'
 	          )
 	        );
 	      }
@@ -9194,6 +9225,11 @@
 	            null,
 	            '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
 	            clients
+	          ),
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'metric-link', onClick: onAdsPressed },
+	            '\u041F\u0440\u0438\u0432\u043B\u0435\u0447\u044C \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
 	          )
 	        );
 	      }
@@ -9210,6 +9246,11 @@
 	            '\u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u044B\u0439 \u0434\u043E\u0445\u043E\u0434: ',
 	            income,
 	            '$'
+	          ),
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'metric-link', onClick: onPaymentsPressed },
+	            '\u041F\u043E\u0432\u044B\u0441\u0438\u0442\u044C'
 	          )
 	        );
 	      }

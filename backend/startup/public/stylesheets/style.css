@@ -228,6 +228,12 @@ textarea {
   /*cursor: pointer;*/
 }
 
+.metric-link {
+  cursor: pointer;
+  padding-left: 5px;
+  color: var(--link);
+}
+
 .featureGroupDescription {
 //padding: 7px;
   font-size: larger;
