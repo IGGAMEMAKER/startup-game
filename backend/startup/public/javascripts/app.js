@@ -8180,9 +8180,9 @@
 	    }
 
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DevelopPanel.__proto__ || (0, _getPrototypeOf2.default)(DevelopPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      marketing: false,
-	      payment: false,
-	      analytics: false,
+	      marketing: true,
+	      payment: true,
+	      analytics: true,
 	      features: true,
 
 	      mode: MODE_HYPOTHESIS
@@ -8555,7 +8555,7 @@
 	            className: 'featureGroupTitle',
 	            onClick: _this.togglePaymentTab
 	          },
-	          '3) \u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
+	          '\u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -8656,6 +8656,114 @@
 	        ),
 	        tab
 	      );
+	    }, _this.renderMainFeaturesTab = function (state, id, idea, product) {
+
+	      var featureList = _this.getSpecificProductFeatureListByIdea(idea).map(_this.renderMainFeature('offer', product, id));
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          {
+	            className: 'featureGroupTitle',
+	            onClick: _this.toggleMainFeatureTab
+	          },
+	          '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          {
+	            className: 'featureGroupDescriptionWrapper',
+	            style: { display: state.features ? 'block' : 'none' }
+	          },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0441\u043D\u0438\u0436\u0435\u043D\u0438\u044E \u043E\u0442\u0442\u043E\u043A\u0430 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0434\u043E\u0445\u043E\u0434\u043E\u0432 \u0441 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
+	            product.XP,
+	            'XP'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            featureList
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'hide', onClick: _this.toggleMainFeatureTab },
+	            '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
+	            _UI2.default.symbols.up
+	          )
+	        )
+	      );
+	    }, _this.renderMainFeature = function (featureGroup, product, id) {
+	      return function (defaultFeature, i) {
+	        var featureName = defaultFeature.name;
+	        var time = defaultFeature.time,
+	            shortDescription = defaultFeature.shortDescription;
+
+
+	        var feature = product.features[featureGroup][featureName];
+
+	        var current = feature || 0;
+	        var max = defaultFeature.data;
+
+	        var key = 'feature' + featureGroup + featureName + i;
+
+	        var hypothesis = [{
+	          points: { mp: 100, pp: 200 },
+	          data: 4000,
+	          baseChance: 0.1
+	        }];
+
+	        var description = defaultFeature.description || '';
+	        var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
+
+	        var hypothesisList = '   Улучшено';
+	        if (current < max) {
+	          hypothesisList = hypothesis.map(_this.renderHypothesisItem(id, featureName, time, current, max, product));
+	        } else {
+	          return (0, _preact.h)(
+	            'div',
+	            { key: key },
+	            userOrientedFeatureName,
+	            ' (\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E) ',
+	            _UI2.default.symbols.ok,
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'featureDescription' },
+	              description
+	            ),
+	            (0, _preact.h)('br', null)
+	          );
+	        }
+
+	        return (0, _preact.h)(
+	          'div',
+	          { key: key },
+	          userOrientedFeatureName,
+	          ' (',
+	          current,
+	          '/',
+	          max,
+	          'XP)',
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureDescription' },
+	            description
+	          ),
+	          hypothesisList,
+	          (0, _preact.h)('br', null)
+	        );
+	      };
 	    }, _this.renderFeature = function (featureGroup, id, idea) {
 	      return function (feature, i) {
 	        var featureName = feature.name;
@@ -8745,6 +8853,8 @@
 	          separator
 	        );
 	      };
+	    }, _this.setMode = function (mode) {
+	      _this.setState({ mode: mode });
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
@@ -8778,8 +8888,6 @@
 	  }, {
 	    key: 'render',
 	    value: function render(_ref2, state) {
-	      var _this2 = this;
-
 	      var product = _ref2.product;
 	      var mode = state.mode;
 	      var idea = product.idea;
@@ -8787,73 +8895,6 @@
 
 	      var id = 0; // TODO FIX PRODUCT ID
 	      _logger2.default.shit('develop-panel.js fix productID id=0');
-
-	      var renderMainFeature = function renderMainFeature(featureGroup) {
-	        return function (defaultFeature, i) {
-	          var featureName = defaultFeature.name;
-	          var time = defaultFeature.time,
-	              shortDescription = defaultFeature.shortDescription;
-
-
-	          var feature = product.features[featureGroup][featureName];
-
-	          var current = feature || 0;
-	          var max = defaultFeature.data;
-
-	          var key = 'feature' + featureGroup + featureName + i;
-
-	          var hypothesis = [{
-	            points: { mp: 100, pp: 200 },
-	            data: 4000,
-	            baseChance: 0.1
-	          }];
-
-	          var description = defaultFeature.description || '';
-	          var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
-
-	          var hypothesisList = '   Улучшено';
-	          if (current < max) {
-	            hypothesisList = hypothesis.map(_this2.renderHypothesisItem(id, featureName, time, current, max, product));
-	          } else {
-	            return (0, _preact.h)(
-	              'div',
-	              { key: key },
-	              userOrientedFeatureName,
-	              ' (\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E) ',
-	              _UI2.default.symbols.ok,
-	              (0, _preact.h)('br', null),
-	              (0, _preact.h)(
-	                'div',
-	                { className: 'featureDescription' },
-	                description
-	              ),
-	              (0, _preact.h)('br', null)
-	            );
-	          }
-
-	          return (0, _preact.h)(
-	            'div',
-	            { key: key },
-	            userOrientedFeatureName,
-	            ' (',
-	            current,
-	            '/',
-	            max,
-	            'XP)',
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureDescription' },
-	              description
-	            ),
-	            hypothesisList,
-	            (0, _preact.h)('br', null)
-	          );
-	        };
-	      };
-
-	      // console.log('product', product);
-	      var featureList = this.getSpecificProductFeatureListByIdea(idea).map(renderMainFeature('offer'));
 
 	      var body = '';
 
@@ -8893,48 +8934,12 @@
 	            this.renderHypothesisTab(id, idea),
 	            (0, _preact.h)('br', null),
 	            (0, _preact.h)('hr', null),
-	            (0, _preact.h)(
-	              'div',
-	              {
-	                className: 'featureGroupTitle',
-	                onClick: this.toggleMainFeatureTab
-	              },
-	              '1) \u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              {
-	                className: 'featureGroupDescriptionWrapper',
-	                style: { display: state.features ? 'block' : 'none' }
-	              },
-	              (0, _preact.h)(
-	                'div',
-	                { className: 'featureGroupDescription' },
-	                '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0441\u043D\u0438\u0436\u0435\u043D\u0438\u044E \u043E\u0442\u0442\u043E\u043A\u0430 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0434\u043E\u0445\u043E\u0434\u043E\u0432 \u0441 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
-	              ),
-	              (0, _preact.h)(
-	                'div',
-	                null,
-	                '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
-	                product.XP,
-	                'XP'
-	              ),
-	              (0, _preact.h)(
-	                'div',
-	                { className: 'featureGroupBody' },
-	                featureList
-	              ),
-	              (0, _preact.h)(
-	                'div',
-	                { className: 'hide', onClick: this.toggleMainFeatureTab },
-	                '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	                _UI2.default.symbols.up
-	              )
-	            )
+	            this.renderMainFeaturesTab(state, id, idea, product)
 	          );
 	          break;
 	      }
 
+	      // renderAnalyticsTab
 	      return (0, _preact.h)(
 	        'div',
 	        null,
