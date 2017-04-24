@@ -24,15 +24,21 @@ export default class Menu extends Component {
   render(props, state) {
     const saldoValue = Math.floor(moneyCalculator.saldo());
     const saldo = saldoValue  > 0;
-    const arrow = saldo ? UI.symbols.upRight : UI.symbols.downRight;
 
     const s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
     const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
     const navigation = s.navigation;
 
-    const isRunning = !props.pause;
-    const gameSpeed = props.gameSpeed;
+    const {
+      isChosenProjectsMenu,
+      isChosenEconomicsMenu,
+      isChosenStaffMenu,
+      gameSpeed,
+      pause
+    } = props;
+
+    const isRunning = !pause;
 
     const speeder = (speed, text) => (
       <div className={navigation}>
@@ -44,25 +50,25 @@ export default class Menu extends Component {
     );
 
     const moneyDifference = saldo ? `+${saldoValue}` : saldoValue;
+    const moneyPhrase = `$${Math.floor(state.money)} (${moneyDifference}$)`;
 
     return (
       <div>
         <div className={navigation}>
-          <div className={moneyIndication}>${Math.floor(state.money)} ({moneyDifference}$)</div>
+          <div className={moneyIndication} onClick={props.onRenderEconomicsMenu}>{moneyPhrase}</div>
         </div>
         <div className={navigation}>
           <div>День: {props.day}</div>
         </div>
         {speeder(1, '>')}
-        {speeder(4, '>>')}
         {speeder(8, '>>>')}
-        <div className={navigation}>MP: {state.points.marketing}</div>
-        <div className={navigation}>PP: {state.points.programming}</div>
+        <div className={navigation} onClick={props.onRenderStaffMenu}>MP: {state.points.marketing}</div>
+        <div className={navigation} onClick={props.onRenderStaffMenu}>PP: {state.points.programming}</div>
 
         <div>
-          <div className={navigation} onClick={props.onRenderProjectsMenu}>Проекты</div>
-          <div className={navigation} onClick={props.onRenderEconomicsMenu}>Экономика</div>
-          <div className={navigation} onClick={props.onRenderStaffMenu}>Команда</div>
+          <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
+          <div className={`${navigation} ${isChosenEconomicsMenu}`} onClick={props.onRenderEconomicsMenu}>Экономика</div>
+          <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда</div>
         </div>
       </div>
     );

@@ -7,7 +7,7 @@ const calculate = () => {
   const products = productStore.getProducts();
 
   // check income
-  const jobIncome = 5000;
+  const jobIncome = 2000;
 
   const income = jobIncome + products
       .map((p, i) => productStore.getProductIncome(i))
@@ -25,7 +25,7 @@ const calculate = () => {
     .reduce((p, c) => p + c);
 
   const loans = playerStore.getLoanPaymentAmount();
-  
+
   const teamExpenses = playerStore.getTeamExpenses();
 
   const expenses = nonProductExpenses + productExpenses + loans + teamExpenses;

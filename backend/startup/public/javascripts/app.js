@@ -820,7 +820,11 @@
 	            onRenderStaffMenu: this.onRenderStaffMenu,
 	            pause: state.pause,
 	            gameSpeed: state.gameSpeed,
-	            day: state.day
+	            day: state.day,
+
+	            isChosenProjectsMenu: state.mode === GAME_MODE_PRODUCTS || state.mode === GAME_MODE_PRODUCT ? 'active' : '',
+	            isChosenEconomicsMenu: state.mode === GAME_MODE_ECONOMICS ? 'active' : '',
+	            isChosenStaffMenu: state.mode === GAME_MODE_STAFF ? 'active' : ''
 	          }),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null),
@@ -4765,8 +4769,8 @@
 	}];
 
 	var _points = {
-	  programming: 1000,
-	  marketing: 1000,
+	  programming: 500,
+	  marketing: 500,
 	  analyst: 1000
 	};
 
@@ -7173,15 +7177,20 @@
 	    value: function render(props, state) {
 	      var saldoValue = Math.floor(_moneyDifference2.default.saldo());
 	      var saldo = saldoValue > 0;
-	      var arrow = saldo ? _UI2.default.symbols.upRight : _UI2.default.symbols.downRight;
 
 	      var s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
 	      var moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
 	      var navigation = s.navigation;
 
-	      var isRunning = !props.pause;
-	      var gameSpeed = props.gameSpeed;
+	      var isChosenProjectsMenu = props.isChosenProjectsMenu,
+	          isChosenEconomicsMenu = props.isChosenEconomicsMenu,
+	          isChosenStaffMenu = props.isChosenStaffMenu,
+	          gameSpeed = props.gameSpeed,
+	          pause = props.pause;
+
+
+	      var isRunning = !pause;
 
 	      var speeder = function speeder(speed, text) {
 	        return (0, _preact.h)(
@@ -7195,6 +7204,7 @@
 	      };
 
 	      var moneyDifference = saldo ? '+' + saldoValue : saldoValue;
+	      var moneyPhrase = '$' + Math.floor(state.money) + ' (' + moneyDifference + '$)';
 
 	      return (0, _preact.h)(
 	        'div',
@@ -7204,12 +7214,8 @@
 	          { className: navigation },
 	          (0, _preact.h)(
 	            'div',
-	            { className: moneyIndication },
-	            '$',
-	            Math.floor(state.money),
-	            ' (',
-	            moneyDifference,
-	            '$)'
+	            { className: moneyIndication, onClick: props.onRenderEconomicsMenu },
+	            moneyPhrase
 	          )
 	        ),
 	        (0, _preact.h)(
@@ -7223,17 +7229,16 @@
 	          )
 	        ),
 	        speeder(1, '>'),
-	        speeder(4, '>>'),
 	        speeder(8, '>>>'),
 	        (0, _preact.h)(
 	          'div',
-	          { className: navigation },
+	          { className: navigation, onClick: props.onRenderStaffMenu },
 	          'MP: ',
 	          state.points.marketing
 	        ),
 	        (0, _preact.h)(
 	          'div',
-	          { className: navigation },
+	          { className: navigation, onClick: props.onRenderStaffMenu },
 	          'PP: ',
 	          state.points.programming
 	        ),
@@ -7242,17 +7247,17 @@
 	          null,
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation, onClick: props.onRenderProjectsMenu },
+	            { className: navigation + ' ' + isChosenProjectsMenu, onClick: props.onRenderProjectsMenu },
 	            '\u041F\u0440\u043E\u0435\u043A\u0442\u044B'
 	          ),
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation, onClick: props.onRenderEconomicsMenu },
+	            { className: navigation + ' ' + isChosenEconomicsMenu, onClick: props.onRenderEconomicsMenu },
 	            '\u042D\u043A\u043E\u043D\u043E\u043C\u0438\u043A\u0430'
 	          ),
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation, onClick: props.onRenderStaffMenu },
+	            { className: navigation + ' ' + isChosenStaffMenu, onClick: props.onRenderStaffMenu },
 	            '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
 	          )
 	        )
@@ -7294,7 +7299,7 @@
 	  var products = _productStore2.default.getProducts();
 
 	  // check income
-	  var jobIncome = 5000;
+	  var jobIncome = 2000;
 
 	  var income = jobIncome + products.map(function (p, i) {
 	    return _productStore2.default.getProductIncome(i);
@@ -7463,7 +7468,7 @@
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u0424\u0440\u0438\u043B\u0430\u043D\u0441: 5000$'
+	          '\u0424\u0440\u0438\u043B\u0430\u043D\u0441: 2000$'
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -8161,10 +8166,11 @@
 
 	// import React, { Component, PropTypes } from 'react';
 
-	var MODE_HYPOTHESIS = 'PRODUCT_MENU_HYPOTHESIS';
-	var MODE_ADS = 'PRODUCT_MENU_ADS';
-	var MODE_MARKETING = 'PRODUCT_MENU_MARKETING';
-	var MODE_PAYMENTS = 'PRODUCT_MENU_PAYMENTS';
+	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
+	var MODE_ADS = 'MODE_ADS';
+	var MODE_MARKETING = 'MODE_MARKETING';
+	var MODE_PAYMENTS = 'MODE_PAYMENTS';
+	var MODE_ANALYTICS = 'MODE_ANALYTICS';
 
 	var DevelopPanel = function (_Component) {
 	  (0, _inherits3.default)(DevelopPanel, _Component);
@@ -8250,18 +8256,6 @@
 	      } else {
 	        return '\u0422\u044B \u043C\u0440\u0430\u0437\u044C \u0438 \u043F**\u043E\u0440, \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435\u043D\u0430\u0432\u0438\u0434\u044F\u0442 \u0442\u0435\u0431\u044F!! \u041E\u0442\u0440\u0435\u0444\u0430\u043A\u0442\u043E\u0440\u044C \u044D\u0442\u043E\u0442 \u0448\u043B\u0430\u043A!';
 	      }
-	    }, _this.toggleMainFeatureTab = function () {
-	      var value = _this.state.features;
-	      _this.setState({ features: !value });
-	    }, _this.toggleAnalyticsTab = function () {
-	      var value = _this.state.analytics;
-	      _this.setState({ analytics: !value });
-	    }, _this.togglePaymentTab = function () {
-	      var value = _this.state.payment;
-	      _this.setState({ payment: !value });
-	    }, _this.toggleMarketingTab = function () {
-	      var value = _this.state.marketing;
-	      _this.setState({ marketing: !value });
 	    }, _this.haveEnoughPointsToUpgrade = function (necessaryPoints) {
 	      var points = _playerStore2.default.getPoints();
 	      var mp = necessaryPoints.mp || 0;
@@ -8343,7 +8337,7 @@
 	      var disabled = notEnoughPPs; // || ratingOverflow;
 
 	      var testHypothesis = function testHypothesis() {
-	        var time = 5;
+	        var time = 30;
 	        var key = 'Тестирование гипотезы';
 
 	        _playerActions2.default.spendPoints(pp, mp);
@@ -8378,13 +8372,20 @@
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'smallText' },
-	            '\u0415\u0441\u043B\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0430\u043B\u043E, \u0442\u043E \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u044B \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0439 \u043C\u043E\u0433\u0443\u0442 \u0431\u044B\u0442\u044C \u043D\u0435\u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u044B (\u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u0448\u0442\u0440\u0430\u0444)\xA0',
+	            '\u0415\u0441\u043B\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0430\u043B\u043E, \u0442\u043E \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u044B \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0439 \u043C\u043E\u0433\u0443\u0442 \u0431\u044B\u0442\u044C \u043D\u0435\u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u044B (\u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u0448\u0442\u0440\u0430\u0444)\xA0\xA0',
 	            (0, _preact.h)(_UI2.default.Info, null)
 	          ),
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'offset-mid' },
 	            cliTabDescription
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'metric-link', onClick: function onClick() {
+	                return _this.setMode(MODE_ADS);
+	              } },
+	            '\u041F\u0440\u0438\u0432\u0435\u0441\u0442\u0438 \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
 	          )
 	        ),
 	        (0, _preact.h)('br', null),
@@ -8464,8 +8465,8 @@
 	          (0, _preact.h)(_UI2.default.Button, {
 	            text: '\u041F\u0440\u043E\u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u0443',
 	            onClick: testHypothesis,
-	            primary: true,
-	            disabled: disabled
+	            disabled: disabled,
+	            primary: true
 	          }),
 	          (0, _preact.h)(_Schedule2.default, null)
 	        )
@@ -8568,18 +8569,12 @@
 	        null,
 	        (0, _preact.h)(
 	          'div',
-	          {
-	            className: 'featureGroupTitle',
-	            onClick: _this.togglePaymentTab
-	          },
+	          { className: 'featureGroupTitle' },
 	          '\u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
 	        ),
 	        (0, _preact.h)(
 	          'div',
-	          {
-	            className: 'featureGroupDescriptionWrapper',
-	            style: { display: state.payment ? 'block' : 'none' }
-	          },
+	          { className: 'featureGroupDescriptionWrapper' },
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'featureGroupDescription' },
@@ -8589,12 +8584,6 @@
 	            'div',
 	            { className: 'featureGroupBody' },
 	            payment
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'hide', onClick: _this.togglePaymentTab },
-	            '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	            _UI2.default.symbols.up
 	          )
 	        )
 	      );
@@ -8606,18 +8595,12 @@
 	        null,
 	        (0, _preact.h)(
 	          'div',
-	          {
-	            className: 'featureGroupTitle',
-	            onClick: _this.toggleAnalyticsTab
-	          },
-	          '2) \u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430'
+	          { className: 'featureGroupTitle' },
+	          '\u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430'
 	        ),
 	        (0, _preact.h)(
 	          'div',
-	          {
-	            className: 'featureGroupDescriptionWrapper',
-	            style: { display: state.analytics ? 'block' : 'none' }
-	          },
+	          { className: 'featureGroupDescriptionWrapper' },
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'featureGroupDescription' },
@@ -8627,21 +8610,21 @@
 	            'div',
 	            { className: 'featureGroupBody' },
 	            analytics
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'hide', onClick: _this.toggleAnalyticsTab },
-	            '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	            _UI2.default.symbols.up
 	          )
 	        )
 	      );
 	    }, _this.renderClientTab = function (state, id, idea) {
 	      var marketing = _this.getMarketingFeatureList(idea).map(_this.renderFeature('marketing', id, idea));
 
-	      var tab = '';
-	      if (state.marketing) {
-	        tab = (0, _preact.h)(
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupTitle' },
+	          '\u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
+	        ),
+	        (0, _preact.h)(
 	          'div',
 	          { className: 'featureGroupDescriptionWrapper' },
 	          (0, _preact.h)(
@@ -8653,28 +8636,10 @@
 	            'div',
 	            { className: 'featureGroupBody' },
 	            marketing
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'hide', onClick: _this.toggleMarketingTab },
-	            '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	            _UI2.default.symbols.up
 	          )
-	        );
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupTitle', onClick: _this.toggleMarketingTab },
-	          '2) \u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
-	        ),
-	        tab
+	        )
 	      );
 	    }, _this.renderMainFeaturesTab = function (state, id, idea, product) {
-
 	      var featureList = _this.getSpecificProductFeatureListByIdea(idea).map(_this.renderMainFeature('offer', product, id));
 
 	      return (0, _preact.h)(
@@ -8682,18 +8647,12 @@
 	        null,
 	        (0, _preact.h)(
 	          'div',
-	          {
-	            className: 'featureGroupTitle',
-	            onClick: _this.toggleMainFeatureTab
-	          },
+	          { className: 'featureGroupTitle' },
 	          '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
 	        ),
 	        (0, _preact.h)(
 	          'div',
-	          {
-	            className: 'featureGroupDescriptionWrapper',
-	            style: { display: state.features ? 'block' : 'none' }
-	          },
+	          { className: 'featureGroupDescriptionWrapper' },
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'featureGroupDescription' },
@@ -8710,12 +8669,6 @@
 	            'div',
 	            { className: 'featureGroupBody' },
 	            featureList
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'hide', onClick: _this.toggleMainFeatureTab },
-	            '\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C ',
-	            _UI2.default.symbols.up
 	          )
 	        )
 	      );
@@ -8944,6 +8897,10 @@
 	          );
 	          break;
 
+	        case MODE_ANALYTICS:
+	          body = this.renderAnalyticsTab(state, id, idea);
+	          break;
+
 	        default:
 	          body = (0, _preact.h)(
 	            'div',
@@ -8995,6 +8952,9 @@
 	            },
 	            onAdsPressed: function onAdsPressed() {
 	              return _this2.setMode(MODE_ADS);
+	            },
+	            onAnalyticsPressed: function onAnalyticsPressed() {
+	              return _this2.setMode(MODE_ANALYTICS);
 	            }
 	          }),
 	          (0, _preact.h)('br', null),
@@ -9081,7 +9041,8 @@
 	          onRatingPressed = _ref.onRatingPressed,
 	          onClientsPressed = _ref.onClientsPressed,
 	          onPaymentsPressed = _ref.onPaymentsPressed,
-	          onAdsPressed = _ref.onAdsPressed;
+	          onAdsPressed = _ref.onAdsPressed,
+	          onAnalyticsPressed = _ref.onAnalyticsPressed;
 	      (0, _objectDestructuringEmpty3.default)(_ref2);
 	      var idea = product.idea;
 
@@ -9176,11 +9137,26 @@
 	          (0, _preact.h)(
 	            'b',
 	            null,
-	            '\u0412\u0438\u0440\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ',
+	            '\u0412\u0438\u0440\u0443\u0441\u043D\u043E\u0441\u0442\u044C: ',
 	            virality,
 	            ' (',
 	            viralClients,
 	            ')'
+	          )
+	        );
+	      } else {
+	        viralityTab = (0, _preact.h)(
+	          'li',
+	          null,
+	          (0, _preact.h)(
+	            'b',
+	            null,
+	            '\u0412\u0438\u0440\u0443\u0441\u043D\u043E\u0441\u0442\u044C: ???'
+	          ),
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'metric-link', onClick: onAnalyticsPressed },
+	            '\u0420\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u044D\u0442\u0443 \u043C\u0435\u0442\u0440\u0438\u043A\u0443'
 	          )
 	        );
 	      }
@@ -9210,6 +9186,21 @@
 	            '\u041F\u0440\u043E\u0446\u0435\u043D\u0442 \u043F\u043B\u0430\u0442\u044F\u0449\u0438\u0445: ',
 	            conversion,
 	            '%'
+	          )
+	        );
+	      } else {
+	        payingPercentageTab = (0, _preact.h)(
+	          'li',
+	          null,
+	          (0, _preact.h)(
+	            'b',
+	            null,
+	            '\u041F\u0440\u043E\u0446\u0435\u043D\u0442 \u043F\u043B\u0430\u0442\u044F\u0449\u0438\u0445: ???'
+	          ),
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'metric-link', onClick: onAnalyticsPressed },
+	            '\u0420\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u044D\u0442\u0443 \u043C\u0435\u0442\u0440\u0438\u043A\u0443'
 	          )
 	        );
 	      }
@@ -9252,6 +9243,12 @@
 	            { className: 'metric-link', onClick: onPaymentsPressed },
 	            '\u041F\u043E\u0432\u044B\u0441\u0438\u0442\u044C'
 	          )
+	        );
+	      } else {
+	        incomeTab = (0, _preact.h)(
+	          'li',
+	          { onClick: onAnalyticsPressed },
+	          '\u0420\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u044D\u0442\u0443 \u043C\u0435\u0442\u0440\u0438\u043A\u0443'
 	        );
 	      }
 

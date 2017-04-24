@@ -28,10 +28,11 @@ import logger from '../../../../helpers/logger/logger';
 import AdsPanel from '../Ads/advert-planner-panel';
 
 
-const MODE_HYPOTHESIS = 'PRODUCT_MENU_HYPOTHESIS';
-const MODE_ADS = 'PRODUCT_MENU_ADS';
-const MODE_MARKETING = 'PRODUCT_MENU_MARKETING';
-const MODE_PAYMENTS = 'PRODUCT_MENU_PAYMENTS';
+const MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
+const MODE_ADS = 'MODE_ADS';
+const MODE_MARKETING = 'MODE_MARKETING';
+const MODE_PAYMENTS = 'MODE_PAYMENTS';
+const MODE_ANALYTICS = 'MODE_ANALYTICS';
 
 export default class DevelopPanel extends Component {
   state = {
@@ -164,23 +165,6 @@ export default class DevelopPanel extends Component {
     }
   };
 
-  toggleMainFeatureTab = () => {
-    const value = this.state.features;
-    this.setState({ features: !value });
-  };
-  toggleAnalyticsTab = () => {
-    const value = this.state.analytics;
-    this.setState({ analytics: !value });
-  };
-  togglePaymentTab = () => {
-    const value = this.state.payment;
-    this.setState({ payment: !value });
-  };
-  toggleMarketingTab = () => {
-    const value = this.state.marketing;
-    this.setState({ marketing: !value });
-  };
-
   haveEnoughPointsToUpgrade = necessaryPoints => {
     const points = playerStore.getPoints();
     const mp = necessaryPoints.mp || 0;
@@ -257,7 +241,7 @@ export default class DevelopPanel extends Component {
     const disabled = notEnoughPPs;// || ratingOverflow;
 
     const testHypothesis = () => {
-      const time = 5;
+      const time = 30;
       const key = 'Тестирование гипотезы';
 
       playerActions.spendPoints(pp, mp);
@@ -274,14 +258,12 @@ export default class DevelopPanel extends Component {
         <div className="featureGroupDescription">
           <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
           <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
-
           <div className="smallText">
-            Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;
+            Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
             <UI.Info />
           </div>
-          <div className="offset-mid">
-            {cliTabDescription}
-          </div>
+          <div className="offset-mid">{cliTabDescription}</div>
+          <div className="metric-link" onClick={() => this.setMode(MODE_ADS)}>Привести больше клиентов</div>
         </div>
         <br />
         <div>
@@ -297,6 +279,7 @@ export default class DevelopPanel extends Component {
           {this.getWebvisorButton(idea, id)}
           <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
           {this.getSegmentingButton(idea, id)}
+
           <br />
           <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
         </div>
@@ -306,8 +289,8 @@ export default class DevelopPanel extends Component {
           <UI.Button
             text="Протестировать гипотезу"
             onClick={testHypothesis}
-            primary
             disabled={disabled}
+            primary
           />
           <Schedule />
         </div>
@@ -388,17 +371,10 @@ export default class DevelopPanel extends Component {
 
     return (
       <div>
-        <div
-          className="featureGroupTitle"
-          onClick={this.togglePaymentTab}
-        >Монетизация</div>
-        <div
-          className="featureGroupDescriptionWrapper"
-          style={{ display: state.payment ? 'block' : 'none' }}
-        >
+        <div className="featureGroupTitle" >Монетизация</div>
+        <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
           <div className="featureGroupBody">{payment}</div>
-          <div className="hide" onClick={this.togglePaymentTab}>Свернуть {UI.symbols.up}</div>
         </div>
       </div>
     )
@@ -411,17 +387,10 @@ export default class DevelopPanel extends Component {
 
     return (
       <div>
-        <div
-          className="featureGroupTitle"
-          onClick={this.toggleAnalyticsTab}
-        >2) Аналитика</div>
-        <div
-          className="featureGroupDescriptionWrapper"
-          style={{ display: state.analytics ? 'block' : 'none' }}
-        >
+        <div className="featureGroupTitle">Аналитика</div>
+        <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">Позволяет быстрее улучшать главные характеристики проекта</div>
           <div className="featureGroupBody">{analytics}</div>
-          <div className="hide" onClick={this.toggleAnalyticsTab}>Свернуть {UI.symbols.up}</div>
         </div>
       </div>
     );
@@ -430,48 +399,32 @@ export default class DevelopPanel extends Component {
   renderClientTab = (state, id, idea) => {
     const marketing = this.getMarketingFeatureList(idea).map(this.renderFeature('marketing', id, idea));
 
-    let tab = '';
-    if (state.marketing) {
-      tab = (
+    return (
+      <div>
+        <div className="featureGroupTitle">Работа с клиентами</div>
         <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
           <div className="featureGroupBody">{marketing}</div>
-          <div className="hide" onClick={this.toggleMarketingTab}>Свернуть {UI.symbols.up}</div>
         </div>
-      );
-    }
-
-    return (
-      <div>
-        <div className="featureGroupTitle" onClick={this.toggleMarketingTab}>2) Работа с клиентами</div>
-        {tab}
       </div>
     );
   };
 
   renderMainFeaturesTab = (state, id, idea, product) => {
-
     const featureList = this
       .getSpecificProductFeatureListByIdea(idea)
       .map(this.renderMainFeature('offer', product, id));
 
     return (
       <div>
-        <div
-          className="featureGroupTitle"
-          onClick={this.toggleMainFeatureTab}
-        >Основные характеристики продукта</div>
-        <div
-          className="featureGroupDescriptionWrapper"
-          style={{ display: state.features ? 'block' : 'none' }}
-        >
+        <div className="featureGroupTitle">Основные характеристики продукта</div>
+        <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">
             Улучшая главные характеристики продукта, вы повышаете его рейтинг,
             что приводит к снижению оттока клиентов и увеличению доходов с продукта
           </div>
           <div>Доступно: {product.XP}XP</div>
           <div className="featureGroupBody">{featureList}</div>
-          <div className="hide" onClick={this.toggleMainFeatureTab}>Свернуть {UI.symbols.up}</div>
         </div>
       </div>
     );
@@ -624,6 +577,10 @@ export default class DevelopPanel extends Component {
         );
         break;
 
+      case MODE_ANALYTICS:
+        body = this.renderAnalyticsTab(state, id, idea);
+        break;
+
       default:
         body = (
           <div>
@@ -650,6 +607,7 @@ export default class DevelopPanel extends Component {
             onClientsPressed={() => this.setMode(MODE_MARKETING)}
             onPaymentsPressed={() => this.setMode(MODE_PAYMENTS)}
             onAdsPressed={() => this.setMode(MODE_ADS)}
+            onAnalyticsPressed={() => this.setMode(MODE_ANALYTICS)}
           />
 
           <br />

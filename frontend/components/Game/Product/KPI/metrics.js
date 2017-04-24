@@ -18,7 +18,8 @@ export default class Metrics extends Component {
     onRatingPressed,
     onClientsPressed,
     onPaymentsPressed,
-    onAdsPressed
+    onAdsPressed,
+    onAnalyticsPressed
   }, {}) {
     const { idea } = product;
 
@@ -72,7 +73,12 @@ export default class Metrics extends Component {
     let viralityTab;
     if (canShowViralityTab) {
       viralityTab = <li>
-        <b>Виральность: {virality} ({viralClients})</b>
+        <b>Вирусность: {virality} ({viralClients})</b>
+      </li>
+    } else {
+      viralityTab = <li>
+        <b>Вирусность: ???</b>
+        <span className="metric-link" onClick={onAnalyticsPressed}>Разблокировать эту метрику</span>
       </li>
     }
 
@@ -87,6 +93,11 @@ export default class Metrics extends Component {
     if (canShowPayingPercentage) {
       payingPercentageTab = <li>
         <b>Процент платящих: {conversion}%</b>
+      </li>;
+    } else {
+      payingPercentageTab = <li>
+        <b>Процент платящих: ???</b>
+        <span className="metric-link" onClick={onAnalyticsPressed}>Разблокировать эту метрику</span>
       </li>;
     }
 
@@ -106,6 +117,8 @@ export default class Metrics extends Component {
         <b>Ежемесячный доход: {income}$</b>
         <span className="metric-link" onClick={onPaymentsPressed}>Повысить</span>
       </li>
+    } else {
+      incomeTab = <li onClick={onAnalyticsPressed}>Разблокировать эту метрику</li>
     }
 
     return (
