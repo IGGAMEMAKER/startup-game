@@ -59,8 +59,8 @@ export default class DevelopPanel extends Component {
       { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 15%',
         points: { marketing: 50, programming: 100 }, time: 10 },
 
-      { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
-        points: { marketing: 50, programming: 100 }, time: 7 }
+      // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
+      //   points: { marketing: 50, programming: 100 }, time: 7 }
     ];
     // ].map(computeFeatureCost(cost));
   };
@@ -128,10 +128,11 @@ export default class DevelopPanel extends Component {
       // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
       //   points: { programming: 150, marketing: 100 }
       // },
-      { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-        points: { programming: 50, marketing: 0 }
-      },
-      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрики "процент платящих" и "ежемесячный доход"',
+
+      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
+      //   points: { programming: 50, marketing: 0 }
+      // },
+      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
         points: { programming: 50, marketing: 0 }
       }
     ];

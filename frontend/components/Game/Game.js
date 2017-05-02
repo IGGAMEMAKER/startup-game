@@ -6,6 +6,7 @@ import Staff from '../Game/Staff';
 import Menu from '../Game/Menu';
 import Economics from './Economics/Economics';
 import Product from './Product';
+import AdviceTab from './Advice';
 
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
@@ -24,6 +25,8 @@ const GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
 const GAME_MODE_ADS = 'GAME_MODE_ADS';
 const GAME_MODE_STAFF = 'GAME_MODE_STAFF';
 
+import * as GAME_STAGES from '../../constants/game-stages';
+
 export default class Game extends Component {
   state = {
     products: [],
@@ -38,6 +41,7 @@ export default class Game extends Component {
 
     id: 0, // productID
     mode: GAME_MODE_PRODUCT,
+    gamePhase: GAME_STAGES.GAME_STAGE_INIT
   };
 
   initialize = () => {
@@ -45,13 +49,6 @@ export default class Game extends Component {
     this.pickDataFromScheduleStore();
 
     this.runGame();
-  };
-
-  increaseCounter = () => {
-    const counter = this.state.counter;
-    this.setState({
-      counter: counter < 10 ? counter + 1 : 0
-    });
   };
 
   runGame = () => {
@@ -64,46 +61,20 @@ export default class Game extends Component {
     }, 1000 / this.state.gameSpeed);
   };
 
-  runTimer = () => {
-    let timerId = this.state.timerId;
-    const speed = this.state.gameSpeed;
-
-    if (timerId) {
-      clearInterval(timerId);
-    }
-
-    timerId = setInterval(gameRunner.run, 1000 / speed);
-    return timerId;
-  };
-
   setGameSpeed = speed => () => {
-    // const timerId = this.runTimer();
-    // const object = { gameSpeed: speed };
-
-    // object.timerId = timerId;
-    // object.pause = false;
-    // this.setState(object);
     this.setState({
-      // timerId,
       pause: false,
       gameSpeed: speed
     });
   };
 
   pauseGame = () => {
-    // let timerId = this.state.timerId;
-    // clearInterval(timerId);
     this.setState({ pause: true, timerId: null });
   };
 
   resumeGame = () => {
-    // let timerId = this.runTimer();
-    this.setState({
-      pause: false,
-      // timerId
-    })
+    this.setState({ pause: false })
   };
-
 
   componentWillMount() {
     this.initialize();
@@ -125,7 +96,8 @@ export default class Game extends Component {
   pickDataFromScheduleStore = () => {
     this.setState({
       day: scheduleStore.getDay(),
-      tasks: scheduleStore.getTasks()
+      tasks: scheduleStore.getTasks(),
+      gamePhase: scheduleStore.getGamePhase(),
     })
   };
 
@@ -175,7 +147,20 @@ export default class Game extends Component {
     this.setState({ mode: GAME_MODE_STAFF })
   };
 
-  render(props: PropsType, state) {
+  renderInitialTab = (props, state) => {
+    return (
+      <div className="body-background">
+        <div className="initial-tab-wrapper">
+          <div className="game-logo-wrapper">
+            <div className="game-logo">STARTUP</div>
+          </div>
+          <div></div>
+        </div>
+      </div>
+    )
+  };
+
+  renderGameInNormalMode = (props, state) => {
     let body = '';
 
     switch (state.mode) {
@@ -193,11 +178,6 @@ export default class Game extends Component {
         break;
     }
 
-    // <div>
-    //   <h3>Два вопроса бизнеса</h3>
-    //   <div>Готовы ли люди этим пользоваться</div>
-    //   <div>Сколько они готовы заплатить за это</div>
-    // </div>
     return (
       <div className="body-background">
         <UI.Modal onclose={this.resumeGame} />
@@ -220,11 +200,37 @@ export default class Game extends Component {
           <br />
           <hr />
 
+          <AdviceTab
+            gamePhase={state.gamePhase}
+          />
+          <br />
+          <hr />
+
           {body}
           <br />
           <hr />
         </div>
       </div>
     );
+  };
+
+  render(props: PropsType, state) {
+    let body = '';
+
+    switch (state.gamePhase) {
+      case GAME_STAGES.GAME_STAGE_INIT:
+        // render hero description tab
+        body = this.renderInitialTab(props, state);
+        break;
+      default:
+        // run game in normal mode
+        body = this.renderGameInNormalMode(props, state);
+        break;
+    }
+
+    return body;
+    //   <h3>Два вопроса бизнеса</h3>
+    //   <div>Готовы ли люди этим пользоваться</div>
+    //   <div>Сколько они готовы заплатить за это</div>
   }
 }

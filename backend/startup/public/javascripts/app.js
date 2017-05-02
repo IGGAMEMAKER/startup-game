@@ -606,6 +606,10 @@
 
 	var _Product2 = _interopRequireDefault(_Product);
 
+	var _Advice = __webpack_require__(165);
+
+	var _Advice2 = _interopRequireDefault(_Advice);
+
 	var _productStore = __webpack_require__(136);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
@@ -630,11 +634,17 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
+	var _gameStages = __webpack_require__(134);
+
+	var GAME_STAGES = _interopRequireWildcard(_gameStages);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	// import React, { Component, PropTypes } from 'react';
 
+	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	var GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
 	var GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
 	var GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
@@ -667,17 +677,13 @@
 	      counter: 0,
 
 	      id: 0, // productID
-	      mode: GAME_MODE_PRODUCT
+	      mode: GAME_MODE_PRODUCT,
+	      gamePhase: GAME_STAGES.GAME_STAGE_INIT
 	    }, _this.initialize = function () {
 	      _this.getProductsFromStore();
 	      _this.pickDataFromScheduleStore();
 
 	      _this.runGame();
-	    }, _this.increaseCounter = function () {
-	      var counter = _this.state.counter;
-	      _this.setState({
-	        counter: counter < 10 ? counter + 1 : 0
-	      });
 	    }, _this.runGame = function () {
 	      if (!_this.state.pause) {
 	        _game2.default.run();
@@ -686,39 +692,17 @@
 	      setTimeout(function () {
 	        _this.runGame();
 	      }, 1000 / _this.state.gameSpeed);
-	    }, _this.runTimer = function () {
-	      var timerId = _this.state.timerId;
-	      var speed = _this.state.gameSpeed;
-
-	      if (timerId) {
-	        clearInterval(timerId);
-	      }
-
-	      timerId = setInterval(_game2.default.run, 1000 / speed);
-	      return timerId;
 	    }, _this.setGameSpeed = function (speed) {
 	      return function () {
-	        // const timerId = this.runTimer();
-	        // const object = { gameSpeed: speed };
-
-	        // object.timerId = timerId;
-	        // object.pause = false;
-	        // this.setState(object);
 	        _this.setState({
-	          // timerId,
 	          pause: false,
 	          gameSpeed: speed
 	        });
 	      };
 	    }, _this.pauseGame = function () {
-	      // let timerId = this.state.timerId;
-	      // clearInterval(timerId);
 	      _this.setState({ pause: true, timerId: null });
 	    }, _this.resumeGame = function () {
-	      // let timerId = this.runTimer();
-	      _this.setState({
-	        pause: false
-	      });
+	      _this.setState({ pause: false });
 	    }, _this.getMessages = function () {
 	      // logger.debug('MessageStore callback pausing');
 	      if (_messageStore2.default.isDrawable()) {
@@ -727,7 +711,8 @@
 	    }, _this.pickDataFromScheduleStore = function () {
 	      _this.setState({
 	        day: _scheduleStore2.default.getDay(),
-	        tasks: _scheduleStore2.default.getTasks()
+	        tasks: _scheduleStore2.default.getTasks(),
+	        gamePhase: _scheduleStore2.default.getGamePhase()
 	      });
 	    }, _this.getProductsFromStore = function () {
 	      _this.setState({
@@ -765,6 +750,77 @@
 	      _this.setState({ mode: GAME_MODE_ECONOMICS });
 	    }, _this.onRenderStaffMenu = function () {
 	      _this.setState({ mode: GAME_MODE_STAFF });
+	    }, _this.renderInitialTab = function (props, state) {
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'body-background' },
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'initial-tab-wrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'game-logo-wrapper' },
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'game-logo' },
+	              'STARTUP'
+	            )
+	          ),
+	          (0, _preact.h)('div', null)
+	        )
+	      );
+	    }, _this.renderGameInNormalMode = function (props, state) {
+	      var body = '';
+
+	      switch (state.mode) {
+	        case GAME_MODE_ECONOMICS:
+	          body = (0, _preact.h)(_Economics2.default, null);
+	          break;
+	        case GAME_MODE_PRODUCTS:
+	          body = _this.renderProducts(state);
+	          break;
+	        case GAME_MODE_STAFF:
+	          body = (0, _preact.h)(_Staff2.default, null);
+	          break;
+	        case GAME_MODE_PRODUCT:
+	          body = _this.renderProductMenu(state);
+	          break;
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'body-background' },
+	        (0, _preact.h)(_UI2.default.Modal, { onclose: _this.resumeGame }),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'body-wrapper' },
+	          (0, _preact.h)(_Menu2.default, {
+	            pauseGame: _this.pauseGame,
+	            resumeGame: _this.resumeGame,
+	            setGameSpeed: _this.setGameSpeed,
+	            onRenderProjectsMenu: _this.onRenderProjectsMenu,
+	            onRenderEconomicsMenu: _this.onRenderEconomicsMenu,
+	            onRenderStaffMenu: _this.onRenderStaffMenu,
+	            pause: state.pause,
+	            gameSpeed: state.gameSpeed,
+	            day: state.day,
+
+	            isChosenProjectsMenu: state.mode === GAME_MODE_PRODUCTS || state.mode === GAME_MODE_PRODUCT ? 'active' : '',
+	            isChosenEconomicsMenu: state.mode === GAME_MODE_ECONOMICS ? 'active' : '',
+	            isChosenStaffMenu: state.mode === GAME_MODE_STAFF ? 'active' : ''
+	          }),
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)('hr', null),
+	          (0, _preact.h)(_Advice2.default, {
+	            gamePhase: state.gamePhase
+	          }),
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)('hr', null),
+	          body,
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)('hr', null)
+	        )
+	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
@@ -784,55 +840,21 @@
 	    value: function render(props, state) {
 	      var body = '';
 
-	      switch (state.mode) {
-	        case GAME_MODE_ECONOMICS:
-	          body = (0, _preact.h)(_Economics2.default, null);
+	      switch (state.gamePhase) {
+	        case GAME_STAGES.GAME_STAGE_INIT:
+	          // render hero description tab
+	          body = this.renderInitialTab(props, state);
 	          break;
-	        case GAME_MODE_PRODUCTS:
-	          body = this.renderProducts(state);
-	          break;
-	        case GAME_MODE_STAFF:
-	          body = (0, _preact.h)(_Staff2.default, null);
-	          break;
-	        case GAME_MODE_PRODUCT:
-	          body = this.renderProductMenu(state);
+	        default:
+	          // run game in normal mode
+	          body = this.renderGameInNormalMode(props, state);
 	          break;
 	      }
 
-	      // <div>
+	      return body;
 	      //   <h3>Два вопроса бизнеса</h3>
 	      //   <div>Готовы ли люди этим пользоваться</div>
 	      //   <div>Сколько они готовы заплатить за это</div>
-	      // </div>
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'body-background' },
-	        (0, _preact.h)(_UI2.default.Modal, { onclose: this.resumeGame }),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'body-wrapper' },
-	          (0, _preact.h)(_Menu2.default, {
-	            pauseGame: this.pauseGame,
-	            resumeGame: this.resumeGame,
-	            setGameSpeed: this.setGameSpeed,
-	            onRenderProjectsMenu: this.onRenderProjectsMenu,
-	            onRenderEconomicsMenu: this.onRenderEconomicsMenu,
-	            onRenderStaffMenu: this.onRenderStaffMenu,
-	            pause: state.pause,
-	            gameSpeed: state.gameSpeed,
-	            day: state.day,
-
-	            isChosenProjectsMenu: state.mode === GAME_MODE_PRODUCTS || state.mode === GAME_MODE_PRODUCT ? 'active' : '',
-	            isChosenEconomicsMenu: state.mode === GAME_MODE_ECONOMICS ? 'active' : '',
-	            isChosenStaffMenu: state.mode === GAME_MODE_STAFF ? 'active' : ''
-	          }),
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)('hr', null),
-	          body,
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)('hr', null)
-	        )
-	      );
 	    }
 	  }]);
 	  return Game;
@@ -5840,7 +5862,7 @@
 	var _day = 0;
 	var _workHours = 4;
 
-	var _gameStage = GAME_STAGES.GAME_STAGE_INIT;
+	var _gamePhase = GAME_STAGES.GAME_STAGE_INIT;
 
 	var ScheduleStore = function (_EventEmitter) {
 	  (0, _inherits3.default)(ScheduleStore, _EventEmitter);
@@ -5874,6 +5896,11 @@
 	    key: 'getDay',
 	    value: function getDay() {
 	      return _day;
+	    }
+	  }, {
+	    key: 'getGamePhase',
+	    value: function getGamePhase() {
+	      return _gamePhase;
 	    }
 	  }]);
 	  return ScheduleStore;
@@ -7460,7 +7487,7 @@
 	          null,
 	          p.name,
 	          ' : ',
-	          p.income,
+	          Math.floor(p.income),
 	          '$'
 	        );
 	      });
@@ -7693,13 +7720,15 @@
 	            'li',
 	            null,
 	            '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0432\u0435\u0434\u0435\u043D\u0438\u0435 \u0431\u043B\u043E\u0433\u0430: ',
-	            e.blog
+	            e.blog,
+	            '$'
 	          ),
 	          (0, _preact.h)(
 	            'li',
 	            null,
 	            '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0442\u0435\u0445\u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0443: ',
-	            e.support
+	            e.support,
+	            '$'
 	          )
 	        )
 	      );
@@ -7716,7 +7745,7 @@
 	        var phrase = '';
 
 	        if (e.type === EXPENSES.EXPENSES_FOOD) {
-	          phrase = '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0435\u0434\u0443: ' + e.price;
+	          phrase = '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0435\u0434\u0443: ' + e.price + '$';
 	        }
 
 	        if (e.type === EXPENSES.EXPENSES_LOAN) {
@@ -8210,8 +8239,7 @@
 	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 35%',
 	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 50%',
 	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 15%',
-	        points: { marketing: 50, programming: 100 }, time: 10 }, { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
-	        points: { marketing: 50, programming: 100 }, time: 7 }];
+	        points: { marketing: 50, programming: 100 }, time: 10 }];
 	      // ].map(computeFeatureCost(cost));
 	    }, _this.getDevelopmentFeatureList = function (idea) {
 	      var cost = 50 * _workSpeed.WORK_SPEED_NORMAL;
@@ -8240,9 +8268,11 @@
 	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
 	      //   points: { programming: 150, marketing: 100 }
 	      // },
-	      { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-	        points: { programming: 50, marketing: 0 }
-	      }, { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрики "процент платящих" и "ежемесячный доход"',
+
+	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
 	        points: { programming: 50, marketing: 0 }
 	      }];
 	      // ].map(computeFeatureCost(cost));
@@ -9076,7 +9106,8 @@
 	      var canShowRatingTab = _productStore2.default.getRatingForMetricsTab(id) != 0;
 	      var canShowChurnTab = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'segmenting');
 	      var canShowViralityTab = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'shareAnalytics');
-	      var canShowPayingPercentage = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
+	      var canShowPayingPercentage = !!_productStore2.default.getFeatureStatus(id, 'payment', 'mockBuying');
+	      // let canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
 	      var canShowClientsTab = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'webvisor') || !!_productStore2.default.getFeatureStatus(id, 'analytics', 'segmenting');
 	      var canShowNewClientsTab = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'webvisor') || !!_productStore2.default.getFeatureStatus(id, 'analytics', 'segmenting');
 	      var canShowIncomeTab = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
@@ -9169,6 +9200,7 @@
 	          )
 	        );
 	      }
+	      viralityTab = '';
 
 	      var newClientsTab = void 0;
 	      if (canShowNewClientsTab) {
@@ -9192,7 +9224,7 @@
 	          (0, _preact.h)(
 	            'b',
 	            null,
-	            '\u041F\u0440\u043E\u0446\u0435\u043D\u0442 \u043F\u043B\u0430\u0442\u044F\u0449\u0438\u0445: ',
+	            '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
 	            conversion,
 	            '%'
 	          )
@@ -9204,11 +9236,11 @@
 	          (0, _preact.h)(
 	            'b',
 	            null,
-	            '\u041F\u0440\u043E\u0446\u0435\u043D\u0442 \u043F\u043B\u0430\u0442\u044F\u0449\u0438\u0445: ???'
+	            '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ???'
 	          ),
 	          (0, _preact.h)(
 	            'span',
-	            { className: 'metric-link', onClick: onAnalyticsPressed },
+	            { className: 'metric-link', onClick: onPaymentsPressed },
 	            '\u0420\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u044D\u0442\u0443 \u043C\u0435\u0442\u0440\u0438\u043A\u0443'
 	          )
 	        );
@@ -10174,6 +10206,71 @@
 	exports.default = {
 	  emit: emit
 	};
+
+/***/ },
+/* 165 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _objectDestructuringEmpty2 = __webpack_require__(130);
+
+	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var AdviceTab = function (_Component) {
+	  (0, _inherits3.default)(AdviceTab, _Component);
+
+	  function AdviceTab() {
+	    (0, _classCallCheck3.default)(this, AdviceTab);
+	    return (0, _possibleConstructorReturn3.default)(this, (AdviceTab.__proto__ || (0, _getPrototypeOf2.default)(AdviceTab)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(AdviceTab, [{
+	    key: 'render',
+	    value: function render(_ref, _ref2) {
+	      var gamePhase = _ref.gamePhase;
+	      (0, _objectDestructuringEmpty3.default)(_ref2);
+
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        gamePhase
+	      );
+	    }
+	  }]);
+	  return AdviceTab;
+	}(_preact.Component);
+
+	exports.default = AdviceTab;
 
 /***/ }
 /******/ ]);

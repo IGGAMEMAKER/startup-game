@@ -18,10 +18,10 @@ export default class Expenses extends Component {
         Затраты на проект {e.name}
         <ul>
           <li>
-            Затраты на ведение блога: {e.blog}
+            Затраты на ведение блога: {e.blog}$
           </li>
           <li>
-            Затраты на техподдержку: {e.support}
+            Затраты на техподдержку: {e.support}$
           </li>
         </ul>
       </div>
@@ -34,7 +34,7 @@ export default class Expenses extends Component {
       let phrase = '';
 
       if (e.type === EXPENSES.EXPENSES_FOOD) {
-        phrase = `Затраты на еду: ${e.price}`;
+        phrase = `Затраты на еду: ${e.price}$`;
       }
 
       if (e.type === EXPENSES.EXPENSES_LOAN) {

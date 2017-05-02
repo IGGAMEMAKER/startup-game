@@ -45,7 +45,7 @@ export default class Economics extends Component {
     // {JSON.stringify(state.income)}
     const productIncome = moneyCalculator.structured().byProductIncome
       .filter(p => p.income > 0)
-      .map(p => (<div>{p.name} : {p.income}$</div>));
+      .map(p => (<div>{p.name} : {Math.floor(p.income)}$</div>));
 
     return (
       <div>

@@ -36,7 +36,7 @@ let _tasks = [];
 let _day = 0;
 let _workHours = 4;
 
-let _gameStage = GAME_STAGES.GAME_STAGE_INIT;
+let _gamePhase = GAME_STAGES.GAME_STAGE_INIT;
 
 class ScheduleStore extends EventEmitter {
   addChangeListener(cb:Function) {
@@ -57,6 +57,10 @@ class ScheduleStore extends EventEmitter {
 
   getDay() {
     return _day;
+  }
+
+  getGamePhase() {
+    return _gamePhase;
   }
 }
 

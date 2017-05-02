@@ -360,3 +360,14 @@ textarea {
   background-color: var(--light-red)
 }
 
+.initial-tab-wrapper {
+  text-align: center;
+}
+
+.game-logo-wrapper {
+  margin-bottom: 20px;
+}
+.game-logo {
+  font-size: 60px;
+}
+
