@@ -2848,26 +2848,19 @@
 	          )
 	        );
 
-	        taskSettingTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'span',
-	            null,
-	            '\u0417\u0430\u0434\u0430\u0447\u0430: '
-	          ),
-	          (0, _preact.h)(
-	            'span',
-	            null,
-	            (0, _preact.h)(_Select2.default, {
-	              onChange: function onChange(value) {
-	                _playerActions2.default.setTaskForPerson(value, i);
-	              },
-	              options: tasks,
-	              value: p.task
-	            })
-	          )
-	        );
+	        taskSettingTab = '';
+	        // (
+	        //   <div>
+	        //     <span>Задача: </span>
+	        //     <span>
+	        //       <Select
+	        //         onChange={(value) => { actions.setTaskForPerson(value, i); }}
+	        //         options={tasks}
+	        //         value={p.task}
+	        //       />
+	        //     </span>
+	        //   </div>
+	        // );
 	      }
 
 	      var key = isEmployee ? 'employee' : 'person';
@@ -2960,8 +2953,8 @@
 	  }, {
 	    key: 'renderSkills',
 	    value: function renderSkills(p) {
-	      var renderSkill = function renderSkill(skill) {
-	        var value = Math.floor(skill / 100);
+	      var renderSkill = function renderSkill(value) {
+	        // const value = Math.floor(skill / 100);
 	        return (0, _preact.h)(
 	          'span',
 	          { style: { color: _coloringRange2.default.standard(value, 10) } },
@@ -2969,15 +2962,15 @@
 	        );
 	      };
 
+	      // return `- ${teamHelper.getBestSkill(p)}lvl`;
 	      return (0, _preact.h)(
 	        'span',
 	        null,
-	        '(',
-	        renderSkill(p.skills.programming),
-	        '/',
-	        renderSkill(p.skills.marketing),
-	        ')'
+	        '- ',
+	        renderSkill(_skills2.default.getBestSkill(p)),
+	        'lvl'
 	      );
+	      // return <span>({renderSkill(p.skills.programming)}/{renderSkill(p.skills.marketing)})</span>;
 	    }
 	  }, {
 	    key: 'render',
@@ -4764,7 +4757,7 @@
 	var _expenses = [{
 	  type: EXPENSES.EXPENSES_FOOD,
 	  quality: 0, // poor. Eat doshik and be happy (no). costs low money
-	  price: 100,
+	  price: 300,
 	  regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
 	}];
 
@@ -5120,6 +5113,22 @@
 	  },
 
 	  getSkill: getSkill,
+	  getBestSkill: function getBestSkill(p) {
+	    var _p$skills = p.skills,
+	        programming = _p$skills.programming,
+	        marketing = _p$skills.marketing,
+	        analyst = _p$skills.analyst;
+
+	    switch ((0, _specialization2.default)(p)) {
+	      case JOB.PROFESSION_PROGRAMMER:
+	        return getSkill(programming);break;
+	      case JOB.PROFESSION_MARKETER:
+	        return getSkill(marketing);break;
+	      case JOB.PROFESSION_ANALYST:
+	        return getSkill(analyst);break;
+	        return 0;
+	    }
+	  },
 	  getTranslatedSpecialization: function getTranslatedSpecialization(p) {
 	    switch ((0, _specialization2.default)(p)) {
 	      case JOB.PROFESSION_PROGRAMMER:
@@ -7697,7 +7706,7 @@
 	    }
 	  }, {
 	    key: 'render',
-	    value: function render(_ref, state) {
+	    value: function render(_ref) {
 	      var productExpenses = _ref.productExpenses,
 	          basicExpenses = _ref.basicExpenses,
 	          teamExpenses = _ref.teamExpenses;

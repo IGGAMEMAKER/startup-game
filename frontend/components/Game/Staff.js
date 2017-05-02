@@ -84,12 +84,14 @@ export default class Staff extends Component {
   };
 
   renderSkills(p) {
-    const renderSkill = (skill) => {
-      const value = Math.floor(skill / 100);
+    const renderSkill = (value) => {
+      // const value = Math.floor(skill / 100);
       return <span style={{ color: coloringRange.standard(value, 10) }}>{value}</span>
     };
 
-    return <span>({renderSkill(p.skills.programming)}/{renderSkill(p.skills.marketing)})</span>;
+    // return `- ${teamHelper.getBestSkill(p)}lvl`;
+    return <span>- {renderSkill(teamHelper.getBestSkill(p))}lvl</span>;
+    // return <span>({renderSkill(p.skills.programming)}/{renderSkill(p.skills.marketing)})</span>;
   }
 
   renderEmployee = (p, i) => {
@@ -158,18 +160,19 @@ export default class Staff extends Component {
         </div>
       );
 
-      taskSettingTab = (
-        <div>
-          <span>Задача: </span>
-          <span>
-            <Select
-              onChange={(value) => { actions.setTaskForPerson(value, i); }}
-              options={tasks}
-              value={p.task}
-            />
-          </span>
-        </div>
-      );
+      taskSettingTab = '';
+      // (
+      //   <div>
+      //     <span>Задача: </span>
+      //     <span>
+      //       <Select
+      //         onChange={(value) => { actions.setTaskForPerson(value, i); }}
+      //         options={tasks}
+      //         value={p.task}
+      //       />
+      //     </span>
+      //   </div>
+      // );
     }
 
     const key = isEmployee ? 'employee' : 'person';

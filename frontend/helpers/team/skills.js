@@ -8,6 +8,15 @@ export default {
     return `${getSkill(p.skills.programming)}/${getSkill(p.skills.marketing)}/${getSkill(p.skills.analyst)}`;
   },
   getSkill,
+  getBestSkill(p) {
+    const { programming, marketing, analyst } = p.skills;
+    switch (getSpecialization(p)) {
+      case JOB.PROFESSION_PROGRAMMER: return getSkill(programming); break;
+      case JOB.PROFESSION_MARKETER: return getSkill(marketing); break;
+      case JOB.PROFESSION_ANALYST: return getSkill(analyst); break;
+        return 0;
+    }
+  },
   getTranslatedSpecialization(p) {
     switch (getSpecialization(p)) {
       case JOB.PROFESSION_PROGRAMMER: return 'программист'; break;

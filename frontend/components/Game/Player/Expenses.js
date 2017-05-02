@@ -28,7 +28,7 @@ export default class Expenses extends Component {
     );
   };
 
-  render({ productExpenses, basicExpenses, teamExpenses }, state) {
+  render({ productExpenses, basicExpenses, teamExpenses }) {
     let loanIndex = 0;
     const renderBasicExpense = (e, i) => {
       let phrase = '';

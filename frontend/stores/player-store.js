@@ -17,7 +17,7 @@ let _money = 1000;
 let _expenses = [{
   type: EXPENSES.EXPENSES_FOOD,
   quality: 0, // poor. Eat doshik and be happy (no). costs low money
-  price: 100,
+  price: 300,
   regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
 }];
 
