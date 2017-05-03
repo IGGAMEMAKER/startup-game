@@ -7,6 +7,7 @@ import Menu from '../Game/Menu';
 import Economics from './Economics/Economics';
 import Product from './Product';
 import AdviceTab from './Advice';
+import Tutorial from './Tutorial';
 
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
@@ -147,19 +148,6 @@ export default class Game extends Component {
     this.setState({ mode: GAME_MODE_STAFF })
   };
 
-  renderInitialTab = (props, state) => {
-    return (
-      <div className="body-background">
-        <div className="initial-tab-wrapper">
-          <div className="game-logo-wrapper">
-            <div className="game-logo">STARTUP</div>
-          </div>
-          <div></div>
-        </div>
-      </div>
-    )
-  };
-
   renderGameInNormalMode = (props, state) => {
     let body = '';
 
@@ -220,7 +208,7 @@ export default class Game extends Component {
     switch (state.gamePhase) {
       case GAME_STAGES.GAME_STAGE_INIT:
         // render hero description tab
-        body = this.renderInitialTab(props, state);
+        body = <Tutorial />;
         break;
       default:
         // run game in normal mode

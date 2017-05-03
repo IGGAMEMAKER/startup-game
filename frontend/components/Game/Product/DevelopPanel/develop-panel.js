@@ -3,7 +3,6 @@ import { h, Component } from 'preact';
 
 type PropsType = {};
 
-import ProductDescriptions from '../../../../constants/products/product-descriptions';
 import Metrics from '../KPI/metrics';
 import Schedule from '../../Schedule';
 import UI from '../../../UI';
@@ -26,6 +25,7 @@ import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../../../../constant
 import logger from '../../../../helpers/logger/logger';
 
 import AdsPanel from '../Ads/advert-planner-panel';
+import MainFeatureTab from '../MainFeature';
 
 
 const MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
@@ -42,10 +42,6 @@ export default class DevelopPanel extends Component {
     features: true,
 
     mode: MODE_HYPOTHESIS
-  };
-
-  getSpecificProductFeatureListByIdea = idea => {
-    return ProductDescriptions(idea).features;
   };
 
   getMarketingFeatureList = (idea) => {
@@ -172,36 +168,6 @@ export default class DevelopPanel extends Component {
     const pp = necessaryPoints.pp || 0;
 
     return points.marketing >= mp && points.programming >= pp;
-  };
-
-  renderHypothesisItem = (id, featureName, time, current, max, product) => (hypothesis, i) => {
-    const necessaryPoints = hypothesis.points;
-    const key = `hypothesis${i}`;
-
-    const { pp, mp } = necessaryPoints;
-
-    const action = () => {
-      // playerActions.spendPoints(pp, mp);
-      productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
-    };
-
-    // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
-    const ratingOverflow = current >= max;
-    const currentXP = productStore.getXP(id);
-
-    // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
-    const disabled = ratingOverflow || currentXP < 1000;
-
-    return (
-      <div key={key} className="hypothesis-wrapper">
-        <UI.Button
-          disabled={disabled}
-          onClick={action}
-          text="Улучшить за 1000XP"
-          primary={!ratingOverflow}
-        />
-      </div>
-    )
   };
 
   renderHypothesisTab = (id, idea) => {
@@ -365,7 +331,7 @@ export default class DevelopPanel extends Component {
   };
 
 
-  renderPaymentTab = (state, id, idea) => {
+  renderPaymentTab = (id, idea) => {
     const payment = this
       .getPaymentFeatures(idea)
       .map(this.renderFeature('payment', id, idea));
@@ -381,7 +347,7 @@ export default class DevelopPanel extends Component {
     )
   };
 
-  renderAnalyticsTab = (state, id, idea) => {
+  renderAnalyticsTab = (id, idea) => {
     const analytics = this
       .getAnalyticFeatures(idea)
       .map(this.renderFeature('analytics', id, idea));
@@ -397,8 +363,10 @@ export default class DevelopPanel extends Component {
     );
   };
 
-  renderClientTab = (state, id, idea) => {
-    const marketing = this.getMarketingFeatureList(idea).map(this.renderFeature('marketing', id, idea));
+  renderClientTab = (id, idea) => {
+    const marketing = this
+      .getMarketingFeatureList(idea)
+      .map(this.renderFeature('marketing', id, idea));
 
     return (
       <div>
@@ -410,73 +378,6 @@ export default class DevelopPanel extends Component {
       </div>
     );
   };
-
-  renderMainFeaturesTab = (state, id, idea, product) => {
-    const featureList = this
-      .getSpecificProductFeatureListByIdea(idea)
-      .map(this.renderMainFeature('offer', product, id));
-
-    return (
-      <div>
-        <div className="featureGroupTitle">Основные характеристики продукта</div>
-        <div className="featureGroupDescriptionWrapper">
-          <div className="featureGroupDescription">
-            Улучшая главные характеристики продукта, вы повышаете его рейтинг,
-            что приводит к снижению оттока клиентов и увеличению доходов с продукта
-          </div>
-          <div>Доступно: {product.XP}XP</div>
-          <div className="featureGroupBody">{featureList}</div>
-        </div>
-      </div>
-    );
-  };
-
-  renderMainFeature = (featureGroup, product, id) => (defaultFeature, i) => {
-    const featureName = defaultFeature.name;
-    const { time, shortDescription } = defaultFeature;
-
-    const feature = product.features[featureGroup][featureName];
-
-    const current = feature || 0;
-    const max = defaultFeature.data;
-
-
-    const key = `feature${featureGroup}${featureName}${i}`;
-
-    const hypothesis = [{
-      points: { mp: 100, pp: 200 },
-      data: 4000,
-      baseChance: 0.1
-    }];
-
-    const description = defaultFeature.description || '';
-    const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
-
-    let hypothesisList = '   Улучшено';
-    if (current < max) {
-      hypothesisList = hypothesis.map(this.renderHypothesisItem(id, featureName, time, current, max, product));
-    } else {
-      return (
-        <div key={key}>
-          {userOrientedFeatureName} (Улучшено) {UI.symbols.ok}
-          <br />
-          <div className="featureDescription">{description}</div>
-          <br />
-        </div>
-      )
-    }
-
-    return (
-      <div key={key}>
-        {userOrientedFeatureName} ({current}/{max}XP)
-        <br />
-        <div className="featureDescription">{description}</div>
-        {hypothesisList}
-        <br />
-      </div>
-    )
-  };
-
 
   renderFeature = (featureGroup, id, idea, hideOnComplete) => (feature, i) => {
     const featureName = feature.name;
@@ -561,11 +462,11 @@ export default class DevelopPanel extends Component {
 
     switch (mode) {
       case MODE_PAYMENTS:
-        body = this.renderPaymentTab(state, id, idea);
+        body = this.renderPaymentTab(id, idea);
         break;
 
       case MODE_MARKETING:
-        body = this.renderClientTab(state, id, idea);
+        body = this.renderClientTab(id, idea);
         break;
 
       case MODE_ADS:
@@ -579,7 +480,7 @@ export default class DevelopPanel extends Component {
         break;
 
       case MODE_ANALYTICS:
-        body = this.renderAnalyticsTab(state, id, idea);
+        body = this.renderAnalyticsTab(id, idea);
         break;
 
       default:
@@ -588,7 +489,7 @@ export default class DevelopPanel extends Component {
             {this.renderHypothesisTab(id, idea)}
             <br />
             <hr />
-            {this.renderMainFeaturesTab(state, id, idea, product)}
+            <MainFeatureTab id={id} product={product} />
           </div>
         );
         break;

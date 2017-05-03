@@ -109,10 +109,12 @@ Dispatcher.register((p: PayloadType) => {
     case c.SCHEDULE_ACTIONS_DAY_TICK:
       _day++;
       break;
+
     case c.SCHEDULE_ACTIONS_TASKS_ADD:
       let task = p.task;
       addTask(task);
       break;
+
     case c.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS:
       // it's considered, that this increase will not complete task and there is at least one day left
       let taskId = p.taskId;
@@ -120,6 +122,7 @@ Dispatcher.register((p: PayloadType) => {
 
       _tasks[taskId].progress += speed;
       break;
+
     case c.SCHEDULE_ACTIONS_TASKS_REMOVE:
       // let tasks = [10, 1, 3, 2]; // p.tasks.sort((a, b) => a - b);
       let tasks = p.tasks.sort((a, b) => b - a);
@@ -147,6 +150,15 @@ Dispatcher.register((p: PayloadType) => {
         }
       }
       break;
+
+    case c.SCHEDULE_ACTIONS_GAME_START:
+      _gamePhase = GAME_STAGES.GAME_STAGE_GAME_STARTED;
+      break;
+
+    case c.SCHEDULE_ACTIONS_SET_GAME_PHASE:
+      _gamePhase = p.phase;
+      break;
+
     default:
       break;
   }

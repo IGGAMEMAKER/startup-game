@@ -610,6 +610,10 @@
 
 	var _Advice2 = _interopRequireDefault(_Advice);
 
+	var _Tutorial = __webpack_require__(166);
+
+	var _Tutorial2 = _interopRequireDefault(_Tutorial);
+
 	var _productStore = __webpack_require__(136);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
@@ -642,9 +646,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	// import React, { Component, PropTypes } from 'react';
 
-	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	var GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
 	var GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
 	var GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
@@ -750,25 +754,6 @@
 	      _this.setState({ mode: GAME_MODE_ECONOMICS });
 	    }, _this.onRenderStaffMenu = function () {
 	      _this.setState({ mode: GAME_MODE_STAFF });
-	    }, _this.renderInitialTab = function (props, state) {
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'body-background' },
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'initial-tab-wrapper' },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'game-logo-wrapper' },
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'game-logo' },
-	              'STARTUP'
-	            )
-	          ),
-	          (0, _preact.h)('div', null)
-	        )
-	      );
 	    }, _this.renderGameInNormalMode = function (props, state) {
 	      var body = '';
 
@@ -843,7 +828,7 @@
 	      switch (state.gamePhase) {
 	        case GAME_STAGES.GAME_STAGE_INIT:
 	          // render hero description tab
-	          body = this.renderInitialTab(props, state);
+	          body = (0, _preact.h)(_Tutorial2.default, null);
 	          break;
 	        default:
 	          // run game in normal mode
@@ -5957,10 +5942,12 @@
 	    case c.SCHEDULE_ACTIONS_DAY_TICK:
 	      _day++;
 	      break;
+
 	    case c.SCHEDULE_ACTIONS_TASKS_ADD:
 	      var task = p.task;
 	      addTask(task);
 	      break;
+
 	    case c.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS:
 	      // it's considered, that this increase will not complete task and there is at least one day left
 	      var taskId = p.taskId;
@@ -5968,6 +5955,7 @@
 
 	      _tasks[taskId].progress += speed;
 	      break;
+
 	    case c.SCHEDULE_ACTIONS_TASKS_REMOVE:
 	      // let tasks = [10, 1, 3, 2]; // p.tasks.sort((a, b) => a - b);
 	      var tasks = p.tasks.sort(function (a, b) {
@@ -6001,6 +5989,15 @@
 	        }
 	      }
 	      break;
+
+	    case c.SCHEDULE_ACTIONS_GAME_START:
+	      _gamePhase = GAME_STAGES.GAME_STAGE_GAME_STARTED;
+	      break;
+
+	    case c.SCHEDULE_ACTIONS_SET_GAME_PHASE:
+	      _gamePhase = p.phase;
+	      break;
+
 	    default:
 	      break;
 	  }
@@ -6022,6 +6019,8 @@
 	var SCHEDULE_ACTIONS_DAY_TICK = exports.SCHEDULE_ACTIONS_DAY_TICK = 'SCHEDULE_ACTIONS_DAY_TICK';
 	var SCHEDULE_ACTIONS_TASKS_ADD = exports.SCHEDULE_ACTIONS_TASKS_ADD = 'SCHEDULE_ACTIONS_TASKS_ADD';
 	var SCHEDULE_ACTIONS_TASKS_REMOVE = exports.SCHEDULE_ACTIONS_TASKS_REMOVE = 'SCHEDULE_ACTIONS_TASKS_REMOVE';
+	var SCHEDULE_ACTIONS_GAME_START = exports.SCHEDULE_ACTIONS_GAME_START = 'SCHEDULE_ACTIONS_GAME_START';
+	var SCHEDULE_ACTIONS_SET_GAME_PHASE = exports.SCHEDULE_ACTIONS_SET_GAME_PHASE = 'SCHEDULE_ACTIONS_SET_GAME_PHASE';
 	var SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = exports.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = 'SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS';
 
 /***/ },
@@ -6034,6 +6033,7 @@
 	  value: true
 	});
 	var GAME_STAGE_INIT = exports.GAME_STAGE_INIT = 'GAME_STAGE_INIT';
+	var GAME_STAGE_GAME_STARTED = exports.GAME_STAGE_GAME_STARTED = 'GAME_STAGE_GAME_STARTED';
 
 /***/ },
 /* 135 */
@@ -6972,6 +6972,17 @@
 	  increaseDay: function increaseDay() {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.SCHEDULE_ACTIONS_DAY_TICK
+	    });
+	  },
+	  startGame: function startGame() {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.SCHEDULE_ACTIONS_GAME_START
+	    });
+	  },
+	  setGamePhase: function setGamePhase(phase) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.SCHEDULE_ACTIONS_SET_GAME_PHASE,
+	      phase: phase
 	    });
 	  },
 
@@ -8144,10 +8155,6 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productDescriptions = __webpack_require__(140);
-
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
 	var _metrics = __webpack_require__(156);
 
 	var _metrics2 = _interopRequireDefault(_metrics);
@@ -8198,6 +8205,10 @@
 
 	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
 
+	var _MainFeature = __webpack_require__(167);
+
+	var _MainFeature2 = _interopRequireDefault(_MainFeature);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -8231,8 +8242,6 @@
 	      features: true,
 
 	      mode: MODE_HYPOTHESIS
-	    }, _this.getSpecificProductFeatureListByIdea = function (idea) {
-	      return (0, _productDescriptions2.default)(idea).features;
 	    }, _this.getMarketingFeatureList = function (idea) {
 	      var cost = 30 * _workSpeed.WORK_SPEED_NORMAL;
 
@@ -8301,38 +8310,6 @@
 	      var pp = necessaryPoints.pp || 0;
 
 	      return points.marketing >= mp && points.programming >= pp;
-	    }, _this.renderHypothesisItem = function (id, featureName, time, current, max, product) {
-	      return function (hypothesis, i) {
-	        var necessaryPoints = hypothesis.points;
-	        var key = 'hypothesis' + i;
-
-	        var pp = necessaryPoints.pp,
-	            mp = necessaryPoints.mp;
-
-
-	        var action = function action() {
-	          // playerActions.spendPoints(pp, mp);
-	          _productActions2.default.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
-	        };
-
-	        // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
-	        var ratingOverflow = current >= max;
-	        var currentXP = _productStore2.default.getXP(id);
-
-	        // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
-	        var disabled = ratingOverflow || currentXP < 1000;
-
-	        return (0, _preact.h)(
-	          'div',
-	          { key: key, className: 'hypothesis-wrapper' },
-	          (0, _preact.h)(_UI2.default.Button, {
-	            disabled: disabled,
-	            onClick: action,
-	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 1000XP',
-	            primary: !ratingOverflow
-	          })
-	        );
-	      };
 	    }, _this.renderHypothesisTab = function (id, idea) {
 	      var done = _UI2.default.symbols.ok;
 	      var cancel = _UI2.default.symbols.dot;
@@ -8600,7 +8577,7 @@
 	          separator
 	        );
 	      };
-	    }, _this.renderPaymentTab = function (state, id, idea) {
+	    }, _this.renderPaymentTab = function (id, idea) {
 	      var payment = _this.getPaymentFeatures(idea).map(_this.renderFeature('payment', id, idea));
 
 	      return (0, _preact.h)(
@@ -8626,7 +8603,7 @@
 	          )
 	        )
 	      );
-	    }, _this.renderAnalyticsTab = function (state, id, idea) {
+	    }, _this.renderAnalyticsTab = function (id, idea) {
 	      var analytics = _this.getAnalyticFeatures(idea).map(_this.renderFeature('analytics', id, idea));
 
 	      return (0, _preact.h)(
@@ -8652,7 +8629,7 @@
 	          )
 	        )
 	      );
-	    }, _this.renderClientTab = function (state, id, idea) {
+	    }, _this.renderClientTab = function (id, idea) {
 	      var marketing = _this.getMarketingFeatureList(idea).map(_this.renderFeature('marketing', id, idea));
 
 	      return (0, _preact.h)(
@@ -8678,101 +8655,6 @@
 	          )
 	        )
 	      );
-	    }, _this.renderMainFeaturesTab = function (state, id, idea, product) {
-	      var featureList = _this.getSpecificProductFeatureListByIdea(idea).map(_this.renderMainFeature('offer', product, id));
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupTitle' },
-	          '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupDescriptionWrapper' },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupDescription' },
-	            '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0441\u043D\u0438\u0436\u0435\u043D\u0438\u044E \u043E\u0442\u0442\u043E\u043A\u0430 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0434\u043E\u0445\u043E\u0434\u043E\u0432 \u0441 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
-	            product.XP,
-	            'XP'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupBody' },
-	            featureList
-	          )
-	        )
-	      );
-	    }, _this.renderMainFeature = function (featureGroup, product, id) {
-	      return function (defaultFeature, i) {
-	        var featureName = defaultFeature.name;
-	        var time = defaultFeature.time,
-	            shortDescription = defaultFeature.shortDescription;
-
-
-	        var feature = product.features[featureGroup][featureName];
-
-	        var current = feature || 0;
-	        var max = defaultFeature.data;
-
-	        var key = 'feature' + featureGroup + featureName + i;
-
-	        var hypothesis = [{
-	          points: { mp: 100, pp: 200 },
-	          data: 4000,
-	          baseChance: 0.1
-	        }];
-
-	        var description = defaultFeature.description || '';
-	        var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
-
-	        var hypothesisList = '   Улучшено';
-	        if (current < max) {
-	          hypothesisList = hypothesis.map(_this.renderHypothesisItem(id, featureName, time, current, max, product));
-	        } else {
-	          return (0, _preact.h)(
-	            'div',
-	            { key: key },
-	            userOrientedFeatureName,
-	            ' (\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E) ',
-	            _UI2.default.symbols.ok,
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureDescription' },
-	              description
-	            ),
-	            (0, _preact.h)('br', null)
-	          );
-	        }
-
-	        return (0, _preact.h)(
-	          'div',
-	          { key: key },
-	          userOrientedFeatureName,
-	          ' (',
-	          current,
-	          '/',
-	          max,
-	          'XP)',
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureDescription' },
-	            description
-	          ),
-	          hypothesisList,
-	          (0, _preact.h)('br', null)
-	        );
-	      };
 	    }, _this.renderFeature = function (featureGroup, id, idea, hideOnComplete) {
 	      return function (feature, i) {
 	        var featureName = feature.name;
@@ -8915,11 +8797,11 @@
 
 	      switch (mode) {
 	        case MODE_PAYMENTS:
-	          body = this.renderPaymentTab(state, id, idea);
+	          body = this.renderPaymentTab(id, idea);
 	          break;
 
 	        case MODE_MARKETING:
-	          body = this.renderClientTab(state, id, idea);
+	          body = this.renderClientTab(id, idea);
 	          break;
 
 	        case MODE_ADS:
@@ -8937,7 +8819,7 @@
 	          break;
 
 	        case MODE_ANALYTICS:
-	          body = this.renderAnalyticsTab(state, id, idea);
+	          body = this.renderAnalyticsTab(id, idea);
 	          break;
 
 	        default:
@@ -8947,7 +8829,7 @@
 	            this.renderHypothesisTab(id, idea),
 	            (0, _preact.h)('br', null),
 	            (0, _preact.h)('hr', null),
-	            this.renderMainFeaturesTab(state, id, idea, product)
+	            (0, _preact.h)(_MainFeature2.default, { id: id, product: product })
 	          );
 	          break;
 	      }
@@ -10271,6 +10153,359 @@
 	}(_preact.Component);
 
 	exports.default = AdviceTab;
+
+/***/ },
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _objectDestructuringEmpty2 = __webpack_require__(130);
+
+	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	var _flux = __webpack_require__(131);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var STAGE_1 = 1;
+	var STAGE_2 = 2;
+
+	var Tutorial = function (_Component) {
+	  (0, _inherits3.default)(Tutorial, _Component);
+
+	  function Tutorial() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Tutorial);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Tutorial.__proto__ || (0, _getPrototypeOf2.default)(Tutorial)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      stage: STAGE_1
+	    }, _this.setStage = function (stage) {
+	      _this.setState({ stage: stage });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Tutorial, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'render',
+	    value: function render(_ref2, _ref3) {
+	      var _this2 = this;
+
+	      var stage = _ref3.stage;
+	      (0, _objectDestructuringEmpty3.default)(_ref2);
+
+	      var init1 = (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'initial-tab-text' },
+	          '\u0422\u044B - \u043A\u0440\u0443\u0442\u043E\u0439 \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442. \u041E\u0442\u0440\u0430\u0431\u043E\u0442\u0430\u0432 \u043C\u043D\u043E\u0433\u043E \u043B\u0435\u0442 \u043D\u0430\u0451\u043C\u043D\u044B\u043C \u0440\u0430\u0431\u043E\u0447\u0438\u043C, \u0442\u044B \u0440\u0435\u0448\u0430\u0435\u0448\u044C \u043E\u0442\u043A\u0440\u044B\u0442\u044C \u0441\u0432\u043E\u0451 \u0441\u043E\u0431\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0435 \u0434\u0435\u043B\u043E.'
+	        ),
+	        (0, _preact.h)(_UI2.default.Button, { text: '\u0414\u0430\u043B\u0435\u0435', primary: true, onClick: function onClick() {
+	            return _this2.setStage(STAGE_2);
+	          } })
+	      );
+
+	      var init2 = (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'initial-tab-text' },
+	          '\u0422\u044B \u043D\u0430\u0447\u0438\u043D\u0430\u0435\u0448\u044C \u043A\u0430\u043A \u043E\u0441\u043D\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u0432\u0435\u0431-\u0445\u043E\u0441\u0442\u0438\u043D\u0433\u0430 - \u0441\u0435\u0440\u0432\u0438\u0441\u0430, \u043D\u0430 \u043A\u043E\u0442\u043E\u0440\u043E\u043C \u0440\u0430\u0437\u043C\u0435\u0449\u0430\u044E\u0442\u0441\u044F \u0441\u0430\u0439\u0442\u044B \u0434\u0440\u0443\u0433\u0438\u0445 \u043F\u0440\u0435\u0434\u043F\u0440\u0438\u043D\u0438\u043C\u0430\u0442\u0435\u043B\u0435\u0439'
+	        ),
+	        (0, _preact.h)(_UI2.default.Button, { text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0438\u0433\u0440\u0443!', primary: true, onClick: function onClick() {
+	            return _flux2.default.scheduleActions.startGame();
+	          } })
+	      );
+
+	      var body = '';
+
+	      switch (stage) {
+	        case STAGE_1:
+	          body = init1;
+	          break;
+
+	        case STAGE_2:
+	          body = init2;
+	          break;
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'body-background' },
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'initial-tab-wrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'game-logo-wrapper' },
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'game-logo' },
+	              'STARTUP'
+	            )
+	          ),
+	          body
+	        )
+	      );
+	    }
+	  }]);
+	  return Tutorial;
+	}(_preact.Component);
+
+	exports.default = Tutorial;
+
+/***/ },
+/* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _productDescriptions = __webpack_require__(140);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	var _flux = __webpack_require__(131);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	var _constants = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../../../constants\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+
+	var c = _interopRequireWildcard(_constants);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var MainFeature = function (_Component) {
+	  (0, _inherits3.default)(MainFeature, _Component);
+
+	  function MainFeature() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, MainFeature);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.getSpecificProductFeatureListByIdea = function (idea) {
+	      return (0, _productDescriptions2.default)(idea).features;
+	    }, _this.renderMainFeature = function (featureGroup, product, id) {
+	      return function (defaultFeature, i) {
+	        var featureName = defaultFeature.name;
+	        var time = defaultFeature.time,
+	            shortDescription = defaultFeature.shortDescription;
+
+
+	        var feature = product.features[featureGroup][featureName];
+
+	        var current = feature || 0;
+	        var max = defaultFeature.data;
+
+	        var key = 'feature' + featureGroup + featureName + i;
+
+	        var hypothesis = [{
+	          points: { mp: 100, pp: 200 },
+	          data: 4000,
+	          baseChance: 0.1
+	        }];
+
+	        var description = defaultFeature.description || '';
+	        var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
+
+	        var hypothesisList = '   Улучшено';
+	        if (current < max) {
+	          hypothesisList = hypothesis.map(_this.renderHypothesisItem(id, featureName, time, current, max, product));
+	        } else {
+	          return (0, _preact.h)(
+	            'div',
+	            { key: key },
+	            userOrientedFeatureName,
+	            ' (\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E) ',
+	            _UI2.default.symbols.ok,
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'featureDescription' },
+	              description
+	            ),
+	            (0, _preact.h)('br', null)
+	          );
+	        }
+
+	        return (0, _preact.h)(
+	          'div',
+	          { key: key },
+	          userOrientedFeatureName,
+	          ' (',
+	          current,
+	          '/',
+	          max,
+	          'XP)',
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureDescription' },
+	            description
+	          ),
+	          hypothesisList,
+	          (0, _preact.h)('br', null)
+	        );
+	      };
+	    }, _this.renderHypothesisItem = function (id, featureName, time, current, max, product) {
+	      return function (hypothesis, i) {
+	        var necessaryPoints = hypothesis.points;
+	        var key = 'hypothesis' + i;
+
+	        var pp = necessaryPoints.pp,
+	            mp = necessaryPoints.mp;
+
+
+	        var action = function action() {
+	          // playerActions.spendPoints(pp, mp);
+	          _flux2.default.productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
+	        };
+	        // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
+	        var ratingOverflow = current >= max;
+	        var currentXP = _flux2.default.productStore.getXP(id);
+
+	        // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
+	        var disabled = ratingOverflow || currentXP < 1000;
+
+	        return (0, _preact.h)(
+	          'div',
+	          { key: key, className: 'hypothesis-wrapper' },
+	          (0, _preact.h)(_UI2.default.Button, {
+	            disabled: disabled,
+	            onClick: action,
+	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 1000XP',
+	            primary: !ratingOverflow
+	          })
+	        );
+	      };
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(MainFeature, [{
+	    key: 'render',
+	    value: function render(_ref2, state) {
+	      var product = _ref2.product,
+	          id = _ref2.id;
+
+	      var featureList = this.getSpecificProductFeatureListByIdea(product.idea).map(this.renderMainFeature('offer', product, id));
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupTitle' },
+	          '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupDescriptionWrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0441\u043D\u0438\u0436\u0435\u043D\u0438\u044E \u043E\u0442\u0442\u043E\u043A\u0430 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0434\u043E\u0445\u043E\u0434\u043E\u0432 \u0441 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
+	            product.XP,
+	            'XP'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            featureList
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return MainFeature;
+	}(_preact.Component);
+
+	exports.default = MainFeature;
 
 /***/ }
 /******/ ]);

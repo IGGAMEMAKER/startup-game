@@ -364,6 +364,10 @@ textarea {
   text-align: center;
 }
 
+.initial-tab-text {
+  margin-bottom: 25px;
+}
+
 .game-logo-wrapper {
   margin-bottom: 20px;
 }

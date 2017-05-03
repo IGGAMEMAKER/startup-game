@@ -10,7 +10,17 @@ export default {
       type: ACTIONS.SCHEDULE_ACTIONS_DAY_TICK
     })
   },
-
+  startGame() {
+    Dispatcher.dispatch({
+      type: ACTIONS.SCHEDULE_ACTIONS_GAME_START
+    })
+  },
+  setGamePhase(phase) {
+    Dispatcher.dispatch({
+      type: ACTIONS.SCHEDULE_ACTIONS_SET_GAME_PHASE,
+      phase
+    })
+  },
   increaseProgress: (taskId, speed) => {
     Dispatcher.dispatch({
       type: ACTIONS.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS,
