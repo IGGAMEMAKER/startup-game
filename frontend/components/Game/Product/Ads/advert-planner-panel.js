@@ -1,9 +1,10 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
-
+import stageHelper from '../../../../helpers/stages';
 import UI from '../../../UI';
 
 import flux from '../../../../flux';
+import logger from '../../../../helpers/logger/logger';
 
 
 export default class AdvertPlannerPanel extends Component {
@@ -18,15 +19,20 @@ export default class AdvertPlannerPanel extends Component {
     this.setState({ possibleClients })
   };
 
-  inviteUsers = (id, amountOfUsers, cost) => () => {
+  inviteUsers = (id, amountOfUsers, cost, ourClients) => () => {
     if (flux.playerStore.getMoney() >= cost) {
+      logger.debug('inviteUsers', ourClients, amountOfUsers, stageHelper.isFirstAdCampaignMission());
+      if (ourClients + amountOfUsers > 200 && stageHelper.isFirstAdCampaignMission()) {
+        stageHelper.onFirstAdCampaignMissionCompleted();
+      }
+
       flux.productActions.addClients(id, amountOfUsers);
       flux.playerActions.increaseMoney(-cost);
 
       this.onDrag(0);
     }
   };
-
+  //
   renderCompetitors(competitors, rating, freeClients) {
     return (
       <div>
@@ -101,7 +107,7 @@ export default class AdvertPlannerPanel extends Component {
           <UI.Button
             item="start-campaign"
             text="Начать рекламную кампанию"
-            onClick={this.inviteUsers(id, possibleClients, campaignCost)}
+            onClick={this.inviteUsers(id, possibleClients, campaignCost, ourClients)}
             primary
           />
         </div>

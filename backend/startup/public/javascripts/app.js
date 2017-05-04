@@ -2723,6 +2723,10 @@
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
+	var _stages = __webpack_require__(168);
+
+	var _stages2 = _interopRequireDefault(_stages);
+
 	var _playerStore = __webpack_require__(119);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
@@ -2731,7 +2735,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// import React, { Component, PropTypes } from 'react';
 	var Staff = function (_Component) {
 	  (0, _inherits3.default)(Staff, _Component);
 
@@ -2770,6 +2773,9 @@
 	      var hireButton = '';
 
 	      var hire = function hire() {
+	        if (_stages2.default.isFirstWorkerMission()) {
+	          _stages2.default.onFirstWorkerMissionCompleted();
+	        }
 	        _playerActions2.default.hireWorker(p, i);
 	      };
 	      var reject = function reject() {
@@ -2795,15 +2801,17 @@
 	          )
 	        );
 	      } else {
-	        hireButton = p.isPlayer ? '' : (0, _preact.h)(
-	          'div',
-	          { className: 'worker-button-container' },
-	          (0, _preact.h)(
-	            'span',
-	            { className: 'worker-button' },
-	            (0, _preact.h)(_UI2.default.Button, { onClick: fire, text: '\u0423\u0432\u043E\u043B\u0438\u0442\u044C', secondary: true })
-	          )
-	        );
+	        if (!p.isPlayer) {
+	          hireButton = (0, _preact.h)(
+	            'div',
+	            { className: 'worker-button-container' },
+	            (0, _preact.h)(
+	              'span',
+	              { className: 'worker-button' },
+	              (0, _preact.h)(_UI2.default.Button, { onClick: fire, text: '\u0423\u0432\u043E\u043B\u0438\u0442\u044C', secondary: true })
+	            )
+	          );
+	        }
 	      }
 
 	      var key = isEmployee ? 'employee' : 'person';
@@ -2960,6 +2968,8 @@
 	  }]);
 	  return Staff;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
 
 	exports.default = Staff;
 	;
@@ -5974,6 +5984,12 @@
 	var GAME_STAGE_INIT = exports.GAME_STAGE_INIT = 0;
 	var GAME_STAGE_GAME_STARTED = exports.GAME_STAGE_GAME_STARTED = 1;
 	var GAME_STAGE_HIRED_FIRST_WORKER = exports.GAME_STAGE_HIRED_FIRST_WORKER = 2;
+	var GAME_STAGE_INVITED_FIRST_CLIENTS = exports.GAME_STAGE_INVITED_FIRST_CLIENTS = 3;
+	var GAME_STAGE_IMPROVED_ANALYTICS = exports.GAME_STAGE_IMPROVED_ANALYTICS = 4;
+	var GAME_STAGE_LEARNED_SPEEDER = exports.GAME_STAGE_LEARNED_SPEEDER = 5; // month passed
+	var GAME_STAGE_TESTED_FIRST_HYPOTHESIS = exports.GAME_STAGE_TESTED_FIRST_HYPOTHESIS = 6;
+	var GAME_STAGE_IMPROVED_FIRST_FEATURE = exports.GAME_STAGE_IMPROVED_FIRST_FEATURE = 7;
+	var GAME_STAGE_GOT_RATING_SEVEN_PLUS = exports.GAME_STAGE_GOT_RATING_SEVEN_PLUS = 8; // MONETISATION
 
 /***/ },
 /* 135 */
@@ -6637,7 +6653,7 @@
 	      _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
 	      _products[id].KPI = p.KPI;
 	      _products[id].features = p.features;
-	      _products[id].XP = 0;
+	      _products[id].XP = 999;
 	      break;
 
 	    case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
@@ -7242,11 +7258,6 @@
 	            'div',
 	            { className: navigation + ' ' + isChosenProjectsMenu, onClick: props.onRenderProjectsMenu },
 	            '\u041F\u0440\u043E\u0435\u043A\u0442\u044B'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: navigation + ' ' + isChosenEconomicsMenu, onClick: props.onRenderEconomicsMenu },
-	            '\u042D\u043A\u043E\u043D\u043E\u043C\u0438\u043A\u0430'
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -8150,13 +8161,17 @@
 
 	var _MainFeature2 = _interopRequireDefault(_MainFeature);
 
+	var _stages = __webpack_require__(168);
+
+	var _stages2 = _interopRequireDefault(_stages);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	// import React, { Component, PropTypes } from 'react';
 
+	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
 	var MODE_MARKETING = 'MODE_MARKETING';
 	var MODE_PAYMENTS = 'MODE_PAYMENTS';
@@ -8300,6 +8315,10 @@
 	        _playerActions2.default.spendPoints(pp, mp);
 	        _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
 	          _productActions2.default.testHypothesis(id, {}, 0);
+
+	          if (_stages2.default.isFirstHypothesisMission()) {
+	            _stages2.default.onFirstHypothesisMissionCompleted();
+	          }
 	        });
 	      };
 
@@ -8428,96 +8447,6 @@
 	          (0, _preact.h)(_Schedule2.default, null)
 	        )
 	      );
-	    }, _this.renderHypothesisAnalytics = function (id) {
-	      return function (feature, i) {
-	        var featureGroup = 'analytics';
-	        var featureName = feature.name;
-
-	        var key = 'feature' + featureGroup + featureName + 'ii' + i;
-
-	        var standardPoints = feature.points || {};
-	        var mp = standardPoints.marketing || 0;
-	        var pp = standardPoints.programming || 0;
-	        var points = _playerStore2.default.getPoints();
-
-	        var enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
-
-	        var upgradeFeature = function upgradeFeature(event) {
-	          _logger2.default.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
-
-	          if (enoughPointsToUpgrade) {
-	            _playerActions2.default.spendPoints(pp, mp);
-	            _productActions2.default.improveFeatureByPoints(id, featureGroup, featureName);
-	          }
-	        };
-
-	        var description = feature.description || '';
-	        var isUpgraded = _productStore2.default.getFeatureStatus(id, featureGroup, featureName);
-
-	        var separator = (0, _preact.h)('hr', { width: '60%' });
-
-	        var userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
-	        if (isUpgraded) {
-	          return (0, _preact.h)(
-	            'div',
-	            { key: key },
-	            userOrientedFeatureName,
-	            ': \u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E ',
-	            _UI2.default.symbols.ok,
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureDescription' },
-	              description
-	            ),
-	            separator
-	          );
-	        }
-
-	        var mpColors = points.marketing < mp ? "noPoints" : "enoughPoints";
-	        var ppColors = points.programming < pp ? "noPoints" : "enoughPoints";
-
-	        return (0, _preact.h)(
-	          'div',
-	          { key: key },
-	          userOrientedFeatureName,
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureDescription' },
-	            description
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F - \xA0',
-	              (0, _preact.h)(
-	                'span',
-	                { className: mpColors },
-	                'MP:',
-	                mp,
-	                '\xA0'
-	              ),
-	              (0, _preact.h)(
-	                'span',
-	                { className: ppColors },
-	                'PP:',
-	                pp
-	              )
-	            )
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
-	            disabled: !enoughPointsToUpgrade,
-	            onClick: upgradeFeature,
-	            secondary: true
-	          }),
-	          separator
-	        );
-	      };
 	    }, _this.renderPaymentTab = function (id, idea) {
 	      var payment = _this.getPaymentFeatures(idea).map(_this.renderFeature('payment', id, idea));
 
@@ -8596,27 +8525,48 @@
 	          )
 	        )
 	      );
-	    }, _this.renderRatingTab = function (id, idea, product, gamePhase) {
-	      var separator = (0, _preact.h)(
+	    }, _this.renderAdTab = function (id, product) {
+	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)('hr', null)
+	        (0, _preact.h)(
+	          'b',
+	          null,
+	          '\u0420\u0435\u043A\u043B\u0430\u043C\u043D\u0430\u044F \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F'
+	        ),
+	        (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
+	        (0, _preact.h)('br', null)
 	      );
-	      var hypothesisTab = _this.renderHypothesisTab(id, idea);
+	    }, _this.renderRatingTab = function (id, idea, product) {
+	      // const separator = ;
+	      var hypothesisTab = void 0;
+	      var mainFeatureTab = void 0;
 
-	      if (gamePhase === _constants2.default.gameStages.GAME_STAGE_HIRED_FIRST_WORKER) {
-	        return hypothesisTab;
+	      if (_stages2.default.canShowHypothesisTab()) {
+	        hypothesisTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          _this.renderHypothesisTab(id, idea),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)('hr', null)
+	          )
+	        );
+	      }
+
+	      if (_stages2.default.canShowMainFeatureTab()) {
+	        mainFeatureTab = (0, _preact.h)(_MainFeature2.default, { id: id, product: product });
 	      }
 
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        hypothesisTab,
-	        separator,
-	        (0, _preact.h)(_MainFeature2.default, { id: id, product: product })
+	        mainFeatureTab,
+	        hypothesisTab
 	      );
-	    }, _this.renderFeature = function (featureGroup, id, idea, hideOnComplete) {
+	    }, _this.renderFeature = function (featureGroup, id, idea, hideOnComplete, onUpgraded) {
 	      return function (feature, i) {
 	        var featureName = feature.name;
 
@@ -8635,6 +8585,11 @@
 	          if (enoughPointsToUpgrade) {
 	            _playerActions2.default.spendPoints(pp, mp);
 	            _productActions2.default.improveFeatureByPoints(id, featureGroup, featureName);
+	            _logger2.default.log('preOnUpgraded');
+	            if (onUpgraded) {
+	              _logger2.default.log('onUpgraded');
+	              onUpgraded();
+	            }
 	          }
 	        };
 
@@ -8720,7 +8675,7 @@
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)
+	        this.renderFeature('analytics', id, idea, true, _stages2.default.onInstallPrimitiveAnalyticsMissionCompleted)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)
 	      );
 	    }
 	  }, {
@@ -8741,6 +8696,8 @@
 	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
 	      );
 	    }
+	    //
+
 	  }, {
 	    key: 'render',
 	    value: function render(_ref2, state) {
@@ -8756,59 +8713,24 @@
 	      _logger2.default.shit('develop-panel.js fix productID id=0');
 
 	      var body = '';
-
 	      switch (mode) {
 	        case MODE_PAYMENTS:
-	          body = this.renderPaymentTab(id, idea);
-	          break;
-
+	          body = this.renderPaymentTab(id, idea);break;
 	        case MODE_MARKETING:
-	          body = this.renderClientTab(id, idea);
-	          break;
-
+	          body = this.renderClientTab(id, idea);break;
 	        case MODE_ADS:
-	          body = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'b',
-	              null,
-	              '\u0420\u0435\u043A\u043B\u0430\u043C\u043D\u0430\u044F \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F'
-	            ),
-	            (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
-	            (0, _preact.h)('br', null)
-	          );
-	          break;
-
+	          body = this.renderAdTab(id, product);break;
 	        case MODE_ANALYTICS:
-	          body = this.renderAnalyticsTab(id, idea);
-	          break;
-
+	          body = this.renderAnalyticsTab(id, idea);break;
 	        default:
-	          body = this.renderRatingTab(id, idea, product, gamePhase);
-	          break;
+	          body = this.renderRatingTab(id, idea, product);break;
 	      }
 
-	      // renderAnalyticsTab
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'b',
-	          null,
-	          '\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430 "',
-	          product.name,
-	          '"'
-	        ),
-	        (0, _preact.h)(
+	      var metricsTab = void 0;
+	      if (_stages2.default.canShowMetricsTab()) {
+	        metricsTab = (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
-	          _productStore2.default.getDescriptionOfProduct(id)
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { style: { padding: '15px' } },
 	          (0, _preact.h)(
 	            'b',
 	            null,
@@ -8834,7 +8756,35 @@
 	            }
 	          }),
 	          (0, _preact.h)('br', null),
-	          (0, _preact.h)('hr', null),
+	          (0, _preact.h)('hr', null)
+	        );
+	      }
+
+	      if (_stages2.default.isFirstWorkerMission()) {
+	        return (0, _preact.h)('div', null);
+	        // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'b',
+	          null,
+	          '\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430 "',
+	          product.name,
+	          '"'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
+	          _productStore2.default.getDescriptionOfProduct(id)
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { style: { padding: '15px' } },
+	          metricsTab,
 	          body
 	        )
 	      );
@@ -9445,6 +9395,10 @@
 
 	var _preact = __webpack_require__(1);
 
+	var _stages = __webpack_require__(168);
+
+	var _stages2 = _interopRequireDefault(_stages);
+
 	var _UI = __webpack_require__(102);
 
 	var _UI2 = _interopRequireDefault(_UI);
@@ -9453,10 +9407,13 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// import React, { Component, PropTypes } from 'react';
-
 	var AdvertPlannerPanel = function (_Component) {
 	  (0, _inherits3.default)(AdvertPlannerPanel, _Component);
 
@@ -9476,9 +9433,14 @@
 	      toggle: true
 	    }, _this.onDrag = function (possibleClients) {
 	      _this.setState({ possibleClients: possibleClients });
-	    }, _this.inviteUsers = function (id, amountOfUsers, cost) {
+	    }, _this.inviteUsers = function (id, amountOfUsers, cost, ourClients) {
 	      return function () {
 	        if (_flux2.default.playerStore.getMoney() >= cost) {
+	          _logger2.default.debug('inviteUsers', ourClients, amountOfUsers, _stages2.default.isFirstAdCampaignMission());
+	          if (ourClients + amountOfUsers > 200 && _stages2.default.isFirstAdCampaignMission()) {
+	            _stages2.default.onFirstAdCampaignMissionCompleted();
+	          }
+
 	          _flux2.default.productActions.addClients(id, amountOfUsers);
 	          _flux2.default.playerActions.increaseMoney(-cost);
 
@@ -9541,6 +9503,8 @@
 	    value: function componentWillMount() {}
 	  }, {
 	    key: 'renderCompetitors',
+
+	    //
 	    value: function renderCompetitors(competitors, rating, freeClients) {
 	      return (0, _preact.h)(
 	        'div',
@@ -9639,7 +9603,7 @@
 	          (0, _preact.h)(_UI2.default.Button, {
 	            item: 'start-campaign',
 	            text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E',
-	            onClick: this.inviteUsers(id, possibleClients, campaignCost),
+	            onClick: this.inviteUsers(id, possibleClients, campaignCost, ourClients),
 	            primary: true
 	          })
 	        )
@@ -9941,9 +9905,55 @@
 	            )
 	          );
 	          break;
+
+	        case _constants2.default.gameStages.GAME_STAGE_HIRED_FIRST_WORKER:
+	          target = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041E\u0442\u043B\u0438\u0447\u043D\u043E! \u0414\u043B\u044F \u0442\u043E\u0433\u043E, \u0447\u0442\u043E\u0431\u044B \u043B\u0443\u0447\u0448\u0435 \u043F\u043E\u043D\u0438\u043C\u0430\u0442\u044C, \u0447\u0442\u043E \u043D\u0443\u0436\u043D\u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u043C, \u0442\u0435\u0441\u0442\u0438\u0440\u0443\u0439\u0442\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B \u043E \u0432\u0430\u0448\u0435\u043C \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0435'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041D\u043E \u0441\u043D\u0430\u0447\u0430\u043B\u0430 \u043F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u0435\u0435 200 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043D\u0430 \u0432\u0430\u0448 \u0441\u0430\u0439\u0442'
+	            )
+	          );
+	          break;
+
+	        case _constants2.default.gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS:
+	          target = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041F\u0440\u0435\u0432\u043E\u0441\u0445\u043E\u0434\u043D\u043E! \u0427\u0435\u043C \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0432\u044B \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442\u0435 \u043D\u0430 \u0441\u0430\u0439\u0442, \u0442\u0435\u043C \u0442\u043E\u0447\u043D\u0435\u0435 \u043D\u0430\u0448\u0430 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430... \u043A\u043E\u0442\u043E\u0440\u043E\u0439 \u0443 \u043D\u0430\u0441 \u043D\u0435\u0442'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438, \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
+	            )
+	          );
+	          break;
+
+	        case _constants2.default.gameStages.GAME_STAGE_IMPROVED_ANALYTICS:
+	          target = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041F\u043E-\u0445\u043E\u0440\u043E\u0448\u0435\u043C\u0443 \u0431\u044B \u0435\u0449\u0451 \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 \u043F\u043E\u0441\u0442\u0430\u0432\u0438\u0442\u044C... \u0412\u043F\u0440\u043E\u0447\u0435\u043C... \u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0439\u0442\u0435 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435!'
+	            )
+	          );
+	          break;
 	      }
 
-	      if (!target) return '';
+	      // if (!target) return '';
 
 	      return (0, _preact.h)(
 	        'div',
@@ -9953,6 +9963,7 @@
 	          null,
 	          '\u0412\u0430\u0448\u0430 \u0442\u0435\u043A\u0443\u0449\u0430\u044F \u0446\u0435\u043B\u044C'
 	        ),
+	        gamePhase,
 	        target
 	      );
 	    }
@@ -10432,6 +10443,89 @@
 
 	exports.default = {
 	  emit: emit
+	};
+
+/***/ },
+/* 168 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _flux = __webpack_require__(131);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	var _constants = __webpack_require__(161);
+
+	var _constants2 = _interopRequireDefault(_constants);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _gameStages = __webpack_require__(134);
+
+	var gameStages = _interopRequireWildcard(_gameStages);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var getStage = function getStage() {
+	  return _flux2.default.scheduleStore.getGamePhase();
+	};
+
+	var setStage = function setStage(stage) {
+	  _flux2.default.scheduleActions.setGamePhase(stage);
+	};
+
+	_logger2.default.shit('need to send stats on game phase change');
+
+	exports.default = {
+	  // on mission completed
+	  onFirstWorkerMissionCompleted: function onFirstWorkerMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_HIRED_FIRST_WORKER);
+	  },
+	  onInstallPrimitiveAnalyticsMissionCompleted: function onInstallPrimitiveAnalyticsMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_IMPROVED_ANALYTICS);
+	  },
+	  onFirstHypothesisMissionCompleted: function onFirstHypothesisMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS);
+	  },
+	  onFirstAdCampaignMissionCompleted: function onFirstAdCampaignMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS);
+	  },
+
+
+	  // mission checker
+	  isFirstWorkerMission: function isFirstWorkerMission() {
+	    return getStage() === gameStages.GAME_STAGE_GAME_STARTED;
+	  },
+	  isInstallPrimitiveAnalyticsMission: function isInstallPrimitiveAnalyticsMission() {
+	    return getStage() === gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
+	  },
+	  isFirstHypothesisMission: function isFirstHypothesisMission() {
+	    return getStage() === gameStages.GAME_STAGE_LEARNED_SPEEDER;
+	  },
+	  isFirstAdCampaignMission: function isFirstAdCampaignMission() {
+	    return getStage() === gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+	  },
+
+
+	  // can show some tabs region
+	  canShowHypothesisTab: function canShowHypothesisTab() {
+	    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+	  },
+	  canShowMetricsTab: function canShowMetricsTab() {
+	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+	  },
+	  canShowMainFeatureTab: function canShowMainFeatureTab() {
+	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+	  }
 	};
 
 /***/ }

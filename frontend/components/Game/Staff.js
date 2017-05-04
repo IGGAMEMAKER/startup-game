@@ -16,6 +16,8 @@ import coloringRange from '../../helpers/coloring-range';
 
 import skillHelper from '../../helpers/team/skills';
 
+import stageHelper from '../../helpers/stages';
+
 type StateType = {
   staff: Array
 };
@@ -115,7 +117,12 @@ export default class Staff extends Component {
 
     let hireButton = '';
 
-    const hire = () => { actions.hireWorker(p, i); };
+    const hire = () => {
+      if (stageHelper.isFirstWorkerMission()) {
+        stageHelper.onFirstWorkerMissionCompleted();
+      }
+      actions.hireWorker(p, i);
+    };
     const reject = () => { actions.rejectEmployee(i); };
     const fire = () => { actions.fireWorker(i); };
 
@@ -128,11 +135,13 @@ export default class Staff extends Component {
         </div>
       );
     } else {
-      hireButton = p.isPlayer ? '' : (
-        <div className="worker-button-container">
-          <span className="worker-button"><UI.Button onClick={fire} text="Уволить" secondary /></span>
-        </div>
-      );
+      if (!p.isPlayer) {
+        hireButton = (
+          <div className="worker-button-container">
+            <span className="worker-button"><UI.Button onClick={fire} text="Уволить" secondary /></span>
+          </div>
+        );
+      }
     }
 
     let key = isEmployee ? 'employee' : 'person';

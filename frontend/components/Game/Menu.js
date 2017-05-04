@@ -68,7 +68,6 @@ export default class Menu extends Component {
 
         <div>
           <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
-          <div className={`${navigation} ${isChosenEconomicsMenu}`} onClick={props.onRenderEconomicsMenu}>Экономика</div>
           <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда</div>
         </div>
       </div>

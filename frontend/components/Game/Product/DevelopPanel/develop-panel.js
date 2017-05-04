@@ -29,6 +29,8 @@ import logger from '../../../../helpers/logger/logger';
 import AdsPanel from '../Ads/advert-planner-panel';
 import MainFeatureTab from '../MainFeature';
 
+import stageHelper from '../../../../helpers/stages';
+
 
 const MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 const MODE_ADS = 'MODE_ADS';
@@ -78,7 +80,7 @@ export default class DevelopPanel extends Component {
   getFeedbackButton(idea, id) {
     return (
       <div className="offset-mid">
-        {this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)}
+        {this.renderFeature('analytics', id, idea, true, stageHelper.onInstallPrimitiveAnalyticsMissionCompleted)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)}
       </div>
     );
   }
@@ -215,7 +217,11 @@ export default class DevelopPanel extends Component {
 
       playerActions.spendPoints(pp, mp);
       scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
-        productActions.testHypothesis(id, {}, 0)
+        productActions.testHypothesis(id, {}, 0);
+
+        if (stageHelper.isFirstHypothesisMission()) {
+          stageHelper.onFirstHypothesisMissionCompleted();
+        }
       });
     };
 
@@ -267,72 +273,6 @@ export default class DevelopPanel extends Component {
     )
   };
 
-  renderHypothesisAnalytics = (id) => (feature, i) => {
-    const featureGroup = 'analytics';
-    const featureName = feature.name;
-
-    const key = `feature${featureGroup}${featureName}ii${i}`;
-
-    const standardPoints = feature.points || {};
-    const mp = standardPoints.marketing || 0;
-    const pp = standardPoints.programming || 0;
-    const points = playerStore.getPoints();
-
-    const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
-
-    const upgradeFeature = event => {
-      logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
-
-      if (enoughPointsToUpgrade) {
-        playerActions.spendPoints(pp, mp);
-        productActions.improveFeatureByPoints(id, featureGroup, featureName);
-      }
-    };
-
-    const description = feature.description || '';
-    const isUpgraded = productStore.getFeatureStatus(id, featureGroup, featureName);
-
-    const separator = <hr width="60%" />;
-
-    const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
-    if (isUpgraded) {
-      return (
-        <div key={key}>
-          {userOrientedFeatureName}: Улучшено {UI.symbols.ok}
-          <br />
-          <div className="featureDescription">{description}</div>
-          {separator}
-        </div>
-      );
-    }
-
-    const mpColors = points.marketing < mp ? "noPoints": "enoughPoints";
-    const ppColors = points.programming < pp ? "noPoints": "enoughPoints";
-
-    return (
-      <div key={key}>
-        {userOrientedFeatureName}
-        <br />
-        <div className="featureDescription">{description}</div>
-        <div>
-          <div>
-            Стоимость улучшения - &nbsp;
-            <span className={mpColors}>MP:{mp}&nbsp;</span>
-            <span className={ppColors}>PP:{pp}</span>
-          </div>
-        </div>
-        <UI.Button
-          text="Улучшить"
-          disabled={!enoughPointsToUpgrade}
-          onClick={upgradeFeature}
-          secondary
-        />
-        {separator}
-      </div>
-    )
-  };
-
-
   renderPaymentTab = (id, idea) => {
     const payment = this
       .getPaymentFeatures(idea)
@@ -381,24 +321,43 @@ export default class DevelopPanel extends Component {
     );
   };
 
-  renderRatingTab = (id, idea, product, gamePhase) => {
-    const separator = <div><br /><hr /></div>;
-    const hypothesisTab = this.renderHypothesisTab(id, idea);
+  renderAdTab = (id, product) => {
+    return (
+      <div>
+        <b>Рекламная кампания</b>
+        <AdsPanel product={product} id={id} />
+        <br />
+      </div>
+    );
+  };
 
-    if (gamePhase === c.gameStages.GAME_STAGE_HIRED_FIRST_WORKER) {
-      return hypothesisTab;
+  renderRatingTab = (id, idea, product) => {
+    // const separator = ;
+    let hypothesisTab;
+    let mainFeatureTab;
+
+    if (stageHelper.canShowHypothesisTab()) {
+      hypothesisTab = (
+        <div>
+          {this.renderHypothesisTab(id, idea)}
+          <div><br /><hr /></div>
+        </div>
+      )
+    }
+
+    if (stageHelper.canShowMainFeatureTab()) {
+      mainFeatureTab = <MainFeatureTab id={id} product={product} />;
     }
 
     return (
       <div>
+        {mainFeatureTab}
         {hypothesisTab}
-        {separator}
-        <MainFeatureTab id={id} product={product} />
       </div>
     )
   };
 
-  renderFeature = (featureGroup, id, idea, hideOnComplete) => (feature, i) => {
+  renderFeature = (featureGroup, id, idea, hideOnComplete, onUpgraded) => (feature, i) => {
     const featureName = feature.name;
 
     const key = `feature${featureGroup}${featureName}${i}`;
@@ -416,6 +375,11 @@ export default class DevelopPanel extends Component {
       if (enoughPointsToUpgrade) {
         playerActions.spendPoints(pp, mp);
         productActions.improveFeatureByPoints(id, featureGroup, featureName);
+        logger.log('preOnUpgraded')
+        if (onUpgraded) {
+          logger.log('onUpgraded')
+          onUpgraded();
+        }
       }
     };
 
@@ -465,7 +429,7 @@ export default class DevelopPanel extends Component {
       </div>
     )
   };
-
+  //
   setMode = (mode) => {
     this.setState({ mode });
   };
@@ -478,41 +442,18 @@ export default class DevelopPanel extends Component {
     logger.shit('develop-panel.js fix productID id=0');
 
     let body = '';
-
     switch (mode) {
-      case MODE_PAYMENTS:
-        body = this.renderPaymentTab(id, idea);
-        break;
-
-      case MODE_MARKETING:
-        body = this.renderClientTab(id, idea);
-        break;
-
-      case MODE_ADS:
-        body = (
-          <div>
-            <b>Рекламная кампания</b>
-            <AdsPanel product={product} id={id} />
-            <br />
-          </div>
-        );
-        break;
-
-      case MODE_ANALYTICS:
-        body = this.renderAnalyticsTab(id, idea);
-        break;
-
-      default:
-        body = this.renderRatingTab(id, idea, product, gamePhase);
-        break;
+      case MODE_PAYMENTS: body = this.renderPaymentTab(id, idea); break;
+      case MODE_MARKETING: body = this.renderClientTab(id, idea); break;
+      case MODE_ADS: body = this.renderAdTab(id, product); break;
+      case MODE_ANALYTICS: body = this.renderAnalyticsTab(id, idea); break;
+      default: body = this.renderRatingTab(id, idea, product); break;
     }
 
-    // renderAnalyticsTab
-    return (
-      <div>
-        <b>Развитие продукта "{product.name}"</b>
-        <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
-        <div style={{padding: '15px'}}>
+    let metricsTab;
+    if (stageHelper.canShowMetricsTab()) {
+      metricsTab = (
+        <div>
           <b>Основные показатели продукта</b>
           <Metrics
             product={product}
@@ -526,6 +467,21 @@ export default class DevelopPanel extends Component {
 
           <br />
           <hr />
+        </div>
+      )
+    }
+
+    if (stageHelper.isFirstWorkerMission()) {
+      return <div></div>;
+      // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
+    }
+
+    return (
+      <div>
+        <b>Развитие продукта "{product.name}"</b>
+        <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
+        <div style={{padding: '15px'}}>
+          {metricsTab}
 
           {body}
         </div>

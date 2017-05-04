@@ -534,7 +534,7 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
       _products[id].KPI = p.KPI;
       _products[id].features = p.features;
-      _products[id].XP = 0;
+      _products[id].XP = 999;
       break;
 
     case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
