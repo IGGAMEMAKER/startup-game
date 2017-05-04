@@ -149,6 +149,7 @@ export default class Game extends Component {
   };
 
   renderGameInNormalMode = (props, state) => {
+    const { gamePhase } = state;
     let body = '';
 
     switch (state.mode) {
@@ -184,12 +185,13 @@ export default class Game extends Component {
             isChosenProjectsMenu={state.mode === GAME_MODE_PRODUCTS || state.mode === GAME_MODE_PRODUCT ? 'active' : ''}
             isChosenEconomicsMenu={state.mode === GAME_MODE_ECONOMICS ? 'active' : ''}
             isChosenStaffMenu={state.mode === GAME_MODE_STAFF ? 'active' : ''}
+
+            gamePhase={gamePhase}
           />
-          <br />
           <hr />
 
           <AdviceTab
-            gamePhase={state.gamePhase}
+            gamePhase={gamePhase}
           />
           <br />
           <hr />

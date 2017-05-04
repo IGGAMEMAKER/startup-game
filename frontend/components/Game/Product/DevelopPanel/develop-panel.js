@@ -22,6 +22,8 @@ import scheduleActions from '../../../../actions/schedule-actions';
 
 import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../../../../constants/work-speed';
 
+import c from '../../../../constants';
+
 import logger from '../../../../helpers/logger/logger';
 
 import AdsPanel from '../Ads/advert-planner-panel';
@@ -379,6 +381,23 @@ export default class DevelopPanel extends Component {
     );
   };
 
+  renderRatingTab = (id, idea, product, gamePhase) => {
+    const separator = <div><br /><hr /></div>;
+    const hypothesisTab = this.renderHypothesisTab(id, idea);
+
+    if (gamePhase === c.gameStages.GAME_STAGE_HIRED_FIRST_WORKER) {
+      return hypothesisTab;
+    }
+
+    return (
+      <div>
+        {hypothesisTab}
+        {separator}
+        <MainFeatureTab id={id} product={product} />
+      </div>
+    )
+  };
+
   renderFeature = (featureGroup, id, idea, hideOnComplete) => (feature, i) => {
     const featureName = feature.name;
 
@@ -451,7 +470,7 @@ export default class DevelopPanel extends Component {
     this.setState({ mode });
   };
 
-  render({ product }, state) {
+  render({ product, gamePhase }, state) {
     const { mode } = state;
     const { idea } = product;
 
@@ -484,14 +503,7 @@ export default class DevelopPanel extends Component {
         break;
 
       default:
-        body = (
-          <div>
-            {this.renderHypothesisTab(id, idea)}
-            <br />
-            <hr />
-            <MainFeatureTab id={id} product={product} />
-          </div>
-        );
+        body = this.renderRatingTab(id, idea, product, gamePhase);
         break;
     }
 

@@ -22,6 +22,15 @@ export default class Menu extends Component {
   };
 
   render(props, state) {
+    const {
+      isChosenProjectsMenu,
+      isChosenEconomicsMenu,
+      isChosenStaffMenu,
+      gameSpeed,
+      pause,
+      gamePhase
+    } = props;
+
     const saldoValue = Math.floor(moneyCalculator.saldo());
     const saldo = saldoValue  > 0;
 
@@ -29,14 +38,6 @@ export default class Menu extends Component {
     const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
     const navigation = s.navigation;
-
-    const {
-      isChosenProjectsMenu,
-      isChosenEconomicsMenu,
-      isChosenStaffMenu,
-      gameSpeed,
-      pause
-    } = props;
 
     const isRunning = !pause;
 

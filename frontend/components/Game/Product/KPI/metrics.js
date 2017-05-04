@@ -65,6 +65,7 @@ export default class Metrics extends Component {
     }
 
     let churnTab;
+    canShowChurnTab = true;
     if (canShowChurnTab) {
       churnTab = <li><b>Отток клиентов: {churn}% ({disloyalClients})</b>
         <span className="metric-link" onClick={onClientsPressed}>Улучшить</span>

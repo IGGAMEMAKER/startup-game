@@ -3,15 +3,22 @@ import UI from '../../UI';
 
 import flux from '../../../flux';
 
+// import MainFeatureTab from '../Product/MainFeature';
+import InitialProductTab from '../Product/InitialPanel/InitialProductTab';
+import mvpCreator from '../Product/InitialPanel/mvp-creator';
+
+import Menu from '../Menu';
+
+import c from '../../../constants/index';
+
 const STAGE_1 = 1;
 const STAGE_2 = 2;
+const STAGE_3 = 3;
 
 export default class Tutorial extends Component {
   state = {
     stage: STAGE_1
   };
-
-  componentWillMount() {}
 
   setStage = (stage) => {
     this.setState({ stage });
@@ -28,12 +35,19 @@ export default class Tutorial extends Component {
       </div>
     );
 
+    const onGameStart = () => {
+      mvpCreator.create(0, [], c.ideas.IDEA_WEB_HOSTING);
+
+      // this.setStage(STAGE_3);
+      flux.scheduleActions.startGame();
+    };
+
     const init2 = (
       <div>
         <div className="initial-tab-text">
           Ты начинаешь как основатель веб-хостинга - сервиса, на котором размещаются сайты других предпринимателей
         </div>
-        <UI.Button text="Начать игру!" primary onClick={() => flux.scheduleActions.startGame()} />
+        <UI.Button text="Начать игру!" primary onClick={onGameStart} />
       </div>
     );
 
@@ -46,6 +60,21 @@ export default class Tutorial extends Component {
 
       case STAGE_2:
         body = init2;
+        break;
+
+      case STAGE_3:
+        const product = flux.productStore.getProduct(0);
+
+        console.log(STAGE_3, product);
+        body = (
+          <div>
+            <InitialProductTab
+              id={0}
+              product={product}
+              onCreatePrototype={flux.scheduleActions.startGame}
+            />
+          </div>
+        );
         break;
     }
 

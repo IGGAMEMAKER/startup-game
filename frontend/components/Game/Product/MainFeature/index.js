@@ -4,7 +4,7 @@ import ProductDescriptions from '../../../../constants/products/product-descript
 import flux from '../../../../flux';
 import UI from '../../../UI';
 
-import * as c from '../../../../constants';
+import logger from '../../../../helpers/logger/logger';
 
 type PropsType = {};
 
@@ -92,7 +92,10 @@ export default class MainFeature extends Component {
     )
   };
 
-  render({ product, id }, state: StateType) {
+  render({ id }, state: StateType) {
+    const product = flux.productStore.getProduct(id);
+    // logger.debug('MainFeature', id, flux.productStore.getProducts(id), product.idea);
+
     const featureList = this
       .getSpecificProductFeatureListByIdea(product.idea)
       .map(this.renderMainFeature('offer', product, id));

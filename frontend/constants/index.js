@@ -1,20 +1,17 @@
-import * as messageAction from './actions/message-actions';
+import * as jobConstants from './job';
+import * as professionsConstants from './professions';
+import * as workSpeedConstants from './work-speed';
+import * as gameStagesConstants from './game-stages';
+import * as expensesConstants from './expenses';
+import * as ideasConstants from './products/ideas';
+import * as productStagesConstants from './products/product-stages';
 
-import * as job from './job';
-import * as professions from './professions';
-import * as workSpeed from './work-speed';
-import * as gameStages from './game-stages';
-import * as expenses from './expenses';
-import * as ideas from './products/ideas';
-import * as productStages from './products/product-stages';
-
-export const {
-  message: messageAction,
-  job,
-  profession: professions,
-  workSpeed,
-  gameStages,
-  expenses,
-  ideas,
-  productStages,
+export default {
+  job: jobConstants,
+  professions: professionsConstants,
+  workSpeed: workSpeedConstants,
+  gameStages: gameStagesConstants,
+  expenses: expensesConstants,
+  ideas: ideasConstants,
+  productStages: productStagesConstants
 };

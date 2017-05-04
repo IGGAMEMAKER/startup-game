@@ -70,6 +70,10 @@ class ProductStore extends EventEmitter {
     return _products;
   }
 
+  getProduct(id) {
+    return _products[id];
+  }
+
   getRating(i) {
     return computeRating(_products[i]);
   }

@@ -33,7 +33,7 @@ let _tasks = [];
 //   timecost: 2 * WORK_SPEED_NORMAL,
 //   speed: WORK_SPEED_NORMAL
 // }];
-let _day = 0;
+let _day = 29;
 let _workHours = 4;
 
 let _gamePhase = GAME_STAGES.GAME_STAGE_INIT;

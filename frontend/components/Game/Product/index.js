@@ -8,7 +8,6 @@ import * as PRODUCT_STAGES from '../../../constants/products/product-stages';
 
 import InitialProductTab from './InitialPanel/InitialProductTab';
 import DevelopPanel from './DevelopPanel/develop-panel';
-import PointShop from '../Player/Point-shop';
 
 export default class Product extends Component {
   render(props: PropsType, state: StateType) {
