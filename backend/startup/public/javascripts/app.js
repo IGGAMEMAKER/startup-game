@@ -9658,6 +9658,10 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
+	var _stages = __webpack_require__(168);
+
+	var _stages2 = _interopRequireDefault(_stages);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var MainFeature = function (_Component) {
@@ -9750,6 +9754,10 @@
 	        var action = function action() {
 	          // playerActions.spendPoints(pp, mp);
 	          _flux2.default.productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
+
+	          if (_stages2.default.isFirstFeatureMission()) {
+	            _stages2.default.onFirstFeatureUpgradeMissionCompleted();
+	          }
 	        };
 	        // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
 	        var ratingOverflow = current >= max;
@@ -9974,6 +9982,23 @@
 	              'div',
 	              null,
 	              '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0443 "\u0412\u0435\u0431-\u0441\u0430\u0439\u0442", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u0434\u043D\u044F\u0442\u044C \u043D\u0430\u0448 \u0440\u0435\u0439\u0442\u0438\u043D\u0433'
+	            )
+	          );
+	          break;
+
+	        case _constants2.default.gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE:
+	          target = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0422\u0430\u043A \u0434\u0435\u0440\u0436\u0430\u0442\u044C! \u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u043B\u0441\u044F! \u0420\u0435\u0439\u0442\u0438\u043D\u0433 - \u043A\u043B\u044E\u0447\u0435\u0432\u043E\u0439 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u044C, \u0432\u043B\u0438\u044F\u044E\u0449\u0438\u0439 \u043D\u0430 \u043D\u0430\u0448\u0438 \u0434\u043E\u0445\u043E\u0434\u044B \u0438 \u043D\u0430 \u043E\u0442\u0442\u043E\u043A \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 \u0432\u044B\u0448\u0435 7 \u0438 \u0432\u044B \u0441\u043C\u043E\u0436\u0435\u0442\u0435 \u043D\u0430\u0447\u0430\u0442\u044C \u043F\u0440\u0438\u043D\u0438\u043C\u0430\u0442\u044C \u043F\u043B\u0430\u0442\u0435\u0436\u0438 \u043D\u0430 \u0441\u0430\u0439\u0442\u0435!'
 	            )
 	          );
 	          break;
@@ -10525,6 +10550,9 @@
 	  onFirstAdCampaignMissionCompleted: function onFirstAdCampaignMissionCompleted() {
 	    setStage(gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS);
 	  },
+	  onFirstFeatureUpgradeMissionCompleted: function onFirstFeatureUpgradeMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE);
+	  },
 
 
 	  // mission checker
@@ -10540,6 +10568,9 @@
 	  },
 	  isFirstAdCampaignMission: function isFirstAdCampaignMission() {
 	    return getStage() === gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+	  },
+	  isFirstFeatureMission: function isFirstFeatureMission() {
+	    return getStage() === gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
 	  },
 
 

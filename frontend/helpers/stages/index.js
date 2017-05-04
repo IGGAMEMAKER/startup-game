@@ -31,6 +31,10 @@ export default {
     setStage(gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS);
   },
 
+  onFirstFeatureUpgradeMissionCompleted() {
+    setStage(gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE);
+  },
+
 
   // mission checker
   isFirstWorkerMission() {
@@ -48,6 +52,10 @@ export default {
 
   isFirstAdCampaignMission() {
     return getStage() === gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+  },
+
+  isFirstFeatureMission() {
+    return getStage() === gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
   },
 
 

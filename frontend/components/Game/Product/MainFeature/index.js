@@ -6,6 +6,7 @@ import UI from '../../../UI';
 
 import logger from '../../../../helpers/logger/logger';
 
+import stageHelper from '../../../../helpers/stages';
 type PropsType = {};
 
 type StateType = {};
@@ -72,6 +73,10 @@ export default class MainFeature extends Component {
     const action = () => {
       // playerActions.spendPoints(pp, mp);
       flux.productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
+      
+      if (stageHelper.isFirstFeatureMission()) {
+        stageHelper.onFirstFeatureUpgradeMissionCompleted()
+      }
     };
     // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
     const ratingOverflow = current >= max;

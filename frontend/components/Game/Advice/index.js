@@ -57,6 +57,15 @@ export default class AdviceTab extends Component {
           </div>
         );
         break;
+
+      case c.gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE:
+        target = (
+          <div>
+            <div>Так держать! Рейтинг увеличился! Рейтинг - ключевой показатель, влияющий на наши доходы и на отток пользователей</div>
+            <div>Добейтесь рейтинга выше 7 и вы сможете начать принимать платежи на сайте!</div>
+          </div>
+        );
+        break;
     }
 
     // if (!target) return '';
