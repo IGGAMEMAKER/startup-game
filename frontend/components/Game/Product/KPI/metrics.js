@@ -3,9 +3,10 @@ import { h, Component } from 'preact';
 
 import productStore from '../../../../stores/product-store';
 
-import coloringRange from '../../../../helpers/coloring-range';
 import percentify from '../../../../helpers/math/percentify';
 import round from '../../../../helpers/math/round';
+
+import ColoredRating from '../KPI/colored-rating';
 
 type PropsType = {};
 
@@ -27,7 +28,6 @@ export default class Metrics extends Component {
 
     const rating = round(productStore.getRatingForMetricsTab(id));
 
-    const ratingColor = coloringRange.standard(rating, 10);
 
     // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     const churn = percentify(productStore.getChurnRate(id));
@@ -52,12 +52,12 @@ export default class Metrics extends Component {
       !!productStore.getFeatureStatus(id, 'analytics', 'webvisor') ||
       !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
     let canShowIncomeTab = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
-
+    //
     let ratingTab;
     canShowRatingTab = true;
     if (canShowRatingTab) {
       ratingTab = <li>
-        <b>Рейтинг: <span style={{ color: ratingColor }}>{rating}</span>/10</b>
+        <b>Рейтинг: <ColoredRating rating={rating} /></b>
         <span className="metric-link" onClick={onRatingPressed}>Улучшить</span>
       </li>
     } else {

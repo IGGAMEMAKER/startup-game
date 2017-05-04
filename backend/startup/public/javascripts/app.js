@@ -5986,6 +5986,7 @@
 	var GAME_STAGE_HIRED_FIRST_WORKER = exports.GAME_STAGE_HIRED_FIRST_WORKER = 2;
 	var GAME_STAGE_INVITED_FIRST_CLIENTS = exports.GAME_STAGE_INVITED_FIRST_CLIENTS = 3;
 	var GAME_STAGE_IMPROVED_ANALYTICS = exports.GAME_STAGE_IMPROVED_ANALYTICS = 4;
+	var GAME_STAGE_STARTED_FIRST_HYPOTHESIS = exports.GAME_STAGE_STARTED_FIRST_HYPOTHESIS = 4.1;
 	var GAME_STAGE_LEARNED_SPEEDER = exports.GAME_STAGE_LEARNED_SPEEDER = 5; // month passed
 	var GAME_STAGE_TESTED_FIRST_HYPOTHESIS = exports.GAME_STAGE_TESTED_FIRST_HYPOTHESIS = 6;
 	var GAME_STAGE_IMPROVED_FIRST_FEATURE = exports.GAME_STAGE_IMPROVED_FIRST_FEATURE = 7;
@@ -8835,10 +8836,6 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _coloringRange = __webpack_require__(146);
-
-	var _coloringRange2 = _interopRequireDefault(_coloringRange);
-
 	var _percentify = __webpack_require__(157);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
@@ -8846,6 +8843,10 @@
 	var _round = __webpack_require__(96);
 
 	var _round2 = _interopRequireDefault(_round);
+
+	var _coloredRating = __webpack_require__(169);
+
+	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8877,8 +8878,6 @@
 
 	      var rating = (0, _round2.default)(_productStore2.default.getRatingForMetricsTab(id));
 
-	      var ratingColor = _coloringRange2.default.standard(rating, 10);
-
 	      // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
 	      var churn = (0, _percentify2.default)(_productStore2.default.getChurnRate(id));
 	      var disloyalClients = _productStore2.default.getDisloyalClients(id);
@@ -8898,7 +8897,7 @@
 	      var canShowClientsTab = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'webvisor') || !!_productStore2.default.getFeatureStatus(id, 'analytics', 'segmenting');
 	      var canShowNewClientsTab = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'webvisor') || !!_productStore2.default.getFeatureStatus(id, 'analytics', 'segmenting');
 	      var canShowIncomeTab = !!_productStore2.default.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
-
+	      //
 	      var ratingTab = void 0;
 	      canShowRatingTab = true;
 	      if (canShowRatingTab) {
@@ -8909,12 +8908,7 @@
 	            'b',
 	            null,
 	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
-	            (0, _preact.h)(
-	              'span',
-	              { style: { color: ratingColor } },
-	              rating
-	            ),
-	            '/10'
+	            (0, _preact.h)(_coloredRating2.default, { rating: rating })
 	          ),
 	          (0, _preact.h)(
 	            'span',
@@ -9865,6 +9859,14 @@
 
 	var _constants2 = _interopRequireDefault(_constants);
 
+	var _flux = __webpack_require__(131);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	var _coloredRating = __webpack_require__(169);
+
+	var _coloredRating2 = _interopRequireDefault(_coloredRating);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var AdviceTab = function (_Component) {
@@ -9948,6 +9950,30 @@
 	              'div',
 	              null,
 	              '\u041F\u043E-\u0445\u043E\u0440\u043E\u0448\u0435\u043C\u0443 \u0431\u044B \u0435\u0449\u0451 \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 \u043F\u043E\u0441\u0442\u0430\u0432\u0438\u0442\u044C... \u0412\u043F\u0440\u043E\u0447\u0435\u043C... \u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0439\u0442\u0435 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435!'
+	            )
+	          );
+	          break;
+
+	        case _constants2.default.gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS:
+	          target = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041F\u0435\u0440\u0432\u043E\u0435 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043E. \u041F\u0440\u043E\u0442\u043E\u0442\u0438\u043F \u0443\u0436\u0430\u0441\u0435\u043D! (\u0420\u0435\u0439\u0442\u0438\u043D\u0433 ',
+	              (0, _preact.h)(_coloredRating2.default, { rating: _flux2.default.productStore.getRating(0) }),
+	              ')'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041E\u0434\u043D\u0430\u043A\u043E, \u043C\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u043B\u0438 \u043F\u0430\u0440\u0443 \u0434\u0435\u043B\u044C\u043D\u044B\u0445 \u0441\u043E\u0432\u0435\u0442\u043E\u0432 \u0438 \u043C\u043E\u0436\u0435\u043C \u0443\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u043F\u0440\u043E\u0434\u0443\u043A\u0442'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0443 "\u0412\u0435\u0431-\u0441\u0430\u0439\u0442", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u0434\u043D\u044F\u0442\u044C \u043D\u0430\u0448 \u0440\u0435\u0439\u0442\u0438\u043D\u0433'
 	            )
 	          );
 	          break;
@@ -10509,7 +10535,8 @@
 	    return getStage() === gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
 	  },
 	  isFirstHypothesisMission: function isFirstHypothesisMission() {
-	    return getStage() === gameStages.GAME_STAGE_LEARNED_SPEEDER;
+	    return getStage() === gameStages.GAME_STAGE_IMPROVED_ANALYTICS;
+	    // return getStage() === gameStages.GAME_STAGE_LEARNED_SPEEDER;
 	  },
 	  isFirstAdCampaignMission: function isFirstAdCampaignMission() {
 	    return getStage() === gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
@@ -10527,6 +10554,80 @@
 	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
 	  }
 	};
+
+/***/ },
+/* 169 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _coloringRange = __webpack_require__(146);
+
+	var _coloringRange2 = _interopRequireDefault(_coloringRange);
+
+	var _round = __webpack_require__(96);
+
+	var _round2 = _interopRequireDefault(_round);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ColoredRating = function (_Component) {
+	  (0, _inherits3.default)(ColoredRating, _Component);
+
+	  function ColoredRating() {
+	    (0, _classCallCheck3.default)(this, ColoredRating);
+	    return (0, _possibleConstructorReturn3.default)(this, (ColoredRating.__proto__ || (0, _getPrototypeOf2.default)(ColoredRating)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(ColoredRating, [{
+	    key: 'render',
+	    value: function render(_ref) {
+	      var rating = _ref.rating;
+
+	      var ratingColor = _coloringRange2.default.standard(rating, 10);
+
+	      return (0, _preact.h)(
+	        'span',
+	        null,
+	        (0, _preact.h)(
+	          'span',
+	          { style: { color: ratingColor } },
+	          (0, _round2.default)(rating)
+	        ),
+	        '/10'
+	      );
+	    }
+	  }]);
+	  return ColoredRating;
+	}(_preact.Component);
+
+	exports.default = ColoredRating;
 
 /***/ }
 /******/ ]);

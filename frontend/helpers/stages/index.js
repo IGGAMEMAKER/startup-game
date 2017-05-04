@@ -42,7 +42,8 @@ export default {
   },
 
   isFirstHypothesisMission() {
-    return getStage() === gameStages.GAME_STAGE_LEARNED_SPEEDER;
+    return getStage() === gameStages.GAME_STAGE_IMPROVED_ANALYTICS;
+    // return getStage() === gameStages.GAME_STAGE_LEARNED_SPEEDER;
   },
 
   isFirstAdCampaignMission() {
