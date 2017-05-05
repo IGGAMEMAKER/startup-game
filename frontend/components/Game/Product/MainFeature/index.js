@@ -73,9 +73,18 @@ export default class MainFeature extends Component {
     const action = () => {
       // playerActions.spendPoints(pp, mp);
       flux.productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
-      
+
       if (stageHelper.isFirstFeatureMission()) {
         stageHelper.onFirstFeatureUpgradeMissionCompleted()
+      }
+
+      if (stageHelper.isPaymentRatingMission()) {
+        const rating = flux.productStore.getRating(id);
+        logger.debug(`paymentRatingMission`, rating);
+
+        if (rating >= 7) {
+          stageHelper.onPaymentRatingMissionCompleted();
+        }
       }
     };
     // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
@@ -98,6 +107,8 @@ export default class MainFeature extends Component {
   };
 
   render({ id }, state: StateType) {
+    if (!stageHelper.canShowMainFeatureTab()) return '';
+
     const product = flux.productStore.getProduct(id);
     // logger.debug('MainFeature', id, flux.productStore.getProducts(id), product.idea);
 

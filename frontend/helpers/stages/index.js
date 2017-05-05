@@ -35,6 +35,10 @@ export default {
     setStage(gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE);
   },
 
+  onPaymentRatingMissionCompleted() {
+    setStage(gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS);
+  },
+
 
   // mission checker
   isFirstWorkerMission() {
@@ -58,6 +62,10 @@ export default {
     return getStage() === gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
   },
 
+  isPaymentRatingMission() {
+    return getStage() === gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE;
+  },
+
 
   // can show some tabs region
   canShowHypothesisTab() {
@@ -70,6 +78,10 @@ export default {
 
   canShowMainFeatureTab() {
     return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+  },
+
+  canShowPaymentsTab() {
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
   },
 
 };

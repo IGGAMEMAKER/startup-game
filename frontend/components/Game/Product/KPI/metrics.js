@@ -28,7 +28,7 @@ export default class Metrics extends Component {
 
     const rating = round(productStore.getRatingForMetricsTab(id));
 
-
+    let expertise = productStore.getXP(id);
     // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
     const churn = percentify(productStore.getChurnRate(id));
     const disloyalClients = productStore.getDisloyalClients(id);
@@ -124,11 +124,16 @@ export default class Metrics extends Component {
       incomeTab = <li onClick={onAnalyticsPressed}>Разблокировать эту метрику</li>
     }
 
+    let expertiseTab = <li>
+      <b>Экспертиза: {expertise}XP</b>
+    </li>;
+
     return (
       <div>
         <div>
           <ul>
             {ratingTab}
+            {expertiseTab}
             {clientsTab}
             {churnTab}
 

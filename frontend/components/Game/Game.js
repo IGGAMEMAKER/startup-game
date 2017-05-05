@@ -193,8 +193,6 @@ export default class Game extends Component {
           <AdviceTab
             gamePhase={gamePhase}
           />
-          <br />
-          <hr />
 
           {body}
           <br />

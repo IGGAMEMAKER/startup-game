@@ -375,3 +375,8 @@ textarea {
   font-size: 60px;
 }
 
+.product-menu-toggler {
+  padding: 10px;
+  cursor: pointer;
+}
+

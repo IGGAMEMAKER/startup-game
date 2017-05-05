@@ -32,11 +32,14 @@ import MainFeatureTab from '../MainFeature';
 import stageHelper from '../../../../helpers/stages';
 
 
+const MODE_METRICS = 'MODE_METRICS';
+const MODE_RATING = 'MODE_RATING';
 const MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 const MODE_ADS = 'MODE_ADS';
 const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_PAYMENTS = 'MODE_PAYMENTS';
 const MODE_ANALYTICS = 'MODE_ANALYTICS';
+const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 
 export default class DevelopPanel extends Component {
   state = {
@@ -175,6 +178,8 @@ export default class DevelopPanel extends Component {
   };
 
   renderHypothesisTab = (id, idea) => {
+    if (!stageHelper.canShowHypothesisTab()) return '';
+
     const done = UI.symbols.ok;
     const cancel = UI.symbols.dot;
 
@@ -225,11 +230,26 @@ export default class DevelopPanel extends Component {
       });
     };
 
+    const possibleXPtext = <div>Запуская тестирование вы получите от 0 до {improvements.max} XP
+      (штраф -{clientSizePenalty}%)</div>;
+
     return (
       <div>
         <div
           className="featureGroupTitle"
         >Тестирование гипотез</div>
+        <div>
+          <div>{possibleXPtext}</div>
+          <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
+          <UI.Button
+            text="Протестировать гипотезу"
+            onClick={testHypothesis}
+            disabled={disabled}
+            primary
+          />
+          <Schedule />
+        </div>
+        <br />
         <div className="featureGroupDescription">
           <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
           <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
@@ -241,10 +261,7 @@ export default class DevelopPanel extends Component {
           <div className="metric-link" onClick={() => this.setMode(MODE_ADS)}>Привести больше клиентов</div>
         </div>
         <br />
-        <div>
-          Запуская тестирование вы получите от 0 до {improvements.max} XP
-          (штраф -{clientSizePenalty}%)
-        </div>
+        <div>{possibleXPtext}</div>
         <div className="offset-mid">
           <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
 
@@ -259,16 +276,6 @@ export default class DevelopPanel extends Component {
           <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
         </div>
         <br />
-        <div>
-          <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
-          <UI.Button
-            text="Протестировать гипотезу"
-            onClick={testHypothesis}
-            disabled={disabled}
-            primary
-          />
-          <Schedule />
-        </div>
       </div>
     )
   };
@@ -331,30 +338,23 @@ export default class DevelopPanel extends Component {
     );
   };
 
-  renderRatingTab = (id, idea, product) => {
-    // const separator = ;
-    let hypothesisTab;
-    let mainFeatureTab;
-
-    if (stageHelper.canShowHypothesisTab()) {
-      hypothesisTab = (
-        <div>
-          {this.renderHypothesisTab(id, idea)}
-          <div><br /><hr /></div>
-        </div>
-      )
-    }
-
-    if (stageHelper.canShowMainFeatureTab()) {
-      mainFeatureTab = <MainFeatureTab id={id} product={product} />;
-    }
+  renderMetricsTab = (id, product) => {
+    if (!stageHelper.canShowMetricsTab()) return '';
 
     return (
       <div>
-        {mainFeatureTab}
-        {hypothesisTab}
+        <b>Основные показатели продукта</b>
+        <Metrics
+          product={product}
+          id={id}
+          onRatingPressed={() => this.setMode(MODE_HYPOTHESIS)}
+          onClientsPressed={() => this.setMode(MODE_MARKETING)}
+          onPaymentsPressed={() => this.setMode(MODE_PAYMENTS)}
+          onAdsPressed={() => this.setMode(MODE_ADS)}
+          onAnalyticsPressed={() => this.setMode(MODE_ANALYTICS)}
+        />
       </div>
-    )
+    );
   };
 
   renderFeature = (featureGroup, id, idea, hideOnComplete, onUpgraded) => (feature, i) => {
@@ -375,9 +375,8 @@ export default class DevelopPanel extends Component {
       if (enoughPointsToUpgrade) {
         playerActions.spendPoints(pp, mp);
         productActions.improveFeatureByPoints(id, featureGroup, featureName);
-        logger.log('preOnUpgraded')
+
         if (onUpgraded) {
-          logger.log('onUpgraded')
           onUpgraded();
         }
       }
@@ -429,17 +428,85 @@ export default class DevelopPanel extends Component {
       </div>
     )
   };
-  //
+
   setMode = (mode) => {
     this.setState({ mode });
+  };
+
+  renderProductMenuNavbar = () => {
+    let metrics;
+    if (stageHelper.canShowMetricsTab()) {
+      metrics = (
+        <li
+          className={`product-menu-toggler `}
+          onClick={() => this.setMode(MODE_METRICS)}
+        ><span href="#">Метрики</span></li>
+      );
+    }
+
+    let hypothesis;
+    if (stageHelper.canShowHypothesisTab()) {
+      hypothesis = (
+        <li
+          className={`product-menu-toggler active`}
+          onClick={() => this.setMode(MODE_HYPOTHESIS)}
+        ><span href="#">Гипотезы</span></li>
+      );
+    }
+
+    let improvements;
+    if (stageHelper.canShowMainFeatureTab()) {
+      improvements = (
+        <li
+          className={`product-menu-toggler `}
+          onClick={() => this.setMode(MODE_MAIN_FEATURES)}
+        ><span href="#">Характеристики</span></li>
+      );
+    }
+
+    let payments;
+    if (stageHelper.canShowPaymentsTab()) {
+      payments = (
+        <li
+          className={`product-menu-toggler `}
+          onClick={() => this.setMode(MODE_PAYMENTS)}
+        ><span href="#">Монетизация</span></li>
+      );
+    }
+
+    let ads;
+    ads = (
+      <li
+        className={`product-menu-toggler `}
+        onClick={() => this.setMode(MODE_ADS)}
+      ><span href="#">Реклама</span></li>
+    );
+
+    let clients;
+    clients = (
+      <li
+        className={`product-menu-toggler `}
+        onClick={() => this.setMode(MODE_MARKETING)}
+      ><span href="#">Клиенты</span></li>
+    );
+
+    return (
+      <ul className="nav nav-tabs">
+        {hypothesis}
+        {improvements}
+        {payments}
+        {ads}
+        {clients}
+      </ul>
+    );
   };
 
   render({ product, gamePhase }, state) {
     const { mode } = state;
     const { idea } = product;
 
-    const id = 0; // TODO FIX PRODUCT ID
-    logger.shit('develop-panel.js fix productID id=0');
+    const id = 0;
+    logger.shit('develop-panel.js fix productID id=0'); // TODO FIX PRODUCT ID=0
 
     let body = '';
     switch (mode) {
@@ -447,28 +514,9 @@ export default class DevelopPanel extends Component {
       case MODE_MARKETING: body = this.renderClientTab(id, idea); break;
       case MODE_ADS: body = this.renderAdTab(id, product); break;
       case MODE_ANALYTICS: body = this.renderAnalyticsTab(id, idea); break;
-      default: body = this.renderRatingTab(id, idea, product); break;
-    }
-
-    let metricsTab;
-    if (stageHelper.canShowMetricsTab()) {
-      metricsTab = (
-        <div>
-          <b>Основные показатели продукта</b>
-          <Metrics
-            product={product}
-            id={id}
-            onRatingPressed={() => this.setMode(MODE_HYPOTHESIS)}
-            onClientsPressed={() => this.setMode(MODE_MARKETING)}
-            onPaymentsPressed={() => this.setMode(MODE_PAYMENTS)}
-            onAdsPressed={() => this.setMode(MODE_ADS)}
-            onAnalyticsPressed={() => this.setMode(MODE_ANALYTICS)}
-          />
-
-          <br />
-          <hr />
-        </div>
-      )
+      case MODE_METRICS: body = this.renderMetricsTab(id, product); break;
+      case MODE_MAIN_FEATURES: body = <MainFeatureTab id={id} product={product} />; break;
+      default: body = this.renderHypothesisTab(id, idea, product); break;
     }
 
     if (stageHelper.isFirstWorkerMission()) {
@@ -476,16 +524,22 @@ export default class DevelopPanel extends Component {
       // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
     }
 
+    let metrics;
+    if (stageHelper.canShowMetricsTab()) {
+      metrics = this.renderMetricsTab(id, product);
+    }
+
     return (
       <div>
         <b>Развитие продукта "{product.name}"</b>
         <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
-        <div style={{padding: '15px'}}>
-          {metricsTab}
-
+        {metrics}
+        {this.renderProductMenuNavbar()}
+        <div style={{padding: '15px', 'min-height': '500px'}}>
           {body}
         </div>
       </div>
     );
   }
 }
+

@@ -802,8 +802,6 @@
 	          (0, _preact.h)(_Advice2.default, {
 	            gamePhase: gamePhase
 	          }),
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)('hr', null),
 	          body,
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null)
@@ -8172,11 +8170,14 @@
 
 	// import React, { Component, PropTypes } from 'react';
 
+	var MODE_METRICS = 'MODE_METRICS';
+	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
 	var MODE_MARKETING = 'MODE_MARKETING';
 	var MODE_PAYMENTS = 'MODE_PAYMENTS';
 	var MODE_ANALYTICS = 'MODE_ANALYTICS';
+	var MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 
 	var DevelopPanel = function (_Component) {
 	  (0, _inherits3.default)(DevelopPanel, _Component);
@@ -8268,6 +8269,8 @@
 
 	      return points.marketing >= mp && points.programming >= pp;
 	    }, _this.renderHypothesisTab = function (id, idea) {
+	      if (!_stages2.default.canShowHypothesisTab()) return '';
+
 	      var done = _UI2.default.symbols.ok;
 	      var cancel = _UI2.default.symbols.dot;
 
@@ -8323,6 +8326,16 @@
 	        });
 	      };
 
+	      var possibleXPtext = (0, _preact.h)(
+	        'div',
+	        null,
+	        '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 \u043E\u0442 0 \u0434\u043E ',
+	        improvements.max,
+	        ' XP (\u0448\u0442\u0440\u0430\u0444 -',
+	        clientSizePenalty,
+	        '%)'
+	      );
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -8333,6 +8346,32 @@
 	          },
 	          '\u0422\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437'
 	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            possibleXPtext
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B: ',
+	            mp,
+	            'MP \u0438 ',
+	            pp,
+	            'PP'
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: '\u041F\u0440\u043E\u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u0443',
+	            onClick: testHypothesis,
+	            disabled: disabled,
+	            primary: true
+	          }),
+	          (0, _preact.h)(_Schedule2.default, null)
+	        ),
+	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'featureGroupDescription' },
@@ -8369,11 +8408,7 @@
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 \u043E\u0442 0 \u0434\u043E ',
-	          improvements.max,
-	          ' XP (\u0448\u0442\u0440\u0430\u0444 -',
-	          clientSizePenalty,
-	          '%)'
+	          possibleXPtext
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -8426,27 +8461,7 @@
 	            'XP'
 	          )
 	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B: ',
-	            mp,
-	            'MP \u0438 ',
-	            pp,
-	            'PP'
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u041F\u0440\u043E\u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u0443',
-	            onClick: testHypothesis,
-	            disabled: disabled,
-	            primary: true
-	          }),
-	          (0, _preact.h)(_Schedule2.default, null)
-	        )
+	        (0, _preact.h)('br', null)
 	      );
 	    }, _this.renderPaymentTab = function (id, idea) {
 	      var payment = _this.getPaymentFeatures(idea).map(_this.renderFeature('payment', id, idea));
@@ -8538,34 +8553,36 @@
 	        (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
 	        (0, _preact.h)('br', null)
 	      );
-	    }, _this.renderRatingTab = function (id, idea, product) {
-	      // const separator = ;
-	      var hypothesisTab = void 0;
-	      var mainFeatureTab = void 0;
-
-	      if (_stages2.default.canShowHypothesisTab()) {
-	        hypothesisTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          _this.renderHypothesisTab(id, idea),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)('hr', null)
-	          )
-	        );
-	      }
-
-	      if (_stages2.default.canShowMainFeatureTab()) {
-	        mainFeatureTab = (0, _preact.h)(_MainFeature2.default, { id: id, product: product });
-	      }
+	    }, _this.renderMetricsTab = function (id, product) {
+	      if (!_stages2.default.canShowMetricsTab()) return '';
 
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        mainFeatureTab,
-	        hypothesisTab
+	        (0, _preact.h)(
+	          'b',
+	          null,
+	          '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	        ),
+	        (0, _preact.h)(_metrics2.default, {
+	          product: product,
+	          id: id,
+	          onRatingPressed: function onRatingPressed() {
+	            return _this.setMode(MODE_HYPOTHESIS);
+	          },
+	          onClientsPressed: function onClientsPressed() {
+	            return _this.setMode(MODE_MARKETING);
+	          },
+	          onPaymentsPressed: function onPaymentsPressed() {
+	            return _this.setMode(MODE_PAYMENTS);
+	          },
+	          onAdsPressed: function onAdsPressed() {
+	            return _this.setMode(MODE_ADS);
+	          },
+	          onAnalyticsPressed: function onAnalyticsPressed() {
+	            return _this.setMode(MODE_ANALYTICS);
+	          }
+	        })
 	      );
 	    }, _this.renderFeature = function (featureGroup, id, idea, hideOnComplete, onUpgraded) {
 	      return function (feature, i) {
@@ -8586,9 +8603,8 @@
 	          if (enoughPointsToUpgrade) {
 	            _playerActions2.default.spendPoints(pp, mp);
 	            _productActions2.default.improveFeatureByPoints(id, featureGroup, featureName);
-	            _logger2.default.log('preOnUpgraded');
+
 	            if (onUpgraded) {
-	              _logger2.default.log('onUpgraded');
 	              onUpgraded();
 	            }
 	          }
@@ -8667,6 +8683,120 @@
 	      };
 	    }, _this.setMode = function (mode) {
 	      _this.setState({ mode: mode });
+	    }, _this.renderProductMenuNavbar = function () {
+	      var metrics = void 0;
+	      if (_stages2.default.canShowMetricsTab()) {
+	        metrics = (0, _preact.h)(
+	          'li',
+	          {
+	            className: 'product-menu-toggler ',
+	            onClick: function onClick() {
+	              return _this.setMode(MODE_METRICS);
+	            }
+	          },
+	          (0, _preact.h)(
+	            'span',
+	            { href: '#' },
+	            '\u041C\u0435\u0442\u0440\u0438\u043A\u0438'
+	          )
+	        );
+	      }
+
+	      var hypothesis = void 0;
+	      if (_stages2.default.canShowHypothesisTab()) {
+	        hypothesis = (0, _preact.h)(
+	          'li',
+	          {
+	            className: 'product-menu-toggler active',
+	            onClick: function onClick() {
+	              return _this.setMode(MODE_HYPOTHESIS);
+	            }
+	          },
+	          (0, _preact.h)(
+	            'span',
+	            { href: '#' },
+	            '\u0413\u0438\u043F\u043E\u0442\u0435\u0437\u044B'
+	          )
+	        );
+	      }
+
+	      var improvements = void 0;
+	      if (_stages2.default.canShowMainFeatureTab()) {
+	        improvements = (0, _preact.h)(
+	          'li',
+	          {
+	            className: 'product-menu-toggler ',
+	            onClick: function onClick() {
+	              return _this.setMode(MODE_MAIN_FEATURES);
+	            }
+	          },
+	          (0, _preact.h)(
+	            'span',
+	            { href: '#' },
+	            '\u0425\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438'
+	          )
+	        );
+	      }
+
+	      var payments = void 0;
+	      if (_stages2.default.canShowPaymentsTab()) {
+	        payments = (0, _preact.h)(
+	          'li',
+	          {
+	            className: 'product-menu-toggler ',
+	            onClick: function onClick() {
+	              return _this.setMode(MODE_PAYMENTS);
+	            }
+	          },
+	          (0, _preact.h)(
+	            'span',
+	            { href: '#' },
+	            '\u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
+	          )
+	        );
+	      }
+
+	      var ads = void 0;
+	      ads = (0, _preact.h)(
+	        'li',
+	        {
+	          className: 'product-menu-toggler ',
+	          onClick: function onClick() {
+	            return _this.setMode(MODE_ADS);
+	          }
+	        },
+	        (0, _preact.h)(
+	          'span',
+	          { href: '#' },
+	          '\u0420\u0435\u043A\u043B\u0430\u043C\u0430'
+	        )
+	      );
+
+	      var clients = void 0;
+	      clients = (0, _preact.h)(
+	        'li',
+	        {
+	          className: 'product-menu-toggler ',
+	          onClick: function onClick() {
+	            return _this.setMode(MODE_MARKETING);
+	          }
+	        },
+	        (0, _preact.h)(
+	          'span',
+	          { href: '#' },
+	          '\u041A\u043B\u0438\u0435\u043D\u0442\u044B'
+	        )
+	      );
+
+	      return (0, _preact.h)(
+	        'ul',
+	        { className: 'nav nav-tabs' },
+	        hypothesis,
+	        improvements,
+	        payments,
+	        ads,
+	        clients
+	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
@@ -8697,21 +8827,17 @@
 	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
 	      );
 	    }
-	    //
-
 	  }, {
 	    key: 'render',
 	    value: function render(_ref2, state) {
-	      var _this2 = this;
-
 	      var product = _ref2.product,
 	          gamePhase = _ref2.gamePhase;
 	      var mode = state.mode;
 	      var idea = product.idea;
 
 
-	      var id = 0; // TODO FIX PRODUCT ID
-	      _logger2.default.shit('develop-panel.js fix productID id=0');
+	      var id = 0;
+	      _logger2.default.shit('develop-panel.js fix productID id=0'); // TODO FIX PRODUCT ID=0
 
 	      var body = '';
 	      switch (mode) {
@@ -8723,47 +8849,22 @@
 	          body = this.renderAdTab(id, product);break;
 	        case MODE_ANALYTICS:
 	          body = this.renderAnalyticsTab(id, idea);break;
+	        case MODE_METRICS:
+	          body = this.renderMetricsTab(id, product);break;
+	        case MODE_MAIN_FEATURES:
+	          body = (0, _preact.h)(_MainFeature2.default, { id: id, product: product });break;
 	        default:
-	          body = this.renderRatingTab(id, idea, product);break;
-	      }
-
-	      var metricsTab = void 0;
-	      if (_stages2.default.canShowMetricsTab()) {
-	        metricsTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'b',
-	            null,
-	            '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
-	          ),
-	          (0, _preact.h)(_metrics2.default, {
-	            product: product,
-	            id: id,
-	            onRatingPressed: function onRatingPressed() {
-	              return _this2.setMode(MODE_HYPOTHESIS);
-	            },
-	            onClientsPressed: function onClientsPressed() {
-	              return _this2.setMode(MODE_MARKETING);
-	            },
-	            onPaymentsPressed: function onPaymentsPressed() {
-	              return _this2.setMode(MODE_PAYMENTS);
-	            },
-	            onAdsPressed: function onAdsPressed() {
-	              return _this2.setMode(MODE_ADS);
-	            },
-	            onAnalyticsPressed: function onAnalyticsPressed() {
-	              return _this2.setMode(MODE_ANALYTICS);
-	            }
-	          }),
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)('hr', null)
-	        );
+	          body = this.renderHypothesisTab(id, idea, product);break;
 	      }
 
 	      if (_stages2.default.isFirstWorkerMission()) {
 	        return (0, _preact.h)('div', null);
 	        // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
+	      }
+
+	      var metrics = void 0;
+	      if (_stages2.default.canShowMetricsTab()) {
+	        metrics = this.renderMetricsTab(id, product);
 	      }
 
 	      return (0, _preact.h)(
@@ -8782,10 +8883,11 @@
 	          '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
 	          _productStore2.default.getDescriptionOfProduct(id)
 	        ),
+	        metrics,
+	        this.renderProductMenuNavbar(),
 	        (0, _preact.h)(
 	          'div',
-	          { style: { padding: '15px' } },
-	          metricsTab,
+	          { style: { padding: '15px', 'min-height': '500px' } },
 	          body
 	        )
 	      );
@@ -8878,6 +8980,7 @@
 
 	      var rating = (0, _round2.default)(_productStore2.default.getRatingForMetricsTab(id));
 
+	      var expertise = _productStore2.default.getXP(id);
 	      // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
 	      var churn = (0, _percentify2.default)(_productStore2.default.getChurnRate(id));
 	      var disloyalClients = _productStore2.default.getDisloyalClients(id);
@@ -9075,6 +9178,18 @@
 	        );
 	      }
 
+	      var expertiseTab = (0, _preact.h)(
+	        'li',
+	        null,
+	        (0, _preact.h)(
+	          'b',
+	          null,
+	          '\u042D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u0430: ',
+	          expertise,
+	          'XP'
+	        )
+	      );
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -9085,6 +9200,7 @@
 	            'ul',
 	            null,
 	            ratingTab,
+	            expertiseTab,
 	            clientsTab,
 	            churnTab,
 	            viralityTab,
@@ -9758,6 +9874,15 @@
 	          if (_stages2.default.isFirstFeatureMission()) {
 	            _stages2.default.onFirstFeatureUpgradeMissionCompleted();
 	          }
+
+	          if (_stages2.default.isPaymentRatingMission()) {
+	            var rating = _flux2.default.productStore.getRating(id);
+	            _logger2.default.debug('paymentRatingMission', rating);
+
+	            if (rating >= 7) {
+	              _stages2.default.onPaymentRatingMissionCompleted();
+	            }
+	          }
 	        };
 	        // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
 	        var ratingOverflow = current >= max;
@@ -9784,6 +9909,8 @@
 	    key: 'render',
 	    value: function render(_ref2, state) {
 	      var id = _ref2.id;
+
+	      if (!_stages2.default.canShowMainFeatureTab()) return '';
 
 	      var product = _flux2.default.productStore.getProduct(id);
 	      // logger.debug('MainFeature', id, flux.productStore.getProducts(id), product.idea);
@@ -9923,12 +10050,12 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u041E\u0442\u043B\u0438\u0447\u043D\u043E! \u0414\u043B\u044F \u0442\u043E\u0433\u043E, \u0447\u0442\u043E\u0431\u044B \u043B\u0443\u0447\u0448\u0435 \u043F\u043E\u043D\u0438\u043C\u0430\u0442\u044C, \u0447\u0442\u043E \u043D\u0443\u0436\u043D\u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u043C, \u0442\u0435\u0441\u0442\u0438\u0440\u0443\u0439\u0442\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B \u043E \u0432\u0430\u0448\u0435\u043C \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0435'
+	              '\u041E\u0442\u043B\u0438\u0447\u043D\u043E! \u041D\u0430\u043C \u043D\u0443\u0436\u043D\u044B \u043F\u0435\u0440\u0432\u044B\u0435 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438'
 	            ),
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u041D\u043E \u0441\u043D\u0430\u0447\u0430\u043B\u0430 \u043F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u0435\u0435 200 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043D\u0430 \u0432\u0430\u0448 \u0441\u0430\u0439\u0442'
+	              '\u041F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u0435\u0435 200 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043D\u0430 \u0432\u0430\u0448 \u0441\u0430\u0439\u0442 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u041F\u0440\u043E\u0435\u043A\u0442\u044B->\u0420\u0435\u043A\u043B\u0430\u043C\u0430"'
 	            )
 	          );
 	          break;
@@ -9940,7 +10067,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u041F\u0440\u0435\u0432\u043E\u0441\u0445\u043E\u0434\u043D\u043E! \u0427\u0435\u043C \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0432\u044B \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442\u0435 \u043D\u0430 \u0441\u0430\u0439\u0442, \u0442\u0435\u043C \u0442\u043E\u0447\u043D\u0435\u0435 \u043D\u0430\u0448\u0430 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430... \u043A\u043E\u0442\u043E\u0440\u043E\u0439 \u0443 \u043D\u0430\u0441 \u043D\u0435\u0442'
+	              '\u041F\u0440\u0435\u0432\u043E\u0441\u0445\u043E\u0434\u043D\u043E! \u0427\u0435\u043C \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0432\u044B \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442\u0435 \u043D\u0430 \u0441\u0430\u0439\u0442, \u0442\u0435\u043C \u0442\u043E\u0447\u043D\u0435\u0435 \u043D\u0430\u0448\u0430 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430 ... \u043A\u043E\u0442\u043E\u0440\u043E\u0439 \u0443 \u043D\u0430\u0441 \u043D\u0435\u0442'
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -10002,6 +10129,24 @@
 	            )
 	          );
 	          break;
+
+	        case _constants2.default.gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS:
+	          target = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0418\u043D\u0442\u0435\u0440\u0435\u0441 \u043A \u043D\u0430\u0448\u0435\u043C\u0443 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0443 \u043D\u0435 \u043E\u0441\u043B\u0430\u0431\u0435\u0432\u0430\u0435\u0442!'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041C\u043E\u0436\u0435\u0442\u0435 \u043F\u0440\u0438\u0441\u0442\u0443\u043F\u0438\u0442\u044C \u043A \u043C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u0438 \u0441\u0430\u0439\u0442\u0430!'
+	            )
+	          );
+	          // <div>Продолжайте работать над улучшением продукта и вы сможете разорить своих конкурентов!</div>
+	          break;
 	      }
 
 	      // if (!target) return '';
@@ -10015,7 +10160,9 @@
 	          '\u0412\u0430\u0448\u0430 \u0442\u0435\u043A\u0443\u0449\u0430\u044F \u0446\u0435\u043B\u044C'
 	        ),
 	        gamePhase,
-	        target
+	        target,
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)('hr', null)
 	      );
 	    }
 	  }]);
@@ -10553,6 +10700,9 @@
 	  onFirstFeatureUpgradeMissionCompleted: function onFirstFeatureUpgradeMissionCompleted() {
 	    setStage(gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE);
 	  },
+	  onPaymentRatingMissionCompleted: function onPaymentRatingMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS);
+	  },
 
 
 	  // mission checker
@@ -10572,6 +10722,9 @@
 	  isFirstFeatureMission: function isFirstFeatureMission() {
 	    return getStage() === gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
 	  },
+	  isPaymentRatingMission: function isPaymentRatingMission() {
+	    return getStage() === gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE;
+	  },
 
 
 	  // can show some tabs region
@@ -10583,6 +10736,9 @@
 	  },
 	  canShowMainFeatureTab: function canShowMainFeatureTab() {
 	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+	  },
+	  canShowPaymentsTab: function canShowPaymentsTab() {
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
 	  }
 	};
 
