@@ -78,12 +78,11 @@ export default class AdviceTab extends Component {
         break;
     }
 
-    // if (!target) return '';
+    if (!target) target = `#${gamePhase}`;
 
     return (
       <div>
-        <div>Ваша текущая цель</div>
-        {gamePhase}
+        <h3>Задание</h3>
         {target}
         <br />
         <hr />

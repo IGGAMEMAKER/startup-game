@@ -445,16 +445,6 @@ export default class DevelopPanel extends Component {
   };
 
   renderProductMenuNavbar = () => {
-    let metrics;
-    if (stageHelper.canShowMetricsTab()) {
-      metrics = (
-        <li
-          className={`product-menu-toggler `}
-          onClick={() => this.setMode(MODE_METRICS)}
-        ><span href="#">Метрики</span></li>
-      );
-    }
-
     let hypothesis;
     if (stageHelper.canShowHypothesisTab()) {
       hypothesis = (

@@ -8892,24 +8892,6 @@
 	    }, _this.setMode = function (mode) {
 	      _this.setState({ mode: mode });
 	    }, _this.renderProductMenuNavbar = function () {
-	      var metrics = void 0;
-	      if (_stages2.default.canShowMetricsTab()) {
-	        metrics = (0, _preact.h)(
-	          'li',
-	          {
-	            className: 'product-menu-toggler ',
-	            onClick: function onClick() {
-	              return _this.setMode(MODE_METRICS);
-	            }
-	          },
-	          (0, _preact.h)(
-	            'span',
-	            { href: '#' },
-	            '\u041C\u0435\u0442\u0440\u0438\u043A\u0438'
-	          )
-	        );
-	      }
-
 	      var hypothesis = void 0;
 	      if (_stages2.default.canShowHypothesisTab()) {
 	        hypothesis = (0, _preact.h)(
@@ -10433,17 +10415,16 @@
 	          break;
 	      }
 
-	      // if (!target) return '';
+	      if (!target) target = '#' + gamePhase;
 
 	      return (0, _preact.h)(
 	        'div',
 	        null,
 	        (0, _preact.h)(
-	          'div',
+	          'h3',
 	          null,
-	          '\u0412\u0430\u0448\u0430 \u0442\u0435\u043A\u0443\u0449\u0430\u044F \u0446\u0435\u043B\u044C'
+	          '\u0417\u0430\u0434\u0430\u043D\u0438\u0435'
 	        ),
-	        gamePhase,
 	        target,
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)('hr', null)
