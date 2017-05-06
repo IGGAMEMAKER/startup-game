@@ -7226,7 +7226,7 @@
 
 	  // can show some tabs region
 	  canShowHypothesisTab: function canShowHypothesisTab() {
-	    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+	    return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
 	  },
 	  canShowMetricsTab: function canShowMetricsTab() {
 	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
@@ -10338,7 +10338,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438, \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
+	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u0413\u0438\u043F\u043E\u0442\u0435\u0437\u044B", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
 	            )
 	          );
 	          break;

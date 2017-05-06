@@ -69,7 +69,7 @@ export default {
 
   // can show some tabs region
   canShowHypothesisTab() {
-    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+    return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
   },
 
   canShowMetricsTab() {
