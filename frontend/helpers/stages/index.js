@@ -84,4 +84,12 @@ export default {
     return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
   },
 
+  canShowCompetitorsTab() {
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+  },
+
+  canShowClientsTab() {
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+  },
+
 };

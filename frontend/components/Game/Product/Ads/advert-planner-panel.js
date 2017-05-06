@@ -55,7 +55,6 @@ export default class AdvertPlannerPanel extends Component {
         <div>Объём рынка: {marketSize} человек</div>
         <div>Наши клиенты: {ourClients} человек</div>
         <div>Клиенты, которых мы не можем переманить: {unbeatableClients} человек</div>
-        <Competitors id={id} />
         <div>Наша потенциальная аудитория: {potentialClients}
           ({marketSize} - {ourClients} - {unbeatableClients})
         </div>

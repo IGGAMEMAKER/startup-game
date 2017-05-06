@@ -31,6 +31,8 @@ import MainFeatureTab from '../MainFeature';
 
 import stageHelper from '../../../../helpers/stages';
 
+import Competitors from '../Ads/competitors';
+
 
 const MODE_METRICS = 'MODE_METRICS';
 const MODE_RATING = 'MODE_RATING';
@@ -343,6 +345,10 @@ export default class DevelopPanel extends Component {
     );
   };
 
+  renderCompetitors(id) {
+
+  }
+
   renderMetricsTab = (id, product) => {
     if (!stageHelper.canShowMetricsTab()) return '';
 
@@ -488,12 +494,24 @@ export default class DevelopPanel extends Component {
     );
 
     let clients;
-    clients = (
-      <li
-        className={`product-menu-toggler `}
-        onClick={() => this.setMode(MODE_MARKETING)}
-      ><span href="#">Клиенты</span></li>
-    );
+    if (stageHelper.canShowClientsTab()) {
+      clients = (
+        <li
+          className={`product-menu-toggler `}
+          onClick={() => this.setMode(MODE_MARKETING)}
+        ><span href="#">Клиенты</span></li>
+      );
+    }
+
+    let competitors;
+    if (stageHelper.canShowCompetitorsTab()) {
+      competitors = (
+        <li
+          className={`product-menu-toggler `}
+          onClick={() => this.setMode(MODE_COMPETITORS)}
+        ><span href="#">Конкуренты</span></li>
+      );
+    }
 
     return (
       <ul className="nav nav-tabs">
@@ -502,6 +520,7 @@ export default class DevelopPanel extends Component {
         {payments}
         {ads}
         {clients}
+        {competitors}
       </ul>
     );
   };
@@ -543,7 +562,7 @@ export default class DevelopPanel extends Component {
         break;
 
       case MODE_COMPETITORS:
-        body = this.renderAdTab(id, product);
+        body = <Competitors id={id} />;//this.renderAdTab(id, product);
         break;
 
       default:
@@ -551,17 +570,15 @@ export default class DevelopPanel extends Component {
         break;
     }
 
-    let metrics;
-    if (stageHelper.canShowMetricsTab()) {
-      metrics = this.renderMetricsTab(id, product);
-    }
+    const metrics = this.renderMetricsTab(id, product);
+    const menu = this.renderProductMenuNavbar();
 
     return (
       <div>
         <b>Развитие продукта "{product.name}"</b>
         <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
         {metrics}
-        {this.renderProductMenuNavbar()}
+        {menu}
         <div style={{padding: '15px', 'min-height': '500px'}}>
           {body}
         </div>

@@ -7236,6 +7236,12 @@
 	  },
 	  canShowPaymentsTab: function canShowPaymentsTab() {
 	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	  },
+	  canShowCompetitorsTab: function canShowCompetitorsTab() {
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	  },
+	  canShowClientsTab: function canShowClientsTab() {
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
 	  }
 	};
 
@@ -8361,13 +8367,17 @@
 
 	var _stages2 = _interopRequireDefault(_stages);
 
+	var _competitors = __webpack_require__(166);
+
+	var _competitors2 = _interopRequireDefault(_competitors);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var MODE_METRICS = 'MODE_METRICS';
 	// import React, { Component, PropTypes } from 'react';
 
-	var MODE_METRICS = 'MODE_METRICS';
 	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
@@ -8971,20 +8981,40 @@
 	      );
 
 	      var clients = void 0;
-	      clients = (0, _preact.h)(
-	        'li',
-	        {
-	          className: 'product-menu-toggler ',
-	          onClick: function onClick() {
-	            return _this.setMode(MODE_MARKETING);
-	          }
-	        },
-	        (0, _preact.h)(
-	          'span',
-	          { href: '#' },
-	          '\u041A\u043B\u0438\u0435\u043D\u0442\u044B'
-	        )
-	      );
+	      if (_stages2.default.canShowClientsTab()) {
+	        clients = (0, _preact.h)(
+	          'li',
+	          {
+	            className: 'product-menu-toggler ',
+	            onClick: function onClick() {
+	              return _this.setMode(MODE_MARKETING);
+	            }
+	          },
+	          (0, _preact.h)(
+	            'span',
+	            { href: '#' },
+	            '\u041A\u043B\u0438\u0435\u043D\u0442\u044B'
+	          )
+	        );
+	      }
+
+	      var competitors = void 0;
+	      if (_stages2.default.canShowCompetitorsTab()) {
+	        competitors = (0, _preact.h)(
+	          'li',
+	          {
+	            className: 'product-menu-toggler ',
+	            onClick: function onClick() {
+	              return _this.setMode(MODE_COMPETITORS);
+	            }
+	          },
+	          (0, _preact.h)(
+	            'span',
+	            { href: '#' },
+	            '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442\u044B'
+	          )
+	        );
+	      }
 
 	      return (0, _preact.h)(
 	        'ul',
@@ -8993,7 +9023,8 @@
 	        improvements,
 	        payments,
 	        ads,
-	        clients
+	        clients,
+	        competitors
 	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
@@ -9028,6 +9059,9 @@
 	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
 	      );
 	    }
+	  }, {
+	    key: 'renderCompetitors',
+	    value: function renderCompetitors(id) {}
 	  }, {
 	    key: 'render',
 	    value: function render(_ref2, state) {
@@ -9071,7 +9105,7 @@
 	          break;
 
 	        case MODE_COMPETITORS:
-	          body = this.renderAdTab(id, product);
+	          body = (0, _preact.h)(_competitors2.default, { id: id }); //this.renderAdTab(id, product);
 	          break;
 
 	        default:
@@ -9079,10 +9113,8 @@
 	          break;
 	      }
 
-	      var metrics = void 0;
-	      if (_stages2.default.canShowMetricsTab()) {
-	        metrics = this.renderMetricsTab(id, product);
-	      }
+	      var metrics = this.renderMetricsTab(id, product);
+	      var menu = this.renderProductMenuNavbar();
 
 	      return (0, _preact.h)(
 	        'div',
@@ -9101,7 +9133,7 @@
 	          _productStore2.default.getDescriptionOfProduct(id)
 	        ),
 	        metrics,
-	        this.renderProductMenuNavbar(),
+	        menu,
 	        (0, _preact.h)(
 	          'div',
 	          { style: { padding: '15px', 'min-height': '500px' } },
@@ -9843,7 +9875,6 @@
 	          unbeatableClients,
 	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
 	        ),
-	        (0, _preact.h)(_competitors2.default, { id: id }),
 	        (0, _preact.h)(
 	          'div',
 	          null,
