@@ -594,23 +594,23 @@
 
 	var _Staff2 = _interopRequireDefault(_Staff);
 
-	var _Menu = __webpack_require__(147);
+	var _Menu = __webpack_require__(151);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Economics = __webpack_require__(149);
+	var _Economics = __webpack_require__(153);
 
 	var _Economics2 = _interopRequireDefault(_Economics);
 
-	var _Product = __webpack_require__(151);
+	var _Product = __webpack_require__(155);
 
 	var _Product2 = _interopRequireDefault(_Product);
 
-	var _Advice = __webpack_require__(164);
+	var _Advice = __webpack_require__(168);
 
 	var _Advice2 = _interopRequireDefault(_Advice);
 
-	var _Tutorial = __webpack_require__(165);
+	var _Tutorial = __webpack_require__(169);
 
 	var _Tutorial2 = _interopRequireDefault(_Tutorial);
 
@@ -626,7 +626,7 @@
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _game = __webpack_require__(166);
+	var _game = __webpack_require__(170);
 
 	var _game2 = _interopRequireDefault(_game);
 
@@ -2717,11 +2717,11 @@
 
 	var _Select2 = _interopRequireDefault(_Select);
 
-	var _coloringRange = __webpack_require__(146);
+	var _coloringRange = __webpack_require__(147);
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
-	var _stages = __webpack_require__(168);
+	var _stages = __webpack_require__(148);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -5679,7 +5679,7 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _scheduleActions = __webpack_require__(144);
+	var _scheduleActions = __webpack_require__(145);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
@@ -5687,7 +5687,7 @@
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
-	var _productActions = __webpack_require__(145);
+	var _productActions = __webpack_require__(146);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -6013,6 +6013,10 @@
 	  value: true
 	});
 
+	var _defineProperty2 = __webpack_require__(137);
+
+	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -6039,7 +6043,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _productActions = __webpack_require__(137);
+	var _productActions = __webpack_require__(138);
 
 	var c = _interopRequireWildcard(_productActions);
 
@@ -6055,19 +6059,19 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _ideas = __webpack_require__(138);
+	var _ideas = __webpack_require__(139);
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
-	var _computeRating = __webpack_require__(139);
+	var _computeRating = __webpack_require__(140);
 
 	var _computeRating2 = _interopRequireDefault(_computeRating);
 
-	var _productDescriptions = __webpack_require__(140);
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _productStages = __webpack_require__(143);
+	var _productStages = __webpack_require__(144);
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
@@ -6579,8 +6583,17 @@
 	      return (0, _productDescriptions2.default)(this.getIdea(id)).description;
 	    }
 	  }, {
+	    key: 'getCompetitorsList',
+	    value: function getCompetitorsList(id) {
+	      return [{ rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' }, { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' }, { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }].sort(function (a, b) {
+	        return a.rating > b.rating;
+	      });
+	    }
+	  }, {
 	    key: 'getMaxAmountOfPossibleClients',
-	    value: function getMaxAmountOfPossibleClients(id, money, competitors) {
+	    value: function getMaxAmountOfPossibleClients(id, money) {
+	      var competitors = this.getCompetitorsList(id);
+
 	      var maxMarketSize = (0, _productDescriptions2.default)(this.getIdea(id)).marketSize;
 	      var rating = this.getRating(id);
 	      var ourClients = this.getClients(id);
@@ -6619,7 +6632,7 @@
 
 	      // return canAffordClientsAmount;
 
-	      return {
+	      return (0, _defineProperty3.default)({
 	        marketSize: maxMarketSize,
 	        potentialClients: maxMarketSize - frozen,
 	        amount: result,
@@ -6627,7 +6640,7 @@
 	        competitors: competitors,
 	        unbeatableClients: unbeatableClients,
 	        freeClients: maxMarketSize - totalClients
-	      };
+	      }, 'competitors', competitors);
 	    }
 	  }]);
 	  return ProductStore;
@@ -6726,6 +6739,35 @@
 
 /***/ },
 /* 137 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	var _defineProperty = __webpack_require__(47);
+
+	var _defineProperty2 = _interopRequireDefault(_defineProperty);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (obj, key, value) {
+	  if (key in obj) {
+	    (0, _defineProperty2.default)(obj, key, {
+	      value: value,
+	      enumerable: true,
+	      configurable: true,
+	      writable: true
+	    });
+	  } else {
+	    obj[key] = value;
+	  }
+
+	  return obj;
+	};
+
+/***/ },
+/* 138 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6743,7 +6785,7 @@
 	var PRODUCT_ACTIONS_TEST_HYPOTHESIS = exports.PRODUCT_ACTIONS_TEST_HYPOTHESIS = 'PRODUCT_ACTIONS_TEST_HYPOTHESIS';
 
 /***/ },
-/* 138 */
+/* 139 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6755,7 +6797,7 @@
 	var IDEA_WEB_HOSTING = exports.IDEA_WEB_HOSTING = 'IDEA_WEB_HOSTING';
 
 /***/ },
-/* 139 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6764,7 +6806,7 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(140);
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -6797,7 +6839,7 @@
 	};
 
 /***/ },
-/* 140 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6817,15 +6859,15 @@
 	  }
 	};
 
-	var _ideas = __webpack_require__(138);
+	var _ideas = __webpack_require__(139);
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
-	var _WEBSTUDIO = __webpack_require__(141);
+	var _WEBSTUDIO = __webpack_require__(142);
 
 	var _WEBSTUDIO2 = _interopRequireDefault(_WEBSTUDIO);
 
-	var _WEBHOSTING = __webpack_require__(142);
+	var _WEBHOSTING = __webpack_require__(143);
 
 	var _WEBHOSTING2 = _interopRequireDefault(_WEBHOSTING);
 
@@ -6836,7 +6878,7 @@
 	;
 
 /***/ },
-/* 141 */
+/* 142 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6859,7 +6901,7 @@
 	};
 
 /***/ },
-/* 142 */
+/* 143 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6886,7 +6928,7 @@
 	};
 
 /***/ },
-/* 143 */
+/* 144 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6899,7 +6941,7 @@
 	var PRODUCT_STAGE_NORMAL = exports.PRODUCT_STAGE_NORMAL = 'PRODUCT_STAGE_NORMAL';
 
 /***/ },
-/* 144 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6986,7 +7028,7 @@
 	};
 
 /***/ },
-/* 145 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7000,7 +7042,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _productActions = __webpack_require__(137);
+	var _productActions = __webpack_require__(138);
 
 	var ACTIONS = _interopRequireWildcard(_productActions);
 
@@ -7081,7 +7123,7 @@
 	};
 
 /***/ },
-/* 146 */
+/* 147 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7099,7 +7141,162 @@
 	};
 
 /***/ },
-/* 147 */
+/* 148 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _flux = __webpack_require__(131);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	var _constants = __webpack_require__(149);
+
+	var _constants2 = _interopRequireDefault(_constants);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _gameStages = __webpack_require__(134);
+
+	var gameStages = _interopRequireWildcard(_gameStages);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var getStage = function getStage() {
+	  return _flux2.default.scheduleStore.getGamePhase();
+	};
+
+	var setStage = function setStage(stage) {
+	  _flux2.default.scheduleActions.setGamePhase(stage);
+	};
+
+	_logger2.default.shit('need to send stats on game phase change');
+
+	exports.default = {
+	  // on mission completed
+	  onFirstWorkerMissionCompleted: function onFirstWorkerMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_HIRED_FIRST_WORKER);
+	  },
+	  onInstallPrimitiveAnalyticsMissionCompleted: function onInstallPrimitiveAnalyticsMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_IMPROVED_ANALYTICS);
+	  },
+	  onFirstHypothesisMissionCompleted: function onFirstHypothesisMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS);
+	  },
+	  onFirstAdCampaignMissionCompleted: function onFirstAdCampaignMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS);
+	  },
+	  onFirstFeatureUpgradeMissionCompleted: function onFirstFeatureUpgradeMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE);
+	  },
+	  onPaymentRatingMissionCompleted: function onPaymentRatingMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS);
+	  },
+
+
+	  // mission checker
+	  isFirstWorkerMission: function isFirstWorkerMission() {
+	    return getStage() === gameStages.GAME_STAGE_GAME_STARTED;
+	  },
+	  isInstallPrimitiveAnalyticsMission: function isInstallPrimitiveAnalyticsMission() {
+	    return getStage() === gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
+	  },
+	  isFirstHypothesisMission: function isFirstHypothesisMission() {
+	    return getStage() === gameStages.GAME_STAGE_IMPROVED_ANALYTICS;
+	    // return getStage() === gameStages.GAME_STAGE_LEARNED_SPEEDER;
+	  },
+	  isFirstAdCampaignMission: function isFirstAdCampaignMission() {
+	    return getStage() === gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+	  },
+	  isFirstFeatureMission: function isFirstFeatureMission() {
+	    return getStage() === gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+	  },
+	  isPaymentRatingMission: function isPaymentRatingMission() {
+	    return getStage() === gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE;
+	  },
+
+
+	  // can show some tabs region
+	  canShowHypothesisTab: function canShowHypothesisTab() {
+	    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+	  },
+	  canShowMetricsTab: function canShowMetricsTab() {
+	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+	  },
+	  canShowMainFeatureTab: function canShowMainFeatureTab() {
+	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+	  },
+	  canShowPaymentsTab: function canShowPaymentsTab() {
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	  }
+	};
+
+/***/ },
+/* 149 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _job = __webpack_require__(101);
+
+	var jobConstants = _interopRequireWildcard(_job);
+
+	var _professions = __webpack_require__(150);
+
+	var professionsConstants = _interopRequireWildcard(_professions);
+
+	var _workSpeed = __webpack_require__(135);
+
+	var workSpeedConstants = _interopRequireWildcard(_workSpeed);
+
+	var _gameStages = __webpack_require__(134);
+
+	var gameStagesConstants = _interopRequireWildcard(_gameStages);
+
+	var _expenses = __webpack_require__(120);
+
+	var expensesConstants = _interopRequireWildcard(_expenses);
+
+	var _ideas = __webpack_require__(139);
+
+	var ideasConstants = _interopRequireWildcard(_ideas);
+
+	var _productStages = __webpack_require__(144);
+
+	var productStagesConstants = _interopRequireWildcard(_productStages);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	exports.default = {
+	  job: jobConstants,
+	  professions: professionsConstants,
+	  workSpeed: workSpeedConstants,
+	  gameStages: gameStagesConstants,
+	  expenses: expensesConstants,
+	  ideas: ideasConstants,
+	  productStages: productStagesConstants
+	};
+
+/***/ },
+/* 150 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+/***/ },
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7130,7 +7327,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _moneyDifference = __webpack_require__(148);
+	var _moneyDifference = __webpack_require__(152);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
@@ -7273,7 +7470,7 @@
 	exports.default = Menu;
 
 /***/ },
-/* 148 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7358,7 +7555,7 @@
 	};
 
 /***/ },
-/* 149 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7393,7 +7590,7 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _moneyDifference = __webpack_require__(148);
+	var _moneyDifference = __webpack_require__(152);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
@@ -7409,7 +7606,7 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _Expenses = __webpack_require__(150);
+	var _Expenses = __webpack_require__(154);
 
 	var _Expenses2 = _interopRequireDefault(_Expenses);
 
@@ -7609,7 +7806,7 @@
 	exports.default = Economics;
 
 /***/ },
-/* 150 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7779,7 +7976,7 @@
 	;
 
 /***/ },
-/* 151 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7810,15 +8007,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productStages = __webpack_require__(143);
+	var _productStages = __webpack_require__(144);
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
-	var _InitialProductTab = __webpack_require__(152);
+	var _InitialProductTab = __webpack_require__(156);
 
 	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
 
-	var _developPanel = __webpack_require__(155);
+	var _developPanel = __webpack_require__(159);
 
 	var _developPanel2 = _interopRequireDefault(_developPanel);
 
@@ -7865,7 +8062,7 @@
 	exports.default = Product;
 
 /***/ },
-/* 152 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7904,11 +8101,11 @@
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _mvpCreator = __webpack_require__(153);
+	var _mvpCreator = __webpack_require__(157);
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _productDescriptions = __webpack_require__(140);
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -7958,7 +8155,7 @@
 	exports.default = InitialProductTab;
 
 /***/ },
-/* 153 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7967,7 +8164,7 @@
 	  value: true
 	});
 
-	var _productActions = __webpack_require__(145);
+	var _productActions = __webpack_require__(146);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -7983,11 +8180,11 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productDescriptions = __webpack_require__(140);
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _random = __webpack_require__(154);
+	var _random = __webpack_require__(158);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -8055,7 +8252,7 @@
 	};
 
 /***/ },
-/* 154 */
+/* 158 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -8071,7 +8268,7 @@
 	;
 
 /***/ },
-/* 155 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8102,11 +8299,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _metrics = __webpack_require__(156);
+	var _metrics = __webpack_require__(160);
 
 	var _metrics2 = _interopRequireDefault(_metrics);
 
-	var _Schedule = __webpack_require__(158);
+	var _Schedule = __webpack_require__(163);
 
 	var _Schedule2 = _interopRequireDefault(_Schedule);
 
@@ -8114,11 +8311,11 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _professions = __webpack_require__(159);
+	var _professions = __webpack_require__(150);
 
 	var PROFESSIONS = _interopRequireWildcard(_professions);
 
-	var _productActions = __webpack_require__(145);
+	var _productActions = __webpack_require__(146);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -8134,17 +8331,17 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _featurePrice = __webpack_require__(160);
+	var _featurePrice = __webpack_require__(164);
 
 	var _featurePrice2 = _interopRequireDefault(_featurePrice);
 
-	var _scheduleActions = __webpack_require__(144);
+	var _scheduleActions = __webpack_require__(145);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
 	var _workSpeed = __webpack_require__(135);
 
-	var _constants = __webpack_require__(161);
+	var _constants = __webpack_require__(149);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
@@ -8152,15 +8349,15 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _advertPlannerPanel = __webpack_require__(162);
+	var _advertPlannerPanel = __webpack_require__(165);
 
 	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
 
-	var _MainFeature = __webpack_require__(163);
+	var _MainFeature = __webpack_require__(167);
 
 	var _MainFeature2 = _interopRequireDefault(_MainFeature);
 
-	var _stages = __webpack_require__(168);
+	var _stages = __webpack_require__(148);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -8178,6 +8375,7 @@
 	var MODE_PAYMENTS = 'MODE_PAYMENTS';
 	var MODE_ANALYTICS = 'MODE_ANALYTICS';
 	var MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
+	var MODE_COMPETITORS = 'MODE_COMPETITORS';
 
 	var DevelopPanel = function (_Component) {
 	  (0, _inherits3.default)(DevelopPanel, _Component);
@@ -8199,7 +8397,7 @@
 	      analytics: true,
 	      features: true,
 
-	      mode: MODE_HYPOTHESIS
+	      mode: MODE_ADS
 	    }, _this.getMarketingFeatureList = function (idea) {
 	      var cost = 30 * _workSpeed.WORK_SPEED_NORMAL;
 
@@ -8801,6 +8999,9 @@
 	  }
 
 	  (0, _createClass3.default)(DevelopPanel, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
 	    key: 'getFeedbackButton',
 	    value: function getFeedbackButton(idea, id) {
 	      return (0, _preact.h)(
@@ -8832,6 +9033,10 @@
 	    value: function render(_ref2, state) {
 	      var product = _ref2.product,
 	          gamePhase = _ref2.gamePhase;
+
+	      if (_stages2.default.isFirstWorkerMission()) return (0, _preact.h)('div', null);
+	      // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
+
 	      var mode = state.mode;
 	      var idea = product.idea;
 
@@ -8842,24 +9047,36 @@
 	      var body = '';
 	      switch (mode) {
 	        case MODE_PAYMENTS:
-	          body = this.renderPaymentTab(id, idea);break;
-	        case MODE_MARKETING:
-	          body = this.renderClientTab(id, idea);break;
-	        case MODE_ADS:
-	          body = this.renderAdTab(id, product);break;
-	        case MODE_ANALYTICS:
-	          body = this.renderAnalyticsTab(id, idea);break;
-	        case MODE_METRICS:
-	          body = this.renderMetricsTab(id, product);break;
-	        case MODE_MAIN_FEATURES:
-	          body = (0, _preact.h)(_MainFeature2.default, { id: id, product: product });break;
-	        default:
-	          body = this.renderHypothesisTab(id, idea, product);break;
-	      }
+	          body = this.renderPaymentTab(id, idea);
+	          break;
 
-	      if (_stages2.default.isFirstWorkerMission()) {
-	        return (0, _preact.h)('div', null);
-	        // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
+	        case MODE_MARKETING:
+	          body = this.renderClientTab(id, idea);
+	          break;
+
+	        case MODE_ADS:
+	          body = this.renderAdTab(id, product);
+	          break;
+
+	        case MODE_ANALYTICS:
+	          body = this.renderAnalyticsTab(id, idea);
+	          break;
+
+	        case MODE_METRICS:
+	          body = this.renderMetricsTab(id, product);
+	          break;
+
+	        case MODE_MAIN_FEATURES:
+	          body = (0, _preact.h)(_MainFeature2.default, { id: id, product: product });
+	          break;
+
+	        case MODE_COMPETITORS:
+	          body = this.renderAdTab(id, product);
+	          break;
+
+	        default:
+	          body = this.renderHypothesisTab(id, idea, product);
+	          break;
 	      }
 
 	      var metrics = void 0;
@@ -8899,7 +9116,7 @@
 	exports.default = DevelopPanel;
 
 /***/ },
-/* 156 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8938,7 +9155,7 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _percentify = __webpack_require__(157);
+	var _percentify = __webpack_require__(161);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
@@ -8946,7 +9163,7 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _coloredRating = __webpack_require__(169);
+	var _coloredRating = __webpack_require__(162);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
@@ -9218,7 +9435,7 @@
 	;
 
 /***/ },
-/* 157 */
+/* 161 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9232,7 +9449,81 @@
 	};
 
 /***/ },
-/* 158 */
+/* 162 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _coloringRange = __webpack_require__(147);
+
+	var _coloringRange2 = _interopRequireDefault(_coloringRange);
+
+	var _round = __webpack_require__(96);
+
+	var _round2 = _interopRequireDefault(_round);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ColoredRating = function (_Component) {
+	  (0, _inherits3.default)(ColoredRating, _Component);
+
+	  function ColoredRating() {
+	    (0, _classCallCheck3.default)(this, ColoredRating);
+	    return (0, _possibleConstructorReturn3.default)(this, (ColoredRating.__proto__ || (0, _getPrototypeOf2.default)(ColoredRating)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(ColoredRating, [{
+	    key: 'render',
+	    value: function render(_ref) {
+	      var rating = _ref.rating;
+
+	      var ratingColor = _coloringRange2.default.standard(rating, 10);
+
+	      return (0, _preact.h)(
+	        'span',
+	        null,
+	        (0, _preact.h)(
+	          'span',
+	          { style: { color: ratingColor } },
+	          (0, _round2.default)(rating)
+	        ),
+	        '/10'
+	      );
+	    }
+	  }]);
+	  return ColoredRating;
+	}(_preact.Component);
+
+	exports.default = ColoredRating;
+
+/***/ },
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9269,7 +9560,7 @@
 
 	var _workSpeed = __webpack_require__(135);
 
-	var _percentify = __webpack_require__(157);
+	var _percentify = __webpack_require__(161);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
@@ -9395,13 +9686,7 @@
 	;
 
 /***/ },
-/* 159 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-/***/ },
-/* 160 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9424,57 +9709,7 @@
 	// export default cost => e => e;
 
 /***/ },
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _job = __webpack_require__(101);
-
-	var jobConstants = _interopRequireWildcard(_job);
-
-	var _professions = __webpack_require__(159);
-
-	var professionsConstants = _interopRequireWildcard(_professions);
-
-	var _workSpeed = __webpack_require__(135);
-
-	var workSpeedConstants = _interopRequireWildcard(_workSpeed);
-
-	var _gameStages = __webpack_require__(134);
-
-	var gameStagesConstants = _interopRequireWildcard(_gameStages);
-
-	var _expenses = __webpack_require__(120);
-
-	var expensesConstants = _interopRequireWildcard(_expenses);
-
-	var _ideas = __webpack_require__(138);
-
-	var ideasConstants = _interopRequireWildcard(_ideas);
-
-	var _productStages = __webpack_require__(143);
-
-	var productStagesConstants = _interopRequireWildcard(_productStages);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	exports.default = {
-	  job: jobConstants,
-	  professions: professionsConstants,
-	  workSpeed: workSpeedConstants,
-	  gameStages: gameStagesConstants,
-	  expenses: expensesConstants,
-	  ideas: ideasConstants,
-	  productStages: productStagesConstants
-	};
-
-/***/ },
-/* 162 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9505,7 +9740,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _stages = __webpack_require__(168);
+	var _stages = __webpack_require__(148);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -9521,9 +9756,12 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
+	var _competitors = __webpack_require__(166);
+
+	var _competitors2 = _interopRequireDefault(_competitors);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// import React, { Component, PropTypes } from 'react';
 	var AdvertPlannerPanel = function (_Component) {
 	  (0, _inherits3.default)(AdvertPlannerPanel, _Component);
 
@@ -9557,54 +9795,6 @@
 	          _this.onDrag(0);
 	        }
 	      };
-	    }, _this.renderCompetitor = function (rating) {
-	      return function (c, i) {
-	        var needToCompeteRating = c.rating + 1;
-	        var competeable = needToCompeteRating < rating;
-	        var canWeCompeteThem = competeable ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + needToCompeteRating + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
-
-	        var background = 'competitor ';
-	        if (competeable) {
-	          background += 'competeable';
-	        } else {
-	          background += 'uncompeteable';
-	        }
-	        // <hr width="80%" />
-	        return (0, _preact.h)(
-	          'div',
-	          { className: background },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'offset-min' },
-	            '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116',
-	            i + 1,
-	            ' - "',
-	            c.name,
-	            '"'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'offset-min' },
-	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
-	            c.rating,
-	            ' (',
-	            canWeCompeteThem,
-	            ')'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'offset-mid' },
-	            '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	            c.clients,
-	            ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'offset-mid' },
-	            (0, _preact.h)('hr', { width: '80%' })
-	          )
-	        );
-	      };
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
@@ -9612,45 +9802,19 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {}
 	  }, {
-	    key: 'renderCompetitors',
-
-	    //
-	    value: function renderCompetitors(competitors, rating, freeClients) {
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-min competitor competeable' },
-	          '\u0421\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	          freeClients
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          competitors.map(this.renderCompetitor(rating))
-	        )
-	      );
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render(_ref2, _ref3) {
 	      var id = _ref2.id;
 	      var possibleClients = _ref3.possibleClients;
 
 	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
-	      var competitors = [{ rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' }, { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' }, { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }].sort(function (a, b) {
-	        return a.rating > b.rating;
-	      });
-
-	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney(), competitors);
+	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney());
 	      var potentialClients = marketStats.potentialClients,
 	          marketSize = marketStats.marketSize,
 	          ourClients = marketStats.ourClients,
 	          unbeatableClients = marketStats.unbeatableClients,
 	          amount = marketStats.amount;
 
-	      var freeClients = marketSize - ourClients - unbeatableClients;
 
 	      var maxPossibleClients = amount; // Math.floor(playerStore.getMoney() / costPerClient);
 	      var campaignCost = Math.ceil(possibleClients * costPerClient);
@@ -9679,11 +9843,7 @@
 	          unbeatableClients,
 	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
 	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          this.renderCompetitors(competitors, _flux2.default.productStore.getRating(id), freeClients)
-	        ),
+	        (0, _preact.h)(_competitors2.default, { id: id }),
 	        (0, _preact.h)(
 	          'div',
 	          null,
@@ -9722,12 +9882,14 @@
 	  }]);
 	  return AdvertPlannerPanel;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
 
 	exports.default = AdvertPlannerPanel;
 	;
 
 /***/ },
-/* 163 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9758,7 +9920,98 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productDescriptions = __webpack_require__(140);
+	var _flux = __webpack_require__(131);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	var _competitor = __webpack_require__(172);
+
+	var _competitor2 = _interopRequireDefault(_competitor);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Competitors = function (_Component) {
+	  (0, _inherits3.default)(Competitors, _Component);
+
+	  function Competitors() {
+	    (0, _classCallCheck3.default)(this, Competitors);
+	    return (0, _possibleConstructorReturn3.default)(this, (Competitors.__proto__ || (0, _getPrototypeOf2.default)(Competitors)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Competitors, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'render',
+	    value: function render(_ref) {
+	      var id = _ref.id;
+
+	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney());
+	      var marketSize = marketStats.marketSize,
+	          ourClients = marketStats.ourClients,
+	          unbeatableClients = marketStats.unbeatableClients,
+	          competitors = marketStats.competitors;
+
+	      var freeClients = marketSize - ourClients - unbeatableClients;
+
+	      var rating = _flux2.default.productStore.getRating(id);
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-min competitor competeable' },
+	          '\u0421\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	          freeClients
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          competitors.map(function (c, i) {
+	            return (0, _preact.h)(_competitor2.default, { rating: rating, c: c, i: i });
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	  return Competitors;
+	}(_preact.Component);
+
+	exports.default = Competitors;
+
+/***/ },
+/* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -9774,7 +10027,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _stages = __webpack_require__(168);
+	var _stages = __webpack_require__(148);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -9955,7 +10208,7 @@
 	exports.default = MainFeature;
 
 /***/ },
-/* 164 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9990,7 +10243,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _constants = __webpack_require__(161);
+	var _constants = __webpack_require__(149);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
@@ -9998,7 +10251,7 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _coloredRating = __webpack_require__(169);
+	var _coloredRating = __webpack_require__(162);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
@@ -10172,7 +10425,7 @@
 	exports.default = AdviceTab;
 
 /***/ },
-/* 165 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10215,19 +10468,19 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _InitialProductTab = __webpack_require__(152);
+	var _InitialProductTab = __webpack_require__(156);
 
 	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
 
-	var _mvpCreator = __webpack_require__(153);
+	var _mvpCreator = __webpack_require__(157);
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _Menu = __webpack_require__(147);
+	var _Menu = __webpack_require__(151);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _index = __webpack_require__(161);
+	var _index = __webpack_require__(149);
 
 	var _index2 = _interopRequireDefault(_index);
 
@@ -10351,7 +10604,7 @@
 	exports.default = Tutorial;
 
 /***/ },
-/* 166 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10372,11 +10625,11 @@
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productActions = __webpack_require__(145);
+	var _productActions = __webpack_require__(146);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _scheduleActions = __webpack_require__(144);
+	var _scheduleActions = __webpack_require__(145);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
@@ -10388,11 +10641,11 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _moneyDifference = __webpack_require__(148);
+	var _moneyDifference = __webpack_require__(152);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _eventGenerator = __webpack_require__(167);
+	var _eventGenerator = __webpack_require__(171);
 
 	var _eventGenerator2 = _interopRequireDefault(_eventGenerator);
 
@@ -10509,7 +10762,7 @@
 	};
 
 /***/ },
-/* 167 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10518,7 +10771,7 @@
 	  value: true
 	});
 
-	var _random = __webpack_require__(154);
+	var _random = __webpack_require__(158);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -10644,106 +10897,7 @@
 	};
 
 /***/ },
-/* 168 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _flux = __webpack_require__(131);
-
-	var _flux2 = _interopRequireDefault(_flux);
-
-	var _constants = __webpack_require__(161);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
-	var _logger = __webpack_require__(100);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _gameStages = __webpack_require__(134);
-
-	var gameStages = _interopRequireWildcard(_gameStages);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var getStage = function getStage() {
-	  return _flux2.default.scheduleStore.getGamePhase();
-	};
-
-	var setStage = function setStage(stage) {
-	  _flux2.default.scheduleActions.setGamePhase(stage);
-	};
-
-	_logger2.default.shit('need to send stats on game phase change');
-
-	exports.default = {
-	  // on mission completed
-	  onFirstWorkerMissionCompleted: function onFirstWorkerMissionCompleted() {
-	    setStage(gameStages.GAME_STAGE_HIRED_FIRST_WORKER);
-	  },
-	  onInstallPrimitiveAnalyticsMissionCompleted: function onInstallPrimitiveAnalyticsMissionCompleted() {
-	    setStage(gameStages.GAME_STAGE_IMPROVED_ANALYTICS);
-	  },
-	  onFirstHypothesisMissionCompleted: function onFirstHypothesisMissionCompleted() {
-	    setStage(gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS);
-	  },
-	  onFirstAdCampaignMissionCompleted: function onFirstAdCampaignMissionCompleted() {
-	    setStage(gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS);
-	  },
-	  onFirstFeatureUpgradeMissionCompleted: function onFirstFeatureUpgradeMissionCompleted() {
-	    setStage(gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE);
-	  },
-	  onPaymentRatingMissionCompleted: function onPaymentRatingMissionCompleted() {
-	    setStage(gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS);
-	  },
-
-
-	  // mission checker
-	  isFirstWorkerMission: function isFirstWorkerMission() {
-	    return getStage() === gameStages.GAME_STAGE_GAME_STARTED;
-	  },
-	  isInstallPrimitiveAnalyticsMission: function isInstallPrimitiveAnalyticsMission() {
-	    return getStage() === gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
-	  },
-	  isFirstHypothesisMission: function isFirstHypothesisMission() {
-	    return getStage() === gameStages.GAME_STAGE_IMPROVED_ANALYTICS;
-	    // return getStage() === gameStages.GAME_STAGE_LEARNED_SPEEDER;
-	  },
-	  isFirstAdCampaignMission: function isFirstAdCampaignMission() {
-	    return getStage() === gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
-	  },
-	  isFirstFeatureMission: function isFirstFeatureMission() {
-	    return getStage() === gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
-	  },
-	  isPaymentRatingMission: function isPaymentRatingMission() {
-	    return getStage() === gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE;
-	  },
-
-
-	  // can show some tabs region
-	  canShowHypothesisTab: function canShowHypothesisTab() {
-	    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
-	  },
-	  canShowMetricsTab: function canShowMetricsTab() {
-	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
-	  },
-	  canShowMainFeatureTab: function canShowMainFeatureTab() {
-	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
-	  },
-	  canShowPaymentsTab: function canShowPaymentsTab() {
-	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
-	  }
-	};
-
-/***/ },
-/* 169 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10774,47 +10928,78 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _coloringRange = __webpack_require__(146);
-
-	var _coloringRange2 = _interopRequireDefault(_coloringRange);
-
-	var _round = __webpack_require__(96);
-
-	var _round2 = _interopRequireDefault(_round);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var ColoredRating = function (_Component) {
-	  (0, _inherits3.default)(ColoredRating, _Component);
+	var Competitor = function (_Component) {
+	  (0, _inherits3.default)(Competitor, _Component);
 
-	  function ColoredRating() {
-	    (0, _classCallCheck3.default)(this, ColoredRating);
-	    return (0, _possibleConstructorReturn3.default)(this, (ColoredRating.__proto__ || (0, _getPrototypeOf2.default)(ColoredRating)).apply(this, arguments));
+	  function Competitor() {
+	    (0, _classCallCheck3.default)(this, Competitor);
+	    return (0, _possibleConstructorReturn3.default)(this, (Competitor.__proto__ || (0, _getPrototypeOf2.default)(Competitor)).apply(this, arguments));
 	  }
 
-	  (0, _createClass3.default)(ColoredRating, [{
+	  (0, _createClass3.default)(Competitor, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
 	    key: 'render',
 	    value: function render(_ref) {
-	      var rating = _ref.rating;
+	      var rating = _ref.rating,
+	          c = _ref.c,
+	          i = _ref.i;
 
-	      var ratingColor = _coloringRange2.default.standard(rating, 10);
+	      var needToCompeteRating = c.rating + 1;
+	      var competeable = needToCompeteRating < rating;
+	      var canWeCompeteThem = competeable ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + needToCompeteRating + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
 
+	      var background = 'competitor ';
+	      if (competeable) {
+	        background += 'competeable';
+	      } else {
+	        background += 'uncompeteable';
+	      }
+
+	      // <hr width="80%" />
 	      return (0, _preact.h)(
-	        'span',
-	        null,
+	        'div',
+	        { className: background },
 	        (0, _preact.h)(
-	          'span',
-	          { style: { color: ratingColor } },
-	          (0, _round2.default)(rating)
+	          'div',
+	          { className: 'offset-min' },
+	          '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116',
+	          i + 1,
+	          ' - "',
+	          c.name,
+	          '"'
 	        ),
-	        '/10'
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-min' },
+	          '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
+	          c.rating,
+	          ' (',
+	          canWeCompeteThem,
+	          ')'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	          c.clients,
+	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          (0, _preact.h)('hr', { width: '80%' })
+	        )
 	      );
 	    }
 	  }]);
-	  return ColoredRating;
+	  return Competitor;
 	}(_preact.Component);
 
-	exports.default = ColoredRating;
+	exports.default = Competitor;
 
 /***/ }
 /******/ ]);

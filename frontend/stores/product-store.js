@@ -474,7 +474,17 @@ class ProductStore extends EventEmitter {
     return productDescriptions(this.getIdea(id)).description;
   }
 
-  getMaxAmountOfPossibleClients(id, money, competitors) {
+  getCompetitorsList(id) {
+    return [
+      { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
+      { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
+      { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
+    ].sort((a, b) => a.rating > b.rating);
+  }
+
+  getMaxAmountOfPossibleClients(id, money) {
+    const competitors = this.getCompetitorsList(id);
+
     const maxMarketSize = productDescriptions(this.getIdea(id)).marketSize;
     const rating = this.getRating(id);
     const ourClients = this.getClients(id);
@@ -510,7 +520,8 @@ class ProductStore extends EventEmitter {
       ourClients,
       competitors,
       unbeatableClients,
-      freeClients: maxMarketSize - totalClients
+      freeClients: maxMarketSize - totalClients,
+      competitors
     }
   }
 }

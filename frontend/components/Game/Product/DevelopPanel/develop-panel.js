@@ -40,6 +40,7 @@ const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_PAYMENTS = 'MODE_PAYMENTS';
 const MODE_ANALYTICS = 'MODE_ANALYTICS';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
+const MODE_COMPETITORS = 'MODE_COMPETITORS';
 
 export default class DevelopPanel extends Component {
   state = {
@@ -48,8 +49,12 @@ export default class DevelopPanel extends Component {
     analytics: true,
     features: true,
 
-    mode: MODE_HYPOTHESIS
+    mode: MODE_ADS
   };
+
+  componentWillMount() {
+
+  }
 
   getMarketingFeatureList = (idea) => {
     const cost = 30 * WORK_SPEED_NORMAL;
@@ -502,6 +507,9 @@ export default class DevelopPanel extends Component {
   };
 
   render({ product, gamePhase }, state) {
+    if (stageHelper.isFirstWorkerMission()) return <div></div>;
+    // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
+
     const { mode } = state;
     const { idea } = product;
 
@@ -510,18 +518,37 @@ export default class DevelopPanel extends Component {
 
     let body = '';
     switch (mode) {
-      case MODE_PAYMENTS: body = this.renderPaymentTab(id, idea); break;
-      case MODE_MARKETING: body = this.renderClientTab(id, idea); break;
-      case MODE_ADS: body = this.renderAdTab(id, product); break;
-      case MODE_ANALYTICS: body = this.renderAnalyticsTab(id, idea); break;
-      case MODE_METRICS: body = this.renderMetricsTab(id, product); break;
-      case MODE_MAIN_FEATURES: body = <MainFeatureTab id={id} product={product} />; break;
-      default: body = this.renderHypothesisTab(id, idea, product); break;
-    }
+      case MODE_PAYMENTS:
+        body = this.renderPaymentTab(id, idea);
+        break;
 
-    if (stageHelper.isFirstWorkerMission()) {
-      return <div></div>;
-      // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
+      case MODE_MARKETING:
+        body = this.renderClientTab(id, idea);
+        break;
+
+      case MODE_ADS:
+        body = this.renderAdTab(id, product);
+        break;
+
+      case MODE_ANALYTICS:
+        body = this.renderAnalyticsTab(id, idea);
+        break;
+
+      case MODE_METRICS:
+        body = this.renderMetricsTab(id, product);
+        break;
+
+      case MODE_MAIN_FEATURES:
+        body = <MainFeatureTab id={id} product={product} />;
+        break;
+
+      case MODE_COMPETITORS:
+        body = this.renderAdTab(id, product);
+        break;
+
+      default:
+        body = this.renderHypothesisTab(id, idea, product);
+        break;
     }
 
     let metrics;

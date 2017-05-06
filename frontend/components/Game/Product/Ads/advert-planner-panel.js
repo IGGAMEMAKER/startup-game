@@ -6,6 +6,8 @@ import UI from '../../../UI';
 import flux from '../../../../flux';
 import logger from '../../../../helpers/logger/logger';
 
+import Competitors from './competitors';
+
 
 export default class AdvertPlannerPanel extends Component {
   state = {
@@ -15,7 +17,7 @@ export default class AdvertPlannerPanel extends Component {
 
   componentWillMount() {}
 
-  onDrag = (possibleClients) => {
+  onDrag = possibleClients => {
     this.setState({ possibleClients })
   };
 
@@ -32,52 +34,10 @@ export default class AdvertPlannerPanel extends Component {
       this.onDrag(0);
     }
   };
-  //
-  renderCompetitors(competitors, rating, freeClients) {
-    return (
-      <div>
-        <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
-        <div>{competitors.map(this.renderCompetitor(rating))}</div>
-      </div>
-    )
-  }
-
-  renderCompetitor = rating => (c, i) => {
-    const needToCompeteRating = c.rating + 1;
-    const competeable = needToCompeteRating < rating;
-    const canWeCompeteThem = competeable ?
-      'Мы можем переманить их клиентов'
-      :
-      `Добейтесь рейтинга ${needToCompeteRating} и их пользователи выберут наш продукт`;
-
-    let background = 'competitor ';
-    if (competeable) {
-      background += 'competeable';
-    } else {
-      background += 'uncompeteable';
-    }
-        // <hr width="80%" />
-    return (
-      <div className={background}>
-        <div className="offset-min">Конкурент №{i + 1} - "{c.name}"</div>
-        <div className="offset-min">Рейтинг: {c.rating} ({canWeCompeteThem})</div>
-        <div className="offset-mid">Клиенты: {c.clients} человек</div>
-        <div className="offset-mid">
-          <hr width="80%" />
-        </div>
-      </div>
-    )
-  };
 
   render({ id }, { possibleClients }) {
     const costPerClient = flux.productStore.getCostPerClient(id);
-    const competitors = [
-      { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
-      { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
-      { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
-    ].sort((a, b) => a.rating > b.rating);
-
-    const marketStats = flux.productStore.getMaxAmountOfPossibleClients(id, flux.playerStore.getMoney(), competitors);
+    const marketStats = flux.productStore.getMaxAmountOfPossibleClients(id, flux.playerStore.getMoney());
     const {
       potentialClients,
       marketSize,
@@ -86,7 +46,6 @@ export default class AdvertPlannerPanel extends Component {
       amount,
       // freeClients,
     } = marketStats;
-    const freeClients = marketSize - ourClients - unbeatableClients;
 
     const maxPossibleClients = amount; // Math.floor(playerStore.getMoney() / costPerClient);
     const campaignCost = Math.ceil(possibleClients * costPerClient);
@@ -96,7 +55,7 @@ export default class AdvertPlannerPanel extends Component {
         <div>Объём рынка: {marketSize} человек</div>
         <div>Наши клиенты: {ourClients} человек</div>
         <div>Клиенты, которых мы не можем переманить: {unbeatableClients} человек</div>
-        <div>{this.renderCompetitors(competitors, flux.productStore.getRating(id), freeClients)}</div>
+        <Competitors id={id} />
         <div>Наша потенциальная аудитория: {potentialClients}
           ({marketSize} - {ourClients} - {unbeatableClients})
         </div>
