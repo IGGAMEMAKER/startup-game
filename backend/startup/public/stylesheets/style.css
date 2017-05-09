@@ -380,3 +380,6 @@ textarea {
   cursor: pointer;
 }
 
+.product-menu-toggler.active {
+  color: var(--active-menu-item-color);
+}

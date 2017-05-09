@@ -71,7 +71,8 @@ const run = () => {
 
     // take loans if necessary
     if (money < 0) {
-      playerActions.loans.take(-money);
+      logger.log('money below zero');
+      // playerActions.loans.take(-money);
     }
 
     // calculate human points

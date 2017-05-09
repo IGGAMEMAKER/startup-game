@@ -6,9 +6,6 @@ import UI from '../../../UI';
 import flux from '../../../../flux';
 import logger from '../../../../helpers/logger/logger';
 
-import Competitors from './competitors';
-
-
 export default class AdvertPlannerPanel extends Component {
   state = {
     possibleClients: 0,
@@ -23,7 +20,6 @@ export default class AdvertPlannerPanel extends Component {
 
   inviteUsers = (id, amountOfUsers, cost, ourClients) => () => {
     if (flux.playerStore.getMoney() >= cost) {
-      logger.debug('inviteUsers', ourClients, amountOfUsers, stageHelper.isFirstAdCampaignMission());
       if (ourClients + amountOfUsers > 200 && stageHelper.isFirstAdCampaignMission()) {
         stageHelper.onFirstAdCampaignMissionCompleted();
       }

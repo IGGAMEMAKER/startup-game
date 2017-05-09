@@ -6063,6 +6063,10 @@
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
+	var _percentify = __webpack_require__(161);
+
+	var _percentify2 = _interopRequireDefault(_percentify);
+
 	var _computeRating = __webpack_require__(140);
 
 	var _computeRating2 = _interopRequireDefault(_computeRating);
@@ -6170,7 +6174,7 @@
 	  }, {
 	    key: 'getDisloyalClients',
 	    value: function getDisloyalClients(i) {
-	      return Math.floor(this.getClients(i) * this.getChurnRate(i));
+	      return Math.floor(this.getClients(i) * this.getChurnRate(i).raw);
 	    }
 	  }, {
 	    key: 'getViralClients',
@@ -6238,13 +6242,20 @@
 	      // let conversion = utility * Math.pow((rating), 1.5) / 1000; // rating 10 - 0.05
 	      var conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
 
+	      var raw = void 0;
+	      var pretty = void 0;
 	      if (conversion < 0 || conversion > 15) {
 	        _logger2.default.error('invalid conversion value ' + conversion);
-	        return 0;
 	        // throw 'INVALID_CONVERSION_ERROR';
+	        conversion = 0;
 	      }
 
-	      return conversion;
+	      raw = conversion;
+	      pretty = (0, _percentify2.default)(conversion);
+
+	      return {
+	        raw: raw, pretty: pretty
+	      };
 	    }
 	  }, {
 	    key: 'getProductPrice',
@@ -6267,7 +6278,7 @@
 	  }, {
 	    key: 'getProductIncome',
 	    value: function getProductIncome(i) {
-	      var conversion = this.getConversionRate(i) * this.getPaymentSwitcher(i); // rating 10 - 0.05
+	      var conversion = this.getConversionRate(i).raw * this.getPaymentSwitcher(i); // rating 10 - 0.05
 
 	      var clients = this.getClients(i);
 	      var price = this.getProductPrice(i);
@@ -6319,7 +6330,10 @@
 
 	      var rating = this.getRating(i);
 
-	      if (rating < 3) return 1;
+	      if (rating < 3) return {
+	        raw: 1,
+	        pretty: 100
+	      };
 
 	      // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
 	      var ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
@@ -6329,7 +6343,7 @@
 	      var blog = marketing.blog || 0;
 	      var emails = marketing.emails || 0;
 	      var support = marketing.support || 0;
-	      var k = 0.35; // поправочный коэффициент
+	      var k = 0.3; // поправочный коэффициент
 
 	      var marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
 
@@ -6337,8 +6351,13 @@
 	      // bad 10-15+
 	      // good 1-5
 	      var churn = ratingModifier * (1 - k * marketingModifier) / 100;
-	      return churn;
-	      // return churn.toFixed(0); // products[i].features.marketing;
+
+	      _logger2.default.log('product-store.js getChurnRate', churn);
+
+	      return {
+	        raw: churn,
+	        pretty: (0, _percentify2.default)(churn)
+	      };
 	    }
 	  }, {
 	    key: 'getProductBlogCost',
@@ -6642,6 +6661,39 @@
 	        freeClients: maxMarketSize - totalClients
 	      }, 'competitors', competitors);
 	    }
+	  }, {
+	    key: 'canShowPayPercentageMetric',
+	    value: function canShowPayPercentageMetric(id) {
+	      return this.getFeatureStatus(id, 'payment', 'mockBuying');
+	    }
+	  }, {
+	    key: 'getMarketShare',
+	    value: function getMarketShare(id) {
+	      var idea = this.getIdea(id);
+	      var clients = this.getClients(id);
+	      var marketSize = (0, _productDescriptions2.default)(idea).marketSize;
+
+	      return {
+	        share: (0, _percentify2.default)(clients / marketSize),
+	        clients: clients,
+	        marketSize: marketSize
+	      };
+	    }
+	  }, {
+	    key: 'getNextCompetitorInfo',
+	    value: function getNextCompetitorInfo(id) {
+	      var competitors = this.getCompetitorsList(id);
+	      var rating = this.getRating(id);
+
+	      var betterCompetitors = competitors.filter(function (c) {
+	        return rating < c.rating + 1;
+	      });
+
+	      return betterCompetitors.length ? betterCompetitors[0] : null;
+	    }
+
+	    // getConversionRate()
+
 	  }]);
 	  return ProductStore;
 	}(_events.EventEmitter);
@@ -8371,13 +8423,17 @@
 
 	var _competitors2 = _interopRequireDefault(_competitors);
 
+	var _competitor = __webpack_require__(172);
+
+	var _competitor2 = _interopRequireDefault(_competitor);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var MODE_METRICS = 'MODE_METRICS';
 	// import React, { Component, PropTypes } from 'react';
 
+	var MODE_METRICS = 'MODE_METRICS';
 	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
@@ -8411,9 +8467,9 @@
 	    }, _this.getMarketingFeatureList = function (idea) {
 	      var cost = 30 * _workSpeed.WORK_SPEED_NORMAL;
 
-	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 35%',
-	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 50%',
-	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 15%',
+	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
 	        points: { marketing: 50, programming: 100 }, time: 10 }];
 	      // ].map(computeFeatureCost(cost));
 	    }, _this.getDevelopmentFeatureList = function (idea) {
@@ -8672,7 +8728,10 @@
 	        (0, _preact.h)('br', null)
 	      );
 	    }, _this.renderPaymentTab = function (id, idea) {
-	      var payment = _this.getPaymentFeatures(idea).map(_this.renderFeature('payment', id, idea));
+	      var payment = _this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
+
+	      var isOpened = _productStore2.default.canShowPayPercentageMetric(id);
+	      var payAbility = _productStore2.default.getConversionRate(id).pretty;
 
 	      return (0, _preact.h)(
 	        'div',
@@ -8685,6 +8744,12 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'featureGroupDescriptionWrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
+	            isOpened ? payAbility + '%' : 'Установите фичу "Тестовая покупка"'
+	          ),
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'featureGroupDescription' },
@@ -8724,7 +8789,36 @@
 	        )
 	      );
 	    }, _this.renderClientTab = function (id, idea) {
-	      var marketing = _this.getMarketingFeatureList(idea).map(_this.renderFeature('marketing', id, idea));
+	      var marketing = _this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
+
+	      var churn = _productStore2.default.getChurnRate(id).pretty;
+	      var disloyalClients = _productStore2.default.getDisloyalClients(id);
+
+	      var rating = _productStore2.default.getRating(id);
+
+	      var market = _productStore2.default.getMarketShare(id);
+
+	      var competitor = _productStore2.default.getNextCompetitorInfo(id);
+	      var nearestCompetitor = void 0;
+
+	      if (competitor) {
+	        nearestCompetitor = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041D\u0430\u0448 \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u0439 \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442'
+	          ),
+	          (0, _preact.h)(_competitor2.default, { rating: rating, c: competitor, i: -1 })
+	        );
+	      } else {
+	        nearestCompetitor = (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435!'
+	        );
+	      }
 
 	      return (0, _preact.h)(
 	        'div',
@@ -8733,6 +8827,24 @@
 	          'div',
 	          { className: 'featureGroupTitle' },
 	          '\u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	          market.clients,
+	          ' (',
+	          market.share,
+	          '% \u0440\u044B\u043D\u043A\u0430)'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041A\u0430\u0436\u0434\u044B\u0439 \u043C\u0435\u0441\u044F\u0446 \u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
+	          disloyalClients,
+	          ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (\u043E\u0442\u0442\u043E\u043A: ',
+	          churn,
+	          '%)'
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -8747,7 +8859,8 @@
 	            { className: 'featureGroupBody' },
 	            marketing
 	          )
-	        )
+	        ),
+	        nearestCompetitor
 	      );
 	    }, _this.renderAdTab = function (id, product) {
 	      return (0, _preact.h)(
@@ -8776,7 +8889,7 @@
 	          product: product,
 	          id: id,
 	          onRatingPressed: function onRatingPressed() {
-	            return _this.setMode(MODE_HYPOTHESIS);
+	            return _this.setMode(MODE_MAIN_FEATURES);
 	          },
 	          onClientsPressed: function onClientsPressed() {
 	            return _this.setMode(MODE_MARKETING);
@@ -8789,6 +8902,9 @@
 	          },
 	          onAnalyticsPressed: function onAnalyticsPressed() {
 	            return _this.setMode(MODE_ANALYTICS);
+	          },
+	          onExpertisePressed: function onExpertisePressed() {
+	            return _this.setMode(MODE_HYPOTHESIS);
 	          }
 	        })
 	      );
@@ -8891,111 +9007,48 @@
 	      };
 	    }, _this.setMode = function (mode) {
 	      _this.setState({ mode: mode });
-	    }, _this.renderProductMenuNavbar = function () {
-	      var hypothesis = void 0;
-	      if (_stages2.default.canShowHypothesisTab()) {
-	        hypothesis = (0, _preact.h)(
-	          'li',
-	          {
-	            className: 'product-menu-toggler active',
-	            onClick: function onClick() {
-	              return _this.setMode(MODE_HYPOTHESIS);
-	            }
-	          },
-	          (0, _preact.h)(
-	            'span',
-	            { href: '#' },
-	            '\u0413\u0438\u043F\u043E\u0442\u0435\u0437\u044B'
-	          )
-	        );
-	      }
-
-	      var improvements = void 0;
-	      if (_stages2.default.canShowMainFeatureTab()) {
-	        improvements = (0, _preact.h)(
-	          'li',
-	          {
-	            className: 'product-menu-toggler ',
-	            onClick: function onClick() {
-	              return _this.setMode(MODE_MAIN_FEATURES);
-	            }
-	          },
-	          (0, _preact.h)(
-	            'span',
-	            { href: '#' },
-	            '\u0425\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438'
-	          )
-	        );
-	      }
-
-	      var payments = void 0;
-	      if (_stages2.default.canShowPaymentsTab()) {
-	        payments = (0, _preact.h)(
-	          'li',
-	          {
-	            className: 'product-menu-toggler ',
-	            onClick: function onClick() {
-	              return _this.setMode(MODE_PAYMENTS);
-	            }
-	          },
-	          (0, _preact.h)(
-	            'span',
-	            { href: '#' },
-	            '\u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
-	          )
-	        );
-	      }
-
-	      var ads = void 0;
-	      ads = (0, _preact.h)(
+	    }, _this.renderNavbar = function (mode, name) {
+	      return (0, _preact.h)(
 	        'li',
 	        {
-	          className: 'product-menu-toggler ',
+	          className: 'product-menu-toggler ' + (_this.state.mode === mode ? 'active' : ''),
 	          onClick: function onClick() {
-	            return _this.setMode(MODE_ADS);
+	            return _this.setMode(mode);
 	          }
 	        },
 	        (0, _preact.h)(
 	          'span',
-	          { href: '#' },
-	          '\u0420\u0435\u043A\u043B\u0430\u043C\u0430'
+	          null,
+	          name
 	        )
 	      );
+	    }, _this.renderProductMenuNavbar = function () {
+	      var hypothesis = void 0;
+	      if (_stages2.default.canShowHypothesisTab()) {
+	        hypothesis = _this.renderNavbar(MODE_HYPOTHESIS, 'Гипотезы');
+	      }
+
+	      var improvements = void 0;
+	      if (_stages2.default.canShowMainFeatureTab()) {
+	        improvements = _this.renderNavbar(MODE_MAIN_FEATURES, 'Характеристики');
+	      }
+
+	      var payments = void 0;
+	      if (_stages2.default.canShowPaymentsTab()) {
+	        payments = _this.renderNavbar(MODE_PAYMENTS, 'Монетизация');
+	      }
+
+	      var ads = void 0;
+	      ads = _this.renderNavbar(MODE_ADS, 'Реклама');
 
 	      var clients = void 0;
 	      if (_stages2.default.canShowClientsTab()) {
-	        clients = (0, _preact.h)(
-	          'li',
-	          {
-	            className: 'product-menu-toggler ',
-	            onClick: function onClick() {
-	              return _this.setMode(MODE_MARKETING);
-	            }
-	          },
-	          (0, _preact.h)(
-	            'span',
-	            { href: '#' },
-	            '\u041A\u043B\u0438\u0435\u043D\u0442\u044B'
-	          )
-	        );
+	        clients = _this.renderNavbar(MODE_MARKETING, 'Клиенты');
 	      }
 
 	      var competitors = void 0;
 	      if (_stages2.default.canShowCompetitorsTab()) {
-	        competitors = (0, _preact.h)(
-	          'li',
-	          {
-	            className: 'product-menu-toggler ',
-	            onClick: function onClick() {
-	              return _this.setMode(MODE_COMPETITORS);
-	            }
-	          },
-	          (0, _preact.h)(
-	            'span',
-	            { href: '#' },
-	            '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442\u044B'
-	          )
-	        );
+	        competitors = _this.renderNavbar(MODE_COMPETITORS, 'Конкуренты');
 	      }
 
 	      return (0, _preact.h)(
@@ -9042,8 +9095,38 @@
 	      );
 	    }
 	  }, {
-	    key: 'renderCompetitors',
-	    value: function renderCompetitors(id) {}
+	    key: 'plainifySameTypeFeatures',
+	    value: function plainifySameTypeFeatures(id, idea, groupType, onImprovedPhrase) {
+	      var featureList = void 0;
+	      switch (groupType) {
+	        case 'marketing':
+	          featureList = this.getMarketingFeatureList(idea);
+	          break;
+
+	        case 'payment':
+	          featureList = this.getPaymentFeatures(idea);
+	          break;
+	      }
+
+	      var unlockedFeature = void 0;
+	      featureList.forEach(function (f) {
+	        if (!_productStore2.default.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
+	          unlockedFeature = f.name;
+	        }
+	      });
+
+	      var payment = void 0;
+
+	      if (!unlockedFeature) {
+	        payment = onImprovedPhrase;
+	      } else {
+	        payment = featureList.filter(function (f) {
+	          return f.name === unlockedFeature;
+	        }).map(this.renderFeature(groupType, id, idea));
+	      }
+
+	      return payment;
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render(_ref2, state) {
@@ -9202,7 +9285,8 @@
 	          onClientsPressed = _ref.onClientsPressed,
 	          onPaymentsPressed = _ref.onPaymentsPressed,
 	          onAdsPressed = _ref.onAdsPressed,
-	          onAnalyticsPressed = _ref.onAnalyticsPressed;
+	          onAnalyticsPressed = _ref.onAnalyticsPressed,
+	          onExpertisePressed = _ref.onExpertisePressed;
 	      (0, _objectDestructuringEmpty3.default)(_ref2);
 	      var idea = product.idea;
 
@@ -9213,9 +9297,10 @@
 
 	      var expertise = _productStore2.default.getXP(id);
 	      // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
-	      var churn = (0, _percentify2.default)(_productStore2.default.getChurnRate(id));
+	      // const churn = percentify(productStore.getChurnRate(id));
+	      var churn = _productStore2.default.getChurnRate(id).pretty;
 	      var disloyalClients = _productStore2.default.getDisloyalClients(id);
-	      var conversion = (0, _percentify2.default)(_productStore2.default.getConversionRate(id));
+	      var conversion = _productStore2.default.getConversionRate(id).pretty;
 	      var clients = _productStore2.default.getClients(id);
 	      var income = (0, _round2.default)(_productStore2.default.getProductIncome(id));
 	      var virality = (0, _round2.default)(_productStore2.default.getViralityRate(id));
@@ -9333,34 +9418,17 @@
 	      }
 
 	      var payingPercentageTab = void 0;
-	      if (canShowPayingPercentage) {
-	        payingPercentageTab = (0, _preact.h)(
-	          'li',
-	          null,
-	          (0, _preact.h)(
-	            'b',
-	            null,
-	            '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
-	            conversion,
-	            '%'
-	          )
-	        );
-	      } else {
-	        payingPercentageTab = (0, _preact.h)(
-	          'li',
-	          null,
-	          (0, _preact.h)(
-	            'b',
-	            null,
-	            '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ???'
-	          ),
-	          (0, _preact.h)(
-	            'span',
-	            { className: 'metric-link', onClick: onPaymentsPressed },
-	            '\u0420\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u044D\u0442\u0443 \u043C\u0435\u0442\u0440\u0438\u043A\u0443'
-	          )
-	        );
-	      }
+	      canShowPayingPercentage = false;
+	      // if (canShowPayingPercentage) {
+	      //   payingPercentageTab = <li>
+	      //     <b>Платёжеспособность: {conversion}%</b>
+	      //   </li>;
+	      // } else {
+	      //   payingPercentageTab = <li>
+	      //     <b>Платёжеспособность: ???</b>
+	      //     <span className="metric-link" onClick={onPaymentsPressed}>Разблокировать эту метрику</span>
+	      //   </li>;
+	      // }
 
 	      var clientsTab = void 0;
 	      canShowClientsTab = true;
@@ -9418,6 +9486,11 @@
 	          '\u042D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u0430: ',
 	          expertise,
 	          'XP'
+	        ),
+	        (0, _preact.h)(
+	          'span',
+	          { className: 'metric-link', onClick: onExpertisePressed },
+	          '\u041F\u043E\u0432\u044B\u0441\u0438\u0442\u044C'
 	        )
 	      );
 
@@ -9770,12 +9843,9 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _competitors = __webpack_require__(166);
-
-	var _competitors2 = _interopRequireDefault(_competitors);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	// import React, { Component, PropTypes } from 'react';
 	var AdvertPlannerPanel = function (_Component) {
 	  (0, _inherits3.default)(AdvertPlannerPanel, _Component);
 
@@ -9798,7 +9868,6 @@
 	    }, _this.inviteUsers = function (id, amountOfUsers, cost, ourClients) {
 	      return function () {
 	        if (_flux2.default.playerStore.getMoney() >= cost) {
-	          _logger2.default.debug('inviteUsers', ourClients, amountOfUsers, _stages2.default.isFirstAdCampaignMission());
 	          if (ourClients + amountOfUsers > 200 && _stages2.default.isFirstAdCampaignMission()) {
 	            _stages2.default.onFirstAdCampaignMissionCompleted();
 	          }
@@ -9895,8 +9964,6 @@
 	  }]);
 	  return AdvertPlannerPanel;
 	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
 
 	exports.default = AdvertPlannerPanel;
 	;
@@ -10729,7 +10796,8 @@
 
 	    // take loans if necessary
 	    if (money < 0) {
-	      _playerActions2.default.loans.take(-money);
+	      _logger2.default.log('money below zero');
+	      // playerActions.loans.take(-money);
 	    }
 
 	    // calculate human points
@@ -10971,6 +11039,7 @@
 	        background += 'uncompeteable';
 	      }
 
+	      var name = i >= 0 ? '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
 	      // <hr width="80%" />
 	      return (0, _preact.h)(
 	        'div',
@@ -10978,11 +11047,7 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'offset-min' },
-	          '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116',
-	          i + 1,
-	          ' - "',
-	          c.name,
-	          '"'
+	          name
 	        ),
 	        (0, _preact.h)(
 	          'div',

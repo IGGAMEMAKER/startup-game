@@ -20,7 +20,8 @@ export default class Metrics extends Component {
     onClientsPressed,
     onPaymentsPressed,
     onAdsPressed,
-    onAnalyticsPressed
+    onAnalyticsPressed,
+    onExpertisePressed
   }, {}) {
     const { idea } = product;
 
@@ -30,9 +31,10 @@ export default class Metrics extends Component {
 
     let expertise = productStore.getXP(id);
     // <div>Технический долг: {debt} ({this.getTechnicalDebtDescription(debt)})</div>
-    const churn = percentify(productStore.getChurnRate(id));
+    // const churn = percentify(productStore.getChurnRate(id));
+    const churn = productStore.getChurnRate(id).pretty;
     const disloyalClients = productStore.getDisloyalClients(id);
-    const conversion = percentify(productStore.getConversionRate(id));
+    const conversion = productStore.getConversionRate(id).pretty;
     const clients = productStore.getClients(id);
     const income = round(productStore.getProductIncome(id));
     const virality = round(productStore.getViralityRate(id));
@@ -93,16 +95,17 @@ export default class Metrics extends Component {
     }
 
     let payingPercentageTab;
-    if (canShowPayingPercentage) {
-      payingPercentageTab = <li>
-        <b>Платёжеспособность: {conversion}%</b>
-      </li>;
-    } else {
-      payingPercentageTab = <li>
-        <b>Платёжеспособность: ???</b>
-        <span className="metric-link" onClick={onPaymentsPressed}>Разблокировать эту метрику</span>
-      </li>;
-    }
+    canShowPayingPercentage = false;
+    // if (canShowPayingPercentage) {
+    //   payingPercentageTab = <li>
+    //     <b>Платёжеспособность: {conversion}%</b>
+    //   </li>;
+    // } else {
+    //   payingPercentageTab = <li>
+    //     <b>Платёжеспособность: ???</b>
+    //     <span className="metric-link" onClick={onPaymentsPressed}>Разблокировать эту метрику</span>
+    //   </li>;
+    // }
 
     let clientsTab;
     canShowClientsTab = true;
@@ -126,6 +129,7 @@ export default class Metrics extends Component {
 
     let expertiseTab = <li>
       <b>Экспертиза: {expertise}XP</b>
+      <span className="metric-link" onClick={onExpertisePressed}>Повысить</span>
     </li>;
 
     return (

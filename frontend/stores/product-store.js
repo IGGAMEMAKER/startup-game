@@ -10,6 +10,8 @@ import * as IDEAS from '../constants/products/ideas';
 
 const EC = 'PRODUCT_EVENT_CHANGE';
 
+import percentify from '../helpers/math/percentify';
+
 import computeRating from '../helpers/products/compute-rating';
 import productDescriptions from '../constants/products/product-descriptions';
 
@@ -87,7 +89,7 @@ class ProductStore extends EventEmitter {
   }
 
   getDisloyalClients(i) {
-    return Math.floor(this.getClients(i) * this.getChurnRate(i));
+    return Math.floor(this.getClients(i) * this.getChurnRate(i).raw);
   }
 
   getViralClients(i) {
@@ -150,13 +152,20 @@ class ProductStore extends EventEmitter {
     // let conversion = utility * Math.pow((rating), 1.5) / 1000; // rating 10 - 0.05
     let conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
 
+    let raw;
+    let pretty;
     if (conversion < 0 || conversion > 15) {
       logger.error(`invalid conversion value ${conversion}`);
-      return 0;
       // throw 'INVALID_CONVERSION_ERROR';
+      conversion = 0;
     }
 
-    return conversion;
+    raw = conversion;
+    pretty = percentify(conversion);
+
+    return {
+      raw, pretty
+    }
   }
 
   getProductPrice(i) {
@@ -176,7 +185,7 @@ class ProductStore extends EventEmitter {
   }
 
   getProductIncome(i) {
-    const conversion = this.getConversionRate(i) * this.getPaymentSwitcher(i); // rating 10 - 0.05
+    const conversion = this.getConversionRate(i).raw * this.getPaymentSwitcher(i); // rating 10 - 0.05
 
     const clients = this.getClients(i);
     const price = this.getProductPrice(i);
@@ -225,7 +234,10 @@ class ProductStore extends EventEmitter {
 
     const rating = this.getRating(i);
 
-    if (rating < 3) return 1;
+    if (rating < 3) return {
+      raw: 1,
+      pretty: 100
+    };
 
     // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
     const ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
@@ -235,7 +247,7 @@ class ProductStore extends EventEmitter {
     const blog = marketing.blog || 0;
     const emails = marketing.emails || 0;
     const support = marketing.support || 0;
-    const k = 0.35; // поправочный коэффициент
+    const k = 0.3; // поправочный коэффициент
 
     const marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
 
@@ -243,8 +255,13 @@ class ProductStore extends EventEmitter {
     // bad 10-15+
     // good 1-5
     const churn = ratingModifier * (1 - k * marketingModifier) / 100;
-    return churn;
-    // return churn.toFixed(0); // products[i].features.marketing;
+
+    logger.log('product-store.js getChurnRate', churn);
+
+    return {
+      raw: churn,
+      pretty: percentify(churn)
+    };
   }
 
   getProductBlogCost(i) {
@@ -524,6 +541,33 @@ class ProductStore extends EventEmitter {
       competitors
     }
   }
+
+  canShowPayPercentageMetric(id) {
+    return this.getFeatureStatus(id, 'payment', 'mockBuying')
+  }
+
+  getMarketShare(id) {
+    const idea = this.getIdea(id);
+    const clients = this.getClients(id);
+    const marketSize = productDescriptions(idea).marketSize;
+
+    return {
+      share: percentify(clients / marketSize),
+      clients,
+      marketSize
+    }
+  }
+
+  getNextCompetitorInfo(id) {
+    const competitors = this.getCompetitorsList(id);
+    const rating = this.getRating(id);
+
+    const betterCompetitors = competitors.filter(c => rating < c.rating + 1);
+
+    return betterCompetitors.length ? betterCompetitors[0] : null;
+  }
+
+  // getConversionRate()
 }
 
 const store = new ProductStore();

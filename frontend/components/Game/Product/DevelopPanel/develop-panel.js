@@ -32,6 +32,7 @@ import MainFeatureTab from '../MainFeature';
 import stageHelper from '../../../../helpers/stages';
 
 import Competitors from '../Ads/competitors';
+import Competitor from '../Ads/competitor';
 
 
 const MODE_METRICS = 'MODE_METRICS';
@@ -62,11 +63,11 @@ export default class DevelopPanel extends Component {
     const cost = 30 * WORK_SPEED_NORMAL;
 
     return [
-      { name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 35%',
+      { name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
         points: { marketing: 150, programming: 0 }, time: 2 },
-      { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 50%',
+      { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
         points: { marketing: 50, programming: 100 }, time: 4 },
-      { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 15%',
+      { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
         points: { marketing: 50, programming: 100 }, time: 10 },
 
       // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
@@ -287,15 +288,49 @@ export default class DevelopPanel extends Component {
     )
   };
 
+  plainifySameTypeFeatures(id, idea, groupType, onImprovedPhrase) {
+    let featureList;
+    switch (groupType) {
+      case 'marketing':
+        featureList = this.getMarketingFeatureList(idea);
+        break;
+
+      case 'payment':
+        featureList = this.getPaymentFeatures(idea);
+        break;
+    }
+
+    let unlockedFeature;
+    featureList.forEach(f => {
+      if (!productStore.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
+        unlockedFeature = f.name;
+      }
+    });
+
+    let payment;
+
+    if (!unlockedFeature) {
+      payment = onImprovedPhrase;
+    } else {
+      payment = featureList
+        .filter(f => f.name === unlockedFeature)
+        .map(this.renderFeature(groupType, id, idea));
+    }
+
+    return payment;
+  }
+
   renderPaymentTab = (id, idea) => {
-    const payment = this
-      .getPaymentFeatures(idea)
-      .map(this.renderFeature('payment', id, idea));
+    const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
+
+    const isOpened = productStore.canShowPayPercentageMetric(id);
+    const payAbility = productStore.getConversionRate(id).pretty;
 
     return (
       <div>
         <div className="featureGroupTitle" >Монетизация</div>
         <div className="featureGroupDescriptionWrapper">
+          <div>Платёжеспособность: {isOpened ? `${payAbility}%` : 'Установите фичу "Тестовая покупка"'}</div>
           <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
           <div className="featureGroupBody">{payment}</div>
         </div>
@@ -320,17 +355,41 @@ export default class DevelopPanel extends Component {
   };
 
   renderClientTab = (id, idea) => {
-    const marketing = this
-      .getMarketingFeatureList(idea)
-      .map(this.renderFeature('marketing', id, idea));
+    const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
+
+    const churn = productStore.getChurnRate(id).pretty;
+    const disloyalClients = productStore.getDisloyalClients(id);
+
+    const rating = productStore.getRating(id);
+
+    const market = productStore.getMarketShare(id);
+
+    const competitor = productStore.getNextCompetitorInfo(id);
+    let nearestCompetitor;
+
+    if (competitor) {
+      nearestCompetitor = (
+        <div>
+          <div>Наш ближайший конкурент</div>
+          <Competitor rating={rating} c={competitor} i={-1} />
+        </div>
+      )
+    } else {
+      nearestCompetitor = (
+        <div>Вы - №1 на рынке!</div>
+      )
+    }
 
     return (
       <div>
         <div className="featureGroupTitle">Работа с клиентами</div>
+        <div>Наши клиенты: {market.clients} ({market.share}% рынка)</div>
+        <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
         <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
           <div className="featureGroupBody">{marketing}</div>
         </div>
+        {nearestCompetitor}
       </div>
     );
   };
@@ -345,10 +404,6 @@ export default class DevelopPanel extends Component {
     );
   };
 
-  renderCompetitors(id) {
-
-  }
-
   renderMetricsTab = (id, product) => {
     if (!stageHelper.canShowMetricsTab()) return '';
 
@@ -358,11 +413,12 @@ export default class DevelopPanel extends Component {
         <Metrics
           product={product}
           id={id}
-          onRatingPressed={() => this.setMode(MODE_HYPOTHESIS)}
+          onRatingPressed={() => this.setMode(MODE_MAIN_FEATURES)}
           onClientsPressed={() => this.setMode(MODE_MARKETING)}
           onPaymentsPressed={() => this.setMode(MODE_PAYMENTS)}
           onAdsPressed={() => this.setMode(MODE_ADS)}
           onAnalyticsPressed={() => this.setMode(MODE_ANALYTICS)}
+          onExpertisePressed={() => this.setMode(MODE_HYPOTHESIS)}
         />
       </div>
     );
@@ -444,63 +500,44 @@ export default class DevelopPanel extends Component {
     this.setState({ mode });
   };
 
+  renderNavbar = (mode, name) => {
+    return (
+      <li
+        className={`product-menu-toggler ${this.state.mode === mode ? 'active' : ''}`}
+        onClick={() => this.setMode(mode)}
+      >
+        <span>{name}</span>
+      </li>
+    );
+  };
+
   renderProductMenuNavbar = () => {
     let hypothesis;
     if (stageHelper.canShowHypothesisTab()) {
-      hypothesis = (
-        <li
-          className={`product-menu-toggler active`}
-          onClick={() => this.setMode(MODE_HYPOTHESIS)}
-        ><span href="#">Гипотезы</span></li>
-      );
+      hypothesis = this.renderNavbar(MODE_HYPOTHESIS, 'Гипотезы');
     }
 
     let improvements;
     if (stageHelper.canShowMainFeatureTab()) {
-      improvements = (
-        <li
-          className={`product-menu-toggler `}
-          onClick={() => this.setMode(MODE_MAIN_FEATURES)}
-        ><span href="#">Характеристики</span></li>
-      );
+      improvements = this.renderNavbar(MODE_MAIN_FEATURES, 'Характеристики');
     }
 
     let payments;
     if (stageHelper.canShowPaymentsTab()) {
-      payments = (
-        <li
-          className={`product-menu-toggler `}
-          onClick={() => this.setMode(MODE_PAYMENTS)}
-        ><span href="#">Монетизация</span></li>
-      );
+      payments = this.renderNavbar(MODE_PAYMENTS, 'Монетизация');
     }
 
     let ads;
-    ads = (
-      <li
-        className={`product-menu-toggler `}
-        onClick={() => this.setMode(MODE_ADS)}
-      ><span href="#">Реклама</span></li>
-    );
+    ads = this.renderNavbar(MODE_ADS, 'Реклама');
 
     let clients;
     if (stageHelper.canShowClientsTab()) {
-      clients = (
-        <li
-          className={`product-menu-toggler `}
-          onClick={() => this.setMode(MODE_MARKETING)}
-        ><span href="#">Клиенты</span></li>
-      );
+      clients = this.renderNavbar(MODE_MARKETING, 'Клиенты');
     }
 
     let competitors;
     if (stageHelper.canShowCompetitorsTab()) {
-      competitors = (
-        <li
-          className={`product-menu-toggler `}
-          onClick={() => this.setMode(MODE_COMPETITORS)}
-        ><span href="#">Конкуренты</span></li>
-      );
+      competitors = this.renderNavbar(MODE_COMPETITORS, 'Конкуренты');
     }
 
     return (

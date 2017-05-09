@@ -24,10 +24,11 @@ export default class Competitor extends Component {
       background += 'uncompeteable';
     }
 
+    const name = i >= 0 ? `Конкурент №${i + 1} - "${c.name}"` : `"${c.name}"`;
     // <hr width="80%" />
     return (
       <div className={background}>
-        <div className="offset-min">Конкурент №{i + 1} - "{c.name}"</div>
+        <div className="offset-min">{name}</div>
         <div className="offset-min">Рейтинг: {c.rating} ({canWeCompeteThem})</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
         <div className="offset-mid">
