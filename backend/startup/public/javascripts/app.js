@@ -8463,61 +8463,17 @@
 	      analytics: true,
 	      features: true,
 
-	      mode: MODE_ADS
+	      mode: MODE_MARKETING
 	    }, _this.getMarketingFeatureList = function (idea) {
-	      var cost = 30 * _workSpeed.WORK_SPEED_NORMAL;
-
 	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
 	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
 	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
 	        points: { marketing: 50, programming: 100 }, time: 10 }];
 	      // ].map(computeFeatureCost(cost));
 	    }, _this.getDevelopmentFeatureList = function (idea) {
-	      var cost = 50 * _workSpeed.WORK_SPEED_NORMAL;
-
 	      return [{ name: 'backups', description: '' }, { name: 'clusters', description: '' }, { name: 'tests', description: '' }, { name: 'mobiles', description: '' } // ios android apps
 	      ];
 	      // ].map(computeFeatureCost(cost));
-	    }, _this.getHypothesisAnalyticsFeatures = function (idea) {
-	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев', description: '', // 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез',
-	        points: { programming: 50, marketing: 0 }
-	      }, { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
-	        points: { programming: 50, marketing: 0 }
-	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
-	        points: { programming: 150, marketing: 100 }
-	      }];
-	    }, _this.getAnalyticFeatures = function (idea) {
-	      var cost = 30 * _workSpeed.WORK_SPEED_NORMAL;
-
-	      return [
-	      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
-	      //   points: { programming: 150, marketing: 100 }
-	      // },
-
-	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
-	        points: { programming: 50, marketing: 0 }
-	      }];
-	      // ].map(computeFeatureCost(cost));
-	    }, _this.getPaymentFeatures = function (idea) {
-	      var technicalDebtModifier = 1;
-	      var up = Math.ceil;
-
-	      return [{ name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
-	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
-	      }, { name: 'basicPricing', shortDescription: 'Один тарифный план', description: 'Одна цена для всех. Процент платящих снижается вдвое, однако вы начинаете зарабатывать деньги',
-	        points: { programming: up(150 * technicalDebtModifier), marketing: 50 }
-	      }, { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов', description: 'Несколько ценовых сегментов. Максимально возможный доход с продукта',
-	        points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
-	      }];
 	    }, _this.getTechnicalDebtDescription = function (debt) {
 	      if (debt < 10) {
 	        return '\u0412\u0441\u0451 \u0445\u043E\u0440\u043E\u0448\u043E';
@@ -8610,31 +8566,6 @@
 	          },
 	          '\u0422\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437'
 	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            possibleXPtext
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B: ',
-	            mp,
-	            'MP \u0438 ',
-	            pp,
-	            'PP'
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u041F\u0440\u043E\u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u0443',
-	            onClick: testHypothesis,
-	            disabled: disabled,
-	            primary: true
-	          }),
-	          (0, _preact.h)(_Schedule2.default, null)
-	        ),
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
@@ -8663,7 +8594,7 @@
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'metric-link', onClick: function onClick() {
-	                return _this.setMode(MODE_ADS);
+	                return _this.setMode(MODE_MARKETING);
 	              } },
 	            '\u041F\u0440\u0438\u0432\u0435\u0441\u0442\u0438 \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
 	          )
@@ -8725,7 +8656,32 @@
 	            'XP'
 	          )
 	        ),
-	        (0, _preact.h)('br', null)
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            possibleXPtext
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B: ',
+	            mp,
+	            'MP \u0438 ',
+	            pp,
+	            'PP'
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: '\u0417\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435',
+	            onClick: testHypothesis,
+	            disabled: disabled,
+	            primary: true
+	          }),
+	          (0, _preact.h)(_Schedule2.default, null)
+	        )
 	      );
 	    }, _this.renderPaymentTab = function (id, idea) {
 	      var payment = _this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
@@ -8788,7 +8744,9 @@
 	          )
 	        )
 	      );
-	    }, _this.renderClientTab = function (id, idea) {
+	    }, _this.renderClientTab = function (id, product) {
+	      var idea = product.idea;
+
 	      var marketing = _this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
 	      var churn = _productStore2.default.getChurnRate(id).pretty;
@@ -8860,7 +8818,8 @@
 	            marketing
 	          )
 	        ),
-	        nearestCompetitor
+	        nearestCompetitor,
+	        _this.renderAdTab(id, product)
 	      );
 	    }, _this.renderAdTab = function (id, product) {
 	      return (0, _preact.h)(
@@ -9025,7 +8984,7 @@
 	    }, _this.renderProductMenuNavbar = function () {
 	      var hypothesis = void 0;
 	      if (_stages2.default.canShowHypothesisTab()) {
-	        hypothesis = _this.renderNavbar(MODE_HYPOTHESIS, 'Гипотезы');
+	        hypothesis = _this.renderNavbar(MODE_HYPOTHESIS, 'Исследования');
 	      }
 
 	      var improvements = void 0;
@@ -9042,9 +9001,9 @@
 	      ads = _this.renderNavbar(MODE_ADS, 'Реклама');
 
 	      var clients = void 0;
-	      if (_stages2.default.canShowClientsTab()) {
-	        clients = _this.renderNavbar(MODE_MARKETING, 'Клиенты');
-	      }
+	      // if (stageHelper.canShowClientsTab()) {
+	      clients = _this.renderNavbar(MODE_MARKETING, 'Клиенты');
+	      // }
 
 	      var competitors = void 0;
 	      if (_stages2.default.canShowCompetitorsTab()) {
@@ -9057,7 +9016,6 @@
 	        hypothesis,
 	        improvements,
 	        payments,
-	        ads,
 	        clients,
 	        competitors
 	      );
@@ -9093,6 +9051,53 @@
 	        { className: 'offset-mid' },
 	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
 	      );
+	    }
+	  }, {
+	    key: 'getHypothesisAnalyticsFeatures',
+	    value: function getHypothesisAnalyticsFeatures(idea) {
+	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев', description: '', // 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез',
+	        points: { programming: 50, marketing: 0 }
+	      }, { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
+	        points: { programming: 50, marketing: 0 }
+	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
+	        points: { programming: 150, marketing: 100 }
+	      }];
+	    }
+	  }, {
+	    key: 'getAnalyticFeatures',
+	    value: function getAnalyticFeatures(idea) {
+	      return [
+	      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+	      //   points: { programming: 150, marketing: 100 }
+	      // },
+
+	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
+	        points: { programming: 50, marketing: 0 }
+	      }];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getPaymentFeatures',
+	    value: function getPaymentFeatures(idea) {
+	      var technicalDebtModifier = 1;
+	      var up = Math.ceil;
+
+	      return [{ name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
+	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
+	      }, { name: 'basicPricing', shortDescription: 'Один тарифный план', description: 'Одна цена для всех. Процент платящих снижается вдвое, однако вы начинаете зарабатывать деньги',
+	        points: { programming: up(150 * technicalDebtModifier), marketing: 50 }
+	      }, { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов', description: 'Несколько ценовых сегментов. Максимально возможный доход с продукта',
+	        points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
+	      }];
 	    }
 	  }, {
 	    key: 'plainifySameTypeFeatures',
@@ -9150,7 +9155,7 @@
 	          break;
 
 	        case MODE_MARKETING:
-	          body = this.renderClientTab(id, idea);
+	          body = this.renderClientTab(id, product);
 	          break;
 
 	        case MODE_ADS:
@@ -9348,7 +9353,7 @@
 	      }
 
 	      var churnTab = void 0;
-	      canShowChurnTab = true;
+	      canShowChurnTab = false;
 	      if (canShowChurnTab) {
 	        churnTab = (0, _preact.h)(
 	          'li',
@@ -9444,7 +9449,7 @@
 	          ),
 	          (0, _preact.h)(
 	            'span',
-	            { className: 'metric-link', onClick: onAdsPressed },
+	            { className: 'metric-link', onClick: onClientsPressed },
 	            '\u041F\u0440\u0438\u0432\u043B\u0435\u0447\u044C \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
 	          )
 	        );
@@ -9885,8 +9890,51 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {}
 	  }, {
+	    key: 'renderAdCampaignGenerator',
+	    value: function renderAdCampaignGenerator(id, clients, campaignText, money) {
+	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
+	      var campaignCost = Math.ceil(clients * costPerClient);
+
+	      var market = _flux2.default.productStore.getMarketShare(id);
+
+	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, money);
+	      var potentialClients = marketStats.potentialClients,
+	          ourClients = marketStats.ourClients;
+
+
+	      if (money < campaignCost || clients > market.marketSize || clients > potentialClients) {
+	        return (0, _preact.h)('div', null);
+	        // return <div>Нужно больше золота! На вашем счету: {money}$, а нужно {campaignCost}$</div>
+	      }
+
+	      return (0, _preact.h)(
+	        'li',
+	        null,
+	        campaignText,
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0412\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 ',
+	          clients,
+	          ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0437\u0430 ',
+	          campaignCost,
+	          '$'
+	        ),
+	        (0, _preact.h)(_UI2.default.Button, {
+	          item: 'start-campaign ' + clients,
+	          text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E',
+	          onClick: this.inviteUsers(id, clients, campaignCost, ourClients),
+	          primary: true
+	        }),
+	        (0, _preact.h)('br', null)
+	      );
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render(_ref2, _ref3) {
+	      var _this2 = this;
+
 	      var id = _ref2.id;
 	      var possibleClients = _ref3.possibleClients;
 
@@ -9902,62 +9950,63 @@
 	      var maxPossibleClients = amount; // Math.floor(playerStore.getMoney() / costPerClient);
 	      var campaignCost = Math.ceil(possibleClients * costPerClient);
 
+	      // <div>Объём рынка: {marketSize} человек</div>
+	      // <div>Наши клиенты: {ourClients} человек</div>
+	      // <div>Клиенты, которых мы не можем переманить: {unbeatableClients} человек</div>
+	      // <div>Наша потенциальная аудитория: {potentialClients}
+	      //   ({marketSize} - {ourClients} - {unbeatableClients})
+	      // </div>
+
+	      // <UI.Range min={0} max={maxPossibleClients} onDrag={this.onDrag} />
+	      // <div>
+	      // <div>Пригласить {possibleClients} клиентов за {campaignCost}$</div>
+	      // <UI.Button
+	      // item="start-campaign"
+	      // text="Начать рекламную кампанию"
+	      // onClick={this.inviteUsers(id, possibleClients, campaignCost, ourClients)}
+	      // primary
+	      // />
+	      // </div>
+
+	      var ads = [{ clients: 200, text: 'Привести 200 клиентов' }, { clients: 1000, text: 'Привести 1000 клиентов' }, { clients: 10000, text: 'Привести 10000 клиентов' }, { clients: 50000, text: 'Привести 50000 клиентов' }, { clients: 300000, text: 'Привести 300000 клиентов' }];
+
+	      var money = _flux2.default.playerStore.getMoney();
+
+	      var enoughMoney = function enoughMoney(a) {
+	        return Math.ceil(a.clients * costPerClient) < money;
+	      };
+	      var noClientOverflow = function noClientOverflow(a) {
+	        return a.clients < potentialClients;
+	      };
+
+	      var adList = ads.filter(noClientOverflow).filter(enoughMoney);
+
+	      var list = void 0;
+
+	      // if (!ads.filter(enoughMoney))
+
+	      if (adList.length) {
+	        list = adList.map(function (a) {
+	          return _this2.renderAdCampaignGenerator(id, a.clients, a.text, money);
+	        });
+	      } else {
+	        list = 'no campaigns available';
+	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u041E\u0431\u044A\u0451\u043C \u0440\u044B\u043D\u043A\u0430: ',
-	          marketSize,
-	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	          ourClients,
-	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041A\u043B\u0438\u0435\u043D\u0442\u044B, \u043A\u043E\u0442\u043E\u0440\u044B\u0445 \u043C\u044B \u043D\u0435 \u043C\u043E\u0436\u0435\u043C \u043F\u0435\u0440\u0435\u043C\u0430\u043D\u0438\u0442\u044C: ',
-	          unbeatableClients,
-	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
 	          '\u041D\u0430\u0448\u0430 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F: ',
 	          potentialClients,
-	          '(',
-	          marketSize,
-	          ' - ',
-	          ourClients,
-	          ' - ',
-	          unbeatableClients,
-	          ')'
+	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
 	        ),
-	        (0, _preact.h)(_UI2.default.Range, { min: 0, max: maxPossibleClients, onDrag: this.onDrag }),
 	        (0, _preact.h)(
-	          'div',
+	          'ul',
 	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041F\u0440\u0438\u0433\u043B\u0430\u0441\u0438\u0442\u044C ',
-	            possibleClients,
-	            ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0437\u0430 ',
-	            campaignCost,
-	            '$'
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, {
-	            item: 'start-campaign',
-	            text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E',
-	            onClick: this.inviteUsers(id, possibleClients, campaignCost, ourClients),
-	            primary: true
-	          })
+	          list
 	        )
 	      );
 	    }
@@ -10388,7 +10437,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u041F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u0435\u0435 200 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043D\u0430 \u0432\u0430\u0448 \u0441\u0430\u0439\u0442 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u041F\u0440\u043E\u0435\u043A\u0442\u044B->\u0420\u0435\u043A\u043B\u0430\u043C\u0430"'
+	              '\u041F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u0435\u0435 200 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043D\u0430 \u0432\u0430\u0448 \u0441\u0430\u0439\u0442 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u041F\u0440\u043E\u0435\u043A\u0442\u044B->\u041A\u043B\u0438\u0435\u043D\u0442\u044B"'
 	            )
 	          );
 	          break;
@@ -10405,7 +10454,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u0413\u0438\u043F\u043E\u0442\u0435\u0437\u044B", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
+	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
 	            )
 	          );
 	          break;

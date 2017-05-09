@@ -67,7 +67,7 @@ export default class Metrics extends Component {
     }
 
     let churnTab;
-    canShowChurnTab = true;
+    canShowChurnTab = false;
     if (canShowChurnTab) {
       churnTab = <li><b>Отток клиентов: {churn}% ({disloyalClients})</b>
         <span className="metric-link" onClick={onClientsPressed}>Улучшить</span>
@@ -112,7 +112,7 @@ export default class Metrics extends Component {
     if (canShowClientsTab) {
       clientsTab = <li>
         <b>Клиенты: {clients}</b>
-        <span className="metric-link" onClick={onAdsPressed}>Привлечь клиентов</span>
+        <span className="metric-link" onClick={onClientsPressed}>Привлечь клиентов</span>
       </li>
     }
 

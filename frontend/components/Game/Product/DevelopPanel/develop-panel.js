@@ -52,16 +52,12 @@ export default class DevelopPanel extends Component {
     analytics: true,
     features: true,
 
-    mode: MODE_ADS
+    mode: MODE_MARKETING
   };
 
-  componentWillMount() {
-
-  }
+  componentWillMount() {}
 
   getMarketingFeatureList = (idea) => {
-    const cost = 30 * WORK_SPEED_NORMAL;
-
     return [
       { name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
         points: { marketing: 150, programming: 0 }, time: 2 },
@@ -77,8 +73,6 @@ export default class DevelopPanel extends Component {
   };
 
   getDevelopmentFeatureList = idea => {
-    const cost = 50 * WORK_SPEED_NORMAL;
-
     return [
       { name: 'backups', description: ''},
       { name: 'clusters', description: ''},
@@ -112,7 +106,7 @@ export default class DevelopPanel extends Component {
     );
   }
 
-  getHypothesisAnalyticsFeatures = idea => {
+  getHypothesisAnalyticsFeatures(idea) {
     return [
       { name: 'feedback', shortDescription: 'Форма для комментариев', description: '', // 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез',
         points: { programming: 50, marketing: 0 }
@@ -126,9 +120,7 @@ export default class DevelopPanel extends Component {
     ];
   };
 
-  getAnalyticFeatures = idea => {
-    const cost = 30 * WORK_SPEED_NORMAL;
-
+  getAnalyticFeatures(idea) {
     return [
       // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
       //   points: { programming: 50, marketing: 0 }
@@ -150,7 +142,7 @@ export default class DevelopPanel extends Component {
     // ].map(computeFeatureCost(cost));
   };
 
-  getPaymentFeatures = idea => {
+  getPaymentFeatures(idea) {
     const technicalDebtModifier = 1;
     const up = Math.ceil;
 
@@ -166,6 +158,7 @@ export default class DevelopPanel extends Component {
       }
     ];
   };
+
 
   getTechnicalDebtDescription = debt => {
     if (debt < 10) {
@@ -246,17 +239,6 @@ export default class DevelopPanel extends Component {
         <div
           className="featureGroupTitle"
         >Тестирование гипотез</div>
-        <div>
-          <div>{possibleXPtext}</div>
-          <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
-          <UI.Button
-            text="Протестировать гипотезу"
-            onClick={testHypothesis}
-            disabled={disabled}
-            primary
-          />
-          <Schedule />
-        </div>
         <br />
         <div className="featureGroupDescription">
           <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
@@ -266,7 +248,7 @@ export default class DevelopPanel extends Component {
             <UI.Info />
           </div>
           <div className="offset-mid">{cliTabDescription}</div>
-          <div className="metric-link" onClick={() => this.setMode(MODE_ADS)}>Привести больше клиентов</div>
+          <div className="metric-link" onClick={() => this.setMode(MODE_MARKETING)}>Привести больше клиентов</div>
         </div>
         <br />
         <div>{possibleXPtext}</div>
@@ -284,6 +266,17 @@ export default class DevelopPanel extends Component {
           <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
         </div>
         <br />
+        <div>
+          <div>{possibleXPtext}</div>
+          <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
+          <UI.Button
+            text="Запустить исследование"
+            onClick={testHypothesis}
+            disabled={disabled}
+            primary
+          />
+          <Schedule />
+        </div>
       </div>
     )
   };
@@ -354,7 +347,8 @@ export default class DevelopPanel extends Component {
     );
   };
 
-  renderClientTab = (id, idea) => {
+  renderClientTab = (id, product) => {
+    const { idea } = product;
     const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
     const churn = productStore.getChurnRate(id).pretty;
@@ -390,6 +384,7 @@ export default class DevelopPanel extends Component {
           <div className="featureGroupBody">{marketing}</div>
         </div>
         {nearestCompetitor}
+        {this.renderAdTab(id, product)}
       </div>
     );
   };
@@ -514,7 +509,7 @@ export default class DevelopPanel extends Component {
   renderProductMenuNavbar = () => {
     let hypothesis;
     if (stageHelper.canShowHypothesisTab()) {
-      hypothesis = this.renderNavbar(MODE_HYPOTHESIS, 'Гипотезы');
+      hypothesis = this.renderNavbar(MODE_HYPOTHESIS, 'Исследования');
     }
 
     let improvements;
@@ -531,9 +526,9 @@ export default class DevelopPanel extends Component {
     ads = this.renderNavbar(MODE_ADS, 'Реклама');
 
     let clients;
-    if (stageHelper.canShowClientsTab()) {
+    // if (stageHelper.canShowClientsTab()) {
       clients = this.renderNavbar(MODE_MARKETING, 'Клиенты');
-    }
+    // }
 
     let competitors;
     if (stageHelper.canShowCompetitorsTab()) {
@@ -545,7 +540,6 @@ export default class DevelopPanel extends Component {
         {hypothesis}
         {improvements}
         {payments}
-        {ads}
         {clients}
         {competitors}
       </ul>
@@ -569,7 +563,7 @@ export default class DevelopPanel extends Component {
         break;
 
       case MODE_MARKETING:
-        body = this.renderClientTab(id, idea);
+        body = this.renderClientTab(id, product);
         break;
 
       case MODE_ADS:
