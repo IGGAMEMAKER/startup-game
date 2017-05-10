@@ -232,12 +232,15 @@ class ProductStore extends EventEmitter {
     // return answer in partitions 0-1
     logger.shit('TODO fix constant values in blog, email, support in getChurnRate(i)');
 
-    const rating = this.getRating(i);
+    let rating = this.getRating(i);
 
-    if (rating < 3) return {
-      raw: 1,
-      pretty: 100
-    };
+    if (rating < 3) {
+      rating = 3;
+      // return {
+      //   raw: 1,
+      //   pretty: 100
+      // };
+    }
 
     // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
     const ratingModifier = Math.min(Math.pow(12 - rating, 1.65));

@@ -53,6 +53,9 @@ export default class Menu extends Component {
     const moneyDifference = saldo ? `+${saldoValue}` : saldoValue;
     const moneyPhrase = `$${Math.floor(state.money)} (${moneyDifference}$)`;
 
+    const employees = playerStore.getEmployees().length;
+    const employeePhrase = employees ? `(${employees})` : '';
+
     return (
       <div>
         <div className={navigation}>
@@ -68,7 +71,7 @@ export default class Menu extends Component {
 
         <div>
           <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
-          <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда</div>
+          <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда {employeePhrase}</div>
         </div>
       </div>
     );

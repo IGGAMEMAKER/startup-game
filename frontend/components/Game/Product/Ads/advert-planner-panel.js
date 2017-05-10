@@ -121,7 +121,7 @@ export default class AdvertPlannerPanel extends Component {
     // if (!ads.filter(enoughMoney))
 
     if (adList.length) {
-      list = adList.map(a => this.renderAdCampaignGenerator(id, a.clients, a.text, money));
+      list = adList.map(a => this.renderAdCampaignGenerator(id, a.clients, a.text, money)).reverse();
     } else {
       list = 'no campaigns available';
     }

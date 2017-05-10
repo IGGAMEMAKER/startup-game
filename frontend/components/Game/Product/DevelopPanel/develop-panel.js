@@ -44,6 +44,7 @@ const MODE_PAYMENTS = 'MODE_PAYMENTS';
 const MODE_ANALYTICS = 'MODE_ANALYTICS';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 const MODE_COMPETITORS = 'MODE_COMPETITORS';
+const MODE_BONUSES = 'MODE_BONUSES';
 
 export default class DevelopPanel extends Component {
   state = {
@@ -57,7 +58,7 @@ export default class DevelopPanel extends Component {
 
   componentWillMount() {}
 
-  getMarketingFeatureList = (idea) => {
+  getMarketingFeatureList(idea) {
     return [
       { name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
         points: { marketing: 150, programming: 0 }, time: 2 },
@@ -72,7 +73,7 @@ export default class DevelopPanel extends Component {
     // ].map(computeFeatureCost(cost));
   };
 
-  getDevelopmentFeatureList = idea => {
+  getDevelopmentFeatureList(idea) {
     return [
       { name: 'backups', description: ''},
       { name: 'clusters', description: ''},
@@ -189,23 +190,36 @@ export default class DevelopPanel extends Component {
     const segmentingStatus = improvements.hasSegmenting ? done : `${cancel} Не`;
     const feedbackStatus = improvements.hasFeedback ? done : `${cancel} Не`;
 
-    const clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
-
-    const cliTabDescription = improvements.clientModifier.clientsRange
-      .map((c, i, arr) => {
-        const penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
-        const isActivated = i === improvements.clientModifier.index ? UI.symbols.ok : UI.symbols.dot;
-
-        let phrase;
-        if (i === 0) {
-          phrase = `Клиентов больше, чем ${c}`;
-        } else {
-          phrase = `Клиентов меньше, чем ${arr[i - 1]} - штраф ${penalty}%`;
-        }
-        return <div className="smallText">
-          {isActivated} {phrase}
+    // const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
+    let improveTab;
+    if (!improvements.hasFeedback) {
+      improveTab = (
+        <div>
+          <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
+          {this.getFeedbackButton(idea, id)}
         </div>
-      });
+      )
+    } else if (!improvements.hasWebvisor) {
+      improveTab = (
+        <div>
+          <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
+          {this.getWebvisorButton(idea, id)}
+        </div>
+      )
+    } else if (!improvements.hasSegmenting) {
+      improveTab = (
+        <div>
+          <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
+          {this.getSegmentingButton(idea, id)}
+        </div>
+      )
+    } else {
+      improveTab = (
+        <div>Сегмент аналитики полностью улучшен</div>
+      )
+    }
+
+    const clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
 
     const hypothesisPoints = productStore.getHypothesisPoints(id);
 
@@ -234,37 +248,34 @@ export default class DevelopPanel extends Component {
     const possibleXPtext = <div>Запуская тестирование вы получите от 0 до {improvements.max} XP
       (штраф -{clientSizePenalty}%)</div>;
 
+
+    // <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
+    // {this.getFeedbackButton(idea, id)}
+    // <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
+    // {this.getWebvisorButton(idea, id)}
+    // <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
+    // {this.getSegmentingButton(idea, id)}
+
+
+    // <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
+
+
+    // <br />
+    // <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
+
+            // <UI.Info />
+          // <div className="smallText">
+          //   Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
+          // </div>
     return (
       <div>
-        <div
-          className="featureGroupTitle"
-        >Тестирование гипотез</div>
-        <br />
+        <div className="featureGroupTitle">Тестирование гипотез</div>
         <div className="featureGroupDescription">
           <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
           <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
-          <div className="smallText">
-            Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
-            <UI.Info />
-          </div>
-          <div className="offset-mid">{cliTabDescription}</div>
-          <div className="metric-link" onClick={() => this.setMode(MODE_MARKETING)}>Привести больше клиентов</div>
         </div>
         <br />
-        <div>{possibleXPtext}</div>
-        <div className="offset-mid">
-          <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
-
-          <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
-          {this.getFeedbackButton(idea, id)}
-          <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
-          {this.getWebvisorButton(idea, id)}
-          <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
-          {this.getSegmentingButton(idea, id)}
-
-          <br />
-          <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
-        </div>
+        <div>{improveTab}</div>
         <br />
         <div>
           <div>{possibleXPtext}</div>
@@ -290,6 +301,10 @@ export default class DevelopPanel extends Component {
 
       case 'payment':
         featureList = this.getPaymentFeatures(idea);
+        break;
+
+      case 'analytics':
+        featureList = this.getHypothesisAnalyticsFeatures(idea);
         break;
     }
 
@@ -370,7 +385,7 @@ export default class DevelopPanel extends Component {
       )
     } else {
       nearestCompetitor = (
-        <div>Вы - №1 на рынке!</div>
+        <div>Вы - №1 на рынке! Вы можете захватить вплоть до 100% рынка!</div>
       )
     }
 
@@ -378,13 +393,15 @@ export default class DevelopPanel extends Component {
       <div>
         <div className="featureGroupTitle">Работа с клиентами</div>
         <div>Наши клиенты: {market.clients} ({market.share}% рынка)</div>
+        {this.renderAdTab(id, product)}
+
+        {nearestCompetitor}
+        <br />
         <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
         <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
           <div className="featureGroupBody">{marketing}</div>
         </div>
-        {nearestCompetitor}
-        {this.renderAdTab(id, product)}
       </div>
     );
   };
@@ -418,6 +435,33 @@ export default class DevelopPanel extends Component {
       </div>
     );
   };
+
+  renderBonusesTab(id, product) {
+    const improvements = productStore.getImprovementChances(id);
+
+    const cliTabDescription = improvements.clientModifier.clientsRange
+      .map((c, i, arr) => {
+        const penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
+        const isActivated = i === improvements.clientModifier.index ? UI.symbols.ok : UI.symbols.dot;
+
+        let phrase;
+        if (i === 0) {
+          phrase = `Клиентов больше, чем ${c}`;
+        } else {
+          phrase = `Клиентов меньше, чем ${arr[i - 1]} - штраф ${penalty}%`;
+        }
+        return <div className="smallText">
+          {isActivated} {phrase}
+        </div>
+      });
+
+    return (
+      <div>
+        <div>Штраф достоверности (при тестировании гипотез)</div>
+        <div className="offset-mid">{cliTabDescription}</div>
+      </div>
+    )
+  }
 
   renderFeature = (featureGroup, id, idea, hideOnComplete, onUpgraded) => (feature, i) => {
     const featureName = feature.name;
@@ -535,6 +579,11 @@ export default class DevelopPanel extends Component {
       competitors = this.renderNavbar(MODE_COMPETITORS, 'Конкуренты');
     }
 
+    let bonuses;
+    if (stageHelper.canShowBonusesTab()) {
+      bonuses = this.renderNavbar(MODE_BONUSES, 'Бонусы');
+    }
+
     return (
       <ul className="nav nav-tabs">
         {hypothesis}
@@ -542,6 +591,7 @@ export default class DevelopPanel extends Component {
         {payments}
         {clients}
         {competitors}
+        {bonuses}
       </ul>
     );
   };
@@ -584,6 +634,10 @@ export default class DevelopPanel extends Component {
 
       case MODE_COMPETITORS:
         body = <Competitors id={id} />;//this.renderAdTab(id, product);
+        break;
+
+      case MODE_BONUSES:
+        body = this.renderBonusesTab(id, product);
         break;
 
       default:

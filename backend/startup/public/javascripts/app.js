@@ -6330,10 +6330,13 @@
 
 	      var rating = this.getRating(i);
 
-	      if (rating < 3) return {
-	        raw: 1,
-	        pretty: 100
-	      };
+	      if (rating < 3) {
+	        rating = 3;
+	        // return {
+	        //   raw: 1,
+	        //   pretty: 100
+	        // };
+	      }
 
 	      // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
 	      var ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
@@ -7294,6 +7297,9 @@
 	  },
 	  canShowClientsTab: function canShowClientsTab() {
 	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	  },
+	  canShowBonusesTab: function canShowBonusesTab() {
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
 	  }
 	};
 
@@ -7469,6 +7475,9 @@
 	      var moneyDifference = saldo ? '+' + saldoValue : saldoValue;
 	      var moneyPhrase = '$' + Math.floor(state.money) + ' (' + moneyDifference + '$)';
 
+	      var employees = _playerStore2.default.getEmployees().length;
+	      var employeePhrase = employees ? '(' + employees + ')' : '';
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -7516,7 +7525,8 @@
 	          (0, _preact.h)(
 	            'div',
 	            { className: navigation + ' ' + isChosenStaffMenu, onClick: props.onRenderStaffMenu },
-	            '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
+	            '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 ',
+	            employeePhrase
 	          )
 	        )
 	      );
@@ -8442,6 +8452,7 @@
 	var MODE_ANALYTICS = 'MODE_ANALYTICS';
 	var MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 	var MODE_COMPETITORS = 'MODE_COMPETITORS';
+	var MODE_BONUSES = 'MODE_BONUSES';
 
 	var DevelopPanel = function (_Component) {
 	  (0, _inherits3.default)(DevelopPanel, _Component);
@@ -8464,16 +8475,6 @@
 	      features: true,
 
 	      mode: MODE_MARKETING
-	    }, _this.getMarketingFeatureList = function (idea) {
-	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
-	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
-	        points: { marketing: 50, programming: 100 }, time: 10 }];
-	      // ].map(computeFeatureCost(cost));
-	    }, _this.getDevelopmentFeatureList = function (idea) {
-	      return [{ name: 'backups', description: '' }, { name: 'clusters', description: '' }, { name: 'tests', description: '' }, { name: 'mobiles', description: '' } // ios android apps
-	      ];
-	      // ].map(computeFeatureCost(cost));
 	    }, _this.getTechnicalDebtDescription = function (debt) {
 	      if (debt < 10) {
 	        return '\u0412\u0441\u0451 \u0445\u043E\u0440\u043E\u0448\u043E';
@@ -8499,26 +8500,59 @@
 	      var segmentingStatus = improvements.hasSegmenting ? done : cancel + ' \u041D\u0435';
 	      var feedbackStatus = improvements.hasFeedback ? done : cancel + ' \u041D\u0435';
 
-	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
-
-	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i, arr) {
-	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
-	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
-
-	        var phrase = void 0;
-	        if (i === 0) {
-	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ' + c;
-	        } else {
-	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0435\u043D\u044C\u0448\u0435, \u0447\u0435\u043C ' + arr[i - 1] + ' - \u0448\u0442\u0440\u0430\u0444 ' + penalty + '%';
-	        }
-	        return (0, _preact.h)(
+	      // const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
+	      var improveTab = void 0;
+	      if (!improvements.hasFeedback) {
+	        improveTab = (0, _preact.h)(
 	          'div',
-	          { className: 'smallText' },
-	          isActivated,
-	          ' ',
-	          phrase
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            feedbackStatus,
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
+	            improvements.feedbackBonus,
+	            'XP)'
+	          ),
+	          _this.getFeedbackButton(idea, id)
 	        );
-	      });
+	      } else if (!improvements.hasWebvisor) {
+	        improveTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            webvisorStatus,
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
+	            improvements.webvisorBonus,
+	            'XP)'
+	          ),
+	          _this.getWebvisorButton(idea, id)
+	        );
+	      } else if (!improvements.hasSegmenting) {
+	        improveTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            segmentingStatus,
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (+',
+	            improvements.segmentingBonus,
+	            'XP)'
+	          ),
+	          _this.getSegmentingButton(idea, id)
+	        );
+	      } else {
+	        improveTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0438 \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E \u0443\u043B\u0443\u0447\u0448\u0435\u043D'
+	        );
+	      }
+
+	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
 
 	      var hypothesisPoints = _productStore2.default.getHypothesisPoints(id);
 
@@ -8556,17 +8590,32 @@
 	        '%)'
 	      );
 
+	      // <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
+	      // {this.getFeedbackButton(idea, id)}
+	      // <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
+	      // {this.getWebvisorButton(idea, id)}
+	      // <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
+	      // {this.getSegmentingButton(idea, id)}
+
+
+	      // <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
+
+
+	      // <br />
+	      // <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
+
+	      // <UI.Info />
+	      // <div className="smallText">
+	      //   Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
+	      // </div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
 	        (0, _preact.h)(
 	          'div',
-	          {
-	            className: 'featureGroupTitle'
-	          },
+	          { className: 'featureGroupTitle' },
 	          '\u0422\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437'
 	        ),
-	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'featureGroupDescription' },
@@ -8579,82 +8628,13 @@
 	            'div',
 	            { className: 'smallText' },
 	            '\u041F\u043E\u0441\u043B\u0435 \u043A\u0430\u0436\u0434\u043E\u0433\u043E \u0446\u0438\u043A\u043B\u0430 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u043E\u0447\u043A\u0438 \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP points)'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'smallText' },
-	            '\u0415\u0441\u043B\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0430\u043B\u043E, \u0442\u043E \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442\u044B \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0439 \u043C\u043E\u0433\u0443\u0442 \u0431\u044B\u0442\u044C \u043D\u0435\u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u044B (\u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u0448\u0442\u0440\u0430\u0444)\xA0\xA0',
-	            (0, _preact.h)(_UI2.default.Info, null)
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'offset-mid' },
-	            cliTabDescription
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'metric-link', onClick: function onClick() {
-	                return _this.setMode(MODE_MARKETING);
-	              } },
-	            '\u041F\u0440\u0438\u0432\u0435\u0441\u0442\u0438 \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
 	          )
 	        ),
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          possibleXPtext
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            done,
-	            ' \u0411\u0430\u0437\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ',
-	            improvements.basicBonus,
-	            'XP'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            feedbackStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
-	            improvements.feedbackBonus,
-	            'XP)'
-	          ),
-	          _this.getFeedbackButton(idea, id),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            webvisorStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
-	            improvements.webvisorBonus,
-	            'XP)'
-	          ),
-	          _this.getWebvisorButton(idea, id),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            segmentingStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (+',
-	            improvements.segmentingBonus,
-	            'XP)'
-	          ),
-	          _this.getSegmentingButton(idea, id),
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0418\u0442\u043E\u0433\u043E: ',
-	            improvements.maxXPWithoutBonuses,
-	            'XP - ',
-	            clientSizePenalty,
-	            '% = ',
-	            improvements.max,
-	            'XP'
-	          )
+	          improveTab
 	        ),
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
@@ -8774,7 +8754,7 @@
 	        nearestCompetitor = (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435!'
+	          '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435! \u0412\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u0437\u0430\u0445\u0432\u0430\u0442\u0438\u0442\u044C \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 100% \u0440\u044B\u043D\u043A\u0430!'
 	        );
 	      }
 
@@ -8795,6 +8775,9 @@
 	          market.share,
 	          '% \u0440\u044B\u043D\u043A\u0430)'
 	        ),
+	        _this.renderAdTab(id, product),
+	        nearestCompetitor,
+	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
 	          null,
@@ -8817,9 +8800,7 @@
 	            { className: 'featureGroupBody' },
 	            marketing
 	          )
-	        ),
-	        nearestCompetitor,
-	        _this.renderAdTab(id, product)
+	        )
 	      );
 	    }, _this.renderAdTab = function (id, product) {
 	      return (0, _preact.h)(
@@ -9010,6 +8991,11 @@
 	        competitors = _this.renderNavbar(MODE_COMPETITORS, 'Конкуренты');
 	      }
 
+	      var bonuses = void 0;
+	      if (_stages2.default.canShowBonusesTab()) {
+	        bonuses = _this.renderNavbar(MODE_BONUSES, 'Бонусы');
+	      }
+
 	      return (0, _preact.h)(
 	        'ul',
 	        { className: 'nav nav-tabs' },
@@ -9017,7 +9003,8 @@
 	        improvements,
 	        payments,
 	        clients,
-	        competitors
+	        competitors,
+	        bonuses
 	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
@@ -9025,6 +9012,22 @@
 	  (0, _createClass3.default)(DevelopPanel, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {}
+	  }, {
+	    key: 'getMarketingFeatureList',
+	    value: function getMarketingFeatureList(idea) {
+	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
+	        points: { marketing: 50, programming: 100 }, time: 10 }];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getDevelopmentFeatureList',
+	    value: function getDevelopmentFeatureList(idea) {
+	      return [{ name: 'backups', description: '' }, { name: 'clusters', description: '' }, { name: 'tests', description: '' }, { name: 'mobiles', description: '' } // ios android apps
+	      ];
+	      // ].map(computeFeatureCost(cost));
+	    }
 	  }, {
 	    key: 'getFeedbackButton',
 	    value: function getFeedbackButton(idea, id) {
@@ -9111,6 +9114,10 @@
 	        case 'payment':
 	          featureList = this.getPaymentFeatures(idea);
 	          break;
+
+	        case 'analytics':
+	          featureList = this.getHypothesisAnalyticsFeatures(idea);
+	          break;
 	      }
 
 	      var unlockedFeature = void 0;
@@ -9131,6 +9138,45 @@
 	      }
 
 	      return payment;
+	    }
+	  }, {
+	    key: 'renderBonusesTab',
+	    value: function renderBonusesTab(id, product) {
+	      var improvements = _productStore2.default.getImprovementChances(id);
+
+	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i, arr) {
+	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
+	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
+
+	        var phrase = void 0;
+	        if (i === 0) {
+	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ' + c;
+	        } else {
+	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0435\u043D\u044C\u0448\u0435, \u0447\u0435\u043C ' + arr[i - 1] + ' - \u0448\u0442\u0440\u0430\u0444 ' + penalty + '%';
+	        }
+	        return (0, _preact.h)(
+	          'div',
+	          { className: 'smallText' },
+	          isActivated,
+	          ' ',
+	          phrase
+	        );
+	      });
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0428\u0442\u0440\u0430\u0444 \u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u043E\u0441\u0442\u0438 (\u043F\u0440\u0438 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0438 \u0433\u0438\u043F\u043E\u0442\u0435\u0437)'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          cliTabDescription
+	        )
+	      );
 	    }
 	  }, {
 	    key: 'render',
@@ -9176,6 +9222,10 @@
 
 	        case MODE_COMPETITORS:
 	          body = (0, _preact.h)(_competitors2.default, { id: id }); //this.renderAdTab(id, product);
+	          break;
+
+	        case MODE_BONUSES:
+	          body = this.renderBonusesTab(id, product);
 	          break;
 
 	        default:
@@ -9269,9 +9319,11 @@
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _stages = __webpack_require__(148);
 
-	// import React, { Component, PropTypes } from 'react';
+	var _stages2 = _interopRequireDefault(_stages);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Metrics = function (_Component) {
 	  (0, _inherits3.default)(Metrics, _Component);
@@ -9458,22 +9510,24 @@
 	      var incomeTab = void 0;
 	      canShowIncomeTab = true;
 	      if (canShowIncomeTab) {
-	        incomeTab = (0, _preact.h)(
-	          'li',
-	          null,
-	          (0, _preact.h)(
-	            'b',
+	        if (_stages2.default.canShowPaymentsTab()) {
+	          incomeTab = (0, _preact.h)(
+	            'li',
 	            null,
-	            '\u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u044B\u0439 \u0434\u043E\u0445\u043E\u0434: ',
-	            income,
-	            '$'
-	          ),
-	          (0, _preact.h)(
-	            'span',
-	            { className: 'metric-link', onClick: onPaymentsPressed },
-	            '\u041F\u043E\u0432\u044B\u0441\u0438\u0442\u044C'
-	          )
-	        );
+	            (0, _preact.h)(
+	              'b',
+	              null,
+	              '\u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u044B\u0439 \u0434\u043E\u0445\u043E\u0434: ',
+	              income,
+	              '$'
+	            ),
+	            (0, _preact.h)(
+	              'span',
+	              { className: 'metric-link', onClick: onPaymentsPressed },
+	              '\u041F\u043E\u0432\u044B\u0441\u0438\u0442\u044C'
+	            )
+	          );
+	        }
 	      } else {
 	        incomeTab = (0, _preact.h)(
 	          'li',
@@ -9522,6 +9576,7 @@
 	  }]);
 	  return Metrics;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = Metrics;
 	;
@@ -9988,7 +10043,7 @@
 	      if (adList.length) {
 	        list = adList.map(function (a) {
 	          return _this2.renderAdCampaignGenerator(id, a.clients, a.text, money);
-	        });
+	        }).reverse();
 	      } else {
 	        list = 'no campaigns available';
 	      }

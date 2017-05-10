@@ -92,4 +92,7 @@ export default {
     return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
   },
 
+  canShowBonusesTab() {
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+  }
 };

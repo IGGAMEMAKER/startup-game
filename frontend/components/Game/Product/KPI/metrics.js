@@ -12,6 +12,8 @@ type PropsType = {};
 
 type StateType = {};
 
+import stageHelper from '../../../../helpers/stages';
+
 export default class Metrics extends Component {
   render({
     product,
@@ -119,10 +121,12 @@ export default class Metrics extends Component {
     let incomeTab;
     canShowIncomeTab = true;
     if (canShowIncomeTab) {
-      incomeTab = <li>
-        <b>Ежемесячный доход: {income}$</b>
-        <span className="metric-link" onClick={onPaymentsPressed}>Повысить</span>
-      </li>
+      if (stageHelper.canShowPaymentsTab()) {
+        incomeTab = <li>
+          <b>Ежемесячный доход: {income}$</b>
+          <span className="metric-link" onClick={onPaymentsPressed}>Повысить</span>
+        </li>
+      }
     } else {
       incomeTab = <li onClick={onAnalyticsPressed}>Разблокировать эту метрику</li>
     }
