@@ -538,7 +538,6 @@ class ProductStore extends EventEmitter {
       potentialClients: maxMarketSize - frozen,
       amount: result,
       ourClients,
-      competitors,
       unbeatableClients,
       freeClients: maxMarketSize - totalClients,
       competitors

@@ -5,6 +5,8 @@ import moneyCalculator from '../../helpers/economics/money-difference';
 import scheduleStore from '../../stores/schedule-store';
 import playerStore from '../../stores/player-store';
 
+import stageHelper from '../../helpers/stages';
+
 import UI from '../UI';
 
 export default class Menu extends Component {
@@ -56,19 +58,26 @@ export default class Menu extends Component {
     const employees = playerStore.getEmployees().length;
     const employeePhrase = employees ? `(${employees})` : '';
 
+    let upperTab;
+    if (stageHelper.canShowUpperTabInMenu()) {
+      upperTab = (
+        <div>
+          <div className={navigation}>
+            <div className={moneyIndication} onClick={props.onRenderEconomicsMenu}>{moneyPhrase}</div>
+          </div>
+          <div className={navigation}>
+            <div>День: {props.day}</div>
+          </div>
+          {speeder(1, '>')}
+          {speeder(8, '>>>')}
+          <div className={navigation} onClick={props.onRenderStaffMenu}>MP: {state.points.marketing}</div>
+          <div className={navigation} onClick={props.onRenderStaffMenu}>PP: {state.points.programming}</div>
+        </div>
+      )
+    }
     return (
       <div>
-        <div className={navigation}>
-          <div className={moneyIndication} onClick={props.onRenderEconomicsMenu}>{moneyPhrase}</div>
-        </div>
-        <div className={navigation}>
-          <div>День: {props.day}</div>
-        </div>
-        {speeder(1, '>')}
-        {speeder(8, '>>>')}
-        <div className={navigation} onClick={props.onRenderStaffMenu}>MP: {state.points.marketing}</div>
-        <div className={navigation} onClick={props.onRenderStaffMenu}>PP: {state.points.programming}</div>
-
+        {upperTab}
         <div>
           <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
           <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда {employeePhrase}</div>

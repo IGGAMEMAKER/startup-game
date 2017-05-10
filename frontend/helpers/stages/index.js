@@ -39,6 +39,10 @@ export default {
     setStage(gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS);
   },
 
+  onInstallPaymentModuleMissionCompleted() {
+    setStage(gameStages.GAME_STAGE_PAYMENTS_INSTALLED);
+  },
+
 
   // mission checker
   isFirstWorkerMission() {
@@ -66,10 +70,18 @@ export default {
     return getStage() === gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE;
   },
 
+  isInstallPaymentModuleMission() {
+    return getStage() === gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+  },
+
 
   // can show some tabs region
   canShowHypothesisTab() {
     return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
+  },
+
+  canShowUpperTabInMenu() {
+    return getStage() >= gameStages.GAME_STAGE_IMPROVED_ANALYTICS;
   },
 
   canShowMetricsTab() {

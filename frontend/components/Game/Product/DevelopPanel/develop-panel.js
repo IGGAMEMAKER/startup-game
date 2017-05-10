@@ -195,7 +195,7 @@ export default class DevelopPanel extends Component {
     if (!improvements.hasFeedback) {
       improveTab = (
         <div>
-          <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
+          <div>{feedbackStatus} Установлена форма комментариев (+{improvements.feedbackBonus}XP)</div>
           {this.getFeedbackButton(idea, id)}
         </div>
       )
@@ -267,6 +267,13 @@ export default class DevelopPanel extends Component {
           // <div className="smallText">
           //   Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
           // </div>
+
+    let errorDescription = '';
+    if (disabled) {
+      errorDescription = 'У вас не хватает MP или PP. ' +
+        'Возможно вам стоит нанять больше сотрудников или подождать до следующего месяца';
+    }
+
     return (
       <div>
         <div className="featureGroupTitle">Тестирование гипотез</div>
@@ -280,12 +287,14 @@ export default class DevelopPanel extends Component {
         <div>
           <div>{possibleXPtext}</div>
           <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
+          <div>{errorDescription}</div>
           <UI.Button
             text="Запустить исследование"
             onClick={testHypothesis}
             disabled={disabled}
             primary
           />
+          <br />
           <Schedule />
         </div>
       </div>
@@ -315,17 +324,15 @@ export default class DevelopPanel extends Component {
       }
     });
 
-    let payment;
+    if (!unlockedFeature) return onImprovedPhrase;
 
-    if (!unlockedFeature) {
-      payment = onImprovedPhrase;
+    let feature = featureList.filter(f => f.name === unlockedFeature);
+
+    if (groupType === 'payment' && stageHelper.isInstallPaymentModuleMission()) {
+      return feature.map(this.renderFeature(groupType, id, idea, true, stageHelper.onInstallPaymentModuleMissionCompleted));
     } else {
-      payment = featureList
-        .filter(f => f.name === unlockedFeature)
-        .map(this.renderFeature(groupType, id, idea));
+      return feature.map(this.renderFeature(groupType, id, idea));
     }
-
-    return payment;
   }
 
   renderPaymentTab = (id, idea) => {

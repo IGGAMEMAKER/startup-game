@@ -5791,7 +5791,7 @@
 	//   timecost: 2 * WORK_SPEED_NORMAL,
 	//   speed: WORK_SPEED_NORMAL
 	// }];
-	var _day = 29;
+	var _day = 1;
 	var _workHours = 4;
 
 	var _gamePhase = GAME_STAGES.GAME_STAGE_INIT;
@@ -5989,6 +5989,7 @@
 	var GAME_STAGE_TESTED_FIRST_HYPOTHESIS = exports.GAME_STAGE_TESTED_FIRST_HYPOTHESIS = 6;
 	var GAME_STAGE_IMPROVED_FIRST_FEATURE = exports.GAME_STAGE_IMPROVED_FIRST_FEATURE = 7;
 	var GAME_STAGE_GOT_RATING_SEVEN_PLUS = exports.GAME_STAGE_GOT_RATING_SEVEN_PLUS = 8; // MONETISATION
+	var GAME_STAGE_PAYMENTS_INSTALLED = exports.GAME_STAGE_PAYMENTS_INSTALLED = 9; // MONETISATION
 
 /***/ },
 /* 135 */
@@ -6012,10 +6013,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _defineProperty2 = __webpack_require__(137);
-
-	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
 	var _getPrototypeOf = __webpack_require__(40);
 
@@ -6654,15 +6651,15 @@
 
 	      // return canAffordClientsAmount;
 
-	      return (0, _defineProperty3.default)({
+	      return {
 	        marketSize: maxMarketSize,
 	        potentialClients: maxMarketSize - frozen,
 	        amount: result,
 	        ourClients: ourClients,
-	        competitors: competitors,
 	        unbeatableClients: unbeatableClients,
-	        freeClients: maxMarketSize - totalClients
-	      }, 'competitors', competitors);
+	        freeClients: maxMarketSize - totalClients,
+	        competitors: competitors
+	      };
 	    }
 	  }, {
 	    key: 'canShowPayPercentageMetric',
@@ -6793,35 +6790,7 @@
 	exports.default = store;
 
 /***/ },
-/* 137 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports.__esModule = true;
-
-	var _defineProperty = __webpack_require__(47);
-
-	var _defineProperty2 = _interopRequireDefault(_defineProperty);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function (obj, key, value) {
-	  if (key in obj) {
-	    (0, _defineProperty2.default)(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-
-	  return obj;
-	};
-
-/***/ },
+/* 137 */,
 /* 138 */
 /***/ function(module, exports) {
 
@@ -7255,6 +7224,9 @@
 	  onPaymentRatingMissionCompleted: function onPaymentRatingMissionCompleted() {
 	    setStage(gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS);
 	  },
+	  onInstallPaymentModuleMissionCompleted: function onInstallPaymentModuleMissionCompleted() {
+	    setStage(gameStages.GAME_STAGE_PAYMENTS_INSTALLED);
+	  },
 
 
 	  // mission checker
@@ -7277,11 +7249,17 @@
 	  isPaymentRatingMission: function isPaymentRatingMission() {
 	    return getStage() === gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE;
 	  },
+	  isInstallPaymentModuleMission: function isInstallPaymentModuleMission() {
+	    return getStage() === gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	  },
 
 
 	  // can show some tabs region
 	  canShowHypothesisTab: function canShowHypothesisTab() {
 	    return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
+	  },
+	  canShowUpperTabInMenu: function canShowUpperTabInMenu() {
+	    return getStage() >= gameStages.GAME_STAGE_IMPROVED_ANALYTICS;
 	  },
 	  canShowMetricsTab: function canShowMetricsTab() {
 	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
@@ -7403,13 +7381,15 @@
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
+	var _stages = __webpack_require__(148);
+
+	var _stages2 = _interopRequireDefault(_stages);
+
 	var _UI = __webpack_require__(102);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
 
 	var Menu = function (_Component) {
 	  (0, _inherits3.default)(Menu, _Component);
@@ -7478,42 +7458,50 @@
 	      var employees = _playerStore2.default.getEmployees().length;
 	      var employeePhrase = employees ? '(' + employees + ')' : '';
 
+	      var upperTab = void 0;
+	      if (_stages2.default.canShowUpperTabInMenu()) {
+	        upperTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation },
+	            (0, _preact.h)(
+	              'div',
+	              { className: moneyIndication, onClick: props.onRenderEconomicsMenu },
+	              moneyPhrase
+	            )
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation },
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0414\u0435\u043D\u044C: ',
+	              props.day
+	            )
+	          ),
+	          speeder(1, '>'),
+	          speeder(8, '>>>'),
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation, onClick: props.onRenderStaffMenu },
+	            'MP: ',
+	            state.points.marketing
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation, onClick: props.onRenderStaffMenu },
+	            'PP: ',
+	            state.points.programming
+	          )
+	        );
+	      }
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          (0, _preact.h)(
-	            'div',
-	            { className: moneyIndication, onClick: props.onRenderEconomicsMenu },
-	            moneyPhrase
-	          )
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0414\u0435\u043D\u044C: ',
-	            props.day
-	          )
-	        ),
-	        speeder(1, '>'),
-	        speeder(8, '>>>'),
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation, onClick: props.onRenderStaffMenu },
-	          'MP: ',
-	          state.points.marketing
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: navigation, onClick: props.onRenderStaffMenu },
-	          'PP: ',
-	          state.points.programming
-	        ),
+	        upperTab,
 	        (0, _preact.h)(
 	          'div',
 	          null,
@@ -7534,6 +7522,7 @@
 	  }]);
 	  return Menu;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = Menu;
 
@@ -8510,7 +8499,7 @@
 	            'div',
 	            null,
 	            feedbackStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 (+',
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432 (+',
 	            improvements.feedbackBonus,
 	            'XP)'
 	          ),
@@ -8608,6 +8597,12 @@
 	      // <div className="smallText">
 	      //   Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
 	      // </div>
+
+	      var errorDescription = '';
+	      if (disabled) {
+	        errorDescription = 'У вас не хватает MP или PP. ' + 'Возможно вам стоит нанять больше сотрудников или подождать до следующего месяца';
+	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -8654,12 +8649,18 @@
 	            pp,
 	            'PP'
 	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            errorDescription
+	          ),
 	          (0, _preact.h)(_UI2.default.Button, {
 	            text: '\u0417\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435',
 	            onClick: testHypothesis,
 	            disabled: disabled,
 	            primary: true
 	          }),
+	          (0, _preact.h)('br', null),
 	          (0, _preact.h)(_Schedule2.default, null)
 	        )
 	      );
@@ -9127,17 +9128,17 @@
 	        }
 	      });
 
-	      var payment = void 0;
+	      if (!unlockedFeature) return onImprovedPhrase;
 
-	      if (!unlockedFeature) {
-	        payment = onImprovedPhrase;
+	      var feature = featureList.filter(function (f) {
+	        return f.name === unlockedFeature;
+	      });
+
+	      if (groupType === 'payment' && _stages2.default.isInstallPaymentModuleMission()) {
+	        return feature.map(this.renderFeature(groupType, id, idea, true, _stages2.default.onInstallPaymentModuleMissionCompleted));
 	      } else {
-	        payment = featureList.filter(function (f) {
-	          return f.name === unlockedFeature;
-	        }).map(this.renderFeature(groupType, id, idea));
+	        return feature.map(this.renderFeature(groupType, id, idea));
 	      }
-
-	      return payment;
 	    }
 	  }, {
 	    key: 'renderBonusesTab',
@@ -10509,7 +10510,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u0439 \u0441\u0432\u044F\u0437\u0438 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
+	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
 	            )
 	          );
 	          break;
@@ -10583,6 +10584,23 @@
 	            )
 	          );
 	          // <div>Продолжайте работать над улучшением продукта и вы сможете разорить своих конкурентов!</div>
+	          break;
+
+	        case _constants2.default.gameStages.GAME_STAGE_PAYMENTS_INSTALLED:
+	          target = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0423\u0440\u0440\u0430! \u041C\u044B \u0442\u043E\u0447\u043D\u043E \u0437\u043D\u0430\u0435\u043C, \u0447\u0442\u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0433\u043E\u0442\u043E\u0432\u044B \u043F\u043B\u0430\u0442\u0438\u0442\u044C \u0437\u0430 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442!'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041F\u0440\u043E\u0434\u043E\u043B\u0436\u0430\u0439\u0442\u0435 \u0432 \u0442\u043E\u043C \u0436\u0435 \u0434\u0443\u0445\u0435!'
+	            )
+	          );
 	          break;
 	      }
 
