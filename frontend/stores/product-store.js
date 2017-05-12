@@ -490,6 +490,11 @@ class ProductStore extends EventEmitter {
     return productDescriptions(idea).hypothesis;
   }
 
+  getSegments(id) {
+    const idea = this.getIdea(id);
+    return productDescriptions(idea).segments;
+  }
+
   getDescriptionOfProduct(id) {
     return productDescriptions(this.getIdea(id)).description;
   }

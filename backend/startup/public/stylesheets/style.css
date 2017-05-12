@@ -375,6 +375,10 @@ textarea {
   font-size: 60px;
 }
 
+.client-segment-item {
+  margin-bottom: 15px;
+}
+
 .product-menu-toggler {
   padding: 10px;
   cursor: pointer;

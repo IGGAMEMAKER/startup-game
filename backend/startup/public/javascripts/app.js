@@ -6040,7 +6040,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _productActions = __webpack_require__(138);
+	var _productActions = __webpack_require__(137);
 
 	var c = _interopRequireWildcard(_productActions);
 
@@ -6056,11 +6056,11 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _ideas = __webpack_require__(139);
+	var _ideas = __webpack_require__(138);
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
-	var _percentify = __webpack_require__(161);
+	var _percentify = __webpack_require__(139);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
@@ -6597,6 +6597,12 @@
 	      return (0, _productDescriptions2.default)(idea).hypothesis;
 	    }
 	  }, {
+	    key: 'getSegments',
+	    value: function getSegments(id) {
+	      var idea = this.getIdea(id);
+	      return (0, _productDescriptions2.default)(idea).segments;
+	    }
+	  }, {
 	    key: 'getDescriptionOfProduct',
 	    value: function getDescriptionOfProduct(id) {
 	      return (0, _productDescriptions2.default)(this.getIdea(id)).description;
@@ -6790,8 +6796,7 @@
 	exports.default = store;
 
 /***/ },
-/* 137 */,
-/* 138 */
+/* 137 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6809,7 +6814,7 @@
 	var PRODUCT_ACTIONS_TEST_HYPOTHESIS = exports.PRODUCT_ACTIONS_TEST_HYPOTHESIS = 'PRODUCT_ACTIONS_TEST_HYPOTHESIS';
 
 /***/ },
-/* 139 */
+/* 138 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6819,6 +6824,20 @@
 	});
 	var IDEA_WEB_STUDIO = exports.IDEA_WEB_STUDIO = 'IDEA_WEB_STUDIO';
 	var IDEA_WEB_HOSTING = exports.IDEA_WEB_HOSTING = 'IDEA_WEB_HOSTING';
+
+/***/ },
+/* 139 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (value) {
+	  return Math.ceil(value * 10000) / 100;
+	};
 
 /***/ },
 /* 140 */
@@ -6883,7 +6902,7 @@
 	  }
 	};
 
-	var _ideas = __webpack_require__(139);
+	var _ideas = __webpack_require__(138);
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
@@ -6935,7 +6954,7 @@
 	});
 	exports.default = {
 	  description: 'Веб хостинг. Позволяет клиентам создавать сайты не заботясь об инфраструктуре',
-	  features: [{ name: 'scalability', influence: 2.5, description: '', shortDescription: 'Масштабируемость', data: 5000, time: 20 }, { name: 'website', influence: 7.5, description: '', shortDescription: 'Веб-сайт', data: 15000, time: 30 }],
+	  features: [{ name: 'scalability', influence: 0, description: '', shortDescription: 'Масштабируемость', data: 5000, time: 20 }, { name: 'website', influence: 1.5, description: '', shortDescription: 'Веб-сайт', data: 15000, time: 30 }, { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 }, { name: 'reliability', influence: 6, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 }, { name: 'support', influence: 1.5, description: '', shortDescription: 'Техподдержка', data: 5000, time: 30 }],
 	  utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
 	  virality: 0.3, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
 	  price: 10,
@@ -6948,7 +6967,26 @@
 	  hypothesis: {
 	    mp: 100,
 	    pp: 50
-	  }
+	  },
+	  segments: [{
+	    name: 'solo developer',
+	    percentage: 65,
+	    price: 8,
+	    rating: [0, 1.5, 1, 6, 1.5],
+	    requirements: [0, 0, 0, 0, 0]
+	  }, {
+	    name: 'small startups',
+	    percentage: 20,
+	    price: 50,
+	    rating: [0, 1.5, 1, 6, 1.5],
+	    requirements: [0, 0, 0, 0, 0]
+	  }, {
+	    name: 'mid business',
+	    percentage: 250,
+	    price: 50,
+	    rating: [0.5, 0.5, 1, 7, 1],
+	    requirements: [75, 0, 0, 9, 0]
+	  }]
 	};
 
 /***/ },
@@ -7066,7 +7104,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _productActions = __webpack_require__(138);
+	var _productActions = __webpack_require__(137);
 
 	var ACTIONS = _interopRequireWildcard(_productActions);
 
@@ -7311,7 +7349,7 @@
 
 	var expensesConstants = _interopRequireWildcard(_expenses);
 
-	var _ideas = __webpack_require__(139);
+	var _ideas = __webpack_require__(138);
 
 	var ideasConstants = _interopRequireWildcard(_ideas);
 
@@ -8360,7 +8398,7 @@
 
 	var _metrics2 = _interopRequireDefault(_metrics);
 
-	var _Schedule = __webpack_require__(163);
+	var _Schedule = __webpack_require__(162);
 
 	var _Schedule2 = _interopRequireDefault(_Schedule);
 
@@ -8388,7 +8426,7 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _featurePrice = __webpack_require__(164);
+	var _featurePrice = __webpack_require__(163);
 
 	var _featurePrice2 = _interopRequireDefault(_featurePrice);
 
@@ -8406,11 +8444,11 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _advertPlannerPanel = __webpack_require__(165);
+	var _advertPlannerPanel = __webpack_require__(164);
 
 	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
 
-	var _MainFeature = __webpack_require__(167);
+	var _MainFeature = __webpack_require__(165);
 
 	var _MainFeature2 = _interopRequireDefault(_MainFeature);
 
@@ -8422,17 +8460,21 @@
 
 	var _competitors2 = _interopRequireDefault(_competitors);
 
-	var _competitor = __webpack_require__(172);
+	var _competitor = __webpack_require__(167);
 
 	var _competitor2 = _interopRequireDefault(_competitor);
+
+	var _segment = __webpack_require__(173);
+
+	var _segment2 = _interopRequireDefault(_segment);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var MODE_METRICS = 'MODE_METRICS';
 	// import React, { Component, PropTypes } from 'react';
 
-	var MODE_METRICS = 'MODE_METRICS';
 	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
@@ -8740,6 +8782,10 @@
 	      var competitor = _productStore2.default.getNextCompetitorInfo(id);
 	      var nearestCompetitor = void 0;
 
+	      var segmentList = _productStore2.default.getSegments(id).map(function (s, i) {
+	        return (0, _preact.h)(_segment2.default, { productId: id, segment: s, id: i });
+	      });
+
 	      if (competitor) {
 	        nearestCompetitor = (0, _preact.h)(
 	          'div',
@@ -8778,6 +8824,8 @@
 	        ),
 	        _this.renderAdTab(id, product),
 	        nearestCompetitor,
+	        (0, _preact.h)('br', null),
+	        segmentList,
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
@@ -9222,7 +9270,7 @@
 	          break;
 
 	        case MODE_COMPETITORS:
-	          body = (0, _preact.h)(_competitors2.default, { id: id }); //this.renderAdTab(id, product);
+	          body = (0, _preact.h)(_competitors2.default, { id: id });
 	          break;
 
 	        case MODE_BONUSES:
@@ -9308,7 +9356,7 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _percentify = __webpack_require__(161);
+	var _percentify = __webpack_require__(139);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
@@ -9316,7 +9364,7 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _coloredRating = __webpack_require__(162);
+	var _coloredRating = __webpack_require__(161);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
@@ -9584,20 +9632,6 @@
 
 /***/ },
 /* 161 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (value) {
-	  return Math.ceil(value * 10000) / 100;
-	};
-
-/***/ },
-/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9671,7 +9705,7 @@
 	exports.default = ColoredRating;
 
 /***/ },
-/* 163 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9708,7 +9742,7 @@
 
 	var _workSpeed = __webpack_require__(135);
 
-	var _percentify = __webpack_require__(161);
+	var _percentify = __webpack_require__(139);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
@@ -9834,7 +9868,7 @@
 	;
 
 /***/ },
-/* 164 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9857,7 +9891,7 @@
 	// export default cost => e => e;
 
 /***/ },
-/* 165 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10074,98 +10108,7 @@
 	;
 
 /***/ },
-/* 166 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _flux = __webpack_require__(131);
-
-	var _flux2 = _interopRequireDefault(_flux);
-
-	var _competitor = __webpack_require__(172);
-
-	var _competitor2 = _interopRequireDefault(_competitor);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Competitors = function (_Component) {
-	  (0, _inherits3.default)(Competitors, _Component);
-
-	  function Competitors() {
-	    (0, _classCallCheck3.default)(this, Competitors);
-	    return (0, _possibleConstructorReturn3.default)(this, (Competitors.__proto__ || (0, _getPrototypeOf2.default)(Competitors)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Competitors, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
-	    key: 'render',
-	    value: function render(_ref) {
-	      var id = _ref.id;
-
-	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney());
-	      var marketSize = marketStats.marketSize,
-	          ourClients = marketStats.ourClients,
-	          unbeatableClients = marketStats.unbeatableClients,
-	          competitors = marketStats.competitors;
-
-	      var freeClients = marketSize - ourClients - unbeatableClients;
-
-	      var rating = _flux2.default.productStore.getRating(id);
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-min competitor competeable' },
-	          '\u0421\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	          freeClients
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          competitors.map(function (c, i) {
-	            return (0, _preact.h)(_competitor2.default, { rating: rating, c: c, i: i });
-	          })
-	        )
-	      );
-	    }
-	  }]);
-	  return Competitors;
-	}(_preact.Component);
-
-	exports.default = Competitors;
-
-/***/ },
-/* 167 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10393,6 +10336,199 @@
 	exports.default = MainFeature;
 
 /***/ },
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _flux = __webpack_require__(131);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	var _competitor = __webpack_require__(167);
+
+	var _competitor2 = _interopRequireDefault(_competitor);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Competitors = function (_Component) {
+	  (0, _inherits3.default)(Competitors, _Component);
+
+	  function Competitors() {
+	    (0, _classCallCheck3.default)(this, Competitors);
+	    return (0, _possibleConstructorReturn3.default)(this, (Competitors.__proto__ || (0, _getPrototypeOf2.default)(Competitors)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Competitors, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'render',
+	    value: function render(_ref) {
+	      var id = _ref.id;
+
+	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney());
+	      var marketSize = marketStats.marketSize,
+	          ourClients = marketStats.ourClients,
+	          unbeatableClients = marketStats.unbeatableClients,
+	          competitors = marketStats.competitors;
+
+	      var freeClients = marketSize - ourClients - unbeatableClients;
+
+	      var rating = _flux2.default.productStore.getRating(id);
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-min competitor competeable' },
+	          '\u0421\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	          freeClients
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          competitors.map(function (c, i) {
+	            return (0, _preact.h)(_competitor2.default, { rating: rating, c: c, i: i });
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	  return Competitors;
+	}(_preact.Component);
+
+	exports.default = Competitors;
+
+/***/ },
+/* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Competitor = function (_Component) {
+	  (0, _inherits3.default)(Competitor, _Component);
+
+	  function Competitor() {
+	    (0, _classCallCheck3.default)(this, Competitor);
+	    return (0, _possibleConstructorReturn3.default)(this, (Competitor.__proto__ || (0, _getPrototypeOf2.default)(Competitor)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Competitor, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'render',
+	    value: function render(_ref) {
+	      var rating = _ref.rating,
+	          c = _ref.c,
+	          i = _ref.i;
+
+	      var needToCompeteRating = c.rating + 1;
+	      var competeable = needToCompeteRating < rating;
+	      var canWeCompeteThem = competeable ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + needToCompeteRating + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
+
+	      var background = 'competitor ';
+	      if (competeable) {
+	        background += 'competeable';
+	      } else {
+	        background += 'uncompeteable';
+	      }
+
+	      var name = i >= 0 ? '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
+	      // <hr width="80%" />
+	      return (0, _preact.h)(
+	        'div',
+	        { className: background },
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-min' },
+	          name
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-min' },
+	          '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
+	          c.rating,
+	          ' (',
+	          canWeCompeteThem,
+	          ')'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	          c.clients,
+	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          (0, _preact.h)('hr', { width: '80%' })
+	        )
+	      );
+	    }
+	  }]);
+	  return Competitor;
+	}(_preact.Component);
+
+	exports.default = Competitor;
+
+/***/ },
 /* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -10436,7 +10572,7 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _coloredRating = __webpack_require__(162);
+	var _coloredRating = __webpack_require__(161);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
@@ -11099,14 +11235,19 @@
 	};
 
 /***/ },
-/* 172 */
+/* 172 */,
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _stringify = __webpack_require__(98);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
 
 	var _getPrototypeOf = __webpack_require__(40);
 
@@ -11132,73 +11273,72 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Competitor = function (_Component) {
-	  (0, _inherits3.default)(Competitor, _Component);
+	var Segment = function (_Component) {
+	  (0, _inherits3.default)(Segment, _Component);
 
-	  function Competitor() {
-	    (0, _classCallCheck3.default)(this, Competitor);
-	    return (0, _possibleConstructorReturn3.default)(this, (Competitor.__proto__ || (0, _getPrototypeOf2.default)(Competitor)).apply(this, arguments));
+	  function Segment() {
+	    (0, _classCallCheck3.default)(this, Segment);
+	    return (0, _possibleConstructorReturn3.default)(this, (Segment.__proto__ || (0, _getPrototypeOf2.default)(Segment)).apply(this, arguments));
 	  }
 
-	  (0, _createClass3.default)(Competitor, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
-	    key: 'render',
+	  (0, _createClass3.default)(Segment, [{
+	    key: "render",
 	    value: function render(_ref) {
-	      var rating = _ref.rating,
-	          c = _ref.c,
-	          i = _ref.i;
+	      var productId = _ref.productId,
+	          segment = _ref.segment,
+	          id = _ref.id;
+	      var name = segment.name,
+	          percentage = segment.percentage,
+	          price = segment.price,
+	          rating = segment.rating,
+	          requirements = segment.requirements;
 
-	      var needToCompeteRating = c.rating + 1;
-	      var competeable = needToCompeteRating < rating;
-	      var canWeCompeteThem = competeable ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + needToCompeteRating + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
 
-	      var background = 'competitor ';
-	      if (competeable) {
-	        background += 'competeable';
-	      } else {
-	        background += 'uncompeteable';
-	      }
-
-	      var name = i >= 0 ? '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
-	      // <hr width="80%" />
 	      return (0, _preact.h)(
-	        'div',
-	        { className: background },
+	        "div",
+	        { className: "client-segment-item" },
 	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-min' },
+	          "div",
+	          null,
+	          "\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u2116",
+	          id,
+	          ": ",
 	          name
 	        ),
 	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-min' },
-	          '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
-	          c.rating,
-	          ' (',
-	          canWeCompeteThem,
-	          ')'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	          c.clients,
-	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          (0, _preact.h)('hr', { width: '80%' })
+	          "div",
+	          { className: "offset-mid" },
+	          (0, _preact.h)(
+	            "div",
+	            null,
+	            "\u041F\u0440\u043E\u0446\u0435\u043D\u0442 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439: ",
+	            percentage
+	          ),
+	          (0, _preact.h)(
+	            "div",
+	            { className: "offset-mid" },
+	            (0, _preact.h)(
+	              "div",
+	              null,
+	              "\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ",
+	              price,
+	              "$"
+	            ),
+	            (0, _preact.h)(
+	              "div",
+	              null,
+	              "\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442\u044B: ",
+	              (0, _stringify2.default)(rating)
+	            )
+	          )
 	        )
 	      );
 	    }
 	  }]);
-	  return Competitor;
+	  return Segment;
 	}(_preact.Component);
 
-	exports.default = Competitor;
+	exports.default = Segment;
 
 /***/ }
 /******/ ]);

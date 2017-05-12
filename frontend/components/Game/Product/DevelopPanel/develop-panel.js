@@ -33,6 +33,7 @@ import stageHelper from '../../../../helpers/stages';
 
 import Competitors from '../Ads/competitors';
 import Competitor from '../Ads/competitor';
+import Segment from '../ClientPanel/segment';
 
 
 const MODE_METRICS = 'MODE_METRICS';
@@ -383,6 +384,9 @@ export default class DevelopPanel extends Component {
     const competitor = productStore.getNextCompetitorInfo(id);
     let nearestCompetitor;
 
+    const segmentList = productStore.getSegments(id)
+      .map((s, i) => <Segment productId={id} segment={s} id={i} />);
+
     if (competitor) {
       nearestCompetitor = (
         <div>
@@ -403,6 +407,8 @@ export default class DevelopPanel extends Component {
         {this.renderAdTab(id, product)}
 
         {nearestCompetitor}
+        <br />
+        {segmentList}
         <br />
         <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
         <div className="featureGroupDescriptionWrapper">
@@ -640,7 +646,7 @@ export default class DevelopPanel extends Component {
         break;
 
       case MODE_COMPETITORS:
-        body = <Competitors id={id} />;//this.renderAdTab(id, product);
+        body = <Competitors id={id} />;
         break;
 
       case MODE_BONUSES:
