@@ -76,8 +76,10 @@ class ProductStore extends EventEmitter {
     return _products[id];
   }
 
-  getRating(i) {
-    return computeRating(_products[i]);
+  getRating(i, segmentId) {
+    if (!segmentId) segmentId = 0;
+
+    return computeRating(_products[i], segmentId);
   }
 
   getClients(i) {
@@ -118,9 +120,12 @@ class ProductStore extends EventEmitter {
     return value;
   }
 
+  getDefaults(i) {
+    return productDescriptions(this.getIdea(i));
+  }
+
   getProductUtility(i) {
-    const idea = this.getIdea(i);
-    return productDescriptions(idea).utility;
+    return this.getDefaults(i).utility;
   }
 
   getPaymentModifier(i) {
@@ -169,7 +174,7 @@ class ProductStore extends EventEmitter {
   }
 
   getProductPrice(i) {
-    return productDescriptions(this.getIdea(i)).price;
+    return this.getDefaults(i).price;
   }
 
   getPaymentSwitcher(i) {
@@ -205,7 +210,7 @@ class ProductStore extends EventEmitter {
 
   getViralityRate(i) {
     const rating = this.getRating(i);
-    const multiplier = productDescriptions(this.getIdea(i)).virality;
+    const multiplier = this.getDefaults(i).virality;
     const marketing = _products[i].features.marketing;
 
     let base = 0.1;
@@ -306,7 +311,7 @@ class ProductStore extends EventEmitter {
   }
 
   getCostPerClient(i) {
-    return productDescriptions(this.getIdea(i)).CAC;
+    return this.getDefaults(i).CAC;
   }
 
   getBugs(i) {
@@ -486,17 +491,22 @@ class ProductStore extends EventEmitter {
   }
 
   getHypothesisPoints(id) {
-    const idea = this.getIdea(id);
-    return productDescriptions(idea).hypothesis;
+    const complexityModifier = this.getTechnologyComplexityModifier(id);
+    logger.debug('getHypothesisPoints', complexityModifier);
+    const defaults = this.getDefaults(id).hypothesis;
+
+    return {
+      mp: Math.ceil(defaults.mp * complexityModifier),
+      pp: Math.ceil(defaults.pp * complexityModifier)
+    }
   }
 
   getSegments(id) {
-    const idea = this.getIdea(id);
-    return productDescriptions(idea).segments;
+    return this.getDefaults(id).segments;
   }
 
   getDescriptionOfProduct(id) {
-    return productDescriptions(this.getIdea(id)).description;
+    return this.getDefaults(id).description;
   }
 
   getCompetitorsList(id) {
@@ -510,7 +520,7 @@ class ProductStore extends EventEmitter {
   getMaxAmountOfPossibleClients(id, money) {
     const competitors = this.getCompetitorsList(id);
 
-    const maxMarketSize = productDescriptions(this.getIdea(id)).marketSize;
+    const maxMarketSize = this.getDefaults(id).marketSize;
     const rating = this.getRating(id);
     const ourClients = this.getClients(id);
     const uncompeteableApps = competitors.filter(c => c.rating > rating - 1);
@@ -554,9 +564,8 @@ class ProductStore extends EventEmitter {
   }
 
   getMarketShare(id) {
-    const idea = this.getIdea(id);
     const clients = this.getClients(id);
-    const marketSize = productDescriptions(idea).marketSize;
+    const marketSize = this.getDefaults(id).marketSize;
 
     return {
       share: percentify(clients / marketSize),
@@ -575,6 +584,14 @@ class ProductStore extends EventEmitter {
   }
 
   // getConversionRate()
+  getTechnologyComplexityModifier(id) {
+    const tests = _products[id].tests || 1;
+    const improvements = _products[id].improvements || 1;
+
+    logger.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
+
+    return Math.pow(0.3 * tests + 0.7 * improvements, 1.05);
+  }
 }
 
 const store = new ProductStore();
@@ -611,6 +628,12 @@ Dispatcher.register((p: PayloadType) => {
       if (_products[id].XP > max) {
         _products[id].XP = max;
       }
+
+      if (_products[id].tests) {
+        _products[id].tests++;
+      } else {
+        _products[id].tests = 1;
+      }
       break;
 
     case c.PRODUCT_ACTIONS_SWITCH_STAGE:
@@ -624,6 +647,11 @@ Dispatcher.register((p: PayloadType) => {
       // _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
       _products[p.id].features[p.featureGroup][p.featureName] = sum > max ? max: sum;
       _products[p.id].XP -= p.value;
+      if (_products[p.id].improvements) {
+        _products[p.id].improvements++;
+      } else {
+        _products[p.id].improvements = 1;
+      }
       break;
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:

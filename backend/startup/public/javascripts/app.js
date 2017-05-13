@@ -6155,8 +6155,10 @@
 	    }
 	  }, {
 	    key: 'getRating',
-	    value: function getRating(i) {
-	      return (0, _computeRating2.default)(_products[i]);
+	    value: function getRating(i, segmentId) {
+	      if (!segmentId) segmentId = 0;
+
+	      return (0, _computeRating2.default)(_products[i], segmentId);
 	    }
 	  }, {
 	    key: 'getClients',
@@ -6202,10 +6204,14 @@
 	      return value;
 	    }
 	  }, {
+	    key: 'getDefaults',
+	    value: function getDefaults(i) {
+	      return (0, _productDescriptions2.default)(this.getIdea(i));
+	    }
+	  }, {
 	    key: 'getProductUtility',
 	    value: function getProductUtility(i) {
-	      var idea = this.getIdea(i);
-	      return (0, _productDescriptions2.default)(idea).utility;
+	      return this.getDefaults(i).utility;
 	    }
 	  }, {
 	    key: 'getPaymentModifier',
@@ -6257,7 +6263,7 @@
 	  }, {
 	    key: 'getProductPrice',
 	    value: function getProductPrice(i) {
-	      return (0, _productDescriptions2.default)(this.getIdea(i)).price;
+	      return this.getDefaults(i).price;
 	    }
 	  }, {
 	    key: 'getPaymentSwitcher',
@@ -6297,7 +6303,7 @@
 	    key: 'getViralityRate',
 	    value: function getViralityRate(i) {
 	      var rating = this.getRating(i);
-	      var multiplier = (0, _productDescriptions2.default)(this.getIdea(i)).virality;
+	      var multiplier = this.getDefaults(i).virality;
 	      var marketing = _products[i].features.marketing;
 
 	      var base = 0.1;
@@ -6406,7 +6412,7 @@
 	  }, {
 	    key: 'getCostPerClient',
 	    value: function getCostPerClient(i) {
-	      return (0, _productDescriptions2.default)(this.getIdea(i)).CAC;
+	      return this.getDefaults(i).CAC;
 	    }
 	  }, {
 	    key: 'getBugs',
@@ -6593,19 +6599,24 @@
 	  }, {
 	    key: 'getHypothesisPoints',
 	    value: function getHypothesisPoints(id) {
-	      var idea = this.getIdea(id);
-	      return (0, _productDescriptions2.default)(idea).hypothesis;
+	      var complexityModifier = this.getTechnologyComplexityModifier(id);
+	      _logger2.default.debug('getHypothesisPoints', complexityModifier);
+	      var defaults = this.getDefaults(id).hypothesis;
+
+	      return {
+	        mp: Math.ceil(defaults.mp * complexityModifier),
+	        pp: Math.ceil(defaults.pp * complexityModifier)
+	      };
 	    }
 	  }, {
 	    key: 'getSegments',
 	    value: function getSegments(id) {
-	      var idea = this.getIdea(id);
-	      return (0, _productDescriptions2.default)(idea).segments;
+	      return this.getDefaults(id).segments;
 	    }
 	  }, {
 	    key: 'getDescriptionOfProduct',
 	    value: function getDescriptionOfProduct(id) {
-	      return (0, _productDescriptions2.default)(this.getIdea(id)).description;
+	      return this.getDefaults(id).description;
 	    }
 	  }, {
 	    key: 'getCompetitorsList',
@@ -6619,7 +6630,7 @@
 	    value: function getMaxAmountOfPossibleClients(id, money) {
 	      var competitors = this.getCompetitorsList(id);
 
-	      var maxMarketSize = (0, _productDescriptions2.default)(this.getIdea(id)).marketSize;
+	      var maxMarketSize = this.getDefaults(id).marketSize;
 	      var rating = this.getRating(id);
 	      var ourClients = this.getClients(id);
 	      var uncompeteableApps = competitors.filter(function (c) {
@@ -6675,9 +6686,8 @@
 	  }, {
 	    key: 'getMarketShare',
 	    value: function getMarketShare(id) {
-	      var idea = this.getIdea(id);
 	      var clients = this.getClients(id);
-	      var marketSize = (0, _productDescriptions2.default)(idea).marketSize;
+	      var marketSize = this.getDefaults(id).marketSize;
 
 	      return {
 	        share: (0, _percentify2.default)(clients / marketSize),
@@ -6700,6 +6710,16 @@
 
 	    // getConversionRate()
 
+	  }, {
+	    key: 'getTechnologyComplexityModifier',
+	    value: function getTechnologyComplexityModifier(id) {
+	      var tests = _products[id].tests || 1;
+	      var improvements = _products[id].improvements || 1;
+
+	      _logger2.default.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
+
+	      return Math.pow(0.3 * tests + 0.7 * improvements, 1.05);
+	    }
 	  }]);
 	  return ProductStore;
 	}(_events.EventEmitter);
@@ -6738,6 +6758,12 @@
 	      if (_products[id].XP > max) {
 	        _products[id].XP = max;
 	      }
+
+	      if (_products[id].tests) {
+	        _products[id].tests++;
+	      } else {
+	        _products[id].tests = 1;
+	      }
 	      break;
 
 	    case c.PRODUCT_ACTIONS_SWITCH_STAGE:
@@ -6751,6 +6777,11 @@
 	      // _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
 	      _products[p.id].features[p.featureGroup][p.featureName] = sum > max ? max : sum;
 	      _products[p.id].XP -= p.value;
+	      if (_products[p.id].improvements) {
+	        _products[p.id].improvements++;
+	      } else {
+	        _products[p.id].improvements = 1;
+	      }
 	      break;
 
 	    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
@@ -6863,18 +6894,22 @@
 	  return (0, _productDescriptions2.default)(idea).features;
 	};
 
-	exports.default = function (product) {
+	exports.default = function (product, segmentId) {
 	  // TODO: include other features too
 	  var rating = 0;
 
 	  var idea = product.idea;
 
 
-	  getSpecificProductFeatureListByIdea(idea).forEach(function (f) {
+	  var segments = (0, _productDescriptions2.default)(idea).segments;
+
+	  getSpecificProductFeatureListByIdea(idea).forEach(function (f, i) {
 	    var value = (product.features.offer[f.name] || 0) / f.data;
 	    // logger.debug('computing rating for feature', f.name);
 
-	    rating += value * f.influence;
+	    // const influence = f.influence;
+	    var influence = segments[segmentId].rating[i];
+	    rating += value * influence;
 	  });
 	  // logger.debug('rating=', rating);
 
@@ -6981,9 +7016,9 @@
 	    rating: [0, 1.5, 1, 6, 1.5],
 	    requirements: [0, 0, 0, 0, 0]
 	  }, {
-	    name: 'mid business',
-	    percentage: 250,
-	    price: 50,
+	    name: 'middle business',
+	    percentage: 15,
+	    price: 250,
 	    rating: [0.5, 0.5, 1, 7, 1],
 	    requirements: [75, 0, 0, 9, 0]
 	  }]

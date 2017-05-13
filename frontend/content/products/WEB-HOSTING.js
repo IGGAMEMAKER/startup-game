@@ -36,9 +36,9 @@ export default {
       requirements: [0, 0, 0, 0, 0]
     },
     {
-      name: 'mid business',
-      percentage: 250,
-      price: 50,
+      name: 'middle business',
+      percentage: 15,
+      price: 250,
       rating: [0.5, 0.5, 1, 7, 1],
       requirements: [75, 0, 0, 9, 0]
     }

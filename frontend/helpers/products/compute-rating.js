@@ -5,17 +5,21 @@ const getSpecificProductFeatureListByIdea = idea => {
   return ProductDescriptions(idea).features;
 };
 
-export default product => {
+export default (product, segmentId) => {
   // TODO: include other features too
   let rating = 0;
 
   const { idea } = product;
 
-  getSpecificProductFeatureListByIdea(idea).forEach(f => {
+  const segments = ProductDescriptions(idea).segments;
+
+  getSpecificProductFeatureListByIdea(idea).forEach((f, i) => {
     const value = (product.features.offer[f.name] || 0) / f.data;
     // logger.debug('computing rating for feature', f.name);
 
-    rating += value * f.influence;
+    // const influence = f.influence;
+    const influence = segments[segmentId].rating[i];
+    rating += value * influence;
   });
   // logger.debug('rating=', rating);
 
