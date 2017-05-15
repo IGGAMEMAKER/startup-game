@@ -36,16 +36,16 @@ const emit = (day) => {
 
     case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
       const teamCount = flux.playerStore.getTeam().length;
-      if (teamCount < 4) {
+      // if (teamCount < 4) {
         const names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella'];
         const index = Math.floor(random(0, names.length));
         const name = names[index];
 
-        const programming = Math.floor(random(0, 1000));
-        const marketing = Math.floor(random(0, 1000));
+        const programming = Math.floor(random(2, 1000));
+        const marketing = Math.floor(random(2, 1000));
         const analyst = 0; // Math.floor(random(0, 1000));
 
-        const rating = programming + marketing;
+        const rating = programming + marketing + analyst;
 
         let salary;
         const pricingType = 1; // Math.floor(random(0, 2));
@@ -96,7 +96,7 @@ const emit = (day) => {
 
         player.task = task;
         flux.playerActions.addEmployee(player);
-      }
+      // }
       break;
   }
 };

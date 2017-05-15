@@ -17,8 +17,8 @@ export default {
     mp: 100
   },
   hypothesis: {
-    mp: 100,
-    pp: 50
+    mp: 60,
+    pp: 70
   },
   segments: [
     {

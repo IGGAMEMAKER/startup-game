@@ -79,7 +79,7 @@ class ProductStore extends EventEmitter {
   getRating(i, segmentId) {
     if (!segmentId) segmentId = 0;
 
-    return computeRating(_products[i], segmentId);
+    return round(computeRating(_products[i], segmentId));
   }
 
   getClients(i) {
@@ -96,6 +96,54 @@ class ProductStore extends EventEmitter {
 
   getViralClients(i) {
     return Math.floor(this.getNewClients(i) * this.getViralityRate(i));
+  }
+
+  getMainFeatureQualityByFeatureId(i, featureId) {
+    const feature = this.getDefaults(i).features[featureId];
+    const value = _products[i].features.offer[feature.name] || 0;
+    //
+    return value; // round(value / feature.data);
+  }
+
+  getPrettyFeatureNameByFeatureId(id, featureId){
+    return this.getDefaults(id).features[featureId].shortDescription;
+  }
+
+  requirementsOKforSegment(i, segmentId) {
+    const { segments } = this.getDefaults(i);
+    const segment = segments[segmentId];
+    const requirements = segment.requirements;
+
+    const p = _products[i];
+
+    let valid = true;
+
+    let unmetRequirements = [];
+
+    requirements.forEach((r, featureId) => {
+      const max = this.getDefaults(i).features[featureId].data;
+
+      const featureQuality = this.getMainFeatureQualityByFeatureId(i, featureId);
+      const need = max * r / 100;
+
+      const met = featureQuality >= need;
+
+      if (!met) {
+        valid = false;
+
+        unmetRequirements.push({
+          name: this.getPrettyFeatureNameByFeatureId(i, featureId),
+          now: featureQuality,
+          need
+        });
+      }
+      logger.debug(`feature quality #${featureId}: ${featureQuality}. Requirement is ${met}`)
+    });
+
+    return {
+      valid,
+      unmetRequirements
+    };
   }
 
   getAnalyticsValueForFeatureCreating(i) {

@@ -606,11 +606,11 @@
 
 	var _Product2 = _interopRequireDefault(_Product);
 
-	var _Advice = __webpack_require__(168);
+	var _Advice = __webpack_require__(169);
 
 	var _Advice2 = _interopRequireDefault(_Advice);
 
-	var _Tutorial = __webpack_require__(169);
+	var _Tutorial = __webpack_require__(170);
 
 	var _Tutorial2 = _interopRequireDefault(_Tutorial);
 
@@ -626,7 +626,7 @@
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _game = __webpack_require__(170);
+	var _game = __webpack_require__(171);
 
 	var _game2 = _interopRequireDefault(_game);
 
@@ -6158,7 +6158,7 @@
 	    value: function getRating(i, segmentId) {
 	      if (!segmentId) segmentId = 0;
 
-	      return (0, _computeRating2.default)(_products[i], segmentId);
+	      return (0, _round2.default)((0, _computeRating2.default)(_products[i], segmentId));
 	    }
 	  }, {
 	    key: 'getClients',
@@ -6179,6 +6179,61 @@
 	    key: 'getViralClients',
 	    value: function getViralClients(i) {
 	      return Math.floor(this.getNewClients(i) * this.getViralityRate(i));
+	    }
+	  }, {
+	    key: 'getMainFeatureQualityByFeatureId',
+	    value: function getMainFeatureQualityByFeatureId(i, featureId) {
+	      var feature = this.getDefaults(i).features[featureId];
+	      var value = _products[i].features.offer[feature.name] || 0;
+	      //
+	      return value; // round(value / feature.data);
+	    }
+	  }, {
+	    key: 'getPrettyFeatureNameByFeatureId',
+	    value: function getPrettyFeatureNameByFeatureId(id, featureId) {
+	      return this.getDefaults(id).features[featureId].shortDescription;
+	    }
+	  }, {
+	    key: 'requirementsOKforSegment',
+	    value: function requirementsOKforSegment(i, segmentId) {
+	      var _this2 = this;
+
+	      var _getDefaults = this.getDefaults(i),
+	          segments = _getDefaults.segments;
+
+	      var segment = segments[segmentId];
+	      var requirements = segment.requirements;
+
+	      var p = _products[i];
+
+	      var valid = true;
+
+	      var unmetRequirements = [];
+
+	      requirements.forEach(function (r, featureId) {
+	        var max = _this2.getDefaults(i).features[featureId].data;
+
+	        var featureQuality = _this2.getMainFeatureQualityByFeatureId(i, featureId);
+	        var need = max * r / 100;
+
+	        var met = featureQuality >= need;
+
+	        if (!met) {
+	          valid = false;
+
+	          unmetRequirements.push({
+	            name: _this2.getPrettyFeatureNameByFeatureId(i, featureId),
+	            now: featureQuality,
+	            need: need
+	          });
+	        }
+	        _logger2.default.debug('feature quality #' + featureId + ': ' + featureQuality + '. Requirement is ' + met);
+	      });
+
+	      return {
+	        valid: valid,
+	        unmetRequirements: unmetRequirements
+	      };
 	    }
 	  }, {
 	    key: 'getAnalyticsValueForFeatureCreating',
@@ -6903,12 +6958,14 @@
 
 	  var segments = (0, _productDescriptions2.default)(idea).segments;
 
+	  _logger2.default.debug('segment #' + segmentId, segments);
 	  getSpecificProductFeatureListByIdea(idea).forEach(function (f, i) {
 	    var value = (product.features.offer[f.name] || 0) / f.data;
 	    // logger.debug('computing rating for feature', f.name);
 
 	    // const influence = f.influence;
 	    var influence = segments[segmentId].rating[i];
+	    _logger2.default.debug('influence of feature ' + f.name + ' is ' + influence);
 	    rating += value * influence;
 	  });
 	  // logger.debug('rating=', rating);
@@ -7000,8 +7057,8 @@
 	    mp: 100
 	  },
 	  hypothesis: {
-	    mp: 100,
-	    pp: 50
+	    mp: 60,
+	    pp: 70
 	  },
 	  segments: [{
 	    name: 'solo developer',
@@ -8499,7 +8556,7 @@
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
-	var _segment = __webpack_require__(173);
+	var _segment = __webpack_require__(168);
 
 	var _segment2 = _interopRequireDefault(_segment);
 
@@ -10573,6 +10630,165 @@
 	  value: true
 	});
 
+	var _stringify = __webpack_require__(98);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _flux = __webpack_require__(131);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Segment = function (_Component) {
+	  (0, _inherits3.default)(Segment, _Component);
+
+	  function Segment() {
+	    (0, _classCallCheck3.default)(this, Segment);
+	    return (0, _possibleConstructorReturn3.default)(this, (Segment.__proto__ || (0, _getPrototypeOf2.default)(Segment)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Segment, [{
+	    key: 'render',
+	    value: function render(_ref) {
+	      var productId = _ref.productId,
+	          segment = _ref.segment,
+	          id = _ref.id;
+	      var name = segment.name,
+	          percentage = segment.percentage,
+	          price = segment.price,
+	          rating = segment.rating,
+	          requirements = segment.requirements;
+
+
+	      var requirementTab = '';
+	      var requirementsValidator = _flux2.default.productStore.requirementsOKforSegment(productId, id);
+
+	      if (requirementsValidator.valid) {
+	        requirementTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
+	            _flux2.default.productStore.getRating(productId, id)
+	          )
+	        );
+	      } else {
+	        var unmet = requirementsValidator.unmetRequirements.map(function (u, uId) {
+	          return (0, _preact.h)(
+	            'li',
+	            { key: 'unmet-' + productId + '-' + uId },
+	            u.name,
+	            ': \u041D\u0443\u0436\u043D\u043E ',
+	            u.need,
+	            'XP (\u043D\u0430 \u0434\u0430\u043D\u043D\u044B\u0439 \u043C\u043E\u043C\u0435\u043D\u0442: ',
+	            u.now,
+	            ')'
+	          );
+	        });
+
+	        requirementTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'ul',
+	            null,
+	            unmet,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              (0, _stringify2.default)(requirementsValidator)
+	            )
+	          )
+	        );
+	      }
+
+	      // <div>Требования: {JSON.stringify(requirements)}</div>
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'client-segment-item' },
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u2116',
+	          id,
+	          ': ',
+	          name
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041F\u0440\u043E\u0446\u0435\u043D\u0442 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439: ',
+	            percentage
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'offset-mid' },
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
+	              price,
+	              '$'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442\u044B: ',
+	              (0, _stringify2.default)(rating)
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              requirementTab
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return Segment;
+	}(_preact.Component);
+
+	exports.default = Segment;
+
+/***/ },
+/* 169 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
 	var _objectDestructuringEmpty2 = __webpack_require__(130);
 
 	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
@@ -10797,7 +11013,7 @@
 	exports.default = AdviceTab;
 
 /***/ },
-/* 169 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10976,7 +11192,7 @@
 	exports.default = Tutorial;
 
 /***/ },
-/* 170 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11017,7 +11233,7 @@
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _eventGenerator = __webpack_require__(171);
+	var _eventGenerator = __webpack_require__(172);
 
 	var _eventGenerator2 = _interopRequireDefault(_eventGenerator);
 
@@ -11135,7 +11351,7 @@
 	};
 
 /***/ },
-/* 171 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11200,67 +11416,67 @@
 
 	    case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
 	      var teamCount = _flux2.default.playerStore.getTeam().length;
-	      if (teamCount < 4) {
-	        var names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella'];
-	        var index = Math.floor((0, _random2.default)(0, names.length));
-	        var name = names[index];
+	      // if (teamCount < 4) {
+	      var names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella'];
+	      var index = Math.floor((0, _random2.default)(0, names.length));
+	      var name = names[index];
 
-	        var programming = Math.floor((0, _random2.default)(0, 1000));
-	        var marketing = Math.floor((0, _random2.default)(0, 1000));
-	        var analyst = 0; // Math.floor(random(0, 1000));
+	      var programming = Math.floor((0, _random2.default)(2, 1000));
+	      var marketing = Math.floor((0, _random2.default)(2, 1000));
+	      var analyst = 0; // Math.floor(random(0, 1000));
 
-	        var rating = programming + marketing;
+	      var rating = programming + marketing + analyst;
 
-	        var salary = void 0;
-	        var pricingType = 1; // Math.floor(random(0, 2));
-	        switch (pricingType) {
-	          case 0:
-	            // only percents
-	            salary = {
-	              money: 0,
-	              percent: Math.floor((0, _random2.default)(rating / 100, 50) / teamCount)
-	            };
-	            break;
-	          case 1:
-	            // only money
-	            salary = {
-	              money: Math.floor((0, _random2.default)(rating * 0.75, rating * 1.25)),
-	              percent: 0
-	            };
-	            break;
-	        }
-	        salary.pricingType = pricingType;
-	        // let salary = {
-	        //   money: Math.floor(random(rating * 0.75, rating * 1.25)),
-	        //   percent: Math.floor(random(rating * 0.75, rating * 1.25))
-	        // };
-
-
-	        var player = {
-	          // player: {
-	          name: name,
-	          skills: {
-	            programming: programming,
-	            marketing: marketing,
-	            analyst: analyst
-	          },
-	          jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-	          salary: salary
-	          // }
-	        };
-	        var task = void 0;
-	        if (_skills2.default.isMarketer(player)) {
-	          task = JOB.JOB_TASK_MARKETING_POINTS;
-	        } else if (_skills2.default.isProgrammer(player)) {
-	          task = JOB.JOB_TASK_PROGRAMMER_POINTS;
-	        } else {
-	          // by default - go to marketing
-	          task = JOB.JOB_TASK_MARKETING_POINTS;
-	        }
-
-	        player.task = task;
-	        _flux2.default.playerActions.addEmployee(player);
+	      var salary = void 0;
+	      var pricingType = 1; // Math.floor(random(0, 2));
+	      switch (pricingType) {
+	        case 0:
+	          // only percents
+	          salary = {
+	            money: 0,
+	            percent: Math.floor((0, _random2.default)(rating / 100, 50) / teamCount)
+	          };
+	          break;
+	        case 1:
+	          // only money
+	          salary = {
+	            money: Math.floor((0, _random2.default)(rating * 0.75, rating * 1.25)),
+	            percent: 0
+	          };
+	          break;
 	      }
+	      salary.pricingType = pricingType;
+	      // let salary = {
+	      //   money: Math.floor(random(rating * 0.75, rating * 1.25)),
+	      //   percent: Math.floor(random(rating * 0.75, rating * 1.25))
+	      // };
+
+
+	      var player = {
+	        // player: {
+	        name: name,
+	        skills: {
+	          programming: programming,
+	          marketing: marketing,
+	          analyst: analyst
+	        },
+	        jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+	        salary: salary
+	        // }
+	      };
+	      var task = void 0;
+	      if (_skills2.default.isMarketer(player)) {
+	        task = JOB.JOB_TASK_MARKETING_POINTS;
+	      } else if (_skills2.default.isProgrammer(player)) {
+	        task = JOB.JOB_TASK_PROGRAMMER_POINTS;
+	      } else {
+	        // by default - go to marketing
+	        task = JOB.JOB_TASK_MARKETING_POINTS;
+	      }
+
+	      player.task = task;
+	      _flux2.default.playerActions.addEmployee(player);
+	      // }
 	      break;
 	  }
 	};
@@ -11268,112 +11484,6 @@
 	exports.default = {
 	  emit: emit
 	};
-
-/***/ },
-/* 172 */,
-/* 173 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _stringify = __webpack_require__(98);
-
-	var _stringify2 = _interopRequireDefault(_stringify);
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Segment = function (_Component) {
-	  (0, _inherits3.default)(Segment, _Component);
-
-	  function Segment() {
-	    (0, _classCallCheck3.default)(this, Segment);
-	    return (0, _possibleConstructorReturn3.default)(this, (Segment.__proto__ || (0, _getPrototypeOf2.default)(Segment)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Segment, [{
-	    key: "render",
-	    value: function render(_ref) {
-	      var productId = _ref.productId,
-	          segment = _ref.segment,
-	          id = _ref.id;
-	      var name = segment.name,
-	          percentage = segment.percentage,
-	          price = segment.price,
-	          rating = segment.rating,
-	          requirements = segment.requirements;
-
-
-	      return (0, _preact.h)(
-	        "div",
-	        { className: "client-segment-item" },
-	        (0, _preact.h)(
-	          "div",
-	          null,
-	          "\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u2116",
-	          id,
-	          ": ",
-	          name
-	        ),
-	        (0, _preact.h)(
-	          "div",
-	          { className: "offset-mid" },
-	          (0, _preact.h)(
-	            "div",
-	            null,
-	            "\u041F\u0440\u043E\u0446\u0435\u043D\u0442 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439: ",
-	            percentage
-	          ),
-	          (0, _preact.h)(
-	            "div",
-	            { className: "offset-mid" },
-	            (0, _preact.h)(
-	              "div",
-	              null,
-	              "\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ",
-	              price,
-	              "$"
-	            ),
-	            (0, _preact.h)(
-	              "div",
-	              null,
-	              "\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442\u044B: ",
-	              (0, _stringify2.default)(rating)
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	  return Segment;
-	}(_preact.Component);
-
-	exports.default = Segment;
 
 /***/ }
 /******/ ]);
