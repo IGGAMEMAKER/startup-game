@@ -13,7 +13,8 @@
   --info: rgba(0, 0, 200, 0.3);
 
   --modalMainText: black;
-  --modalBackground: rgba(135,135,135, 0.9);
+  /*--modalBackground: rgba(135,135,135, 0.8);*/
+  --modalBackground: rgba(235,235,235, 0.95);
   --font-family-base: Arial;
 }
 
@@ -219,7 +220,8 @@ textarea {
   color: var(--negative);
 }
 
-.text {
+
+.modal-head {
   color: var(--modalMainText);
 }
 

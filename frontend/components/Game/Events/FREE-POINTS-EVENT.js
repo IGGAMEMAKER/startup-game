@@ -34,7 +34,7 @@ export default class FreePointsEvent extends Component {
 
     return (
       <div>
-        <div className="text">
+        <div className="modal-head">
           В свободное от работы время вы много читаете и это приносит плоды! На что сделаете ставку?
         </div>
         <br />

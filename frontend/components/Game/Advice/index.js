@@ -53,7 +53,7 @@ export default class AdviceTab extends Component {
           <div>
             <div>Первое тестирование завершено. Прототип ужасен! (Рейтинг <ColoredRating rating={flux.productStore.getRating(0)} />)</div>
             <div>Однако, мы получили пару дельных советов и можем улучшить продукт</div>
-            <div>Улучшите характеристику "Веб-сайт", чтобы поднять наш рейтинг</div>
+            <div>Улучшите характеристику "Надёжность", чтобы поднять наш рейтинг</div>
           </div>
         );
         break;

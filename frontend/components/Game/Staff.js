@@ -168,10 +168,17 @@ export default class Staff extends Component {
     const staffList =        staff.map((p, i) => this.renderPerson(p, i, false));
     const employeeList = employees.map((p, i) => this.renderPerson(p, i, true));
 
+    const staffVisible = staff.length && !teamToggle;
     let staffTab;
-    if (staff.length && !teamToggle) {
+
+    if (staffVisible) {
+      const mp = staff.filter(teamHelper.isMarketer).map(teamHelper.getMarketingPointsProducedBy).reduce((p, c) => p + c, 0);
+      const pp = staff.filter(teamHelper.isProgrammer).map(teamHelper.getProgrammingPointsProducedBy).reduce((p, c) => p + c, 0);
+
       staffTab = (
         <div>
+          <div>Месячная производительность команды: +{mp}MP +{pp}PP </div>
+          <br />
           <table className="table table-striped">
             <tbody>
             {staffList}

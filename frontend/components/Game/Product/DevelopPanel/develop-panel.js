@@ -370,6 +370,37 @@ export default class DevelopPanel extends Component {
     );
   };
 
+  renderCompetitors(id, rating) {
+    if (!stageHelper.canShowCompetitorsTab()) return '';
+
+    const competitor = productStore.getNextCompetitorInfo(id);
+
+    if (competitor) {
+      return (
+        <div>
+          <div>Наш ближайший конкурент</div>
+          <Competitor rating={rating} c={competitor} i={-1} />
+        </div>
+      )
+    }
+
+    return (<div>Вы - №1 на рынке! Вы можете захватить вплоть до 100% рынка!</div>)
+  }
+
+  renderSegmentTab(id) {
+    if (!stageHelper.canShowSegments()) return '';
+
+    const segmentList = productStore.getSegments(id)
+      .map((s, i) => <Segment productId={id} segment={s} id={i} />);
+
+    return (
+      <div>
+        <div>Сегменты пользователей</div>
+        <div>{segmentList}</div>
+      </div>
+    )
+  }
+
   renderClientTab = (id, product) => {
     const { idea } = product;
     const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
@@ -377,28 +408,10 @@ export default class DevelopPanel extends Component {
     const churn = productStore.getChurnRate(id).pretty;
     const disloyalClients = productStore.getDisloyalClients(id);
 
-    const rating = productStore.getRating(id);
-
     const market = productStore.getMarketShare(id);
 
-    const competitor = productStore.getNextCompetitorInfo(id);
-    let nearestCompetitor;
-
-    const segmentList = productStore.getSegments(id)
-      .map((s, i) => <Segment productId={id} segment={s} id={i} />);
-
-    if (competitor) {
-      nearestCompetitor = (
-        <div>
-          <div>Наш ближайший конкурент</div>
-          <Competitor rating={rating} c={competitor} i={-1} />
-        </div>
-      )
-    } else {
-      nearestCompetitor = (
-        <div>Вы - №1 на рынке! Вы можете захватить вплоть до 100% рынка!</div>
-      )
-    }
+    const nearestCompetitor = this.renderCompetitors(id, productStore.getRating(id));
+    const segmentTab = this.renderSegmentTab(id);
 
     return (
       <div>
@@ -408,7 +421,7 @@ export default class DevelopPanel extends Component {
 
         {nearestCompetitor}
         <br />
-        {segmentList}
+        {segmentTab}
         <br />
         <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
         <div className="featureGroupDescriptionWrapper">

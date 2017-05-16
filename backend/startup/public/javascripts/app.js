@@ -2948,11 +2948,30 @@
 	        return _this2.renderPerson(p, i, true);
 	      });
 
+	      var staffVisible = staff.length && !teamToggle;
 	      var staffTab = void 0;
-	      if (staff.length && !teamToggle) {
+
+	      if (staffVisible) {
+	        var mp = staff.filter(_skills2.default.isMarketer).map(_skills2.default.getMarketingPointsProducedBy).reduce(function (p, c) {
+	          return p + c;
+	        }, 0);
+	        var pp = staff.filter(_skills2.default.isProgrammer).map(_skills2.default.getProgrammingPointsProducedBy).reduce(function (p, c) {
+	          return p + c;
+	        }, 0);
+
 	        staffTab = (0, _preact.h)(
 	          'div',
 	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041C\u0435\u0441\u044F\u0447\u043D\u0430\u044F \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u043A\u043E\u043C\u0430\u043D\u0434\u044B: +',
+	            mp,
+	            'MP +',
+	            pp,
+	            'PP '
+	          ),
+	          (0, _preact.h)('br', null),
 	          (0, _preact.h)(
 	            'table',
 	            { className: 'table table-striped' },
@@ -4525,7 +4544,7 @@
 	        null,
 	        (0, _preact.h)(
 	          'div',
-	          { className: 'text' },
+	          { className: 'modal-head' },
 	          '\u041D\u0435\u043A\u0442\u043E, \u043F\u043E\u0436\u0435\u043B\u0430\u0432\u0448\u0438\u0439 \u043E\u0441\u0442\u0430\u0442\u044C\u0441\u044F \u043D\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043D\u044B\u043C, \u043F\u043E\u0436\u0435\u0440\u0442\u0432\u043E\u0432\u0430\u043B \u0432 \u0432\u0430\u0448 \u043F\u0440\u043E\u0435\u043A\u0442 ',
 	          money,
 	          '$'
@@ -5322,7 +5341,7 @@
 	        null,
 	        (0, _preact.h)(
 	          'div',
-	          { className: 'text' },
+	          { className: 'modal-head' },
 	          '\u0412 \u0441\u0432\u043E\u0431\u043E\u0434\u043D\u043E\u0435 \u043E\u0442 \u0440\u0430\u0431\u043E\u0442\u044B \u0432\u0440\u0435\u043C\u044F \u0432\u044B \u043C\u043D\u043E\u0433\u043E \u0447\u0438\u0442\u0430\u0435\u0442\u0435 \u0438 \u044D\u0442\u043E \u043F\u0440\u0438\u043D\u043E\u0441\u0438\u0442 \u043F\u043B\u043E\u0434\u044B! \u041D\u0430 \u0447\u0442\u043E \u0441\u0434\u0435\u043B\u0430\u0435\u0442\u0435 \u0441\u0442\u0430\u0432\u043A\u0443?'
 	        ),
 	        (0, _preact.h)('br', null),
@@ -7452,6 +7471,9 @@
 	  },
 	  canShowBonusesTab: function canShowBonusesTab() {
 	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	  },
+	  canShowSegments: function canShowSegments() {
+	    return this.canShowCompetitorsTab();
 	  }
 	};
 
@@ -7602,7 +7624,8 @@
 	          isChosenStaffMenu = props.isChosenStaffMenu,
 	          gameSpeed = props.gameSpeed,
 	          pause = props.pause,
-	          gamePhase = props.gamePhase;
+	          gamePhase = props.gamePhase,
+	          pauseGame = props.pauseGame;
 
 
 	      var saldoValue = Math.floor(_moneyDifference2.default.saldo());
@@ -7621,7 +7644,7 @@
 	          { className: navigation },
 	          (0, _preact.h)(_UI2.default.Button, {
 	            text: isRunning && gameSpeed === speed ? '||' : text,
-	            onClick: isRunning && gameSpeed === speed ? props.pauseGame : props.setGameSpeed(speed)
+	            onClick: isRunning && gameSpeed === speed ? pauseGame : props.setGameSpeed(speed)
 	          })
 	        );
 	      };
@@ -7632,6 +7655,28 @@
 	      var employees = _playerStore2.default.getEmployees().length;
 	      var employeePhrase = employees ? '(' + employees + ')' : '';
 
+	      var pauseOrContinue = void 0;
+	      if (isRunning) {
+	        pauseOrContinue = (0, _preact.h)(
+	          'div',
+	          { className: navigation },
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: '\u041F\u0430\u0443\u0437\u0430',
+	            onClick: pauseGame,
+	            link: true
+	          })
+	        );
+	      } else {
+	        pauseOrContinue = (0, _preact.h)(
+	          'div',
+	          { className: navigation },
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: '\u0412\u043E\u0437\u043E\u0431\u043D\u043E\u0432\u0438\u0442\u044C',
+	            onClick: props.setGameSpeed(gameSpeed),
+	            link: true
+	          })
+	        );
+	      }
 	      var upperTab = void 0;
 	      if (_stages2.default.canShowUpperTabInMenu()) {
 	        upperTab = (0, _preact.h)(
@@ -7657,7 +7702,8 @@
 	            )
 	          ),
 	          speeder(1, '>'),
-	          speeder(8, '>>>'),
+	          speeder(7, '>>>'),
+	          pauseOrContinue,
 	          (0, _preact.h)(
 	            'div',
 	            { className: navigation, onClick: props.onRenderStaffMenu },
@@ -8911,35 +8957,10 @@
 	      var churn = _productStore2.default.getChurnRate(id).pretty;
 	      var disloyalClients = _productStore2.default.getDisloyalClients(id);
 
-	      var rating = _productStore2.default.getRating(id);
-
 	      var market = _productStore2.default.getMarketShare(id);
 
-	      var competitor = _productStore2.default.getNextCompetitorInfo(id);
-	      var nearestCompetitor = void 0;
-
-	      var segmentList = _productStore2.default.getSegments(id).map(function (s, i) {
-	        return (0, _preact.h)(_segment2.default, { productId: id, segment: s, id: i });
-	      });
-
-	      if (competitor) {
-	        nearestCompetitor = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041D\u0430\u0448 \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u0439 \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442'
-	          ),
-	          (0, _preact.h)(_competitor2.default, { rating: rating, c: competitor, i: -1 })
-	        );
-	      } else {
-	        nearestCompetitor = (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435! \u0412\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u0437\u0430\u0445\u0432\u0430\u0442\u0438\u0442\u044C \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 100% \u0440\u044B\u043D\u043A\u0430!'
-	        );
-	      }
+	      var nearestCompetitor = _this.renderCompetitors(id, _productStore2.default.getRating(id));
+	      var segmentTab = _this.renderSegmentTab(id);
 
 	      return (0, _preact.h)(
 	        'div',
@@ -8961,7 +8982,7 @@
 	        _this.renderAdTab(id, product),
 	        nearestCompetitor,
 	        (0, _preact.h)('br', null),
-	        segmentList,
+	        segmentTab,
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
@@ -9323,6 +9344,56 @@
 	      } else {
 	        return feature.map(this.renderFeature(groupType, id, idea));
 	      }
+	    }
+	  }, {
+	    key: 'renderCompetitors',
+	    value: function renderCompetitors(id, rating) {
+	      if (!_stages2.default.canShowCompetitorsTab()) return '';
+
+	      var competitor = _productStore2.default.getNextCompetitorInfo(id);
+
+	      if (competitor) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041D\u0430\u0448 \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u0439 \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442'
+	          ),
+	          (0, _preact.h)(_competitor2.default, { rating: rating, c: competitor, i: -1 })
+	        );
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435! \u0412\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u0437\u0430\u0445\u0432\u0430\u0442\u0438\u0442\u044C \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 100% \u0440\u044B\u043D\u043A\u0430!'
+	      );
+	    }
+	  }, {
+	    key: 'renderSegmentTab',
+	    value: function renderSegmentTab(id) {
+	      if (!_stages2.default.canShowSegments()) return '';
+
+	      var segmentList = _productStore2.default.getSegments(id).map(function (s, i) {
+	        return (0, _preact.h)(_segment2.default, { productId: id, segment: s, id: i });
+	      });
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          segmentList
+	        )
+	      );
 	    }
 	  }, {
 	    key: 'renderBonusesTab',
@@ -10976,7 +11047,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0443 "\u0412\u0435\u0431-\u0441\u0430\u0439\u0442", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u0434\u043D\u044F\u0442\u044C \u043D\u0430\u0448 \u0440\u0435\u0439\u0442\u0438\u043D\u0433'
+	              '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0443 "\u041D\u0430\u0434\u0451\u0436\u043D\u043E\u0441\u0442\u044C", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u0434\u043D\u044F\u0442\u044C \u043D\u0430\u0448 \u0440\u0435\u0439\u0442\u0438\u043D\u0433'
 	            )
 	          );
 	          break;

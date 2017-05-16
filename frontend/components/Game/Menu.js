@@ -30,7 +30,9 @@ export default class Menu extends Component {
       isChosenStaffMenu,
       gameSpeed,
       pause,
-      gamePhase
+      gamePhase,
+
+      pauseGame
     } = props;
 
     const saldoValue = Math.floor(moneyCalculator.saldo());
@@ -47,7 +49,7 @@ export default class Menu extends Component {
       <div className={navigation}>
         <UI.Button
           text={isRunning && gameSpeed === speed ? '||' : text}
-          onClick={isRunning && gameSpeed === speed ? props.pauseGame : props.setGameSpeed(speed)}
+          onClick={isRunning && gameSpeed === speed ? pauseGame : props.setGameSpeed(speed)}
         />
       </div>
     );
@@ -58,6 +60,28 @@ export default class Menu extends Component {
     const employees = playerStore.getEmployees().length;
     const employeePhrase = employees ? `(${employees})` : '';
 
+    let pauseOrContinue;
+    if (isRunning) {
+      pauseOrContinue = (
+        <div className={navigation}>
+          <UI.Button
+            text='Пауза'
+            onClick={pauseGame}
+            link
+          />
+        </div>
+      )
+    } else {
+      pauseOrContinue = (
+        <div className={navigation}>
+          <UI.Button
+            text='Возобновить'
+            onClick={props.setGameSpeed(gameSpeed)}
+            link
+          />
+        </div>
+      )
+    }
     let upperTab;
     if (stageHelper.canShowUpperTabInMenu()) {
       upperTab = (
@@ -69,7 +93,8 @@ export default class Menu extends Component {
             <div>День: {props.day}</div>
           </div>
           {speeder(1, '>')}
-          {speeder(8, '>>>')}
+          {speeder(7, '>>>')}
+          {pauseOrContinue}
           <div className={navigation} onClick={props.onRenderStaffMenu}>MP: {state.points.marketing}</div>
           <div className={navigation} onClick={props.onRenderStaffMenu}>PP: {state.points.programming}</div>
         </div>

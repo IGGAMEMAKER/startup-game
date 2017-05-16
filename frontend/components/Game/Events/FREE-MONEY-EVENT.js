@@ -21,7 +21,7 @@ export default class FreeMoneyEvent extends Component {
 
     return (
       <div>
-        <div className="text">Некто, пожелавший остаться неизвестным, пожертвовал в ваш проект {money}$</div>
+        <div className="modal-head">Некто, пожелавший остаться неизвестным, пожертвовал в ваш проект {money}$</div>
         <br />
         <Button onClick={onClick} text={`Получить халявные ${money}$ !`} primary />
       </div>

@@ -106,5 +106,9 @@ export default {
 
   canShowBonusesTab() {
     return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
-  }
+  },
+
+  canShowSegments() {
+    return this.canShowCompetitorsTab();
+  },
 };
