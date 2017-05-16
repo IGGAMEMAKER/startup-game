@@ -7638,13 +7638,17 @@
 
 	      var isRunning = !pause;
 
+	      // <UI.Button
+	      //   text={isRunning && gameSpeed === speed ? '||' : text}
+	      //   onClick={isRunning && gameSpeed === speed ? pauseGame : props.setGameSpeed(speed)}
+	      // />
 	      var speeder = function speeder(speed, text) {
 	        return (0, _preact.h)(
 	          'div',
 	          { className: navigation },
 	          (0, _preact.h)(_UI2.default.Button, {
-	            text: isRunning && gameSpeed === speed ? '||' : text,
-	            onClick: isRunning && gameSpeed === speed ? pauseGame : props.setGameSpeed(speed)
+	            text: text,
+	            onClick: props.setGameSpeed(speed)
 	          })
 	        );
 	      };
@@ -7655,28 +7659,51 @@
 	      var employees = _playerStore2.default.getEmployees().length;
 	      var employeePhrase = employees ? '(' + employees + ')' : '';
 
+	      var pauser = (0, _preact.h)(_UI2.default.Button, {
+	        text: '\u041F\u0430\u0443\u0437\u0430',
+	        onClick: pauseGame,
+	        link: true
+	      });
+
+	      var resumer = (0, _preact.h)(_UI2.default.Button, {
+	        text: '\u0412\u043E\u0437\u043E\u0431\u043D\u043E\u0432\u0438\u0442\u044C',
+	        onClick: props.setGameSpeed(gameSpeed),
+	        link: true
+	      });
+
+	      var speedVariants = [{ s: 1, icon: '>' }, { s: 4, icon: '>>' }, { s: 7, icon: '>>>' }, { s: 10, icon: '>>>>' }];
+
 	      var pauseOrContinue = void 0;
 	      if (isRunning) {
 	        pauseOrContinue = (0, _preact.h)(
 	          'div',
 	          { className: navigation },
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u041F\u0430\u0443\u0437\u0430',
-	            onClick: pauseGame,
-	            link: true
-	          })
+	          pauser
 	        );
 	      } else {
 	        pauseOrContinue = (0, _preact.h)(
 	          'div',
 	          { className: navigation },
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u0412\u043E\u0437\u043E\u0431\u043D\u043E\u0432\u0438\u0442\u044C',
-	            onClick: props.setGameSpeed(gameSpeed),
-	            link: true
-	          })
+	          resumer
 	        );
 	      }
+
+	      var nextSpeeder = void 0;
+
+	      var currentSpeedIndex = speedVariants.findIndex(function (s) {
+	        return s.s === gameSpeed;
+	      });
+	      if (currentSpeedIndex < speedVariants.length - 1) {
+	        // can accelerate speed
+
+	        var _s = speedVariants[currentSpeedIndex + 1];
+	        nextSpeeder = speeder(_s.s, _s.icon);
+	      } else {
+	        // we are on max speed
+
+	        nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
+	      }
+
 	      var upperTab = void 0;
 	      if (_stages2.default.canShowUpperTabInMenu()) {
 	        upperTab = (0, _preact.h)(
@@ -7701,8 +7728,7 @@
 	              props.day
 	            )
 	          ),
-	          speeder(1, '>'),
-	          speeder(7, '>>>'),
+	          nextSpeeder,
 	          pauseOrContinue,
 	          (0, _preact.h)(
 	            'div',
@@ -7718,6 +7744,7 @@
 	          )
 	        );
 	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,

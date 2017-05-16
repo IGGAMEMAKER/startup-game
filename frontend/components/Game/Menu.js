@@ -45,11 +45,15 @@ export default class Menu extends Component {
 
     const isRunning = !pause;
 
+    // <UI.Button
+    //   text={isRunning && gameSpeed === speed ? '||' : text}
+    //   onClick={isRunning && gameSpeed === speed ? pauseGame : props.setGameSpeed(speed)}
+    // />
     const speeder = (speed, text) => (
       <div className={navigation}>
         <UI.Button
-          text={isRunning && gameSpeed === speed ? '||' : text}
-          onClick={isRunning && gameSpeed === speed ? pauseGame : props.setGameSpeed(speed)}
+          text={text}
+          onClick={props.setGameSpeed(speed)}
         />
       </div>
     );
@@ -60,28 +64,45 @@ export default class Menu extends Component {
     const employees = playerStore.getEmployees().length;
     const employeePhrase = employees ? `(${employees})` : '';
 
+    const pauser = (
+      <UI.Button
+        text='Пауза'
+        onClick={pauseGame}
+        link
+      />
+    );
+
+    const resumer = (
+      <UI.Button
+        text='Возобновить'
+        onClick={props.setGameSpeed(gameSpeed)}
+        link
+      />
+    );
+
+    const speedVariants = [{ s: 1, icon: '>' }, { s: 4, icon: '>>' }, { s: 7, icon: '>>>' }, { s: 10, icon: '>>>>' }];
+
     let pauseOrContinue;
     if (isRunning) {
-      pauseOrContinue = (
-        <div className={navigation}>
-          <UI.Button
-            text='Пауза'
-            onClick={pauseGame}
-            link
-          />
-        </div>
-      )
+      pauseOrContinue = <div className={navigation}>{pauser}</div>;
     } else {
-      pauseOrContinue = (
-        <div className={navigation}>
-          <UI.Button
-            text='Возобновить'
-            onClick={props.setGameSpeed(gameSpeed)}
-            link
-          />
-        </div>
-      )
+      pauseOrContinue = <div className={navigation}>{resumer}</div>;
     }
+
+    let nextSpeeder;
+
+    let currentSpeedIndex = speedVariants.findIndex(s => s.s === gameSpeed);
+    if (currentSpeedIndex < speedVariants.length - 1) {
+      // can accelerate speed
+
+      const s = speedVariants[currentSpeedIndex + 1];
+      nextSpeeder = speeder(s.s, s.icon);
+    } else {
+      // we are on max speed
+
+      nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
+    }
+
     let upperTab;
     if (stageHelper.canShowUpperTabInMenu()) {
       upperTab = (
@@ -92,14 +113,14 @@ export default class Menu extends Component {
           <div className={navigation}>
             <div>День: {props.day}</div>
           </div>
-          {speeder(1, '>')}
-          {speeder(7, '>>>')}
+          {nextSpeeder}
           {pauseOrContinue}
           <div className={navigation} onClick={props.onRenderStaffMenu}>MP: {state.points.marketing}</div>
           <div className={navigation} onClick={props.onRenderStaffMenu}>PP: {state.points.programming}</div>
         </div>
       )
     }
+
     return (
       <div>
         {upperTab}
