@@ -2806,7 +2806,7 @@
 	            (0, _preact.h)(
 	              'span',
 	              { className: 'worker-button' },
-	              (0, _preact.h)(_UI2.default.Button, { onClick: fire, text: '\u0423\u0432\u043E\u043B\u0438\u0442\u044C', secondary: true })
+	              (0, _preact.h)(_UI2.default.Button, { onClick: fire, text: '\u0423\u0432\u043E\u043B\u0438\u0442\u044C', link: true })
 	            )
 	          );
 	        }
@@ -2817,29 +2817,35 @@
 
 	      var salaryTab = _this.getSalaryTab(p);
 
+	      var name = p.isPlayer ? 'Вы' : p.name;
+
 	      return (0, _preact.h)(
-	        'div',
+	        'tr',
 	        { className: 'worker-item', key: key },
 	        (0, _preact.h)(
-	          'div',
+	          'td',
 	          null,
-	          p.isPlayer ? 'Вы' : p.name,
+	          name,
 	          ', ',
 	          specialization,
 	          '\xA0',
 	          _this.renderSkills(p)
 	        ),
 	        (0, _preact.h)(
-	          'div',
+	          'td',
 	          null,
 	          work
 	        ),
 	        (0, _preact.h)(
-	          'div',
+	          'td',
 	          null,
 	          salaryTab
 	        ),
-	        hireButton
+	        (0, _preact.h)(
+	          'td',
+	          null,
+	          hireButton
+	        )
 	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
@@ -2942,6 +2948,40 @@
 	        return _this2.renderPerson(p, i, true);
 	      });
 
+	      var staffTab = void 0;
+	      if (staff.length && !teamToggle) {
+	        staffTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'table',
+	            { className: 'table table-striped' },
+	            (0, _preact.h)(
+	              'tbody',
+	              null,
+	              staffList
+	            )
+	          )
+	        );
+	      }
+
+	      var employeeTab = void 0;
+	      if (employees.length && !employeeToggle) {
+	        employeeTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'table',
+	            { className: 'table table-striped' },
+	            (0, _preact.h)(
+	              'tbody',
+	              null,
+	              employeeList
+	            )
+	          )
+	        );
+	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -2949,18 +2989,18 @@
 	          'h4',
 	          { onClick: this.toggle('teamToggle') },
 	          '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 (',
-	          teamToggle ? staff.length : '-',
+	          teamToggle ? staff.length : 'Свернуть',
 	          ')'
 	        ),
-	        staff.length && !teamToggle ? staffList : '',
+	        staffTab,
 	        (0, _preact.h)(
 	          'h4',
 	          { onClick: this.toggle('employeeToggle') },
 	          '\u0421\u043E\u0438\u0441\u043A\u0430\u0442\u0435\u043B\u0438 (',
-	          employeeToggle ? employees.length : '-',
+	          employeeToggle ? employees.length : 'Свернуть',
 	          ')'
 	        ),
-	        employees.length && !employeeToggle ? employeeList : ''
+	        employeeTab
 	      );
 	    }
 	  }]);
@@ -3140,11 +3180,15 @@
 	      var className = '';
 
 	      if (props.primary) {
-	        className = 'btn btn-primary';
+	        className = 'btn-primary';
 	      }
 
 	      if (props.secondary) {
-	        className = 'btn btn-success';
+	        className = 'btn-success';
+	      }
+
+	      if (props.link) {
+	        className = 'btn-link';
 	      }
 
 	      return (0, _preact.h)(
@@ -10630,10 +10674,6 @@
 	  value: true
 	});
 
-	var _stringify = __webpack_require__(98);
-
-	var _stringify2 = _interopRequireDefault(_stringify);
-
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -10659,6 +10699,10 @@
 	var _flux = __webpack_require__(131);
 
 	var _flux2 = _interopRequireDefault(_flux);
+
+	var _coloredRating = __webpack_require__(161);
+
+	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10686,6 +10730,8 @@
 	      var requirementTab = '';
 	      var requirementsValidator = _flux2.default.productStore.requirementsOKforSegment(productId, id);
 
+	      var currentRating = _flux2.default.productStore.getRating(productId, id);
+
 	      if (requirementsValidator.valid) {
 	        requirementTab = (0, _preact.h)(
 	          'div',
@@ -10694,7 +10740,7 @@
 	            'div',
 	            null,
 	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
-	            _flux2.default.productStore.getRating(productId, id)
+	            (0, _preact.h)(_coloredRating2.default, { rating: currentRating })
 	          )
 	        );
 	      } else {
@@ -10711,23 +10757,26 @@
 	          );
 	        });
 
+	        // <div>{JSON.stringify(requirementsValidator)}</div>
+
 	        requirementTab = (0, _preact.h)(
 	          'div',
 	          null,
 	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '! \u0422\u0440\u0435\u0431\u043E\u0432\u0430\u043D\u0438\u044F'
+	          ),
+	          (0, _preact.h)(
 	            'ul',
 	            null,
-	            unmet,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              (0, _stringify2.default)(requirementsValidator)
-	            )
+	            unmet
 	          )
 	        );
 	      }
 
 	      // <div>Требования: {JSON.stringify(requirements)}</div>
+	      // <div>Приоритеты: {JSON.stringify(rating)}</div>
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'client-segment-item' },
@@ -10735,7 +10784,7 @@
 	          'div',
 	          null,
 	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u2116',
-	          id,
+	          id + 1,
 	          ': ',
 	          name
 	        ),
@@ -10757,12 +10806,6 @@
 	              '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
 	              price,
 	              '$'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442\u044B: ',
-	              (0, _stringify2.default)(rating)
 	            ),
 	            (0, _preact.h)(
 	              'div',

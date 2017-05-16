@@ -138,7 +138,7 @@ export default class Staff extends Component {
       if (!p.isPlayer) {
         hireButton = (
           <div className="worker-button-container">
-            <span className="worker-button"><UI.Button onClick={fire} text="Уволить" secondary /></span>
+            <span className="worker-button"><UI.Button onClick={fire} text="Уволить" link /></span>
           </div>
         );
       }
@@ -149,28 +149,58 @@ export default class Staff extends Component {
 
     let salaryTab = this.getSalaryTab(p);
 
-    return <div className="worker-item" key={key}>
-      <div>
-        {p.isPlayer ? 'Вы' : p.name}, {specialization}&nbsp;
-        {this.renderSkills(p)}
-      </div>
-      <div>{work}</div>
-      <div>{salaryTab}</div>
-      {hireButton}
-    </div>;
+    const name = p.isPlayer ? 'Вы' : p.name;
+
+    return (
+      <tr className="worker-item" key={key}>
+        <td>
+          {name}, {specialization}&nbsp;
+          {this.renderSkills(p)}
+        </td>
+        <td>{work}</td>
+        <td>{salaryTab}</td>
+        <td>{hireButton}</td>
+      </tr>
+    );
   };
 
   render(props, { staff, employees, teamToggle, employeeToggle }) {
     const staffList =        staff.map((p, i) => this.renderPerson(p, i, false));
     const employeeList = employees.map((p, i) => this.renderPerson(p, i, true));
 
+    let staffTab;
+    if (staff.length && !teamToggle) {
+      staffTab = (
+        <div>
+          <table className="table table-striped">
+            <tbody>
+            {staffList}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+
+    let employeeTab;
+    if (employees.length && !employeeToggle) {
+      employeeTab = (
+        <div>
+          <table className="table table-striped">
+            <tbody>
+            {employeeList}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+
     return (
       <div>
-        <h4 onClick={this.toggle('teamToggle')}>Команда ({teamToggle ? staff.length : '-'})</h4>
-        {staff.length && !teamToggle ? staffList : ''}
+        <h4 onClick={this.toggle('teamToggle')}>Команда ({teamToggle ? staff.length : 'Свернуть'})</h4>
+        {staffTab}
 
-        <h4 onClick={this.toggle('employeeToggle')}>Соискатели ({employeeToggle ? employees.length : '-'})</h4>
-        {employees.length && !employeeToggle ? employeeList : ''}
+        <h4 onClick={this.toggle('employeeToggle')}>Соискатели ({employeeToggle ? employees.length : 'Свернуть'})</h4>
+        {employeeTab}
       </div>
     );
   }
