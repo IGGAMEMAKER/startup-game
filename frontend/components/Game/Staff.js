@@ -26,18 +26,29 @@ type PropsType = {};
 
 import store from '../../stores/player-store';
 
+const IS_STAFF = 'IS_STAFF';
+const IS_EMPLOYEES = 'IS_EMPLOYEES';
+
 export default class Staff extends Component {
   state = {
     staff: [],
     employees: [],
     teamToggle: false,
     employeeToggle: false,
+    switcher: IS_EMPLOYEES
   };
 
   componentWillMount() {
     this.getStaff();
 
     store.addChangeListener(this.getStaff);
+  }
+
+  setStaff = () => { this.setMode(IS_STAFF); }
+  setEmployees = () => { this.setMode(IS_EMPLOYEES); }
+
+  setMode = switcher => {
+    this.setState({ switcher })
   }
 
   getStaff = () => {
@@ -164,7 +175,7 @@ export default class Staff extends Component {
     );
   };
 
-  render(props, { staff, employees, teamToggle, employeeToggle }) {
+  render(props, { switcher, staff, employees, teamToggle, employeeToggle }) {
     const staffList =        staff.map((p, i) => this.renderPerson(p, i, false));
     const employeeList = employees.map((p, i) => this.renderPerson(p, i, true));
 
@@ -201,13 +212,58 @@ export default class Staff extends Component {
       )
     }
 
+    let employeePhrase;
+    if (!employees.length) {
+      employeePhrase = <h6>Никто не хочет присоединиться к нам :( Перемотайте время и у нас появятся варианты!</h6>
+    } else {
+      employeePhrase = <h6>К нашей команде хотят присоединиться {employees.length} человек</h6>
+    }
+
+    let teamPhrase;
+    const staffLength = staff.length;
+    if (staffLength < 2) {
+      teamPhrase = 'Наймите маркетолога';
+    } else {
+      teamPhrase = `В нашей команде ${staffLength} человек`;
+    }
+
+    let tab;
+
+    switch (switcher) {
+      case IS_EMPLOYEES:
+        tab = (
+          <div>
+            <h4>Соискатели</h4>
+            <h6 className="offset-mid">{employeePhrase}</h6>
+            {employeeTab}
+          </div>
+        )
+        break;
+      case IS_STAFF:
+        tab = (
+          <div>
+            <h4>Команда</h4>
+            <h6 className="offset-mid">{teamPhrase}</h6>
+            {staffTab}
+          </div>
+        )
+        break;
+    }
+
     return (
       <div>
-        <h4 onClick={this.toggle('teamToggle')}>Команда ({teamToggle ? staff.length : 'Свернуть'})</h4>
-        {staffTab}
+        <nav aria-label="Page navigation example">
+          <ul className="pagination justify-content-center">
+            <li className={`page-item ${switcher === IS_STAFF ? 'active' : ''}`}>
+              <span onClick={this.setStaff} className="page-link" tabindex="-1">Команда</span>
+            </li>
+            <li className={`page-item ${switcher === IS_EMPLOYEES ? 'active' : ''}`}>
+              <span onClick={this.setEmployees} className="page-link">Нанять</span>
+            </li>
+          </ul>
+        </nav>
 
-        <h4 onClick={this.toggle('employeeToggle')}>Соискатели ({employeeToggle ? employees.length : 'Свернуть'})</h4>
-        {employeeTab}
+        {tab}
       </div>
     );
   }

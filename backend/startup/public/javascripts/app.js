@@ -2733,6 +2733,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var IS_STAFF = 'IS_STAFF';
+	// import React, { Component, PropTypes } from 'react';
+
+	var IS_EMPLOYEES = 'IS_EMPLOYEES';
+
 	var Staff = function (_Component) {
 	  (0, _inherits3.default)(Staff, _Component);
 
@@ -2751,7 +2756,14 @@
 	      staff: [],
 	      employees: [],
 	      teamToggle: false,
-	      employeeToggle: false
+	      employeeToggle: false,
+	      switcher: IS_EMPLOYEES
+	    }, _this.setStaff = function () {
+	      _this.setMode(IS_STAFF);
+	    }, _this.setEmployees = function () {
+	      _this.setMode(IS_EMPLOYEES);
+	    }, _this.setMode = function (switcher) {
+	      _this.setState({ switcher: switcher });
 	    }, _this.getStaff = function () {
 	      _this.setState({
 	        staff: _playerStore2.default.getTeam(),
@@ -2936,7 +2948,8 @@
 	    value: function render(props, _ref2) {
 	      var _this2 = this;
 
-	      var staff = _ref2.staff,
+	      var switcher = _ref2.switcher,
+	          staff = _ref2.staff,
 	          employees = _ref2.employees,
 	          teamToggle = _ref2.teamToggle,
 	          employeeToggle = _ref2.employeeToggle;
@@ -3001,32 +3014,105 @@
 	        );
 	      }
 
+	      var employeePhrase = void 0;
+	      if (!employees.length) {
+	        employeePhrase = (0, _preact.h)(
+	          'h6',
+	          null,
+	          '\u041D\u0438\u043A\u0442\u043E \u043D\u0435 \u0445\u043E\u0447\u0435\u0442 \u043F\u0440\u0438\u0441\u043E\u0435\u0434\u0438\u043D\u0438\u0442\u044C\u0441\u044F \u043A \u043D\u0430\u043C :( \u041F\u0435\u0440\u0435\u043C\u043E\u0442\u0430\u0439\u0442\u0435 \u0432\u0440\u0435\u043C\u044F \u0438 \u0443 \u043D\u0430\u0441 \u043F\u043E\u044F\u0432\u044F\u0442\u0441\u044F \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u044B!'
+	        );
+	      } else {
+	        employeePhrase = (0, _preact.h)(
+	          'h6',
+	          null,
+	          '\u041A \u043D\u0430\u0448\u0435\u0439 \u043A\u043E\u043C\u0430\u043D\u0434\u0435 \u0445\u043E\u0442\u044F\u0442 \u043F\u0440\u0438\u0441\u043E\u0435\u0434\u0438\u043D\u0438\u0442\u044C\u0441\u044F ',
+	          employees.length,
+	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
+	        );
+	      }
+
+	      var teamPhrase = void 0;
+	      var staffLength = staff.length;
+	      if (staffLength < 2) {
+	        teamPhrase = 'Наймите маркетолога';
+	      } else {
+	        teamPhrase = '\u0412 \u043D\u0430\u0448\u0435\u0439 \u043A\u043E\u043C\u0430\u043D\u0434\u0435 ' + staffLength + ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A';
+	      }
+
+	      var tab = void 0;
+
+	      switch (switcher) {
+	        case IS_EMPLOYEES:
+	          tab = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'h4',
+	              null,
+	              '\u0421\u043E\u0438\u0441\u043A\u0430\u0442\u0435\u043B\u0438'
+	            ),
+	            (0, _preact.h)(
+	              'h6',
+	              { className: 'offset-mid' },
+	              employeePhrase
+	            ),
+	            employeeTab
+	          );
+	          break;
+	        case IS_STAFF:
+	          tab = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'h4',
+	              null,
+	              '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
+	            ),
+	            (0, _preact.h)(
+	              'h6',
+	              { className: 'offset-mid' },
+	              teamPhrase
+	            ),
+	            staffTab
+	          );
+	          break;
+	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
 	        (0, _preact.h)(
-	          'h4',
-	          { onClick: this.toggle('teamToggle') },
-	          '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 (',
-	          teamToggle ? staff.length : 'Свернуть',
-	          ')'
+	          'nav',
+	          { 'aria-label': 'Page navigation example' },
+	          (0, _preact.h)(
+	            'ul',
+	            { className: 'pagination justify-content-center' },
+	            (0, _preact.h)(
+	              'li',
+	              { className: 'page-item ' + (switcher === IS_STAFF ? 'active' : '') },
+	              (0, _preact.h)(
+	                'span',
+	                { onClick: this.setStaff, className: 'page-link', tabindex: '-1' },
+	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
+	              )
+	            ),
+	            (0, _preact.h)(
+	              'li',
+	              { className: 'page-item ' + (switcher === IS_EMPLOYEES ? 'active' : '') },
+	              (0, _preact.h)(
+	                'span',
+	                { onClick: this.setEmployees, className: 'page-link' },
+	                '\u041D\u0430\u043D\u044F\u0442\u044C'
+	              )
+	            )
+	          )
 	        ),
-	        staffTab,
-	        (0, _preact.h)(
-	          'h4',
-	          { onClick: this.toggle('employeeToggle') },
-	          '\u0421\u043E\u0438\u0441\u043A\u0430\u0442\u0435\u043B\u0438 (',
-	          employeeToggle ? employees.length : 'Свернуть',
-	          ')'
-	        ),
-	        employeeTab
+	        tab
 	      );
 	    }
 	  }]);
 	  return Staff;
 	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
 
 	exports.default = Staff;
 	;
@@ -8319,14 +8405,15 @@
 
 	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
 
-	var _developPanel = __webpack_require__(159);
+	var _productPanel = __webpack_require__(173);
 
-	var _developPanel2 = _interopRequireDefault(_developPanel);
+	var _productPanel2 = _interopRequireDefault(_productPanel);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	//
 	var Product = function (_Component) {
 	  (0, _inherits3.default)(Product, _Component);
 
@@ -8352,7 +8439,7 @@
 	          body = (0, _preact.h)(
 	            'div',
 	            null,
-	            (0, _preact.h)(_developPanel2.default, { product: product, id: id })
+	            (0, _preact.h)(_productPanel2.default, { product: product, id: id })
 	          );
 	          break;
 	      }
@@ -8572,985 +8659,7 @@
 	;
 
 /***/ },
-/* 159 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _metrics = __webpack_require__(160);
-
-	var _metrics2 = _interopRequireDefault(_metrics);
-
-	var _Schedule = __webpack_require__(162);
-
-	var _Schedule2 = _interopRequireDefault(_Schedule);
-
-	var _UI = __webpack_require__(102);
-
-	var _UI2 = _interopRequireDefault(_UI);
-
-	var _professions = __webpack_require__(150);
-
-	var PROFESSIONS = _interopRequireWildcard(_professions);
-
-	var _productActions = __webpack_require__(146);
-
-	var _productActions2 = _interopRequireDefault(_productActions);
-
-	var _productStore = __webpack_require__(136);
-
-	var _productStore2 = _interopRequireDefault(_productStore);
-
-	var _playerStore = __webpack_require__(119);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _playerActions = __webpack_require__(117);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _featurePrice = __webpack_require__(163);
-
-	var _featurePrice2 = _interopRequireDefault(_featurePrice);
-
-	var _scheduleActions = __webpack_require__(145);
-
-	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
-
-	var _workSpeed = __webpack_require__(135);
-
-	var _constants = __webpack_require__(149);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
-	var _logger = __webpack_require__(100);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _advertPlannerPanel = __webpack_require__(164);
-
-	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
-
-	var _MainFeature = __webpack_require__(165);
-
-	var _MainFeature2 = _interopRequireDefault(_MainFeature);
-
-	var _stages = __webpack_require__(148);
-
-	var _stages2 = _interopRequireDefault(_stages);
-
-	var _competitors = __webpack_require__(166);
-
-	var _competitors2 = _interopRequireDefault(_competitors);
-
-	var _competitor = __webpack_require__(167);
-
-	var _competitor2 = _interopRequireDefault(_competitor);
-
-	var _segment = __webpack_require__(168);
-
-	var _segment2 = _interopRequireDefault(_segment);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var MODE_METRICS = 'MODE_METRICS';
-	// import React, { Component, PropTypes } from 'react';
-
-	var MODE_RATING = 'MODE_RATING';
-	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
-	var MODE_ADS = 'MODE_ADS';
-	var MODE_MARKETING = 'MODE_MARKETING';
-	var MODE_PAYMENTS = 'MODE_PAYMENTS';
-	var MODE_ANALYTICS = 'MODE_ANALYTICS';
-	var MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
-	var MODE_COMPETITORS = 'MODE_COMPETITORS';
-	var MODE_BONUSES = 'MODE_BONUSES';
-
-	var DevelopPanel = function (_Component) {
-	  (0, _inherits3.default)(DevelopPanel, _Component);
-
-	  function DevelopPanel() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, DevelopPanel);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DevelopPanel.__proto__ || (0, _getPrototypeOf2.default)(DevelopPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      marketing: true,
-	      payment: true,
-	      analytics: true,
-	      features: true,
-
-	      mode: MODE_MARKETING
-	    }, _this.getTechnicalDebtDescription = function (debt) {
-	      if (debt < 10) {
-	        return '\u0412\u0441\u0451 \u0445\u043E\u0440\u043E\u0448\u043E';
-	      } else if (debt < 50) {
-	        return '\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0430\u0447\u0438\u043D\u0430\u044E\u0442 \u043F\u043B\u0430\u043A\u0430\u0442\u044C';
-	      } else {
-	        return '\u0422\u044B \u043C\u0440\u0430\u0437\u044C \u0438 \u043F**\u043E\u0440, \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435\u043D\u0430\u0432\u0438\u0434\u044F\u0442 \u0442\u0435\u0431\u044F!! \u041E\u0442\u0440\u0435\u0444\u0430\u043A\u0442\u043E\u0440\u044C \u044D\u0442\u043E\u0442 \u0448\u043B\u0430\u043A!';
-	      }
-	    }, _this.haveEnoughPointsToUpgrade = function (necessaryPoints) {
-	      var points = _playerStore2.default.getPoints();
-	      var mp = necessaryPoints.mp || 0;
-	      var pp = necessaryPoints.pp || 0;
-
-	      return points.marketing >= mp && points.programming >= pp;
-	    }, _this.renderHypothesisTab = function (id, idea) {
-	      if (!_stages2.default.canShowHypothesisTab()) return '';
-
-	      var done = _UI2.default.symbols.ok;
-	      var cancel = _UI2.default.symbols.dot;
-
-	      var improvements = _productStore2.default.getImprovementChances(id);
-	      var webvisorStatus = improvements.hasWebvisor ? done : cancel + ' \u041D\u0435';
-	      var segmentingStatus = improvements.hasSegmenting ? done : cancel + ' \u041D\u0435';
-	      var feedbackStatus = improvements.hasFeedback ? done : cancel + ' \u041D\u0435';
-
-	      // const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
-	      var improveTab = void 0;
-	      if (!improvements.hasFeedback) {
-	        improveTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            feedbackStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432 (+',
-	            improvements.feedbackBonus,
-	            'XP)'
-	          ),
-	          _this.getFeedbackButton(idea, id)
-	        );
-	      } else if (!improvements.hasWebvisor) {
-	        improveTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            webvisorStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
-	            improvements.webvisorBonus,
-	            'XP)'
-	          ),
-	          _this.getWebvisorButton(idea, id)
-	        );
-	      } else if (!improvements.hasSegmenting) {
-	        improveTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            segmentingStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (+',
-	            improvements.segmentingBonus,
-	            'XP)'
-	          ),
-	          _this.getSegmentingButton(idea, id)
-	        );
-	      } else {
-	        improveTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0438 \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E \u0443\u043B\u0443\u0447\u0448\u0435\u043D'
-	        );
-	      }
-
-	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
-
-	      var hypothesisPoints = _productStore2.default.getHypothesisPoints(id);
-
-	      var pp = hypothesisPoints.pp,
-	          mp = hypothesisPoints.mp;
-
-
-	      var notEnoughPPs = !_this.haveEnoughPointsToUpgrade(hypothesisPoints);
-	      // const ratingOverflow = current >= max;
-	      // const currentXP = productStore.getXP(id);
-
-	      var disabled = notEnoughPPs; // || ratingOverflow;
-
-	      var testHypothesis = function testHypothesis() {
-	        var time = 30;
-	        var key = 'Тестирование гипотезы';
-
-	        _playerActions2.default.spendPoints(pp, mp);
-	        _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
-	          _productActions2.default.testHypothesis(id, {}, 0);
-
-	          if (_stages2.default.isFirstHypothesisMission()) {
-	            _stages2.default.onFirstHypothesisMissionCompleted();
-	          }
-	        });
-	      };
-
-	      var possibleXPtext = (0, _preact.h)(
-	        'div',
-	        null,
-	        '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 \u043E\u0442 0 \u0434\u043E ',
-	        improvements.max,
-	        ' XP (\u0448\u0442\u0440\u0430\u0444 -',
-	        clientSizePenalty,
-	        '%)'
-	      );
-
-	      // <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
-	      // {this.getFeedbackButton(idea, id)}
-	      // <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
-	      // {this.getWebvisorButton(idea, id)}
-	      // <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
-	      // {this.getSegmentingButton(idea, id)}
-
-
-	      // <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
-
-
-	      // <br />
-	      // <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
-
-	      // <UI.Info />
-	      // <div className="smallText">
-	      //   Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
-	      // </div>
-
-	      var errorDescription = '';
-	      if (disabled) {
-	        errorDescription = 'У вас не хватает MP или PP. ' + 'Возможно вам стоит нанять больше сотрудников или подождать до следующего месяца';
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupTitle' },
-	          '\u0422\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupDescription' },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'smallText' },
-	            '\u0422\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437 \u0434\u0430\u0451\u0442 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u044C \u043B\u0443\u0447\u0448\u0435 \u0443\u0437\u043D\u0430\u0442\u044C \u043E \u043F\u043E\u0442\u0440\u0435\u0431\u043D\u043E\u0441\u0442\u044F\u0445 \u0432\u0430\u0448\u0438\u0445 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432.'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'smallText' },
-	            '\u041F\u043E\u0441\u043B\u0435 \u043A\u0430\u0436\u0434\u043E\u0433\u043E \u0446\u0438\u043A\u043B\u0430 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u043E\u0447\u043A\u0438 \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP points)'
-	          )
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          improveTab
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            possibleXPtext
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B: ',
-	            mp,
-	            'MP \u0438 ',
-	            pp,
-	            'PP'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            errorDescription
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u0417\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435',
-	            onClick: testHypothesis,
-	            disabled: disabled,
-	            primary: true
-	          }),
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)(_Schedule2.default, null)
-	        )
-	      );
-	    }, _this.renderPaymentTab = function (id, idea) {
-	      var payment = _this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
-
-	      var isOpened = _productStore2.default.canShowPayPercentageMetric(id);
-	      var payAbility = _productStore2.default.getConversionRate(id).pretty;
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupTitle' },
-	          '\u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupDescriptionWrapper' },
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
-	            isOpened ? payAbility + '%' : 'Установите фичу "Тестовая покупка"'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupDescription' },
-	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u043F\u043E\u0432\u044B\u0441\u0438\u0442\u044C \u0434\u043E\u0445\u043E\u0434\u044B \u0441 \u043F\u0440\u043E\u0434\u0430\u0436'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupBody' },
-	            payment
-	          )
-	        )
-	      );
-	    }, _this.renderAnalyticsTab = function (id, idea) {
-	      var analytics = _this.getAnalyticFeatures(idea).map(_this.renderFeature('analytics', id, idea));
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupTitle' },
-	          '\u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupDescriptionWrapper' },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupDescription' },
-	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0431\u044B\u0441\u0442\u0440\u0435\u0435 \u0443\u043B\u0443\u0447\u0448\u0430\u0442\u044C \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0435\u043A\u0442\u0430'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupBody' },
-	            analytics
-	          )
-	        )
-	      );
-	    }, _this.renderClientTab = function (id, product) {
-	      var idea = product.idea;
-
-	      var marketing = _this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
-
-	      var churn = _productStore2.default.getChurnRate(id).pretty;
-	      var disloyalClients = _productStore2.default.getDisloyalClients(id);
-
-	      var market = _productStore2.default.getMarketShare(id);
-
-	      var nearestCompetitor = _this.renderCompetitors(id, _productStore2.default.getRating(id));
-	      var segmentTab = _this.renderSegmentTab(id);
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupTitle' },
-	          '\u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	          market.clients,
-	          ' (',
-	          market.share,
-	          '% \u0440\u044B\u043D\u043A\u0430)'
-	        ),
-	        _this.renderAdTab(id, product),
-	        nearestCompetitor,
-	        (0, _preact.h)('br', null),
-	        segmentTab,
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041A\u0430\u0436\u0434\u044B\u0439 \u043C\u0435\u0441\u044F\u0446 \u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
-	          disloyalClients,
-	          ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (\u043E\u0442\u0442\u043E\u043A: ',
-	          churn,
-	          '%)'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupDescriptionWrapper' },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupDescription' },
-	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0441\u043D\u0438\u0437\u0438\u0442\u044C \u043E\u0442\u0442\u043E\u043A \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u043E\u0432\u044B\u0448\u0430\u044F \u0438\u0445 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupBody' },
-	            marketing
-	          )
-	        )
-	      );
-	    }, _this.renderAdTab = function (id, product) {
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'b',
-	          null,
-	          '\u0420\u0435\u043A\u043B\u0430\u043C\u043D\u0430\u044F \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F'
-	        ),
-	        (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
-	        (0, _preact.h)('br', null)
-	      );
-	    }, _this.renderMetricsTab = function (id, product) {
-	      if (!_stages2.default.canShowMetricsTab()) return '';
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'b',
-	          null,
-	          '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
-	        ),
-	        (0, _preact.h)(_metrics2.default, {
-	          product: product,
-	          id: id,
-	          onRatingPressed: function onRatingPressed() {
-	            return _this.setMode(MODE_MAIN_FEATURES);
-	          },
-	          onClientsPressed: function onClientsPressed() {
-	            return _this.setMode(MODE_MARKETING);
-	          },
-	          onPaymentsPressed: function onPaymentsPressed() {
-	            return _this.setMode(MODE_PAYMENTS);
-	          },
-	          onAdsPressed: function onAdsPressed() {
-	            return _this.setMode(MODE_ADS);
-	          },
-	          onAnalyticsPressed: function onAnalyticsPressed() {
-	            return _this.setMode(MODE_ANALYTICS);
-	          },
-	          onExpertisePressed: function onExpertisePressed() {
-	            return _this.setMode(MODE_HYPOTHESIS);
-	          }
-	        })
-	      );
-	    }, _this.renderFeature = function (featureGroup, id, idea, hideOnComplete, onUpgraded) {
-	      return function (feature, i) {
-	        var featureName = feature.name;
-
-	        var key = 'feature' + featureGroup + featureName + i;
-
-	        var standardPoints = feature.points || {};
-	        var mp = standardPoints.marketing || 0;
-	        var pp = standardPoints.programming || 0;
-	        var points = _playerStore2.default.getPoints();
-
-	        var enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
-
-	        var upgradeFeature = function upgradeFeature(event) {
-	          _logger2.default.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
-
-	          if (enoughPointsToUpgrade) {
-	            _playerActions2.default.spendPoints(pp, mp);
-	            _productActions2.default.improveFeatureByPoints(id, featureGroup, featureName);
-
-	            if (onUpgraded) {
-	              onUpgraded();
-	            }
-	          }
-	        };
-
-	        var description = feature.description || '';
-	        var isUpgraded = _productStore2.default.getFeatureStatus(id, featureGroup, featureName);
-
-	        var separator = (0, _preact.h)('hr', { width: '60%' });
-
-	        var userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
-	        if (isUpgraded) {
-	          if (hideOnComplete) {
-	            return (0, _preact.h)('div', { key: key });
-	          }
-
-	          return (0, _preact.h)(
-	            'div',
-	            { key: key },
-	            userOrientedFeatureName,
-	            ': \u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E ',
-	            _UI2.default.symbols.ok,
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureDescription' },
-	              description
-	            ),
-	            separator
-	          );
-	        }
-
-	        var mpColors = points.marketing < mp ? "noPoints" : "enoughPoints";
-	        var ppColors = points.programming < pp ? "noPoints" : "enoughPoints";
-
-	        return (0, _preact.h)(
-	          'div',
-	          { key: key },
-	          userOrientedFeatureName,
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureDescription' },
-	            description
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F - \xA0',
-	              (0, _preact.h)(
-	                'span',
-	                { className: mpColors },
-	                'MP:',
-	                mp,
-	                '\xA0'
-	              ),
-	              (0, _preact.h)(
-	                'span',
-	                { className: ppColors },
-	                'PP:',
-	                pp
-	              )
-	            )
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
-	            disabled: !enoughPointsToUpgrade,
-	            onClick: upgradeFeature,
-	            secondary: true
-	          }),
-	          separator
-	        );
-	      };
-	    }, _this.setMode = function (mode) {
-	      _this.setState({ mode: mode });
-	    }, _this.renderNavbar = function (mode, name) {
-	      return (0, _preact.h)(
-	        'li',
-	        {
-	          className: 'product-menu-toggler ' + (_this.state.mode === mode ? 'active' : ''),
-	          onClick: function onClick() {
-	            return _this.setMode(mode);
-	          }
-	        },
-	        (0, _preact.h)(
-	          'span',
-	          null,
-	          name
-	        )
-	      );
-	    }, _this.renderProductMenuNavbar = function () {
-	      var hypothesis = void 0;
-	      if (_stages2.default.canShowHypothesisTab()) {
-	        hypothesis = _this.renderNavbar(MODE_HYPOTHESIS, 'Исследования');
-	      }
-
-	      var improvements = void 0;
-	      if (_stages2.default.canShowMainFeatureTab()) {
-	        improvements = _this.renderNavbar(MODE_MAIN_FEATURES, 'Характеристики');
-	      }
-
-	      var payments = void 0;
-	      if (_stages2.default.canShowPaymentsTab()) {
-	        payments = _this.renderNavbar(MODE_PAYMENTS, 'Монетизация');
-	      }
-
-	      var ads = void 0;
-	      ads = _this.renderNavbar(MODE_ADS, 'Реклама');
-
-	      var clients = void 0;
-	      // if (stageHelper.canShowClientsTab()) {
-	      clients = _this.renderNavbar(MODE_MARKETING, 'Клиенты');
-	      // }
-
-	      var competitors = void 0;
-	      if (_stages2.default.canShowCompetitorsTab()) {
-	        competitors = _this.renderNavbar(MODE_COMPETITORS, 'Конкуренты');
-	      }
-
-	      var bonuses = void 0;
-	      if (_stages2.default.canShowBonusesTab()) {
-	        bonuses = _this.renderNavbar(MODE_BONUSES, 'Бонусы');
-	      }
-
-	      return (0, _preact.h)(
-	        'ul',
-	        { className: 'nav nav-tabs' },
-	        hypothesis,
-	        improvements,
-	        payments,
-	        clients,
-	        competitors,
-	        bonuses
-	      );
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(DevelopPanel, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
-	    key: 'getMarketingFeatureList',
-	    value: function getMarketingFeatureList(idea) {
-	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
-	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
-	        points: { marketing: 50, programming: 100 }, time: 10 }];
-	      // ].map(computeFeatureCost(cost));
-	    }
-	  }, {
-	    key: 'getDevelopmentFeatureList',
-	    value: function getDevelopmentFeatureList(idea) {
-	      return [{ name: 'backups', description: '' }, { name: 'clusters', description: '' }, { name: 'tests', description: '' }, { name: 'mobiles', description: '' } // ios android apps
-	      ];
-	      // ].map(computeFeatureCost(cost));
-	    }
-	  }, {
-	    key: 'getFeedbackButton',
-	    value: function getFeedbackButton(idea, id) {
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea, true, _stages2.default.onInstallPrimitiveAnalyticsMissionCompleted)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)
-	      );
-	    }
-	  }, {
-	    key: 'getWebvisorButton',
-	    value: function getWebvisorButton(idea, id) {
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)
-	      );
-	    }
-	  }, {
-	    key: 'getSegmentingButton',
-	    value: function getSegmentingButton(idea, id) {
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
-	      );
-	    }
-	  }, {
-	    key: 'getHypothesisAnalyticsFeatures',
-	    value: function getHypothesisAnalyticsFeatures(idea) {
-	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев', description: '', // 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез',
-	        points: { programming: 50, marketing: 0 }
-	      }, { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
-	        points: { programming: 50, marketing: 0 }
-	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
-	        points: { programming: 150, marketing: 100 }
-	      }];
-	    }
-	  }, {
-	    key: 'getAnalyticFeatures',
-	    value: function getAnalyticFeatures(idea) {
-	      return [
-	      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
-	      //   points: { programming: 150, marketing: 100 }
-	      // },
-
-	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
-	        points: { programming: 50, marketing: 0 }
-	      }];
-	      // ].map(computeFeatureCost(cost));
-	    }
-	  }, {
-	    key: 'getPaymentFeatures',
-	    value: function getPaymentFeatures(idea) {
-	      var technicalDebtModifier = 1;
-	      var up = Math.ceil;
-
-	      return [{ name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
-	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
-	      }, { name: 'basicPricing', shortDescription: 'Один тарифный план', description: 'Одна цена для всех. Процент платящих снижается вдвое, однако вы начинаете зарабатывать деньги',
-	        points: { programming: up(150 * technicalDebtModifier), marketing: 50 }
-	      }, { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов', description: 'Несколько ценовых сегментов. Максимально возможный доход с продукта',
-	        points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
-	      }];
-	    }
-	  }, {
-	    key: 'plainifySameTypeFeatures',
-	    value: function plainifySameTypeFeatures(id, idea, groupType, onImprovedPhrase) {
-	      var featureList = void 0;
-	      switch (groupType) {
-	        case 'marketing':
-	          featureList = this.getMarketingFeatureList(idea);
-	          break;
-
-	        case 'payment':
-	          featureList = this.getPaymentFeatures(idea);
-	          break;
-
-	        case 'analytics':
-	          featureList = this.getHypothesisAnalyticsFeatures(idea);
-	          break;
-	      }
-
-	      var unlockedFeature = void 0;
-	      featureList.forEach(function (f) {
-	        if (!_productStore2.default.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
-	          unlockedFeature = f.name;
-	        }
-	      });
-
-	      if (!unlockedFeature) return onImprovedPhrase;
-
-	      var feature = featureList.filter(function (f) {
-	        return f.name === unlockedFeature;
-	      });
-
-	      if (groupType === 'payment' && _stages2.default.isInstallPaymentModuleMission()) {
-	        return feature.map(this.renderFeature(groupType, id, idea, true, _stages2.default.onInstallPaymentModuleMissionCompleted));
-	      } else {
-	        return feature.map(this.renderFeature(groupType, id, idea));
-	      }
-	    }
-	  }, {
-	    key: 'renderCompetitors',
-	    value: function renderCompetitors(id, rating) {
-	      if (!_stages2.default.canShowCompetitorsTab()) return '';
-
-	      var competitor = _productStore2.default.getNextCompetitorInfo(id);
-
-	      if (competitor) {
-	        return (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041D\u0430\u0448 \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u0439 \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442'
-	          ),
-	          (0, _preact.h)(_competitor2.default, { rating: rating, c: competitor, i: -1 })
-	        );
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435! \u0412\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u0437\u0430\u0445\u0432\u0430\u0442\u0438\u0442\u044C \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 100% \u0440\u044B\u043D\u043A\u0430!'
-	      );
-	    }
-	  }, {
-	    key: 'renderSegmentTab',
-	    value: function renderSegmentTab(id) {
-	      if (!_stages2.default.canShowSegments()) return '';
-
-	      var segmentList = _productStore2.default.getSegments(id).map(function (s, i) {
-	        return (0, _preact.h)(_segment2.default, { productId: id, segment: s, id: i });
-	      });
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          segmentList
-	        )
-	      );
-	    }
-	  }, {
-	    key: 'renderBonusesTab',
-	    value: function renderBonusesTab(id, product) {
-	      var improvements = _productStore2.default.getImprovementChances(id);
-
-	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i, arr) {
-	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
-	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
-
-	        var phrase = void 0;
-	        if (i === 0) {
-	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ' + c;
-	        } else {
-	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0435\u043D\u044C\u0448\u0435, \u0447\u0435\u043C ' + arr[i - 1] + ' - \u0448\u0442\u0440\u0430\u0444 ' + penalty + '%';
-	        }
-	        return (0, _preact.h)(
-	          'div',
-	          { className: 'smallText' },
-	          isActivated,
-	          ' ',
-	          phrase
-	        );
-	      });
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0428\u0442\u0440\u0430\u0444 \u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u043E\u0441\u0442\u0438 (\u043F\u0440\u0438 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0438 \u0433\u0438\u043F\u043E\u0442\u0435\u0437)'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          cliTabDescription
-	        )
-	      );
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render(_ref2, state) {
-	      var product = _ref2.product,
-	          gamePhase = _ref2.gamePhase;
-
-	      if (_stages2.default.isFirstWorkerMission()) return (0, _preact.h)('div', null);
-	      // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
-
-	      var mode = state.mode;
-	      var idea = product.idea;
-
-
-	      var id = 0;
-	      _logger2.default.shit('develop-panel.js fix productID id=0'); // TODO FIX PRODUCT ID=0
-
-	      var body = '';
-	      switch (mode) {
-	        case MODE_PAYMENTS:
-	          body = this.renderPaymentTab(id, idea);
-	          break;
-
-	        case MODE_MARKETING:
-	          body = this.renderClientTab(id, product);
-	          break;
-
-	        case MODE_ADS:
-	          body = this.renderAdTab(id, product);
-	          break;
-
-	        case MODE_ANALYTICS:
-	          body = this.renderAnalyticsTab(id, idea);
-	          break;
-
-	        case MODE_METRICS:
-	          body = this.renderMetricsTab(id, product);
-	          break;
-
-	        case MODE_MAIN_FEATURES:
-	          body = (0, _preact.h)(_MainFeature2.default, { id: id, product: product });
-	          break;
-
-	        case MODE_COMPETITORS:
-	          body = (0, _preact.h)(_competitors2.default, { id: id });
-	          break;
-
-	        case MODE_BONUSES:
-	          body = this.renderBonusesTab(id, product);
-	          break;
-
-	        default:
-	          body = this.renderHypothesisTab(id, idea, product);
-	          break;
-	      }
-
-	      var metrics = this.renderMetricsTab(id, product);
-	      var menu = this.renderProductMenuNavbar();
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'b',
-	          null,
-	          '\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430 "',
-	          product.name,
-	          '"'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
-	          _productStore2.default.getDescriptionOfProduct(id)
-	        ),
-	        metrics,
-	        menu,
-	        (0, _preact.h)(
-	          'div',
-	          { style: { padding: '15px', 'min-height': '500px' } },
-	          body
-	        )
-	      );
-	    }
-	  }]);
-	  return DevelopPanel;
-	}(_preact.Component);
-
-	exports.default = DevelopPanel;
-
-/***/ },
+/* 159 */,
 /* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -11625,6 +10734,988 @@
 	exports.default = {
 	  emit: emit
 	};
+
+/***/ },
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _metrics = __webpack_require__(160);
+
+	var _metrics2 = _interopRequireDefault(_metrics);
+
+	var _Schedule = __webpack_require__(162);
+
+	var _Schedule2 = _interopRequireDefault(_Schedule);
+
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	var _professions = __webpack_require__(150);
+
+	var PROFESSIONS = _interopRequireWildcard(_professions);
+
+	var _productActions = __webpack_require__(146);
+
+	var _productActions2 = _interopRequireDefault(_productActions);
+
+	var _productStore = __webpack_require__(136);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	var _playerStore = __webpack_require__(119);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _featurePrice = __webpack_require__(163);
+
+	var _featurePrice2 = _interopRequireDefault(_featurePrice);
+
+	var _scheduleActions = __webpack_require__(145);
+
+	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
+
+	var _workSpeed = __webpack_require__(135);
+
+	var _constants = __webpack_require__(149);
+
+	var _constants2 = _interopRequireDefault(_constants);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _advertPlannerPanel = __webpack_require__(164);
+
+	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
+
+	var _MainFeature = __webpack_require__(165);
+
+	var _MainFeature2 = _interopRequireDefault(_MainFeature);
+
+	var _stages = __webpack_require__(148);
+
+	var _stages2 = _interopRequireDefault(_stages);
+
+	var _competitors = __webpack_require__(166);
+
+	var _competitors2 = _interopRequireDefault(_competitors);
+
+	var _competitor = __webpack_require__(167);
+
+	var _competitor2 = _interopRequireDefault(_competitor);
+
+	var _segment = __webpack_require__(168);
+
+	var _segment2 = _interopRequireDefault(_segment);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var MODE_METRICS = 'MODE_METRICS';
+	// import React, { Component, PropTypes } from 'react';
+
+	var MODE_RATING = 'MODE_RATING';
+	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
+	var MODE_ADS = 'MODE_ADS';
+	var MODE_MARKETING = 'MODE_MARKETING';
+	var MODE_PAYMENTS = 'MODE_PAYMENTS';
+	var MODE_ANALYTICS = 'MODE_ANALYTICS';
+	var MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
+	var MODE_COMPETITORS = 'MODE_COMPETITORS';
+	var MODE_BONUSES = 'MODE_BONUSES';
+
+	var ProductPanel = function (_Component) {
+	  (0, _inherits3.default)(ProductPanel, _Component);
+
+	  function ProductPanel() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, ProductPanel);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = ProductPanel.__proto__ || (0, _getPrototypeOf2.default)(ProductPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      marketing: true,
+	      payment: true,
+	      analytics: true,
+	      features: true,
+
+	      mode: MODE_MARKETING
+	    }, _this.haveEnoughPointsToUpgrade = function (necessaryPoints) {
+	      var points = _playerStore2.default.getPoints();
+	      var mp = necessaryPoints.mp || 0;
+	      var pp = necessaryPoints.pp || 0;
+
+	      return points.marketing >= mp && points.programming >= pp;
+	    }, _this.renderHypothesisTab = function (id, idea) {
+	      if (!_stages2.default.canShowHypothesisTab()) return '';
+
+	      var done = _UI2.default.symbols.ok;
+	      var cancel = _UI2.default.symbols.dot;
+
+	      var improvements = _productStore2.default.getImprovementChances(id);
+	      var webvisorStatus = improvements.hasWebvisor ? done : cancel + ' \u041D\u0435';
+	      var segmentingStatus = improvements.hasSegmenting ? done : cancel + ' \u041D\u0435';
+	      var feedbackStatus = improvements.hasFeedback ? done : cancel + ' \u041D\u0435';
+
+	      // const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
+	      var improveTab = void 0;
+	      if (!improvements.hasFeedback) {
+	        improveTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            feedbackStatus,
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432 (+',
+	            improvements.feedbackBonus,
+	            'XP)'
+	          ),
+	          _this.getFeedbackButton(idea, id)
+	        );
+	      } else if (!improvements.hasWebvisor) {
+	        improveTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            webvisorStatus,
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
+	            improvements.webvisorBonus,
+	            'XP)'
+	          ),
+	          _this.getWebvisorButton(idea, id)
+	        );
+	      } else if (!improvements.hasSegmenting) {
+	        improveTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            segmentingStatus,
+	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (+',
+	            improvements.segmentingBonus,
+	            'XP)'
+	          ),
+	          _this.getSegmentingButton(idea, id)
+	        );
+	      } else {
+	        improveTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0438 \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E \u0443\u043B\u0443\u0447\u0448\u0435\u043D'
+	        );
+	      }
+
+	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
+
+	      var hypothesisPoints = _productStore2.default.getHypothesisPoints(id);
+
+	      var pp = hypothesisPoints.pp,
+	          mp = hypothesisPoints.mp;
+
+
+	      var notEnoughPPs = !_this.haveEnoughPointsToUpgrade(hypothesisPoints);
+	      // const ratingOverflow = current >= max;
+	      // const currentXP = productStore.getXP(id);
+
+	      var disabled = notEnoughPPs; // || ratingOverflow;
+
+	      var testHypothesis = function testHypothesis() {
+	        var time = 30;
+	        var key = 'Тестирование гипотезы';
+
+	        _playerActions2.default.spendPoints(pp, mp);
+	        _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
+	          _productActions2.default.testHypothesis(id, {}, 0);
+
+	          if (_stages2.default.isFirstHypothesisMission()) {
+	            _stages2.default.onFirstHypothesisMissionCompleted();
+	          }
+	        });
+	      };
+
+	      var possibleXPtext = (0, _preact.h)(
+	        'div',
+	        null,
+	        '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 \u043E\u0442 0 \u0434\u043E ',
+	        improvements.max,
+	        ' XP (\u0448\u0442\u0440\u0430\u0444 -',
+	        clientSizePenalty,
+	        '%)'
+	      );
+
+	      // <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
+	      // {this.getFeedbackButton(idea, id)}
+	      // <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
+	      // {this.getWebvisorButton(idea, id)}
+	      // <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
+	      // {this.getSegmentingButton(idea, id)}
+
+
+	      // <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
+
+
+	      // <br />
+	      // <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
+
+	      // <UI.Info />
+	      // <div className="smallText">
+	      //   Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
+	      // </div>
+
+	      var errorDescription = '';
+	      if (disabled) {
+	        errorDescription = 'У вас не хватает MP или PP. ' + 'Возможно вам стоит нанять больше сотрудников или подождать до следующего месяца';
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupTitle' },
+	          '\u0422\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupDescription' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'smallText' },
+	            '\u0422\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437 \u0434\u0430\u0451\u0442 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u044C \u043B\u0443\u0447\u0448\u0435 \u0443\u0437\u043D\u0430\u0442\u044C \u043E \u043F\u043E\u0442\u0440\u0435\u0431\u043D\u043E\u0441\u0442\u044F\u0445 \u0432\u0430\u0448\u0438\u0445 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432.'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'smallText' },
+	            '\u041F\u043E\u0441\u043B\u0435 \u043A\u0430\u0436\u0434\u043E\u0433\u043E \u0446\u0438\u043A\u043B\u0430 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u043E\u0447\u043A\u0438 \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP points)'
+	          )
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          improveTab
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            possibleXPtext
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B: ',
+	            mp,
+	            'MP \u0438 ',
+	            pp,
+	            'PP'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            errorDescription
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: '\u0417\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435',
+	            onClick: testHypothesis,
+	            disabled: disabled,
+	            primary: true
+	          }),
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(_Schedule2.default, null)
+	        )
+	      );
+	    }, _this.renderPaymentTab = function (id, idea) {
+	      var payment = _this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
+
+	      var isOpened = _productStore2.default.canShowPayPercentageMetric(id);
+	      var payAbility = _productStore2.default.getConversionRate(id).pretty;
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupTitle' },
+	          '\u041C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u044F'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupDescriptionWrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
+	            isOpened ? payAbility + '%' : 'Установите фичу "Тестовая покупка"'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u043F\u043E\u0432\u044B\u0441\u0438\u0442\u044C \u0434\u043E\u0445\u043E\u0434\u044B \u0441 \u043F\u0440\u043E\u0434\u0430\u0436'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            payment
+	          )
+	        )
+	      );
+	    }, _this.renderAnalyticsTab = function (id, idea) {
+	      var analytics = _this.getAnalyticFeatures(idea).map(_this.renderFeature('analytics', id, idea));
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupTitle' },
+	          '\u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupDescriptionWrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0431\u044B\u0441\u0442\u0440\u0435\u0435 \u0443\u043B\u0443\u0447\u0448\u0430\u0442\u044C \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0435\u043A\u0442\u0430'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            analytics
+	          )
+	        )
+	      );
+	    }, _this.renderClientTab = function (id, product) {
+	      var idea = product.idea;
+
+	      var marketing = _this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
+
+	      var churn = _productStore2.default.getChurnRate(id).pretty;
+	      var disloyalClients = _productStore2.default.getDisloyalClients(id);
+
+	      var market = _productStore2.default.getMarketShare(id);
+
+	      var nearestCompetitor = _this.renderCompetitors(id, _productStore2.default.getRating(id));
+	      var segmentTab = _this.renderSegmentTab(id);
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupTitle' },
+	          '\u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	          market.clients,
+	          ' (',
+	          market.share,
+	          '% \u0440\u044B\u043D\u043A\u0430)'
+	        ),
+	        _this.renderAdTab(id, product),
+	        nearestCompetitor,
+	        (0, _preact.h)('br', null),
+	        segmentTab,
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041A\u0430\u0436\u0434\u044B\u0439 \u043C\u0435\u0441\u044F\u0446 \u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
+	          disloyalClients,
+	          ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (\u043E\u0442\u0442\u043E\u043A: ',
+	          churn,
+	          '%)'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupDescriptionWrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0441\u043D\u0438\u0437\u0438\u0442\u044C \u043E\u0442\u0442\u043E\u043A \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u043E\u0432\u044B\u0448\u0430\u044F \u0438\u0445 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            marketing
+	          )
+	        )
+	      );
+	    }, _this.renderAdTab = function (id, product) {
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'b',
+	          null,
+	          '\u0420\u0435\u043A\u043B\u0430\u043C\u043D\u0430\u044F \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044F'
+	        ),
+	        (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
+	        (0, _preact.h)('br', null)
+	      );
+	    }, _this.renderMetricsTab = function (id, product) {
+	      if (!_stages2.default.canShowMetricsTab()) return '';
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'b',
+	          null,
+	          '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	        ),
+	        (0, _preact.h)(_metrics2.default, {
+	          product: product,
+	          id: id,
+	          onRatingPressed: function onRatingPressed() {
+	            return _this.setMode(MODE_MAIN_FEATURES);
+	          },
+	          onClientsPressed: function onClientsPressed() {
+	            return _this.setMode(MODE_MARKETING);
+	          },
+	          onPaymentsPressed: function onPaymentsPressed() {
+	            return _this.setMode(MODE_PAYMENTS);
+	          },
+	          onAdsPressed: function onAdsPressed() {
+	            return _this.setMode(MODE_ADS);
+	          },
+	          onAnalyticsPressed: function onAnalyticsPressed() {
+	            return _this.setMode(MODE_ANALYTICS);
+	          },
+	          onExpertisePressed: function onExpertisePressed() {
+	            return _this.setMode(MODE_HYPOTHESIS);
+	          }
+	        })
+	      );
+	    }, _this.renderFeature = function (featureGroup, id, idea, hideOnComplete, onUpgraded) {
+	      return function (feature, i) {
+	        var featureName = feature.name;
+
+	        var key = 'feature' + featureGroup + featureName + i;
+
+	        var standardPoints = feature.points || {};
+	        var mp = standardPoints.marketing || 0;
+	        var pp = standardPoints.programming || 0;
+	        var points = _playerStore2.default.getPoints();
+
+	        var enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
+
+	        var upgradeFeature = function upgradeFeature(event) {
+	          _logger2.default.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
+
+	          if (enoughPointsToUpgrade) {
+	            _playerActions2.default.spendPoints(pp, mp);
+	            _productActions2.default.improveFeatureByPoints(id, featureGroup, featureName);
+
+	            if (onUpgraded) {
+	              onUpgraded();
+	            }
+	          }
+	        };
+
+	        var description = feature.description || '';
+	        var isUpgraded = _productStore2.default.getFeatureStatus(id, featureGroup, featureName);
+
+	        var separator = (0, _preact.h)('hr', { width: '60%' });
+
+	        var userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
+	        if (isUpgraded) {
+	          if (hideOnComplete) {
+	            return (0, _preact.h)('div', { key: key });
+	          }
+
+	          return (0, _preact.h)(
+	            'div',
+	            { key: key },
+	            userOrientedFeatureName,
+	            ': \u0423\u043B\u0443\u0447\u0448\u0435\u043D\u043E ',
+	            _UI2.default.symbols.ok,
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)(
+	              'div',
+	              { className: 'featureDescription' },
+	              description
+	            ),
+	            separator
+	          );
+	        }
+
+	        var mpColors = points.marketing < mp ? "noPoints" : "enoughPoints";
+	        var ppColors = points.programming < pp ? "noPoints" : "enoughPoints";
+
+	        return (0, _preact.h)(
+	          'div',
+	          { key: key },
+	          userOrientedFeatureName,
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureDescription' },
+	            description
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F - \xA0',
+	              (0, _preact.h)(
+	                'span',
+	                { className: mpColors },
+	                'MP:',
+	                mp,
+	                '\xA0'
+	              ),
+	              (0, _preact.h)(
+	                'span',
+	                { className: ppColors },
+	                'PP:',
+	                pp
+	              )
+	            )
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
+	            disabled: !enoughPointsToUpgrade,
+	            onClick: upgradeFeature,
+	            secondary: true
+	          }),
+	          separator
+	        );
+	      };
+	    }, _this.setMode = function (mode) {
+	      _this.setState({ mode: mode });
+	    }, _this.renderNavbar = function (mode, name) {
+	      return (0, _preact.h)(
+	        'li',
+	        {
+	          className: 'product-menu-toggler ' + (_this.state.mode === mode ? 'active' : ''),
+	          onClick: function onClick() {
+	            return _this.setMode(mode);
+	          }
+	        },
+	        (0, _preact.h)(
+	          'span',
+	          null,
+	          name
+	        )
+	      );
+	    }, _this.renderProductMenuNavbar = function () {
+	      var hypothesis = void 0;
+	      if (_stages2.default.canShowHypothesisTab()) {
+	        hypothesis = _this.renderNavbar(MODE_HYPOTHESIS, 'Исследования');
+	      }
+
+	      var improvements = void 0;
+	      if (_stages2.default.canShowMainFeatureTab()) {
+	        improvements = _this.renderNavbar(MODE_MAIN_FEATURES, 'Характеристики');
+	      }
+
+	      var payments = void 0;
+	      if (_stages2.default.canShowPaymentsTab()) {
+	        payments = _this.renderNavbar(MODE_PAYMENTS, 'Монетизация');
+	      }
+
+	      var ads = void 0;
+	      ads = _this.renderNavbar(MODE_ADS, 'Реклама');
+
+	      var clients = void 0;
+	      // if (stageHelper.canShowClientsTab()) {
+	      clients = _this.renderNavbar(MODE_MARKETING, 'Клиенты');
+	      // }
+
+	      var competitors = void 0;
+	      if (_stages2.default.canShowCompetitorsTab()) {
+	        competitors = _this.renderNavbar(MODE_COMPETITORS, 'Конкуренты');
+	      }
+
+	      var bonuses = void 0;
+	      if (_stages2.default.canShowBonusesTab()) {
+	        bonuses = _this.renderNavbar(MODE_BONUSES, 'Бонусы');
+	      }
+
+	      return (0, _preact.h)(
+	        'ul',
+	        { className: 'nav nav-tabs' },
+	        hypothesis,
+	        improvements,
+	        payments,
+	        clients,
+	        competitors,
+	        bonuses
+	      );
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(ProductPanel, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'getMarketingFeatureList',
+	    value: function getMarketingFeatureList(idea) {
+	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
+	        points: { marketing: 50, programming: 100 }, time: 10 }];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getDevelopmentFeatureList',
+	    value: function getDevelopmentFeatureList(idea) {
+	      return [{ name: 'backups', description: '' }, { name: 'clusters', description: '' }, { name: 'tests', description: '' }, { name: 'mobiles', description: '' } // ios android apps
+	      ];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getFeedbackButton',
+	    value: function getFeedbackButton(idea, id) {
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'offset-mid' },
+	        this.renderFeature('analytics', id, idea, true, _stages2.default.onInstallPrimitiveAnalyticsMissionCompleted)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)
+	      );
+	    }
+	  }, {
+	    key: 'getWebvisorButton',
+	    value: function getWebvisorButton(idea, id) {
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'offset-mid' },
+	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)
+	      );
+	    }
+	  }, {
+	    key: 'getSegmentingButton',
+	    value: function getSegmentingButton(idea, id) {
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'offset-mid' },
+	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
+	      );
+	    }
+	  }, {
+	    key: 'getHypothesisAnalyticsFeatures',
+	    value: function getHypothesisAnalyticsFeatures(idea) {
+	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев', description: '', // 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез',
+	        points: { programming: 50, marketing: 0 }
+	      }, { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
+	        points: { programming: 50, marketing: 0 }
+	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
+	        points: { programming: 150, marketing: 100 }
+	      }];
+	    }
+	  }, {
+	    key: 'getAnalyticFeatures',
+	    value: function getAnalyticFeatures(idea) {
+	      return [
+	      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+	      //   points: { programming: 150, marketing: 100 }
+	      // },
+
+	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
+	        points: { programming: 50, marketing: 0 }
+	      }];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getPaymentFeatures',
+	    value: function getPaymentFeatures(idea) {
+	      var technicalDebtModifier = 1;
+	      var up = Math.ceil;
+
+	      return [{ name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
+	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
+	      }, { name: 'basicPricing', shortDescription: 'Один тарифный план', description: 'Одна цена для всех. Процент платящих снижается вдвое, однако вы начинаете зарабатывать деньги',
+	        points: { programming: up(150 * technicalDebtModifier), marketing: 50 }
+	      }, { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов', description: 'Несколько ценовых сегментов. Максимально возможный доход с продукта',
+	        points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
+	      }];
+	    }
+	  }, {
+	    key: 'getTechnicalDebtDescription',
+	    value: function getTechnicalDebtDescription(debt) {
+	      if (debt < 10) {
+	        return '\u0412\u0441\u0451 \u0445\u043E\u0440\u043E\u0448\u043E';
+	      } else if (debt < 50) {
+	        return '\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0430\u0447\u0438\u043D\u0430\u044E\u0442 \u043F\u043B\u0430\u043A\u0430\u0442\u044C';
+	      } else {
+	        return '\u0422\u044B \u043C\u0440\u0430\u0437\u044C \u0438 \u043F**\u043E\u0440, \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435\u043D\u0430\u0432\u0438\u0434\u044F\u0442 \u0442\u0435\u0431\u044F!! \u041E\u0442\u0440\u0435\u0444\u0430\u043A\u0442\u043E\u0440\u044C \u044D\u0442\u043E\u0442 \u0448\u043B\u0430\u043A!';
+	      }
+	    }
+	  }, {
+	    key: 'plainifySameTypeFeatures',
+	    value: function plainifySameTypeFeatures(id, idea, groupType, onImprovedPhrase) {
+	      var featureList = void 0;
+	      switch (groupType) {
+	        case 'marketing':
+	          featureList = this.getMarketingFeatureList(idea);
+	          break;
+
+	        case 'payment':
+	          featureList = this.getPaymentFeatures(idea);
+	          break;
+
+	        case 'analytics':
+	          featureList = this.getHypothesisAnalyticsFeatures(idea);
+	          break;
+	      }
+
+	      var unlockedFeature = void 0;
+	      featureList.forEach(function (f) {
+	        if (!_productStore2.default.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
+	          unlockedFeature = f.name;
+	        }
+	      });
+
+	      if (!unlockedFeature) return onImprovedPhrase;
+
+	      var feature = featureList.filter(function (f) {
+	        return f.name === unlockedFeature;
+	      });
+
+	      if (groupType === 'payment' && _stages2.default.isInstallPaymentModuleMission()) {
+	        return feature.map(this.renderFeature(groupType, id, idea, true, _stages2.default.onInstallPaymentModuleMissionCompleted));
+	      } else {
+	        return feature.map(this.renderFeature(groupType, id, idea));
+	      }
+	    }
+	  }, {
+	    key: 'renderCompetitors',
+	    value: function renderCompetitors(id, rating) {
+	      if (!_stages2.default.canShowCompetitorsTab()) return '';
+
+	      var competitor = _productStore2.default.getNextCompetitorInfo(id);
+
+	      if (competitor) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041D\u0430\u0448 \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u0439 \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442'
+	          ),
+	          (0, _preact.h)(_competitor2.default, { rating: rating, c: competitor, i: -1 })
+	        );
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435! \u0412\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u0437\u0430\u0445\u0432\u0430\u0442\u0438\u0442\u044C \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 100% \u0440\u044B\u043D\u043A\u0430!'
+	      );
+	    }
+	  }, {
+	    key: 'renderSegmentTab',
+	    value: function renderSegmentTab(id) {
+	      if (!_stages2.default.canShowSegments()) return '';
+
+	      var segmentList = _productStore2.default.getSegments(id).map(function (s, i) {
+	        return (0, _preact.h)(_segment2.default, { productId: id, segment: s, id: i });
+	      });
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          segmentList
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'renderBonusesTab',
+	    value: function renderBonusesTab(id, product) {
+	      var improvements = _productStore2.default.getImprovementChances(id);
+
+	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i, arr) {
+	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
+	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
+
+	        var phrase = void 0;
+	        if (i === 0) {
+	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ' + c;
+	        } else {
+	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0435\u043D\u044C\u0448\u0435, \u0447\u0435\u043C ' + arr[i - 1] + ' - \u0448\u0442\u0440\u0430\u0444 ' + penalty + '%';
+	        }
+	        return (0, _preact.h)(
+	          'div',
+	          { className: 'smallText' },
+	          isActivated,
+	          ' ',
+	          phrase
+	        );
+	      });
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0428\u0442\u0440\u0430\u0444 \u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u043E\u0441\u0442\u0438 (\u043F\u0440\u0438 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0438 \u0433\u0438\u043F\u043E\u0442\u0435\u0437)'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          cliTabDescription
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(_ref2, state) {
+	      var product = _ref2.product,
+	          gamePhase = _ref2.gamePhase;
+
+	      if (_stages2.default.isFirstWorkerMission()) return (0, _preact.h)('div', null);
+	      // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
+
+	      var mode = state.mode;
+	      var idea = product.idea;
+
+
+	      var id = 0;
+	      _logger2.default.shit('develop-panel.js fix productID id=0'); // TODO FIX PRODUCT ID=0
+
+	      var body = '';
+	      switch (mode) {
+	        case MODE_PAYMENTS:
+	          body = this.renderPaymentTab(id, idea);
+	          break;
+
+	        case MODE_MARKETING:
+	          body = this.renderClientTab(id, product);
+	          break;
+
+	        case MODE_ADS:
+	          body = this.renderAdTab(id, product);
+	          break;
+
+	        case MODE_ANALYTICS:
+	          body = this.renderAnalyticsTab(id, idea);
+	          break;
+
+	        case MODE_METRICS:
+	          body = this.renderMetricsTab(id, product);
+	          break;
+
+	        case MODE_MAIN_FEATURES:
+	          body = (0, _preact.h)(_MainFeature2.default, { id: id, product: product });
+	          break;
+
+	        case MODE_COMPETITORS:
+	          body = (0, _preact.h)(_competitors2.default, { id: id });
+	          break;
+
+	        case MODE_BONUSES:
+	          body = this.renderBonusesTab(id, product);
+	          break;
+
+	        default:
+	          body = this.renderHypothesisTab(id, idea, product);
+	          break;
+	      }
+
+	      var metrics = this.renderMetricsTab(id, product);
+	      var menu = this.renderProductMenuNavbar();
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'b',
+	          null,
+	          '\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430 "',
+	          product.name,
+	          '"'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
+	          _productStore2.default.getDescriptionOfProduct(id)
+	        ),
+	        metrics,
+	        menu,
+	        (0, _preact.h)(
+	          'div',
+	          { style: { padding: '15px', 'min-height': '500px' } },
+	          body
+	        )
+	      );
+	    }
+	  }]);
+	  return ProductPanel;
+	}(_preact.Component);
+
+	exports.default = ProductPanel;
 
 /***/ }
 /******/ ]);

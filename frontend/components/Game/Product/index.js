@@ -7,8 +7,8 @@ type StateType = {};
 import * as PRODUCT_STAGES from '../../../constants/products/product-stages';
 
 import InitialProductTab from './InitialPanel/InitialProductTab';
-import DevelopPanel from './DevelopPanel/develop-panel';
-
+import ProductPanel from './ProductPanel/product-panel';
+//
 export default class Product extends Component {
   render(props: PropsType, state: StateType) {
     const { product, id } = props;
@@ -22,7 +22,7 @@ export default class Product extends Component {
       default:
         body = (
           <div>
-            <DevelopPanel product={product} id={id} />
+            <ProductPanel product={product} id={id} />
           </div>
         );
         break;

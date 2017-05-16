@@ -47,7 +47,7 @@ const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 const MODE_COMPETITORS = 'MODE_COMPETITORS';
 const MODE_BONUSES = 'MODE_BONUSES';
 
-export default class DevelopPanel extends Component {
+export default class ProductPanel extends Component {
   state = {
     marketing: true,
     payment: true,
@@ -162,7 +162,7 @@ export default class DevelopPanel extends Component {
   };
 
 
-  getTechnicalDebtDescription = debt => {
+  getTechnicalDebtDescription(debt) {
     if (debt < 10) {
       return `Всё хорошо`;
     } else if (debt < 50) {
