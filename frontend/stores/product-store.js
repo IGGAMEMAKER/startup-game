@@ -82,8 +82,23 @@ class ProductStore extends EventEmitter {
     return round(computeRating(_products[i], segmentId));
   }
 
-  getClients(i) {
-    return _products[i].KPI.clients;
+  getClients(i, segmentId) {
+    const total =  _products[i].KPI.clients;
+    if (segmentId === undefined || segmentId === null) return total;
+
+    return Math.floor(this.getSegments(i)[segmentId].percentage * total / 100);
+  }
+
+  getSegmentedPriorities(i, segId) {
+    const s = this.getSegments(i)[segId];
+    const features = this.getDefaults(i).features;
+
+    return s.rating.map((r, index) => {
+      return {
+        rating: r,
+        feature: features[index].shortDescription,
+      }
+    }).sort((s1, s2) => s2.rating - s1.rating);
   }
 
   getNewClients(i) {
@@ -101,7 +116,7 @@ class ProductStore extends EventEmitter {
   getMainFeatureQualityByFeatureId(i, featureId) {
     const feature = this.getDefaults(i).features[featureId];
     const value = _products[i].features.offer[feature.name] || 0;
-    //
+
     return value; // round(value / feature.data);
   }
 
@@ -196,8 +211,8 @@ class ProductStore extends EventEmitter {
     return 0;
   }
 
-  getConversionRate(i) {
-    const rating = this.getRating(i);
+  getConversionRate(i, segmentId) {
+    const rating = this.getRating(i, segmentId);
     const utility = this.getProductUtility(i);
 
     const paymentModifier = this.getPaymentModifier(i);
@@ -221,15 +236,22 @@ class ProductStore extends EventEmitter {
     }
   }
 
-  getProductPrice(i) {
-    return this.getDefaults(i).price;
+  getProductPrice(i, segId) {
+    if (!segId) return this.getDefaults(i).price;
+
+    return this.getDefaults(i).segments[segId].price;
   }
 
-  getPaymentSwitcher(i) {
+  isPaymentEnabled(i, segmentId) {
     const payments = _products[i].features.payment;
     // mockBuying
     // basicPricing
     // segmentedPricing
+
+    logger.shit('requirements for segment');
+
+    if (!this.requirementsOKforSegment(i, segmentId).valid) return 0;
+
     if (payments.segmentedPricing || payments.basicPricing) {
       return 1;
     }
@@ -238,18 +260,25 @@ class ProductStore extends EventEmitter {
   }
 
   getProductIncome(i) {
-    const conversion = this.getConversionRate(i).raw * this.getPaymentSwitcher(i); // rating 10 - 0.05
+    const segments = this.getSegments(i);
 
-    const clients = this.getClients(i);
-    const price = this.getProductPrice(i);
-    const payAbility = 1;
+    return segments.map((s, segId) => {
+      const conversion = this.getConversionRate(i, segId).raw * this.isPaymentEnabled(i, segId); // rating 10 - 0.05
 
-    const payments = conversion * clients;
+      const clients = this.getClients(i, segId);
+      const price = this.getProductPrice(i);
+      const payAbility = 1;
 
-    // need app
-    // want to pay
-    // can pay
-    return payments * price;
+      const payments = conversion * clients;
+
+      logger.debug('getProductIncome', segId, payments);
+      // need app
+      // want to pay
+      // can pay
+      return payments * price;
+    })
+      .reduce((p, c) => p + c);
+
   }
 
   getIdea(i) {

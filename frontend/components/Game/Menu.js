@@ -86,7 +86,7 @@ export default class Menu extends Component {
     if (isRunning) {
       pauseOrContinue = <div className={navigation}>{pauser}</div>;
     } else {
-      pauseOrContinue = <div className={navigation}>{resumer}</div>;
+      pauseOrContinue = ''; // <div className={navigation}>{resumer}</div>;
     }
 
     let nextSpeeder;

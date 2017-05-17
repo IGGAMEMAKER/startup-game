@@ -38,13 +38,20 @@ export default class Segment extends Component {
 
             // <div>Требования: {JSON.stringify(requirements)}</div>
             // <div>Приоритеты: {JSON.stringify(rating)}</div>
+    const clients = flux.productStore.getClients(productId, id);
+    const priorities = flux.productStore.getSegmentedPriorities(productId, id)
+      .filter(s => s.rating > 0)
+      .map(s => s.feature)
+      .join(', ');
+
     return (
       <div className="client-segment-item">
         <div>Сегмент №{id + 1}: {name}</div>
         <div className="offset-mid">
-          <div>Процент пользователей: {percentage}</div>
+          <div>Процент пользователей: {percentage}% ({clients})</div>
           <div className="offset-mid">
             <div>Платёжеспособность: {price}$</div>
+            <div>Приоритеты: {priorities}</div>
             <div>{requirementTab}</div>
           </div>
         </div>

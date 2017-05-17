@@ -424,10 +424,14 @@ export default class ProductPanel extends Component {
         {segmentTab}
         <br />
         <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
-        <div className="featureGroupDescriptionWrapper">
-          <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
-          <div className="featureGroupBody">{marketing}</div>
-        </div>
+        {stageHelper.canShowChurnFeatures()
+          ?
+          <div className="featureGroupDescriptionWrapper">
+            <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
+            <div className="featureGroupBody">{marketing}</div>
+          </div>
+          : ''
+        }
       </div>
     );
   };

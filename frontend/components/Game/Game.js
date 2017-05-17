@@ -145,6 +145,7 @@ export default class Game extends Component {
   };
 
   onRenderStaffMenu = () => {
+    logger.debug('onRenderStaffMenu');
     this.setState({ mode: GAME_MODE_STAFF })
   };
 

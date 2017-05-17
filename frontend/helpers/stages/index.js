@@ -111,4 +111,8 @@ export default {
   canShowSegments() {
     return this.canShowCompetitorsTab();
   },
+
+  canShowChurnFeatures() {
+    return this.canShowCompetitorsTab();
+  }
 };

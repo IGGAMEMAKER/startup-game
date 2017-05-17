@@ -182,13 +182,12 @@ export default class Staff extends Component {
     const staffVisible = staff.length && !teamToggle;
     let staffTab;
 
+    const mp = staff.filter(teamHelper.isMarketer).map(teamHelper.getMarketingPointsProducedBy).reduce((p, c) => p + c, 0);
+    const pp = staff.filter(teamHelper.isProgrammer).map(teamHelper.getProgrammingPointsProducedBy).reduce((p, c) => p + c, 0);
     if (staffVisible) {
-      const mp = staff.filter(teamHelper.isMarketer).map(teamHelper.getMarketingPointsProducedBy).reduce((p, c) => p + c, 0);
-      const pp = staff.filter(teamHelper.isProgrammer).map(teamHelper.getProgrammingPointsProducedBy).reduce((p, c) => p + c, 0);
 
       staffTab = (
         <div>
-          <div>Месячная производительность команды: +{mp}MP +{pp}PP </div>
           <br />
           <table className="table table-striped">
             <tbody>
@@ -224,7 +223,7 @@ export default class Staff extends Component {
     if (staffLength < 2) {
       teamPhrase = 'Наймите маркетолога';
     } else {
-      teamPhrase = `В нашей команде ${staffLength} человек`;
+      teamPhrase = ''; // `В нашей команде ${staffLength} человек`;
     }
 
     let tab;
@@ -255,13 +254,16 @@ export default class Staff extends Component {
         <nav aria-label="Page navigation example">
           <ul className="pagination justify-content-center">
             <li className={`page-item ${switcher === IS_STAFF ? 'active' : ''}`}>
-              <span onClick={this.setStaff} className="page-link" tabindex="-1">Команда</span>
+              <span onClick={this.setStaff} className="page-link" tabindex="-1">Команда ({staffLength})</span>
             </li>
             <li className={`page-item ${switcher === IS_EMPLOYEES ? 'active' : ''}`}>
-              <span onClick={this.setEmployees} className="page-link">Нанять</span>
+              <span onClick={this.setEmployees} className="page-link">Нанять ({employees.length})</span>
             </li>
           </ul>
         </nav>
+
+        <div>Месячная производительность команды: +{mp}MP +{pp}PP </div>
+
 
         {tab}
       </div>

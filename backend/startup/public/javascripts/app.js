@@ -753,6 +753,7 @@
 	    }, _this.onRenderEconomicsMenu = function () {
 	      _this.setState({ mode: GAME_MODE_ECONOMICS });
 	    }, _this.onRenderStaffMenu = function () {
+	      _logger2.default.debug('onRenderStaffMenu');
 	      _this.setState({ mode: GAME_MODE_STAFF });
 	    }, _this.renderGameInNormalMode = function (props, state) {
 	      var gamePhase = state.gamePhase;
@@ -2964,26 +2965,17 @@
 	      var staffVisible = staff.length && !teamToggle;
 	      var staffTab = void 0;
 
+	      var mp = staff.filter(_skills2.default.isMarketer).map(_skills2.default.getMarketingPointsProducedBy).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
+	      var pp = staff.filter(_skills2.default.isProgrammer).map(_skills2.default.getProgrammingPointsProducedBy).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
 	      if (staffVisible) {
-	        var mp = staff.filter(_skills2.default.isMarketer).map(_skills2.default.getMarketingPointsProducedBy).reduce(function (p, c) {
-	          return p + c;
-	        }, 0);
-	        var pp = staff.filter(_skills2.default.isProgrammer).map(_skills2.default.getProgrammingPointsProducedBy).reduce(function (p, c) {
-	          return p + c;
-	        }, 0);
 
 	        staffTab = (0, _preact.h)(
 	          'div',
 	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041C\u0435\u0441\u044F\u0447\u043D\u0430\u044F \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u043A\u043E\u043C\u0430\u043D\u0434\u044B: +',
-	            mp,
-	            'MP +',
-	            pp,
-	            'PP '
-	          ),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)(
 	            'table',
@@ -3036,7 +3028,7 @@
 	      if (staffLength < 2) {
 	        teamPhrase = 'Наймите маркетолога';
 	      } else {
-	        teamPhrase = '\u0412 \u043D\u0430\u0448\u0435\u0439 \u043A\u043E\u043C\u0430\u043D\u0434\u0435 ' + staffLength + ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A';
+	        teamPhrase = ''; // `В нашей команде ${staffLength} человек`;
 	      }
 
 	      var tab = void 0;
@@ -3093,7 +3085,9 @@
 	              (0, _preact.h)(
 	                'span',
 	                { onClick: this.setStaff, className: 'page-link', tabindex: '-1' },
-	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
+	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 (',
+	                staffLength,
+	                ')'
 	              )
 	            ),
 	            (0, _preact.h)(
@@ -3102,10 +3096,21 @@
 	              (0, _preact.h)(
 	                'span',
 	                { onClick: this.setEmployees, className: 'page-link' },
-	                '\u041D\u0430\u043D\u044F\u0442\u044C'
+	                '\u041D\u0430\u043D\u044F\u0442\u044C (',
+	                employees.length,
+	                ')'
 	              )
 	            )
 	          )
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041C\u0435\u0441\u044F\u0447\u043D\u0430\u044F \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u043A\u043E\u043C\u0430\u043D\u0434\u044B: +',
+	          mp,
+	          'MP +',
+	          pp,
+	          'PP '
 	        ),
 	        tab
 	      );
@@ -6311,8 +6316,26 @@
 	    }
 	  }, {
 	    key: 'getClients',
-	    value: function getClients(i) {
-	      return _products[i].KPI.clients;
+	    value: function getClients(i, segmentId) {
+	      var total = _products[i].KPI.clients;
+	      if (segmentId === undefined || segmentId === null) return total;
+
+	      return Math.floor(this.getSegments(i)[segmentId].percentage * total / 100);
+	    }
+	  }, {
+	    key: 'getSegmentedPriorities',
+	    value: function getSegmentedPriorities(i, segId) {
+	      var s = this.getSegments(i)[segId];
+	      var features = this.getDefaults(i).features;
+
+	      return s.rating.map(function (r, index) {
+	        return {
+	          rating: r,
+	          feature: features[index].shortDescription
+	        };
+	      }).sort(function (s1, s2) {
+	        return s2.rating - s1.rating;
+	      });
 	    }
 	  }, {
 	    key: 'getNewClients',
@@ -6334,7 +6357,7 @@
 	    value: function getMainFeatureQualityByFeatureId(i, featureId) {
 	      var feature = this.getDefaults(i).features[featureId];
 	      var value = _products[i].features.offer[feature.name] || 0;
-	      //
+
 	      return value; // round(value / feature.data);
 	    }
 	  }, {
@@ -6440,8 +6463,8 @@
 	    }
 	  }, {
 	    key: 'getConversionRate',
-	    value: function getConversionRate(i) {
-	      var rating = this.getRating(i);
+	    value: function getConversionRate(i, segmentId) {
+	      var rating = this.getRating(i, segmentId);
 	      var utility = this.getProductUtility(i);
 
 	      var paymentModifier = this.getPaymentModifier(i);
@@ -6466,16 +6489,23 @@
 	    }
 	  }, {
 	    key: 'getProductPrice',
-	    value: function getProductPrice(i) {
-	      return this.getDefaults(i).price;
+	    value: function getProductPrice(i, segId) {
+	      if (!segId) return this.getDefaults(i).price;
+
+	      return this.getDefaults(i).segments[segId].price;
 	    }
 	  }, {
-	    key: 'getPaymentSwitcher',
-	    value: function getPaymentSwitcher(i) {
+	    key: 'isPaymentEnabled',
+	    value: function isPaymentEnabled(i, segmentId) {
 	      var payments = _products[i].features.payment;
 	      // mockBuying
 	      // basicPricing
 	      // segmentedPricing
+
+	      _logger2.default.shit('requirements for segment');
+
+	      if (!this.requirementsOKforSegment(i, segmentId).valid) return 0;
+
 	      if (payments.segmentedPricing || payments.basicPricing) {
 	        return 1;
 	      }
@@ -6485,18 +6515,27 @@
 	  }, {
 	    key: 'getProductIncome',
 	    value: function getProductIncome(i) {
-	      var conversion = this.getConversionRate(i).raw * this.getPaymentSwitcher(i); // rating 10 - 0.05
+	      var _this3 = this;
 
-	      var clients = this.getClients(i);
-	      var price = this.getProductPrice(i);
-	      var payAbility = 1;
+	      var segments = this.getSegments(i);
 
-	      var payments = conversion * clients;
+	      return segments.map(function (s, segId) {
+	        var conversion = _this3.getConversionRate(i, segId).raw * _this3.isPaymentEnabled(i, segId); // rating 10 - 0.05
 
-	      // need app
-	      // want to pay
-	      // can pay
-	      return payments * price;
+	        var clients = _this3.getClients(i, segId);
+	        var price = _this3.getProductPrice(i);
+	        var payAbility = 1;
+
+	        var payments = conversion * clients;
+
+	        _logger2.default.debug('getProductIncome', segId, payments);
+	        // need app
+	        // want to pay
+	        // can pay
+	        return payments * price;
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      });
 	    }
 	  }, {
 	    key: 'getIdea',
@@ -7110,14 +7149,11 @@
 	  _logger2.default.debug('segment #' + segmentId, segments);
 	  getSpecificProductFeatureListByIdea(idea).forEach(function (f, i) {
 	    var value = (product.features.offer[f.name] || 0) / f.data;
-	    // logger.debug('computing rating for feature', f.name);
 
 	    // const influence = f.influence;
 	    var influence = segments[segmentId].rating[i];
-	    _logger2.default.debug('influence of feature ' + f.name + ' is ' + influence);
 	    rating += value * influence;
 	  });
-	  // logger.debug('rating=', rating);
 
 	  return rating;
 	};
@@ -7195,7 +7231,7 @@
 	});
 	exports.default = {
 	  description: 'Веб хостинг. Позволяет клиентам создавать сайты не заботясь об инфраструктуре',
-	  features: [{ name: 'scalability', influence: 0, description: '', shortDescription: 'Масштабируемость', data: 5000, time: 20 }, { name: 'website', influence: 1.5, description: '', shortDescription: 'Веб-сайт', data: 15000, time: 30 }, { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 }, { name: 'reliability', influence: 6, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 }, { name: 'support', influence: 1.5, description: '', shortDescription: 'Техподдержка', data: 5000, time: 30 }],
+	  features: [{ name: 'scalability', influence: 0, description: '', shortDescription: 'Масштабируемость', data: 5000, time: 20 }, { name: 'website', influence: 1.5, description: '', shortDescription: 'Веб-сайт', data: 15000, time: 30 }, { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 }, { name: 'reliability', influence: 3, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 }, { name: 'support', influence: 1.5, description: '', shortDescription: 'Техподдержка', data: 5000, time: 30 }, { name: 'VPS', influence: 3, description: '', shortDescription: 'Виртуальная машина', data: 7000, time: 30 }, { name: 'VDS', influence: 0, description: '', shortDescription: 'Выделенный сервер', data: 15000, time: 30 }],
 	  utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
 	  virality: 0.3, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
 	  price: 10,
@@ -7213,20 +7249,20 @@
 	    name: 'solo developer',
 	    percentage: 65,
 	    price: 8,
-	    rating: [0, 1.5, 1, 6, 1.5],
-	    requirements: [0, 0, 0, 0, 0]
+	    rating: [0, 1.5, 1, 3, 1.5, 3, 0],
+	    requirements: [0, 0, 0, 0, 0, 0, 0]
 	  }, {
 	    name: 'small startups',
 	    percentage: 20,
 	    price: 50,
-	    rating: [0, 1.5, 1, 6, 1.5],
-	    requirements: [0, 0, 0, 0, 0]
+	    rating: [0, 1.5, 1, 6, 1.5, 0, 0],
+	    requirements: [0, 0, 0, 0, 0, 0, 0]
 	  }, {
 	    name: 'middle business',
 	    percentage: 15,
 	    price: 250,
-	    rating: [0.5, 0.5, 1, 7, 1],
-	    requirements: [75, 0, 0, 9, 0]
+	    rating: [0.5, 0.5, 1, 3, 1, 0, 4],
+	    requirements: [75, 0, 0, 95, 0, 0, 0]
 	  }]
 	};
 
@@ -7560,6 +7596,9 @@
 	  },
 	  canShowSegments: function canShowSegments() {
 	    return this.canShowCompetitorsTab();
+	  },
+	  canShowChurnFeatures: function canShowChurnFeatures() {
+	    return this.canShowCompetitorsTab();
 	  }
 	};
 
@@ -7767,11 +7806,7 @@
 	          pauser
 	        );
 	      } else {
-	        pauseOrContinue = (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          resumer
-	        );
+	        pauseOrContinue = ''; // <div className={navigation}>{resumer}</div>;
 	      }
 
 	      var nextSpeeder = void 0;
@@ -9984,6 +10019,13 @@
 
 	      // <div>Требования: {JSON.stringify(requirements)}</div>
 	      // <div>Приоритеты: {JSON.stringify(rating)}</div>
+	      var clients = _flux2.default.productStore.getClients(productId, id);
+	      var priorities = _flux2.default.productStore.getSegmentedPriorities(productId, id).filter(function (s) {
+	        return s.rating > 0;
+	      }).map(function (s) {
+	        return s.feature;
+	      }).join(', ');
+
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'client-segment-item' },
@@ -10002,7 +10044,10 @@
 	            'div',
 	            null,
 	            '\u041F\u0440\u043E\u0446\u0435\u043D\u0442 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439: ',
-	            percentage
+	            percentage,
+	            '% (',
+	            clients,
+	            ')'
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -10013,6 +10058,12 @@
 	              '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
 	              price,
 	              '$'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442\u044B: ',
+	              priorities
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -11176,7 +11227,7 @@
 	          churn,
 	          '%)'
 	        ),
-	        (0, _preact.h)(
+	        _stages2.default.canShowChurnFeatures() ? (0, _preact.h)(
 	          'div',
 	          { className: 'featureGroupDescriptionWrapper' },
 	          (0, _preact.h)(
@@ -11189,7 +11240,7 @@
 	            { className: 'featureGroupBody' },
 	            marketing
 	          )
-	        )
+	        ) : ''
 	      );
 	    }, _this.renderAdTab = function (id, product) {
 	      return (0, _preact.h)(
