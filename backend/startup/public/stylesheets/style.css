@@ -16,25 +16,30 @@
   /*--modalBackground: rgba(135,135,135, 0.8);*/
   --modalBackground: rgba(235,235,235, 0.95);
   --font-family-base: Arial;
+
+  --main-text-color: beige;
+  --main-background-color: #262626;
 }
 
 body {
   /*padding: 50px;*/
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  /*background-color: darkgray;*/
 }
 
 a {
   color: #00B7FF;
+  /*color: beige;*/
 }
 
 
 html {
-  color: #222;
   font-weight: 100;
   font-size: 1em; /* ~16px; */
   font-family: var(--font-family-base);
   line-height: 1.375; /* ~22px */
+
+  background-color: var(--main-background-color);
+  color: var(--main-text-color);
 }
 
 /*
@@ -201,6 +206,8 @@ textarea {
 
 .body-background {
   position: relative;
+  background-color: var(--main-background-color);
+  color: var(--main-text-color);
 }
 
 .body-wrapper {

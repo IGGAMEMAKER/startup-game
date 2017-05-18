@@ -9789,15 +9789,10 @@
 	      var freeClients = marketSize - ourClients - unbeatableClients;
 
 	      var rating = _flux2.default.productStore.getRating(id);
+	      // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-min competitor competeable' },
-	          '\u0421\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	          freeClients
-	        ),
 	        (0, _preact.h)(
 	          'div',
 	          null,
