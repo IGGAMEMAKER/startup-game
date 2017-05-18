@@ -3,23 +3,23 @@ import scheduleStore from '../../stores/schedule-store';
 
 const timeModifier = (value) => {
   const day = scheduleStore.getDay();
-  const month = Math.ceil(day / 30);
+  const year = Math.floor(day / 30 / 12);
 
-  return Math.floor(Math.pow(1.01, month) * value);
+  return Math.floor(Math.pow(1.25, year) * value);
 };
 
 const marketModifier = () => {
   const day = scheduleStore.getDay();
   const month = Math.ceil(day / 30);
 
-  if (month > 72) {
-    return 0.1;
-  } else if (month > 60) {
-    return 0.25;
-  } else if (month > 45) {
-    return 0.7;
-  } else if (month > 35) {
+  if (month > 144) {
     return 1;
+  } else if (month > 60) {
+    return 3.25;
+  } else if (month > 45) {
+    return 3.7;
+  } else if (month > 35) {
+    return 3;
   } else if (month > 20) {
     return 2.5;
   } else {
@@ -92,7 +92,7 @@ export default {
         {
           name: 'solo developer',
           userOrientedName: 'Программисты',
-          percentage: 80,
+          percentage: 90,
           price: 8,
           rating: [0, 2.5, 1.5, 6, 0],
           requirements: [0, 0, 0, 0, 0]
@@ -100,7 +100,7 @@ export default {
         {
           name: 'small startups',
           userOrientedName: 'Стартапы',
-          percentage: 10,
+          percentage: 7,
           price: 50,
           rating: [0, 1.5, 1.5, 6.5, 0.5],
           requirements: [0, 0, 0, 80, 0]
@@ -108,7 +108,7 @@ export default {
         {
           name: 'middle business',
           userOrientedName: 'Малый бизнес',
-          percentage: 5,
+          percentage: 3,
           price: 250,
           rating: [0.5, 1.5, 1, 0, 7],
           requirements: [75, 0, 0, 0, 95]

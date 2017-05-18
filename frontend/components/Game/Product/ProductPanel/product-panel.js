@@ -246,8 +246,8 @@ export default class ProductPanel extends Component {
       });
     };
 
-    const possibleXPtext = <div>Запуская тестирование вы получите от 0 до {improvements.max} XP
-      (штраф -{clientSizePenalty}%)</div>;
+    const possibleXPtext = <div>Запуская тестирование вы получите {improvements.middle} XP</div>;
+      // (штраф -{clientSizePenalty}%)</div>;
 
 
     // <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
@@ -388,10 +388,13 @@ export default class ProductPanel extends Component {
   }
 
   renderSegmentTab(id) {
-    if (!stageHelper.canShowSegments()) return '';
+    let segments = productStore.getSegments(id);
 
-    const segmentList = productStore.getSegments(id)
-      .map((s, i) => <Segment productId={id} segment={s} id={i} />);
+    if (!stageHelper.canShowSegments()) {
+      segments = [segments[0]];
+    }
+
+    const segmentList = segments.map((s, i) => <Segment productId={id} segment={s} id={i} />);
 
     return (
       <div>

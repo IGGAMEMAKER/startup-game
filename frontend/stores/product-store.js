@@ -263,14 +263,12 @@ class ProductStore extends EventEmitter {
   }
 
   getSegmentIncome(i, segId) {
-    const segments = this.getSegments(i);
-
     const conversion = this.getConversionRate(i, segId).raw * this.isPaymentEnabled(i, segId); // rating 10 - 0.05
 
     const clients = this.getClients(i, segId);
-    const price = this.getProductPrice(i);
-    const payAbility = 1;
+    const price = this.getProductPrice(i, segId);
 
+    logger.debug(`getSegmentIncome segment ${segId}, ${conversion}%, ${clients} cli, ${price}$`);
     const payments = conversion * clients;
 
     // logger.debug('getProductIncome', segId, payments);
@@ -550,6 +548,7 @@ class ProductStore extends EventEmitter {
     // maxXP *= clientModifier.modifier;
 
     return {
+      middle: maxXP * clientModifier.modifier / 2,
       min: 0,
       max: maxXP * clientModifier.modifier,
       maxXPWithoutBonuses: maxXP,
@@ -676,7 +675,7 @@ class ProductStore extends EventEmitter {
 
     logger.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
-    return Math.pow(0.3 * tests + 0.6 * improvements, 1.045);
+    return Math.pow(0.15 * tests + 0.6 * improvements, 1.045);
   }
 }
 

@@ -22,7 +22,7 @@ export default {
   testHypothesis: (id) => {
     const range = productStore.getImprovementChances(id);
 
-    const xp = Math.floor(getRandomRange(range.min, range.max));
+    const xp = range.middle; // Math.floor(getRandomRange(range.min, range.max));
 
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,

@@ -6518,14 +6518,12 @@
 	  }, {
 	    key: 'getSegmentIncome',
 	    value: function getSegmentIncome(i, segId) {
-	      var segments = this.getSegments(i);
-
 	      var conversion = this.getConversionRate(i, segId).raw * this.isPaymentEnabled(i, segId); // rating 10 - 0.05
 
 	      var clients = this.getClients(i, segId);
-	      var price = this.getProductPrice(i);
-	      var payAbility = 1;
+	      var price = this.getProductPrice(i, segId);
 
+	      _logger2.default.debug('getSegmentIncome segment ' + segId + ', ' + conversion + '%, ' + clients + ' cli, ' + price + '$');
 	      var payments = conversion * clients;
 
 	      // logger.debug('getProductIncome', segId, payments);
@@ -6822,6 +6820,7 @@
 	      // maxXP *= clientModifier.modifier;
 
 	      return {
+	        middle: maxXP * clientModifier.modifier / 2,
 	        min: 0,
 	        max: maxXP * clientModifier.modifier,
 	        maxXPWithoutBonuses: maxXP,
@@ -6971,7 +6970,7 @@
 
 	      _logger2.default.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
-	      return Math.pow(0.3 * tests + 0.6 * improvements, 1.045);
+	      return Math.pow(0.15 * tests + 0.6 * improvements, 1.045);
 	    }
 	  }]);
 	  return ProductStore;
@@ -7247,9 +7246,9 @@
 
 	var timeModifier = function timeModifier(value) {
 	  var day = _scheduleStore2.default.getDay();
-	  var month = Math.ceil(day / 30);
+	  var year = Math.floor(day / 30 / 12);
 
-	  return Math.floor(Math.pow(1.01, month) * value);
+	  return Math.floor(Math.pow(1.25, year) * value);
 	}; // import flux from '../../flux';
 
 
@@ -7257,14 +7256,14 @@
 	  var day = _scheduleStore2.default.getDay();
 	  var month = Math.ceil(day / 30);
 
-	  if (month > 72) {
-	    return 0.1;
-	  } else if (month > 60) {
-	    return 0.25;
-	  } else if (month > 45) {
-	    return 0.7;
-	  } else if (month > 35) {
+	  if (month > 144) {
 	    return 1;
+	  } else if (month > 60) {
+	    return 3.25;
+	  } else if (month > 45) {
+	    return 3.7;
+	  } else if (month > 35) {
+	    return 3;
 	  } else if (month > 20) {
 	    return 2.5;
 	  } else {
@@ -7331,21 +7330,21 @@
 	      segments: [{
 	        name: 'solo developer',
 	        userOrientedName: 'Программисты',
-	        percentage: 80,
+	        percentage: 90,
 	        price: 8,
 	        rating: [0, 2.5, 1.5, 6, 0],
 	        requirements: [0, 0, 0, 0, 0]
 	      }, {
 	        name: 'small startups',
 	        userOrientedName: 'Стартапы',
-	        percentage: 10,
+	        percentage: 7,
 	        price: 50,
 	        rating: [0, 1.5, 1.5, 6.5, 0.5],
 	        requirements: [0, 0, 0, 80, 0]
 	      }, {
 	        name: 'middle business',
 	        userOrientedName: 'Малый бизнес',
-	        percentage: 5,
+	        percentage: 3,
 	        price: 250,
 	        rating: [0.5, 1.5, 1, 0, 7],
 	        requirements: [75, 0, 0, 0, 95]
@@ -7503,7 +7502,7 @@
 	  testHypothesis: function testHypothesis(id) {
 	    var range = _productStore2.default.getImprovementChances(id);
 
-	    var xp = Math.floor(getRandomRange(range.min, range.max));
+	    var xp = range.middle; // Math.floor(getRandomRange(range.min, range.max));
 
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
@@ -11126,12 +11125,12 @@
 	      var possibleXPtext = (0, _preact.h)(
 	        'div',
 	        null,
-	        '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 \u043E\u0442 0 \u0434\u043E ',
-	        improvements.max,
-	        ' XP (\u0448\u0442\u0440\u0430\u0444 -',
-	        clientSizePenalty,
-	        '%)'
+	        '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 ',
+	        improvements.middle,
+	        ' XP'
 	      );
+	      // (штраф -{clientSizePenalty}%)</div>;
+
 
 	      // <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
 	      // {this.getFeedbackButton(idea, id)}
@@ -11713,9 +11712,13 @@
 	  }, {
 	    key: 'renderSegmentTab',
 	    value: function renderSegmentTab(id) {
-	      if (!_stages2.default.canShowSegments()) return '';
+	      var segments = _productStore2.default.getSegments(id);
 
-	      var segmentList = _productStore2.default.getSegments(id).map(function (s, i) {
+	      if (!_stages2.default.canShowSegments()) {
+	        segments = [segments[0]];
+	      }
+
+	      var segmentList = segments.map(function (s, i) {
 	        return (0, _preact.h)(_segment2.default, { productId: id, segment: s, id: i });
 	      });
 
