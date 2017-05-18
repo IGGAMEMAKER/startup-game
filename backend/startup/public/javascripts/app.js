@@ -7257,6 +7257,8 @@
 	    return 1;
 	  } else if (month > 20) {
 	    return 2.5;
+	  } else {
+	    return 1;
 	  }
 	};
 
