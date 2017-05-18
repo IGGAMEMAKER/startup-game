@@ -9,7 +9,7 @@ export default class ColoredRating extends Component {
 
     return (
       <span>
-        <span style={{ color: ratingColor }}>{round(rating)}</span>/10
+        <span style={{ color: ratingColor }}>{round(rating)}</span>
       </span>
     );
   }

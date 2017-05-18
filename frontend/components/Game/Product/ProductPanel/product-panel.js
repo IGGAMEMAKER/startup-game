@@ -384,7 +384,7 @@ export default class ProductPanel extends Component {
       )
     }
 
-    return (<div>Вы - №1 на рынке! Вы можете захватить вплоть до 100% рынка!</div>)
+    return (<div>Вы - №1 на рынке!</div>)
   }
 
   renderSegmentTab(id) {
@@ -413,10 +413,11 @@ export default class ProductPanel extends Component {
     const nearestCompetitor = this.renderCompetitors(id, productStore.getRating(id));
     const segmentTab = this.renderSegmentTab(id);
 
+    // ({market.share}% рынка)
     return (
       <div>
         <div className="featureGroupTitle">Работа с клиентами</div>
-        <div>Наши клиенты: {market.clients} ({market.share}% рынка)</div>
+        <div>Наши клиенты: {market.clients}</div>
         {this.renderAdTab(id, product)}
 
         {nearestCompetitor}
@@ -617,9 +618,9 @@ export default class ProductPanel extends Component {
     return (
       <ul className="nav nav-tabs">
         {hypothesis}
+        {clients}
         {improvements}
         {payments}
-        {clients}
         {competitors}
         {bonuses}
       </ul>

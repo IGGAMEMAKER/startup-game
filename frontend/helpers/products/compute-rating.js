@@ -13,7 +13,6 @@ export default (product, segmentId) => {
 
   const segments = ProductDescriptions(idea).segments;
 
-  logger.debug(`segment #${segmentId}`, segments);
   getSpecificProductFeatureListByIdea(idea).forEach((f, i) => {
     const value = (product.features.offer[f.name] || 0) / f.data;
 

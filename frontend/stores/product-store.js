@@ -152,7 +152,7 @@ class ProductStore extends EventEmitter {
           need
         });
       }
-      logger.debug(`feature quality #${featureId}: ${featureQuality}. Requirement is ${met}`)
+      // logger.debug(`feature quality #${featureId}: ${featureQuality}. Requirement is ${met}`)
     });
 
     return {
@@ -271,7 +271,7 @@ class ProductStore extends EventEmitter {
 
       const payments = conversion * clients;
 
-      logger.debug('getProductIncome', segId, payments);
+      // logger.debug('getProductIncome', segId, payments);
       // need app
       // want to pay
       // can pay

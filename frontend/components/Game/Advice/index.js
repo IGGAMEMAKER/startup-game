@@ -51,9 +51,9 @@ export default class AdviceTab extends Component {
       case c.gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS:
         target = (
           <div>
-            <div>Первое тестирование завершено. Прототип ужасен! (Рейтинг <ColoredRating rating={flux.productStore.getRating(0)} />)</div>
+            <div>Первое тестирование завершено. Прототип ужасен! (Рейтинг <ColoredRating rating={flux.productStore.getRating(0)} />/10)</div>
             <div>Однако, мы получили пару дельных советов и можем улучшить продукт</div>
-            <div>Улучшите характеристику "Надёжность", чтобы поднять наш рейтинг</div>
+            <div>Улучшите характеристику "Виртуальная машина", чтобы поднять наш рейтинг</div>
           </div>
         );
         break;

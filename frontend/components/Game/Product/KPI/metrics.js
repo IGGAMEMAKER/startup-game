@@ -61,7 +61,7 @@ export default class Metrics extends Component {
     canShowRatingTab = true;
     if (canShowRatingTab) {
       ratingTab = <li>
-        <b>Рейтинг: <ColoredRating rating={rating} /></b>
+        <b>Рейтинг: <ColoredRating rating={rating} />/10</b>
         <span className="metric-link" onClick={onRatingPressed}>Улучшить</span>
       </li>
     } else {

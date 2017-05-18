@@ -123,12 +123,12 @@ export default class AdvertPlannerPanel extends Component {
     if (adList.length) {
       list = adList.map(a => this.renderAdCampaignGenerator(id, a.clients, a.text, money)).reverse();
     } else {
-      list = 'no campaigns available';
+      list = 'нет доступных рекламных кампаний';
     }
 
+        // <div>Наша потенциальная аудитория: {potentialClients} человек</div>
     return (
       <div>
-        <div>Наша потенциальная аудитория: {potentialClients} человек</div>
         <ul>
           {list}
         </ul>

@@ -5,6 +5,8 @@ import moneyCalculator from '../../helpers/economics/money-difference';
 import scheduleStore from '../../stores/schedule-store';
 import playerStore from '../../stores/player-store';
 
+import logger from '../../helpers/logger/logger';
+
 import stageHelper from '../../helpers/stages';
 
 import UI from '../UI';
@@ -84,7 +86,8 @@ export default class Menu extends Component {
 
     let pauseOrContinue;
     if (isRunning) {
-      pauseOrContinue = <div className={navigation}>{pauser}</div>;
+      // pauseOrContinue = <div className={navigation}>{pauser}</div>;
+      pauseOrContinue = pauser;
     } else {
       pauseOrContinue = ''; // <div className={navigation}>{resumer}</div>;
     }
@@ -103,6 +106,10 @@ export default class Menu extends Component {
       nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
     }
 
+    const onMPPP = () => {
+      logger.debug('onMPPP');
+      props.onRenderStaffMenu()
+    }
     let upperTab;
     if (stageHelper.canShowUpperTabInMenu()) {
       upperTab = (
@@ -114,9 +121,9 @@ export default class Menu extends Component {
             <div>День: {props.day}</div>
           </div>
           {nextSpeeder}
-          {pauseOrContinue}
-          <div className={navigation} onClick={props.onRenderStaffMenu}>MP: {state.points.marketing}</div>
-          <div className={navigation} onClick={props.onRenderStaffMenu}>PP: {state.points.programming}</div>
+          <div className={navigation}>{pauseOrContinue}</div>
+          <div className={navigation} onClick={onMPPP}>MP: {state.points.marketing}</div>
+          <div className={navigation} onClick={onMPPP}>PP: {state.points.programming}</div>
         </div>
       )
     }

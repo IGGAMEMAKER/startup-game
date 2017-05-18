@@ -5,7 +5,7 @@ import ColoredRating from '../KPI/colored-rating';
 
 export default class Segment extends Component {
   render({ productId, segment, id }) {
-    const { name, percentage, price, rating, requirements } = segment;
+    const { name, userOrientedName, percentage, price, rating, requirements } = segment;
 
     let requirementTab = '';
     const requirementsValidator = flux.productStore.requirementsOKforSegment(productId, id);
@@ -44,11 +44,13 @@ export default class Segment extends Component {
       .map(s => s.feature)
       .join(', ');
 
+    if (clients < 100) return '';
+
     return (
       <div className="client-segment-item">
-        <div>Сегмент №{id + 1}: {name}</div>
+        <div>Сегмент №{id + 1}: {userOrientedName}</div>
         <div className="offset-mid">
-          <div>Процент пользователей: {percentage}% ({clients})</div>
+          <div>Клиенты: {clients} человек</div>
           <div className="offset-mid">
             <div>Платёжеспособность: {price}$</div>
             <div>Приоритеты: {priorities}</div>

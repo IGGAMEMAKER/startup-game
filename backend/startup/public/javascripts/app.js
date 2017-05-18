@@ -6399,7 +6399,7 @@
 	            need: need
 	          });
 	        }
-	        _logger2.default.debug('feature quality #' + featureId + ': ' + featureQuality + '. Requirement is ' + met);
+	        // logger.debug(`feature quality #${featureId}: ${featureQuality}. Requirement is ${met}`)
 	      });
 
 	      return {
@@ -6528,7 +6528,7 @@
 
 	        var payments = conversion * clients;
 
-	        _logger2.default.debug('getProductIncome', segId, payments);
+	        // logger.debug('getProductIncome', segId, payments);
 	        // need app
 	        // want to pay
 	        // can pay
@@ -7146,7 +7146,6 @@
 
 	  var segments = (0, _productDescriptions2.default)(idea).segments;
 
-	  _logger2.default.debug('segment #' + segmentId, segments);
 	  getSpecificProductFeatureListByIdea(idea).forEach(function (f, i) {
 	    var value = (product.features.offer[f.name] || 0) / f.data;
 
@@ -7231,7 +7230,10 @@
 	});
 	exports.default = {
 	  description: 'Веб хостинг. Позволяет клиентам создавать сайты не заботясь об инфраструктуре',
-	  features: [{ name: 'scalability', influence: 0, description: '', shortDescription: 'Масштабируемость', data: 5000, time: 20 }, { name: 'website', influence: 1.5, description: '', shortDescription: 'Веб-сайт', data: 15000, time: 30 }, { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 }, { name: 'reliability', influence: 3, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 }, { name: 'support', influence: 1.5, description: '', shortDescription: 'Техподдержка', data: 5000, time: 30 }, { name: 'VPS', influence: 3, description: '', shortDescription: 'Виртуальная машина', data: 7000, time: 30 }, { name: 'VDS', influence: 0, description: '', shortDescription: 'Выделенный сервер', data: 15000, time: 30 }],
+	  features: [{ name: 'scalability', influence: 0, description: '', shortDescription: 'Масштабируемость', data: 5000, time: 20 }, { name: 'website', influence: 1.5, description: '', shortDescription: 'Веб-сайт', data: 15000, time: 30 },
+	  // { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 },
+	  // { name: 'reliability', influence: 3, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 },
+	  { name: 'support', influence: 1.5, description: '', shortDescription: 'Техподдержка', data: 5000, time: 30 }, { name: 'VPS', influence: 3, description: '', shortDescription: 'Виртуальная машина', data: 7000, time: 30 }, { name: 'VDS', influence: 0, description: '', shortDescription: 'Выделенный сервер', data: 15000, time: 30 }],
 	  utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
 	  virality: 0.3, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
 	  price: 10,
@@ -7247,22 +7249,25 @@
 	  },
 	  segments: [{
 	    name: 'solo developer',
-	    percentage: 65,
+	    userOrientedName: 'Программисты',
+	    percentage: 80,
 	    price: 8,
-	    rating: [0, 1.5, 1, 3, 1.5, 3, 0],
-	    requirements: [0, 0, 0, 0, 0, 0, 0]
+	    rating: [0, 2.5, 1.5, 6, 0],
+	    requirements: [0, 0, 0, 0, 0]
 	  }, {
 	    name: 'small startups',
-	    percentage: 20,
+	    userOrientedName: 'Стартапы',
+	    percentage: 10,
 	    price: 50,
-	    rating: [0, 1.5, 1, 6, 1.5, 0, 0],
-	    requirements: [0, 0, 0, 0, 0, 0, 0]
+	    rating: [0, 1.5, 1.5, 6.5, 0.5],
+	    requirements: [0, 0, 0, 80, 0]
 	  }, {
 	    name: 'middle business',
-	    percentage: 15,
+	    userOrientedName: 'Малый бизнес',
+	    percentage: 5,
 	    price: 250,
-	    rating: [0.5, 0.5, 1, 3, 1, 0, 4],
-	    requirements: [75, 0, 0, 95, 0, 0, 0]
+	    rating: [0.5, 1.5, 1, 0, 7],
+	    requirements: [75, 0, 0, 0, 95]
 	  }]
 	};
 
@@ -7702,6 +7707,10 @@
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
 	var _stages = __webpack_require__(148);
 
 	var _stages2 = _interopRequireDefault(_stages);
@@ -7711,6 +7720,8 @@
 	var _UI2 = _interopRequireDefault(_UI);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import React, { Component, PropTypes } from 'react';
 
 	var Menu = function (_Component) {
 	  (0, _inherits3.default)(Menu, _Component);
@@ -7800,11 +7811,8 @@
 
 	      var pauseOrContinue = void 0;
 	      if (isRunning) {
-	        pauseOrContinue = (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          pauser
-	        );
+	        // pauseOrContinue = <div className={navigation}>{pauser}</div>;
+	        pauseOrContinue = pauser;
 	      } else {
 	        pauseOrContinue = ''; // <div className={navigation}>{resumer}</div>;
 	      }
@@ -7825,6 +7833,10 @@
 	        nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
 	      }
 
+	      var onMPPP = function onMPPP() {
+	        _logger2.default.debug('onMPPP');
+	        props.onRenderStaffMenu();
+	      };
 	      var upperTab = void 0;
 	      if (_stages2.default.canShowUpperTabInMenu()) {
 	        upperTab = (0, _preact.h)(
@@ -7850,16 +7862,20 @@
 	            )
 	          ),
 	          nextSpeeder,
-	          pauseOrContinue,
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation, onClick: props.onRenderStaffMenu },
+	            { className: navigation },
+	            pauseOrContinue
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation, onClick: onMPPP },
 	            'MP: ',
 	            state.points.marketing
 	          ),
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation, onClick: props.onRenderStaffMenu },
+	            { className: navigation, onClick: onMPPP },
 	            'PP: ',
 	            state.points.programming
 	          )
@@ -7890,7 +7906,6 @@
 	  }]);
 	  return Menu;
 	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = Menu;
 
@@ -8345,8 +8360,8 @@
 	            '\u0412\u044B\u043F\u043B\u0430\u0442\u0430 \u043F\u0440\u043E\u0446\u0435\u043D\u0442\u043E\u0432 \u043F\u043E \u0434\u043E\u043B\u0433\u0443 #$',
 	            loanIndex,
 	            ': $',
-	            e.price * 0.01,
-	            (0, _preact.h)(_Button2.default, { text: '\u041F\u043E\u0433\u0430\u0441\u0438\u0442\u044C \u0434\u043E\u043B\u0433 (' + e.price + ')', onClick: function onClick() {
+	            Math.ceil(e.price * 0.01),
+	            (0, _preact.h)(_Button2.default, { text: '\u041F\u043E\u0433\u0430\u0441\u0438\u0442\u044C \u0434\u043E\u043B\u0433 (' + Math.ceil(e.price) + ')', onClick: function onClick() {
 	                _playerActions2.default.loans.repay(i);
 	              } })
 	          );
@@ -8811,7 +8826,8 @@
 	            'b',
 	            null,
 	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
-	            (0, _preact.h)(_coloredRating2.default, { rating: rating })
+	            (0, _preact.h)(_coloredRating2.default, { rating: rating }),
+	            '/10'
 	          ),
 	          (0, _preact.h)(
 	            'span',
@@ -9072,8 +9088,7 @@
 	          'span',
 	          { style: { color: ratingColor } },
 	          (0, _round2.default)(rating)
-	        ),
-	        '/10'
+	        )
 	      );
 	    }
 	  }]);
@@ -9458,19 +9473,13 @@
 	          return _this2.renderAdCampaignGenerator(id, a.clients, a.text, money);
 	        }).reverse();
 	      } else {
-	        list = 'no campaigns available';
+	        list = 'нет доступных рекламных кампаний';
 	      }
 
+	      // <div>Наша потенциальная аудитория: {potentialClients} человек</div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430\u0448\u0430 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0430\u044F \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044F: ',
-	          potentialClients,
-	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	        ),
 	        (0, _preact.h)(
 	          'ul',
 	          null,
@@ -9963,6 +9972,7 @@
 	          segment = _ref.segment,
 	          id = _ref.id;
 	      var name = segment.name,
+	          userOrientedName = segment.userOrientedName,
 	          percentage = segment.percentage,
 	          price = segment.price,
 	          rating = segment.rating,
@@ -10026,6 +10036,8 @@
 	        return s.feature;
 	      }).join(', ');
 
+	      if (clients < 100) return '';
+
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'client-segment-item' },
@@ -10035,7 +10047,7 @@
 	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u2116',
 	          id + 1,
 	          ': ',
-	          name
+	          userOrientedName
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -10043,11 +10055,9 @@
 	          (0, _preact.h)(
 	            'div',
 	            null,
-	            '\u041F\u0440\u043E\u0446\u0435\u043D\u0442 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439: ',
-	            percentage,
-	            '% (',
+	            '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
 	            clients,
-	            ')'
+	            ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -10224,7 +10234,7 @@
 	              null,
 	              '\u041F\u0435\u0440\u0432\u043E\u0435 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043E. \u041F\u0440\u043E\u0442\u043E\u0442\u0438\u043F \u0443\u0436\u0430\u0441\u0435\u043D! (\u0420\u0435\u0439\u0442\u0438\u043D\u0433 ',
 	              (0, _preact.h)(_coloredRating2.default, { rating: _flux2.default.productStore.getRating(0) }),
-	              ')'
+	              '/10)'
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -10234,7 +10244,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0443 "\u041D\u0430\u0434\u0451\u0436\u043D\u043E\u0441\u0442\u044C", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u0434\u043D\u044F\u0442\u044C \u043D\u0430\u0448 \u0440\u0435\u0439\u0442\u0438\u043D\u0433'
+	              '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0443 "\u0412\u0438\u0440\u0442\u0443\u0430\u043B\u044C\u043D\u0430\u044F \u043C\u0430\u0448\u0438\u043D\u0430", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u0434\u043D\u044F\u0442\u044C \u043D\u0430\u0448 \u0440\u0435\u0439\u0442\u0438\u043D\u0433'
 	            )
 	          );
 	          break;
@@ -11196,6 +11206,7 @@
 	      var nearestCompetitor = _this.renderCompetitors(id, _productStore2.default.getRating(id));
 	      var segmentTab = _this.renderSegmentTab(id);
 
+	      // ({market.share}% рынка)
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -11208,10 +11219,7 @@
 	          'div',
 	          null,
 	          '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	          market.clients,
-	          ' (',
-	          market.share,
-	          '% \u0440\u044B\u043D\u043A\u0430)'
+	          market.clients
 	        ),
 	        _this.renderAdTab(id, product),
 	        nearestCompetitor,
@@ -11440,9 +11448,9 @@
 	        'ul',
 	        { className: 'nav nav-tabs' },
 	        hypothesis,
+	        clients,
 	        improvements,
 	        payments,
-	        clients,
 	        competitors,
 	        bonuses
 	      );
@@ -11613,7 +11621,7 @@
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435! \u0412\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u0437\u0430\u0445\u0432\u0430\u0442\u0438\u0442\u044C \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E 100% \u0440\u044B\u043D\u043A\u0430!'
+	        '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435!'
 	      );
 	    }
 	  }, {

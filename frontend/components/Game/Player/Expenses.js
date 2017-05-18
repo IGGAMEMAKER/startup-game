@@ -40,8 +40,8 @@ export default class Expenses extends Component {
       if (e.type === EXPENSES.EXPENSES_LOAN) {
         loanIndex++;
         phrase = <div>
-          Выплата процентов по долгу #${loanIndex}: ${e.price * 0.01}
-          <Button text={`Погасить долг (${e.price})`} onClick={() => { playerActions.loans.repay(i); }} />
+          Выплата процентов по долгу #${loanIndex}: ${Math.ceil(e.price * 0.01)}
+          <Button text={`Погасить долг (${Math.ceil(e.price)})`} onClick={() => { playerActions.loans.repay(i); }} />
         </div>
       }
 

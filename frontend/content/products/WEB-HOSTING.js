@@ -3,8 +3,8 @@ export default {
   features: [
     { name: 'scalability', influence: 0, description: '', shortDescription: 'Масштабируемость', data: 5000, time: 20 },
     { name: 'website', influence: 1.5, description: '', shortDescription: 'Веб-сайт', data: 15000, time: 30 },
-    { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 },
-    { name: 'reliability', influence: 3, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 },
+    // { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 },
+    // { name: 'reliability', influence: 3, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 },
     { name: 'support', influence: 1.5, description: '', shortDescription: 'Техподдержка', data: 5000, time: 30 },
     { name: 'VPS', influence: 3, description: '', shortDescription: 'Виртуальная машина', data: 7000, time: 30 },
     { name: 'VDS', influence: 0, description: '', shortDescription: 'Выделенный сервер', data: 15000, time: 30 },
@@ -25,24 +25,27 @@ export default {
   segments: [
     {
       name: 'solo developer',
-      percentage: 65,
+      userOrientedName: 'Программисты',
+      percentage: 80,
       price: 8,
-      rating: [0, 1.5, 1, 3, 1.5, 3, 0],
-      requirements: [0, 0, 0, 0, 0, 0, 0]
+      rating: [0, 2.5, 1.5, 6, 0],
+      requirements: [0, 0, 0, 0, 0]
     },
     {
       name: 'small startups',
-      percentage: 20,
+      userOrientedName: 'Стартапы',
+      percentage: 10,
       price: 50,
-      rating: [0, 1.5, 1, 6, 1.5, 0, 0],
-      requirements: [0, 0, 0, 0, 0, 0, 0]
+      rating: [0, 1.5, 1.5, 6.5, 0.5],
+      requirements: [0, 0, 0, 80, 0]
     },
     {
       name: 'middle business',
-      percentage: 15,
+      userOrientedName: 'Малый бизнес',
+      percentage: 5,
       price: 250,
-      rating: [0.5, 0.5, 1, 3, 1, 0, 4],
-      requirements: [75, 0, 0, 95, 0, 0, 0]
+      rating: [0.5, 1.5, 1, 0, 7],
+      requirements: [75, 0, 0, 0, 95]
     }
   ]
 };
