@@ -1,11 +1,11 @@
 // import flux from '../../flux';
 import scheduleStore from '../../stores/schedule-store';
 
-const timeModifier = () => {
+const timeModifier = (value) => {
   const day = scheduleStore.getDay();
   const month = Math.ceil(day / 30);
 
-  return Math.floor(Math.pow(1.01, month));
+  return Math.floor(Math.pow(1.01, month) * value);
 };
 
 const marketModifier = () => {
@@ -37,7 +37,7 @@ export default {
           influence: 0,
           description: '',
           shortDescription: 'Масштабируемость',
-          data: 5000 * timeModifier(),
+          data: timeModifier(5000),
           time: 20
         },
         {
@@ -45,7 +45,7 @@ export default {
           influence: 1.5,
           description: '',
           shortDescription: 'Веб-сайт',
-          data: 15000 * timeModifier(),
+          data: timeModifier(15000),
           time: 30
         },
         // { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 },
@@ -55,7 +55,7 @@ export default {
           influence: 1.5,
           description: '',
           shortDescription: 'Техподдержка',
-          data: 5000 * timeModifier(),
+          data: timeModifier(5000),
           time: 30
         },
         {
@@ -63,7 +63,7 @@ export default {
           influence: 3,
           description: '',
           shortDescription: 'Виртуальная машина',
-          data: 7000 * timeModifier(),
+          data: timeModifier(7000),
           time: 30
         },
         {
@@ -71,7 +71,7 @@ export default {
           influence: 0,
           description: '',
           shortDescription: 'Выделенный сервер',
-          data: 15000 * timeModifier(),
+          data: timeModifier(15000),
           time: 30
         },
       ],

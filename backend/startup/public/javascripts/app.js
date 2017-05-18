@@ -6469,7 +6469,6 @@
 
 	      var paymentModifier = this.getPaymentModifier(i);
 
-	      // let conversion = utility * Math.pow((rating), 1.5) / 1000; // rating 10 - 0.05
 	      var conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
 
 	      var raw = void 0;
@@ -6478,6 +6477,10 @@
 	        _logger2.default.error('invalid conversion value ' + conversion);
 	        // throw 'INVALID_CONVERSION_ERROR';
 	        conversion = 0;
+	      }
+
+	      if (segmentId > 0) {
+	        conversion = rating / 10;
 	      }
 
 	      raw = conversion;
@@ -7235,11 +7238,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var timeModifier = function timeModifier() {
+	var timeModifier = function timeModifier(value) {
 	  var day = _scheduleStore2.default.getDay();
 	  var month = Math.ceil(day / 30);
 
-	  return Math.floor(Math.pow(1.01, month));
+	  return Math.floor(Math.pow(1.01, month) * value);
 	}; // import flux from '../../flux';
 
 
@@ -7271,14 +7274,14 @@
 	        influence: 0,
 	        description: '',
 	        shortDescription: 'Масштабируемость',
-	        data: 5000 * timeModifier(),
+	        data: timeModifier(5000),
 	        time: 20
 	      }, {
 	        name: 'website',
 	        influence: 1.5,
 	        description: '',
 	        shortDescription: 'Веб-сайт',
-	        data: 15000 * timeModifier(),
+	        data: timeModifier(15000),
 	        time: 30
 	      },
 	      // { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 },
@@ -7288,21 +7291,21 @@
 	        influence: 1.5,
 	        description: '',
 	        shortDescription: 'Техподдержка',
-	        data: 5000 * timeModifier(),
+	        data: timeModifier(5000),
 	        time: 30
 	      }, {
 	        name: 'VPS',
 	        influence: 3,
 	        description: '',
 	        shortDescription: 'Виртуальная машина',
-	        data: 7000 * timeModifier(),
+	        data: timeModifier(7000),
 	        time: 30
 	      }, {
 	        name: 'VDS',
 	        influence: 0,
 	        description: '',
 	        shortDescription: 'Выделенный сервер',
-	        data: 15000 * timeModifier(),
+	        data: timeModifier(15000),
 	        time: 30
 	      }],
 	      utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments

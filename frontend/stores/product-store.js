@@ -217,7 +217,6 @@ class ProductStore extends EventEmitter {
 
     const paymentModifier = this.getPaymentModifier(i);
 
-    // let conversion = utility * Math.pow((rating), 1.5) / 1000; // rating 10 - 0.05
     let conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
 
     let raw;
@@ -226,6 +225,10 @@ class ProductStore extends EventEmitter {
       logger.error(`invalid conversion value ${conversion}`);
       // throw 'INVALID_CONVERSION_ERROR';
       conversion = 0;
+    }
+
+    if (segmentId > 0) {
+      conversion = rating / 10;
     }
 
     raw = conversion;
