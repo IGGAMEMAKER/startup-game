@@ -13,9 +13,11 @@ export default class Segment extends Component {
     const currentRating = flux.productStore.getRating(productId, id);
 
     if (requirementsValidator.valid) {
+      const income = Math.floor(flux.productStore.getSegmentIncome(productId, id));
       requirementTab = (
         <div>
           <div>Рейтинг: <ColoredRating rating={currentRating} /></div>
+          <div>Доход: {income}$</div>
         </div>
       )
     } else {

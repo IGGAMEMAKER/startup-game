@@ -262,23 +262,29 @@ class ProductStore extends EventEmitter {
     return 0;
   }
 
+  getSegmentIncome(i, segId) {
+    const segments = this.getSegments(i);
+
+    const conversion = this.getConversionRate(i, segId).raw * this.isPaymentEnabled(i, segId); // rating 10 - 0.05
+
+    const clients = this.getClients(i, segId);
+    const price = this.getProductPrice(i);
+    const payAbility = 1;
+
+    const payments = conversion * clients;
+
+    // logger.debug('getProductIncome', segId, payments);
+    // need app
+    // want to pay
+    // can pay
+    return payments * price;
+  }
+
   getProductIncome(i) {
     const segments = this.getSegments(i);
 
     return segments.map((s, segId) => {
-      const conversion = this.getConversionRate(i, segId).raw * this.isPaymentEnabled(i, segId); // rating 10 - 0.05
-
-      const clients = this.getClients(i, segId);
-      const price = this.getProductPrice(i);
-      const payAbility = 1;
-
-      const payments = conversion * clients;
-
-      // logger.debug('getProductIncome', segId, payments);
-      // need app
-      // want to pay
-      // can pay
-      return payments * price;
+      return this.getSegmentIncome(i, segId);
     })
       .reduce((p, c) => p + c);
 
@@ -670,7 +676,7 @@ class ProductStore extends EventEmitter {
 
     logger.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
-    return Math.pow(0.3 * tests + 0.7 * improvements, 1.05);
+    return Math.pow(0.3 * tests + 0.6 * improvements, 1.045);
   }
 }
 

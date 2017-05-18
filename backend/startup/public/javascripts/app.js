@@ -6516,6 +6516,25 @@
 	      return 0;
 	    }
 	  }, {
+	    key: 'getSegmentIncome',
+	    value: function getSegmentIncome(i, segId) {
+	      var segments = this.getSegments(i);
+
+	      var conversion = this.getConversionRate(i, segId).raw * this.isPaymentEnabled(i, segId); // rating 10 - 0.05
+
+	      var clients = this.getClients(i, segId);
+	      var price = this.getProductPrice(i);
+	      var payAbility = 1;
+
+	      var payments = conversion * clients;
+
+	      // logger.debug('getProductIncome', segId, payments);
+	      // need app
+	      // want to pay
+	      // can pay
+	      return payments * price;
+	    }
+	  }, {
 	    key: 'getProductIncome',
 	    value: function getProductIncome(i) {
 	      var _this3 = this;
@@ -6523,19 +6542,7 @@
 	      var segments = this.getSegments(i);
 
 	      return segments.map(function (s, segId) {
-	        var conversion = _this3.getConversionRate(i, segId).raw * _this3.isPaymentEnabled(i, segId); // rating 10 - 0.05
-
-	        var clients = _this3.getClients(i, segId);
-	        var price = _this3.getProductPrice(i);
-	        var payAbility = 1;
-
-	        var payments = conversion * clients;
-
-	        // logger.debug('getProductIncome', segId, payments);
-	        // need app
-	        // want to pay
-	        // can pay
-	        return payments * price;
+	        return _this3.getSegmentIncome(i, segId);
 	      }).reduce(function (p, c) {
 	        return p + c;
 	      });
@@ -6964,7 +6971,7 @@
 
 	      _logger2.default.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
-	      return Math.pow(0.3 * tests + 0.7 * improvements, 1.05);
+	      return Math.pow(0.3 * tests + 0.6 * improvements, 1.045);
 	    }
 	  }]);
 	  return ProductStore;
@@ -10056,6 +10063,7 @@
 	      var currentRating = _flux2.default.productStore.getRating(productId, id);
 
 	      if (requirementsValidator.valid) {
+	        var income = Math.floor(_flux2.default.productStore.getSegmentIncome(productId, id));
 	        requirementTab = (0, _preact.h)(
 	          'div',
 	          null,
@@ -10064,6 +10072,13 @@
 	            null,
 	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
 	            (0, _preact.h)(_coloredRating2.default, { rating: currentRating })
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0414\u043E\u0445\u043E\u0434: ',
+	            income,
+	            '$'
 	          )
 	        );
 	      } else {
