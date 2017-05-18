@@ -9,7 +9,7 @@ export default function (idea) {
       return webStudio;
       break;
     case IDEAS.IDEA_WEB_HOSTING:
-      return webHosting;
+      return webHosting.compute();
       break;
   }
 };
