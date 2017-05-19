@@ -10223,6 +10223,10 @@
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var AdviceTab = function (_Component) {
@@ -10305,7 +10309,13 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u041F\u043E-\u0445\u043E\u0440\u043E\u0448\u0435\u043C\u0443 \u0431\u044B \u0435\u0449\u0451 \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 \u043F\u043E\u0441\u0442\u0430\u0432\u0438\u0442\u044C... \u0412\u043F\u0440\u043E\u0447\u0435\u043C... \u0417\u0430\u043F\u0443\u0441\u043A\u0430\u0439\u0442\u0435 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435!'
+	              '\u041F\u043E-\u0445\u043E\u0440\u043E\u0448\u0435\u043C\u0443 \u0431\u044B \u0435\u0449\u0451 \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 \u043F\u043E\u0441\u0442\u0430\u0432\u0438\u0442\u044C... \u0412\u043F\u0440\u043E\u0447\u0435\u043C... \u041F\u0435\u0440\u0435\u043C\u043E\u0442\u0430\u0439\u0442\u0435 \u0432\u0440\u0435\u043C\u044F \u0434\u043E \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0433\u043E \u043C\u0435\u0441\u044F\u0446\u0430, \u043D\u0430\u0436\u0430\u0432 \u043D\u0430 \u0438\u043A\u043E\u043D\u043A\u0443 \u043F\u0435\u0440\u0435\u043C\u043E\u0442\u043A\u0438 \u0432\u0440\u0435\u043C\u0435\u043D\u0438',
+	              (0, _preact.h)(
+	                'div',
+	                { className: 'navigation' },
+	                (0, _preact.h)(_UI2.default.Button, { text: '>' })
+	              ),
+	              '\u0432 \u043C\u0435\u043D\u044E \u0441\u0432\u0435\u0440\u0445\u0443'
 	            )
 	          );
 	          break;
@@ -10637,6 +10647,10 @@
 
 	var _skills2 = _interopRequireDefault(_skills);
 
+	var _stages = __webpack_require__(148);
+
+	var _stages2 = _interopRequireDefault(_stages);
+
 	var _job = __webpack_require__(101);
 
 	var JOB = _interopRequireWildcard(_job);
@@ -10684,11 +10698,19 @@
 
 	  // check if it is last day of month (pay day)
 	  if (isLastDayOfMonth(day)) {
+	    if (_stages2.default.isFirstHypothesisMission()) {
+	      _stages2.default.onFirstHypothesisMissionCompleted();
+	    }
+
 	    // calculate client amount change
 	    products.forEach(function (p, i) {
 	      var churn = _productStore2.default.getDisloyalClients(i);
 	      var viral = _productStore2.default.getViralClients(i);
 
+	      // gain XP points
+	      // const XP = productStore.getImprovementChances(i).middle;
+
+	      _productActions2.default.testHypothesis(i);
 	      _productActions2.default.removeClients(i, churn);
 	      _productActions2.default.viralClients(i, viral);
 	    });
@@ -11042,6 +11064,12 @@
 	      var segmentingStatus = improvements.hasSegmenting ? done : cancel + ' \u041D\u0435';
 	      var feedbackStatus = improvements.hasFeedback ? done : cancel + ' \u041D\u0435';
 
+	      var clientSizePenalty = 1 - improvements.clientModifier.modifier;
+
+	      var exp = function exp(bonus) {
+	        return Math.ceil(bonus * clientSizePenalty * 2);
+	      };
+
 	      // const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
 	      var improveTab = void 0;
 	      if (!improvements.hasFeedback) {
@@ -11053,7 +11081,7 @@
 	            null,
 	            feedbackStatus,
 	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432 (+',
-	            improvements.feedbackBonus,
+	            exp(improvements.feedbackBonus),
 	            'XP)'
 	          ),
 	          _this.getFeedbackButton(idea, id)
@@ -11067,7 +11095,7 @@
 	            null,
 	            webvisorStatus,
 	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
-	            improvements.webvisorBonus,
+	            exp(improvements.webvisorBonus),
 	            'XP)'
 	          ),
 	          _this.getWebvisorButton(idea, id)
@@ -11081,7 +11109,7 @@
 	            null,
 	            segmentingStatus,
 	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (+',
-	            improvements.segmentingBonus,
+	            exp(improvements.segmentingBonus),
 	            'XP)'
 	          ),
 	          _this.getSegmentingButton(idea, id)
@@ -11093,8 +11121,6 @@
 	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0438 \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E \u0443\u043B\u0443\u0447\u0448\u0435\u043D'
 	        );
 	      }
-
-	      var clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
 
 	      var hypothesisPoints = _productStore2.default.getHypothesisPoints(id);
 
@@ -11115,17 +11141,13 @@
 	        _playerActions2.default.spendPoints(pp, mp);
 	        _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
 	          _productActions2.default.testHypothesis(id, {}, 0);
-
-	          if (_stages2.default.isFirstHypothesisMission()) {
-	            _stages2.default.onFirstHypothesisMissionCompleted();
-	          }
 	        });
 	      };
 
 	      var possibleXPtext = (0, _preact.h)(
 	        'div',
 	        null,
-	        '\u0417\u0430\u043F\u0443\u0441\u043A\u0430\u044F \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 ',
+	        '\u041A\u0430\u0436\u0434\u044B\u0439 \u043C\u0435\u0441\u044F\u0446 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 ',
 	        improvements.middle,
 	        ' XP'
 	      );
@@ -11156,6 +11178,18 @@
 	        errorDescription = 'У вас не хватает MP или PP. ' + 'Возможно вам стоит нанять больше сотрудников или подождать до следующего месяца';
 	      }
 
+	      // <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
+	      // <div>{errorDescription}</div>
+	      // <UI.Button
+	      //   text="Запустить исследование"
+	      //   onClick={testHypothesis}
+	      //   disabled={disabled}
+	      //   primary
+	      // />
+	      // <br />
+	      // <Schedule />
+
+	      // <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -11175,7 +11209,7 @@
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'smallText' },
-	            '\u041F\u043E\u0441\u043B\u0435 \u043A\u0430\u0436\u0434\u043E\u0433\u043E \u0446\u0438\u043A\u043B\u0430 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 \u043E\u0447\u043A\u0438 \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP points)'
+	            possibleXPtext
 	          )
 	        ),
 	        (0, _preact.h)('br', null),
@@ -11184,38 +11218,7 @@
 	          null,
 	          improveTab
 	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            possibleXPtext
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F \u0433\u0438\u043F\u043E\u0442\u0435\u0437\u044B: ',
-	            mp,
-	            'MP \u0438 ',
-	            pp,
-	            'PP'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            errorDescription
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u0417\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435',
-	            onClick: testHypothesis,
-	            disabled: disabled,
-	            primary: true
-	          }),
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)(_Schedule2.default, null)
-	        )
+	        (0, _preact.h)('br', null)
 	      );
 	    }, _this.renderPaymentTab = function (id, idea) {
 	      var payment = _this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');

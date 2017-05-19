@@ -3,6 +3,7 @@ import c from '../../../constants';
 import flux from '../../../flux';
 
 import ColoredRating from '../Product/KPI/colored-rating';
+import UI from '../../UI';
 
 
 export default class AdviceTab extends Component {
@@ -43,7 +44,12 @@ export default class AdviceTab extends Component {
       case c.gameStages.GAME_STAGE_IMPROVED_ANALYTICS:
         target = (
           <div>
-            <div>По-хорошему бы ещё вебвизор поставить... Впрочем... Запускайте тестирование!</div>
+            <div>По-хорошему бы ещё вебвизор поставить... Впрочем...
+              Перемотайте время до следующего месяца,
+              нажав на иконку перемотки времени
+              <div className="navigation"><UI.Button text=">" /></div>
+              в меню сверху
+            </div>
           </div>
         );
         break;

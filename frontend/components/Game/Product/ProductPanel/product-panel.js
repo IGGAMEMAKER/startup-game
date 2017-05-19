@@ -191,26 +191,32 @@ export default class ProductPanel extends Component {
     const segmentingStatus = improvements.hasSegmenting ? done : `${cancel} Не`;
     const feedbackStatus = improvements.hasFeedback ? done : `${cancel} Не`;
 
+
+    const clientSizePenalty = (1 - improvements.clientModifier.modifier);
+
+    const exp = (bonus) => Math.ceil(bonus * clientSizePenalty * 2);
+
+
     // const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
     let improveTab;
     if (!improvements.hasFeedback) {
       improveTab = (
         <div>
-          <div>{feedbackStatus} Установлена форма комментариев (+{improvements.feedbackBonus}XP)</div>
+          <div>{feedbackStatus} Установлена форма комментариев (+{exp(improvements.feedbackBonus)}XP)</div>
           {this.getFeedbackButton(idea, id)}
         </div>
       )
     } else if (!improvements.hasWebvisor) {
       improveTab = (
         <div>
-          <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
+          <div>{webvisorStatus} Установлен вебвизор (+{exp(improvements.webvisorBonus)}XP)</div>
           {this.getWebvisorButton(idea, id)}
         </div>
       )
     } else if (!improvements.hasSegmenting) {
       improveTab = (
         <div>
-          <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
+          <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{exp(improvements.segmentingBonus)}XP)</div>
           {this.getSegmentingButton(idea, id)}
         </div>
       )
@@ -219,8 +225,6 @@ export default class ProductPanel extends Component {
         <div>Сегмент аналитики полностью улучшен</div>
       )
     }
-
-    const clientSizePenalty = Math.ceil((1 - improvements.clientModifier.modifier) * 100);
 
     const hypothesisPoints = productStore.getHypothesisPoints(id);
 
@@ -239,14 +243,10 @@ export default class ProductPanel extends Component {
       playerActions.spendPoints(pp, mp);
       scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
         productActions.testHypothesis(id, {}, 0);
-
-        if (stageHelper.isFirstHypothesisMission()) {
-          stageHelper.onFirstHypothesisMissionCompleted();
-        }
       });
     };
 
-    const possibleXPtext = <div>Запуская тестирование вы получите {improvements.middle} XP</div>;
+    const possibleXPtext = <div>Каждый месяц вы получаете {improvements.middle} XP</div>;
       // (штраф -{clientSizePenalty}%)</div>;
 
 
@@ -275,29 +275,29 @@ export default class ProductPanel extends Component {
         'Возможно вам стоит нанять больше сотрудников или подождать до следующего месяца';
     }
 
+
+    // <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
+    // <div>{errorDescription}</div>
+    // <UI.Button
+    //   text="Запустить исследование"
+    //   onClick={testHypothesis}
+    //   disabled={disabled}
+    //   primary
+    // />
+    // <br />
+    // <Schedule />
+
+          // <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
     return (
       <div>
         <div className="featureGroupTitle">Тестирование гипотез</div>
         <div className="featureGroupDescription">
           <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
-          <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
+          <div className="smallText">{possibleXPtext}</div>
         </div>
         <br />
         <div>{improveTab}</div>
         <br />
-        <div>
-          <div>{possibleXPtext}</div>
-          <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
-          <div>{errorDescription}</div>
-          <UI.Button
-            text="Запустить исследование"
-            onClick={testHypothesis}
-            disabled={disabled}
-            primary
-          />
-          <br />
-          <Schedule />
-        </div>
       </div>
     )
   };

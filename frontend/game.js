@@ -12,6 +12,8 @@ import moneyCalculator from './helpers/economics/money-difference';
 import eventGenerator from './helpers/events/event-generator';
 import skillHelper from './helpers/team/skills';
 
+import stageHelper from './helpers/stages';
+
 import * as JOB from './constants/job';
 
 const isLastDayOfMonth = (day) => {
@@ -54,11 +56,19 @@ const run = () => {
 
   // check if it is last day of month (pay day)
   if (isLastDayOfMonth(day)) {
+    if (stageHelper.isFirstHypothesisMission()) {
+      stageHelper.onFirstHypothesisMissionCompleted();
+    }
+
     // calculate client amount change
     products.forEach((p, i) => {
       const churn = productStore.getDisloyalClients(i);
       const viral = productStore.getViralClients(i);
 
+      // gain XP points
+      // const XP = productStore.getImprovementChances(i).middle;
+
+      productActions.testHypothesis(i);
       productActions.removeClients(i, churn);
       productActions.viralClients(i, viral);
     });
