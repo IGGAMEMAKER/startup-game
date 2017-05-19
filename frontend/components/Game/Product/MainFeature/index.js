@@ -5,8 +5,10 @@ import flux from '../../../../flux';
 import UI from '../../../UI';
 
 import logger from '../../../../helpers/logger/logger';
+import round from '../../../../helpers/math/round';
 
 import stageHelper from '../../../../helpers/stages';
+
 type PropsType = {};
 
 type StateType = {};
@@ -18,7 +20,7 @@ export default class MainFeature extends Component {
     return ProductDescriptions(idea).features;
   };
 
-  renderMainFeature = (featureGroup, product, id) => (defaultFeature, i) => {
+  renderMainFeature = (featureGroup, product, id, segments, defaults) => (defaultFeature, i) => {
     const featureName = defaultFeature.name;
     const { time, shortDescription } = defaultFeature;
 
@@ -53,11 +55,24 @@ export default class MainFeature extends Component {
       )
     }
 
+    const segmentRatingImprovementList = segments
+      .map((s) => {
+        const rating = s.rating;
+        const normalisedRatingDelta = round(rating[i] * 1000 / flux.productStore.getMainFeatureDefaultQualityByFeatureId(id, i));
+
+        if (rating[i] === 0) return '';
+
+        return (
+          <li>Рейтинг у сегмента "{s.userOrientedName}" повысится на {normalisedRatingDelta}</li>
+        )
+      });
+
     return (
       <div key={key}>
         {userOrientedFeatureName} ({current}/{max}XP)
         <br />
         <div className="featureDescription">{description}</div>
+        <div>{segmentRatingImprovementList}</div>
         {hypothesisList}
         <br />
       </div>
@@ -110,11 +125,13 @@ export default class MainFeature extends Component {
     if (!stageHelper.canShowMainFeatureTab()) return '';
 
     const product = flux.productStore.getProduct(id);
+    const availableSegments = flux.productStore.getAvailableSegments(id);
+    const defaults = flux.productStore.getDefaults(id);
     // logger.debug('MainFeature', id, flux.productStore.getProducts(id), product.idea);
 
     const featureList = this
       .getSpecificProductFeatureListByIdea(product.idea)
-      .map(this.renderMainFeature('offer', product, id));
+      .map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
 
     return (
       <div>

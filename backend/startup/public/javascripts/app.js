@@ -6361,6 +6361,11 @@
 	      return value; // round(value / feature.data);
 	    }
 	  }, {
+	    key: 'getMainFeatureDefaultQualityByFeatureId',
+	    value: function getMainFeatureDefaultQualityByFeatureId(i, featureId) {
+	      return this.getDefaults(i).features[featureId].data;
+	    }
+	  }, {
 	    key: 'getPrettyFeatureNameByFeatureId',
 	    value: function getPrettyFeatureNameByFeatureId(id, featureId) {
 	      return this.getDefaults(id).features[featureId].shortDescription;
@@ -6375,8 +6380,6 @@
 
 	      var segment = segments[segmentId];
 	      var requirements = segment.requirements;
-
-	      var p = _products[i];
 
 	      var valid = true;
 
@@ -6852,7 +6855,9 @@
 	    key: 'getHypothesisPoints',
 	    value: function getHypothesisPoints(id) {
 	      var complexityModifier = this.getTechnologyComplexityModifier(id);
+
 	      _logger2.default.debug('getHypothesisPoints', complexityModifier);
+
 	      var defaults = this.getDefaults(id).hypothesis;
 
 	      return {
@@ -6864,6 +6869,11 @@
 	    key: 'getSegments',
 	    value: function getSegments(id) {
 	      return this.getDefaults(id).segments;
+	    }
+	  }, {
+	    key: 'getSegmentById',
+	    value: function getSegmentById(id, segId) {
+	      return this.getSegments(id)[segId];
 	    }
 	  }, {
 	    key: 'getDescriptionOfProduct',
@@ -6934,6 +6944,24 @@
 	    key: 'canShowPayPercentageMetric',
 	    value: function canShowPayPercentageMetric(id) {
 	      return this.getFeatureStatus(id, 'payment', 'mockBuying');
+	    }
+	  }, {
+	    key: 'clientsEnoughToFormSegment',
+	    value: function clientsEnoughToFormSegment(id, segId) {
+	      return this.getClients(id, segId) > 100;
+	    }
+	  }, {
+	    key: 'getAvailableSegments',
+	    value: function getAvailableSegments(id) {
+	      var _this4 = this;
+
+	      var value = this.getSegments(id).filter(function (s, segId) {
+	        return _this4.requirementsOKforSegment(id, segId).valid && _this4.clientsEnoughToFormSegment(id, segId);
+	      });
+
+	      _logger2.default.debug('getAvailableSegments', value);
+	      //
+	      return value;
 	    }
 	  }, {
 	    key: 'getMarketShare',
@@ -9624,6 +9652,10 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
+	var _round = __webpack_require__(96);
+
+	var _round2 = _interopRequireDefault(_round);
+
 	var _stages = __webpack_require__(148);
 
 	var _stages2 = _interopRequireDefault(_stages);
@@ -9646,7 +9678,7 @@
 
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.getSpecificProductFeatureListByIdea = function (idea) {
 	      return (0, _productDescriptions2.default)(idea).features;
-	    }, _this.renderMainFeature = function (featureGroup, product, id) {
+	    }, _this.renderMainFeature = function (featureGroup, product, id, segments, defaults) {
 	      return function (defaultFeature, i) {
 	        var featureName = defaultFeature.name;
 	        var time = defaultFeature.time,
@@ -9689,6 +9721,22 @@
 	          );
 	        }
 
+	        var segmentRatingImprovementList = segments.map(function (s) {
+	          var rating = s.rating;
+	          var normalisedRatingDelta = (0, _round2.default)(rating[i] * 1000 / _flux2.default.productStore.getMainFeatureDefaultQualityByFeatureId(id, i));
+
+	          if (rating[i] === 0) return '';
+
+	          return (0, _preact.h)(
+	            'li',
+	            null,
+	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0443 \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430 "',
+	            s.userOrientedName,
+	            '" \u043F\u043E\u0432\u044B\u0441\u0438\u0442\u0441\u044F \u043D\u0430 ',
+	            normalisedRatingDelta
+	          );
+	        });
+
 	        return (0, _preact.h)(
 	          'div',
 	          { key: key },
@@ -9703,6 +9751,11 @@
 	            'div',
 	            { className: 'featureDescription' },
 	            description
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            segmentRatingImprovementList
 	          ),
 	          hypothesisList,
 	          (0, _preact.h)('br', null)
@@ -9763,9 +9816,11 @@
 	      if (!_stages2.default.canShowMainFeatureTab()) return '';
 
 	      var product = _flux2.default.productStore.getProduct(id);
+	      var availableSegments = _flux2.default.productStore.getAvailableSegments(id);
+	      var defaults = _flux2.default.productStore.getDefaults(id);
 	      // logger.debug('MainFeature', id, flux.productStore.getProducts(id), product.idea);
 
-	      var featureList = this.getSpecificProductFeatureListByIdea(product.idea).map(this.renderMainFeature('offer', product, id));
+	      var featureList = this.getSpecificProductFeatureListByIdea(product.idea).map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
 
 	      return (0, _preact.h)(
 	        'div',
@@ -10153,12 +10208,6 @@
 	              '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
 	              price,
 	              '$'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442\u044B: ',
-	              priorities
 	            ),
 	            (0, _preact.h)(
 	              'div',

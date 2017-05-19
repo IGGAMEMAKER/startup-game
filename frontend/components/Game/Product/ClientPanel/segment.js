@@ -55,7 +55,6 @@ export default class Segment extends Component {
           <div>Клиенты: {clients} человек</div>
           <div className="offset-mid">
             <div>Платёжеспособность: {price}$</div>
-            <div>Приоритеты: {priorities}</div>
             <div>{requirementTab}</div>
           </div>
         </div>

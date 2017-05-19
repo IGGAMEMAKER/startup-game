@@ -120,6 +120,10 @@ class ProductStore extends EventEmitter {
     return value; // round(value / feature.data);
   }
 
+  getMainFeatureDefaultQualityByFeatureId(i, featureId) {
+    return this.getDefaults(i).features[featureId].data;
+  }
+
   getPrettyFeatureNameByFeatureId(id, featureId){
     return this.getDefaults(id).features[featureId].shortDescription;
   }
@@ -128,8 +132,6 @@ class ProductStore extends EventEmitter {
     const { segments } = this.getDefaults(i);
     const segment = segments[segmentId];
     const requirements = segment.requirements;
-
-    const p = _products[i];
 
     let valid = true;
 
@@ -285,7 +287,6 @@ class ProductStore extends EventEmitter {
       return this.getSegmentIncome(i, segId);
     })
       .reduce((p, c) => p + c);
-
   }
 
   getIdea(i) {
@@ -577,7 +578,9 @@ class ProductStore extends EventEmitter {
 
   getHypothesisPoints(id) {
     const complexityModifier = this.getTechnologyComplexityModifier(id);
+
     logger.debug('getHypothesisPoints', complexityModifier);
+
     const defaults = this.getDefaults(id).hypothesis;
 
     return {
@@ -588,6 +591,10 @@ class ProductStore extends EventEmitter {
 
   getSegments(id) {
     return this.getDefaults(id).segments;
+  }
+
+  getSegmentById(id, segId) {
+    return this.getSegments(id)[segId];
   }
 
   getDescriptionOfProduct(id) {
@@ -646,6 +653,19 @@ class ProductStore extends EventEmitter {
 
   canShowPayPercentageMetric(id) {
     return this.getFeatureStatus(id, 'payment', 'mockBuying')
+  }
+
+  clientsEnoughToFormSegment(id, segId) {
+    return this.getClients(id, segId) > 100;
+  }
+
+  getAvailableSegments(id) {
+    const value = this.getSegments(id)
+      .filter((s, segId) => this.requirementsOKforSegment(id, segId).valid && this.clientsEnoughToFormSegment(id, segId))
+
+    logger.debug('getAvailableSegments', value);
+    //
+    return value;
   }
 
   getMarketShare(id) {
