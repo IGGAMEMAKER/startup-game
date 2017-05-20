@@ -6902,10 +6902,22 @@
 	        var rating = (0, _round2.default)((0, _computeRating2.default)(p, 0));
 	        var clients = p.KPI.clients;
 
+	        var features = p.features.offer;
+
+	        var offer = _this4.getDefaults(id).features.map(function (f) {
+	          return {
+	            name: f.shortDescription,
+	            value: features[f.name]
+	          };
+	        }).sort(function (a, b) {
+	          return b.value - a.value;
+	        });
+
 	        return {
 	          rating: rating,
 	          clients: clients,
-	          name: name
+	          name: name,
+	          features: offer
 	        };
 	      })
 	      // return [
@@ -7750,6 +7762,7 @@
 	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
 	  },
 	  canShowCompetitorsTab: function canShowCompetitorsTab() {
+	    return true;
 	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
 	  },
 	  canShowClientsTab: function canShowClientsTab() {
@@ -9607,7 +9620,13 @@
 	          return _this2.renderAdCampaignGenerator(id, a.clients, a.text, money);
 	        }).reverse();
 	      } else {
-	        list = 'нет доступных рекламных кампаний';
+	        if (!ads.filter(noClientOverflow).length) {
+	          list = 'Мы привлекли всех клиентов, которых могли. Улучшайте рейтинг, чтобы увеличить потенциальную аудиторию';
+	        }
+
+	        if (!ads.filter(enoughMoney).length) {
+	          list = 'нет доступных рекламных кампаний. Нужно больше золота!';
+	        }
 	      }
 
 	      // <div>Наша потенциальная аудитория: {potentialClients} человек</div>
@@ -10034,6 +10053,18 @@
 
 	      var name = i >= 0 ? '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
 	      // <hr width="80%" />
+
+	      var features = c.features.map(function (f, ii) {
+	        return (0, _preact.h)(
+	          'li',
+	          null,
+	          f.name,
+	          ': ',
+	          f.value,
+	          'XP'
+	        );
+	      });
+
 	      return (0, _preact.h)(
 	        'div',
 	        { className: background },
@@ -10057,6 +10088,20 @@
 	          '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
 	          c.clients,
 	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          '\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          (0, _preact.h)(
+	            'ul',
+	            null,
+	            features
+	          )
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -12008,7 +12053,7 @@
 	      payment: {}
 	    };
 
-	    var clients = isCompetitor ? Math.ceil((0, _random2.default)(100, defaults.marketSize - 1000)) : 10;
+	    var clients = isCompetitor ? Math.ceil((0, _random2.default)(100, defaults.marketSize / 10)) : 10;
 
 	    var KPI = {
 	      debt: 0, // technical debt. Shows, how fast can you implement new features

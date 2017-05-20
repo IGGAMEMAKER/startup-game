@@ -43,7 +43,7 @@ export default {
       payment: {}
     };
 
-    const clients = isCompetitor ? Math.ceil(random(100, defaults.marketSize - 1000)) : 10;
+    const clients = isCompetitor ? Math.ceil(random(100, defaults.marketSize / 10)) : 10;
 
     const KPI = {
       debt: 0, // technical debt. Shows, how fast can you implement new features

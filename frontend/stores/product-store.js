@@ -613,11 +613,22 @@ class ProductStore extends EventEmitter {
         const rating = round(computeRating(p, 0));
         const clients = p.KPI.clients;
 
+        const features = p.features.offer;
+
+        const offer = this.getDefaults(id).features
+          .map(f => {
+            return {
+              name: f.shortDescription,
+              value: features[f.name]
+            }
+          })
+          .sort((a, b) => b.value - a.value);
 
         return {
           rating,
           clients,
-          name
+          name,
+          features: offer
         }
       })
     // return [
