@@ -27,6 +27,10 @@ const marketModifier = () => {
   }
 };
 
+const cacModifier = () => {
+  return marketModifier()
+}
+
 export default {
   compute: () => {
     return {
@@ -78,7 +82,7 @@ export default {
       utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
       virality: 0.3, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
       price: 10,
-      CAC: 1,
+      CAC: 1 * cacModifier(), // customer acquisition cost
       marketSize: 50000 * marketModifier(),
       mvp: {
         pp: 100,

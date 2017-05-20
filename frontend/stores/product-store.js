@@ -17,6 +17,10 @@ import productDescriptions from '../constants/products/product-descriptions';
 
 import * as PRODUCT_STAGES from '../constants/products/product-stages';
 
+import companyCostComputer from '../helpers/products/compute-company-cost';
+
+
+
 let _products = [{
   rating: 0, // computable value, so... needs to be deleted
   idea: IDEAS.IDEA_WEB_HOSTING,
@@ -275,7 +279,7 @@ class ProductStore extends EventEmitter {
     const clients = this.getClients(i, segId);
     const price = this.getProductPrice(i, segId);
 
-    logger.debug(`getSegmentIncome segment ${segId}, ${conversion}%, ${clients} cli, ${price}$`);
+    // logger.debug(`getSegmentIncome segment ${segId}, ${conversion}%, ${clients} cli, ${price}$`);
     const payments = conversion * clients;
 
     // logger.debug('getProductIncome', segId, payments);
@@ -628,10 +632,11 @@ class ProductStore extends EventEmitter {
           rating,
           clients,
           name,
-          features: offer
+          features: offer,
+          cost: companyCostComputer.compute(p)
         }
       })
-    // return [
+      // return [
     //   // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
     //   // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
     //   // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }

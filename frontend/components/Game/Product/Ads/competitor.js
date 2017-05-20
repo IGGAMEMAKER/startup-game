@@ -1,4 +1,7 @@
 import { h, Component } from 'preact';
+import round from '../../../../helpers/math/round';
+
+import UI from '../../../UI';
 
 type PropsType = {}
 
@@ -15,7 +18,7 @@ export default class Competitor extends Component {
     const canWeCompeteThem = competeable ?
       'Мы можем переманить их клиентов'
       :
-      `Добейтесь рейтинга ${needToCompeteRating} и их пользователи выберут наш продукт`;
+      `Добейтесь рейтинга ${round(needToCompeteRating)} и их пользователи выберут наш продукт`;
 
     let background = 'competitor ';
     if (competeable) {
@@ -36,6 +39,11 @@ export default class Competitor extends Component {
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
         <div className="offset-mid">Технологии</div>
         <div className="offset-mid"><ul>{features}</ul></div>
+        <div className="offset-mid">
+          <UI.Button text={`Купить за ${c.cost}$`} />
+        </div>
+
+
         <div className="offset-mid">
           <hr width="80%" />
         </div>
