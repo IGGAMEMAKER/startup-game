@@ -16,7 +16,8 @@ export default {
       name = names[index];
     }
 
-    const defaultFeatures = productDescriptions(idea).features;
+    const defaults = productDescriptions(idea);
+    const defaultFeatures = defaults.features;
 
     let maxRating = 6;
     if (isCompetitor) maxRating = 8;
@@ -42,10 +43,12 @@ export default {
       payment: {}
     };
 
+    const clients = isCompetitor ? Math.ceil(random(100, defaults.marketSize - 1000)) : 10;
+
     const KPI = {
       debt: 0, // technical debt. Shows, how fast can you implement new features
-      clients: 10,
-      newClients: 10,
+      clients,
+      newClients: clients,
 
       bugs: 10,
 

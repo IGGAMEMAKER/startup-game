@@ -11981,7 +11981,8 @@
 	      name = names[index];
 	    }
 
-	    var defaultFeatures = (0, _productDescriptions2.default)(idea).features;
+	    var defaults = (0, _productDescriptions2.default)(idea);
+	    var defaultFeatures = defaults.features;
 
 	    var maxRating = 6;
 	    if (isCompetitor) maxRating = 8;
@@ -12007,10 +12008,12 @@
 	      payment: {}
 	    };
 
+	    var clients = isCompetitor ? Math.ceil((0, _random2.default)(100, defaults.marketSize - 1000)) : 10;
+
 	    var KPI = {
 	      debt: 0, // technical debt. Shows, how fast can you implement new features
-	      clients: 10,
-	      newClients: 10,
+	      clients: clients,
+	      newClients: clients,
 
 	      bugs: 10,
 
