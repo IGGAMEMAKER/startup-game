@@ -85,6 +85,10 @@ class ProductStore extends EventEmitter {
     return _products[id];
   }
 
+  getCompanyCost(id) {
+    return companyCostComputer.compute(_products[id]);
+  }
+
   getRating(i, segmentId) {
     if (!segmentId) segmentId = 0;
 

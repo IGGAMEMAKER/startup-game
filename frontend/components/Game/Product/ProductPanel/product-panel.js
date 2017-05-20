@@ -417,10 +417,13 @@ export default class ProductPanel extends Component {
     const segmentTab = this.renderSegmentTab(id);
 
     // ({market.share}% рынка)
+    const ourCompanyCost = productStore.getCompanyCost(id);
     return (
       <div>
         <div className="featureGroupTitle">Работа с клиентами</div>
         <div>Наши клиенты: {market.clients}</div>
+        <div>Наша рыночная стоимость: {ourCompanyCost}$</div>
+
         {this.renderAdTab(id, product)}
 
         {nearestCompetitor}

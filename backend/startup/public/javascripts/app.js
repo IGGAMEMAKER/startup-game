@@ -6322,6 +6322,11 @@
 	      return _products[id];
 	    }
 	  }, {
+	    key: 'getCompanyCost',
+	    value: function getCompanyCost(id) {
+	      return _computeCompanyCost2.default.compute(_products[id]);
+	    }
+	  }, {
 	    key: 'getRating',
 	    value: function getRating(i, segmentId) {
 	      if (!segmentId) segmentId = 0;
@@ -9341,6 +9346,7 @@
 	      var segmentTab = _this.renderSegmentTab(id);
 
 	      // ({market.share}% рынка)
+	      var ourCompanyCost = _productStore2.default.getCompanyCost(id);
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -9354,6 +9360,13 @@
 	          null,
 	          '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
 	          market.clients
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041D\u0430\u0448\u0430 \u0440\u044B\u043D\u043E\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: ',
+	          ourCompanyCost,
+	          '$'
 	        ),
 	        _this.renderAdTab(id, product),
 	        nearestCompetitor,
@@ -12119,7 +12132,7 @@
 	var compute = function compute(c) {
 	  var cost = 10000;
 
-	  var featureCost = 1500;
+	  var featureCost = 15;
 
 	  _logger2.default.debug('computeCompanyCost', c);
 
@@ -12129,15 +12142,26 @@
 	  // sum technology part
 	  var offer = {};
 	  _logger2.default.shit('each feature has it\'s own cost. Servers are more expensive');
+
+	  var totalXP = 0;
+
+	  var featureSum = 0;
 	  defaultFeatures.forEach(function (f) {
 	    // offer[f.name] = Math.floor(luck * f.data);
-	    cost += c.features.offer[f.name] * featureCost;
+	    var xp = c.features.offer[f.name];
+
+	    totalXP += xp / 1000;
+	    featureSum += xp * featureCost;
 	  });
+
+	  // complexity modifier
+	  var complexityModifier = Math.pow(1.01, totalXP);
+	  cost += featureSum * complexityModifier;
 
 	  // customers also influence cost
 	  cost += c.KPI.clients * defaults.CAC * 1.5;
 
-	  return cost;
+	  return Math.ceil(cost);
 	};
 
 	exports.default = {

@@ -6,7 +6,7 @@ import random from '../math/random';
 const compute = (c) => {
   let cost = 10000;
 
-  const featureCost = 1500;
+  const featureCost = 15;
 
   logger.debug('computeCompanyCost', c);
 
@@ -16,16 +16,27 @@ const compute = (c) => {
   // sum technology part
   const offer = {};
   logger.shit(`each feature has it's own cost. Servers are more expensive`);
+
+  let totalXP = 0;
+
+  let featureSum = 0;
   defaultFeatures.forEach(f => {
     // offer[f.name] = Math.floor(luck * f.data);
-    cost += c.features.offer[f.name] * featureCost;
+    const xp = c.features.offer[f.name];
+
+    totalXP += xp / 1000;
+    featureSum += xp * featureCost;
   });
+
+  // complexity modifier
+  const complexityModifier = Math.pow(1.01, totalXP);
+  cost += featureSum * complexityModifier;
 
   // customers also influence cost
   cost += c.KPI.clients * defaults.CAC * 1.5;
 
 
-  return cost;
+  return Math.ceil(cost);
 };
 
 export default {
