@@ -23,6 +23,7 @@ let _products = [{
   name: 'WWWEB HOSTING',
   stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
 
+  owner: true,
   features: {
     offer: {
       // 'portfolio': 0.81,
@@ -69,7 +70,11 @@ class ProductStore extends EventEmitter {
   }
 
   getProducts() {
-    return _products;
+    return _products.filter(this.isOurProduct);
+  }
+
+  isOurProduct(p) {
+    return p.owner;
   }
 
   getProduct(id) {
@@ -602,11 +607,25 @@ class ProductStore extends EventEmitter {
   }
 
   getCompetitorsList(id) {
-    return [
-      // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
-      // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
-      // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
-    ].sort((a, b) => a.rating > b.rating);
+    return _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))
+      .map(p => {
+        const name = p.name;
+        const rating = computeRating(p, 0);
+        const clients = p.KPI.clients;
+
+
+        return {
+          rating,
+          clients,
+          name
+        }
+      })
+    // return [
+    //   // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
+    //   // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
+    //   // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
+    // ]
+      .sort((a, b) => a.rating > b.rating);
   }
 
   getMaxAmountOfPossibleClients(id, money) {
@@ -790,6 +809,17 @@ Dispatcher.register((p: PayloadType) => {
       } else {
         _products[id].KPI.clients -= Math.floor(clients);
       }
+      break;
+
+    case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
+      // { features , KPI, idea, name }
+      const competitor = p.p;
+
+      _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+      // _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
+      // _products[id].KPI = p.KPI;
+      // _products[id].features = p.features;
+      // _products[id].XP = 999;
       break;
 
     default:

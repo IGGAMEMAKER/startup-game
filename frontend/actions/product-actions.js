@@ -65,5 +65,12 @@ export default {
       id,
       clients
     })
+  },
+
+  createCompetitorCompany(p) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY,
+      p
+    })
   }
 };

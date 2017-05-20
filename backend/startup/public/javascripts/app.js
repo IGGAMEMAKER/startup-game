@@ -6168,6 +6168,10 @@
 	  value: true
 	});
 
+	var _assign = __webpack_require__(3);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -6242,6 +6246,7 @@
 	  name: 'WWWEB HOSTING',
 	  stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
 
+	  owner: true,
 	  features: {
 	    offer: {
 	      // 'portfolio': 0.81,
@@ -6300,7 +6305,12 @@
 	  }, {
 	    key: 'getProducts',
 	    value: function getProducts() {
-	      return _products;
+	      return _products.filter(this.isOurProduct);
+	    }
+	  }, {
+	    key: 'isOurProduct',
+	    value: function isOurProduct(p) {
+	      return p.owner;
 	    }
 	  }, {
 	    key: 'getProduct',
@@ -6883,11 +6893,27 @@
 	  }, {
 	    key: 'getCompetitorsList',
 	    value: function getCompetitorsList(id) {
-	      return [
-	        // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
-	        // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
-	        // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
-	      ].sort(function (a, b) {
+	      var _this4 = this;
+
+	      return _products.filter(function (p) {
+	        return _this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
+	      }).map(function (p) {
+	        var name = p.name;
+	        var rating = (0, _computeRating2.default)(p, 0);
+	        var clients = p.KPI.clients;
+
+	        return {
+	          rating: rating,
+	          clients: clients,
+	          name: name
+	        };
+	      })
+	      // return [
+	      //   // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
+	      //   // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
+	      //   // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
+	      // ]
+	      .sort(function (a, b) {
 	        return a.rating > b.rating;
 	      });
 	    }
@@ -6957,10 +6983,10 @@
 	  }, {
 	    key: 'getAvailableSegments',
 	    value: function getAvailableSegments(id) {
-	      var _this4 = this;
+	      var _this5 = this;
 
 	      var value = this.getSegments(id).filter(function (s, segId) {
-	        return _this4.requirementsOKforSegment(id, segId).valid && _this4.clientsEnoughToFormSegment(id, segId);
+	        return _this5.requirementsOKforSegment(id, segId).valid && _this5.clientsEnoughToFormSegment(id, segId);
 	      });
 
 	      _logger2.default.debug('getAvailableSegments', value);
@@ -7101,6 +7127,17 @@
 	      }
 	      break;
 
+	    case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
+	      // { features , KPI, idea, name }
+	      var competitor = p.p;
+
+	      _products.push((0, _assign2.default)({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+	      // _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
+	      // _products[id].KPI = p.KPI;
+	      // _products[id].features = p.features;
+	      // _products[id].XP = 999;
+	      break;
+
 	    default:
 	      break;
 	  }
@@ -7127,6 +7164,7 @@
 	var PRODUCT_ACTIONS_SWITCH_STAGE = exports.PRODUCT_ACTIONS_SWITCH_STAGE = 'PRODUCT_ACTIONS_SWITCH_STAGE';
 	var PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = exports.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = 'PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS';
 	var PRODUCT_ACTIONS_TEST_HYPOTHESIS = exports.PRODUCT_ACTIONS_TEST_HYPOTHESIS = 'PRODUCT_ACTIONS_TEST_HYPOTHESIS';
+	var PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = exports.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = 'PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY';
 
 /***/ },
 /* 138 */
@@ -7377,7 +7415,7 @@
 	        name: 'middle business',
 	        userOrientedName: 'Малый бизнес',
 	        percentage: 3,
-	        price: 250,
+	        price: 125,
 	        rating: [0.5, 1.5, 1, 0, 7],
 	        requirements: [75, 0, 0, 0, 95]
 	      }]
@@ -7576,6 +7614,13 @@
 	      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_REMOVE,
 	      id: id,
 	      clients: clients
+	    });
+	  },
+
+	  createCompetitorCompany: function createCompetitorCompany(p) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY,
+	      p: p
 	    });
 	  }
 	};
@@ -8741,36 +8786,43 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	exports.default = {
-	  create: function create(i, basePoints, idea) {
-	    var points = _playerStore2.default.getPoints();
+	var create = function create(i, basePoints, idea) {
+	  var points = _playerStore2.default.getPoints();
 
-	    // basePoints must be an array
-	    _logger2.default.shit('WRITE proper basePoints array in mvp-creator.js');
-	    basePoints = [{ name: 'programming', amount: 100 }, { name: 'marketing', amount: 100 }];
+	  // basePoints must be an array
+	  _logger2.default.shit('WRITE proper basePoints array in mvp-creator.js');
+	  basePoints = [{ name: 'programming', amount: 100 }, { name: 'marketing', amount: 100 }];
 
-	    var hasEnoughPoints = true;
-	    basePoints.forEach(function (p) {
-	      if (points[p.name] < p.amount) hasEnoughPoints = false;
-	    });
+	  var hasEnoughPoints = true;
+	  basePoints.forEach(function (p) {
+	    if (points[p.name] < p.amount) hasEnoughPoints = false;
+	  });
 
-	    if (hasEnoughPoints) {
-	      // we can make prototype
+	  if (hasEnoughPoints) {
+	    // we can make prototype
 
-	      _logger2.default.shit('WRITE proper randomizer in mvp-creator.js');
+	    _logger2.default.shit('WRITE proper randomizer in mvp-creator.js');
 
-	      var p = _productGenerator2.default.create({ idea: idea, name: 'WWWEB HOSTING' });
+	    var p = _productGenerator2.default.create({ idea: idea, name: 'WWWEB HOSTING' });
 
-	      _playerActions2.default.spendPoints(basePoints[1].amount, basePoints[0].amount);
-	      _productActions2.default.setInitialProductSettings(i, p.features, p.KPI);
-	    }
-	  },
+	    _playerActions2.default.spendPoints(basePoints[1].amount, basePoints[0].amount);
+	    _productActions2.default.setInitialProductSettings(i, p.features, p.KPI);
 
-	  createCompetitorCompany: function createCompetitorCompany(idea) {
-	    var p = _productGenerator2.default.create({ idea: idea });
-
-	    _productActions2.default.createCompetitorCompany(p);
+	    createCompetitorCompany(idea);
+	    createCompetitorCompany(idea);
+	    createCompetitorCompany(idea);
 	  }
+	};
+
+	var createCompetitorCompany = function createCompetitorCompany(idea) {
+	  var p = _productGenerator2.default.create({ idea: idea });
+
+	  _productActions2.default.createCompetitorCompany(p);
+	};
+
+	exports.default = {
+	  create: create,
+	  createCompetitorCompany: createCompetitorCompany
 	};
 
 /***/ },
