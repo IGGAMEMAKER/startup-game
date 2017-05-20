@@ -7,18 +7,21 @@ const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Un
 
 export default {
   create(parameters) {
-    let { idea, name } = parameters;
+    let { idea, name, isCompetitor } = parameters;
 
     if (!idea) throw 'no idea in product-generator.js';
 
     if (!name) {
-      name = names[random(0, names.length)];
+      const index = Math.floor(random(0, names.length - 1));
+      name = names[index];
     }
 
     const defaultFeatures = productDescriptions(idea).features;
 
-    const luck = random(1, 6) / 10; // luck in 0.1-0.6
-    logger.debug(idea, defaultFeatures);
+    let maxRating = 6;
+    if (isCompetitor) maxRating = 8;
+
+    const luck = random(1, maxRating) / 10; // luck in 0.1-0.6
 
     const offer = {};
     defaultFeatures.forEach(f => {

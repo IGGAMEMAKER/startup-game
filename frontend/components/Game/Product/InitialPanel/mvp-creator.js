@@ -38,8 +38,9 @@ const create = (i, basePoints, idea) => {
 };
 
 const createCompetitorCompany = (idea) => {
-  const p = productGenerator.create({ idea });
+  const p = productGenerator.create({ idea, isCompetitor: true });
 
+  logger.debug('createCompetitorCompany', p);
   productActions.createCompetitorCompany(p);
 };
 

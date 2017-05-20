@@ -6896,10 +6896,10 @@
 	      var _this4 = this;
 
 	      return _products.filter(function (p) {
-	        return _this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
+	        return !_this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
 	      }).map(function (p) {
 	        var name = p.name;
-	        var rating = (0, _computeRating2.default)(p, 0);
+	        var rating = (0, _round2.default)((0, _computeRating2.default)(p, 0));
 	        var clients = p.KPI.clients;
 
 	        return {
@@ -8815,8 +8815,9 @@
 	};
 
 	var createCompetitorCompany = function createCompetitorCompany(idea) {
-	  var p = _productGenerator2.default.create({ idea: idea });
+	  var p = _productGenerator2.default.create({ idea: idea, isCompetitor: true });
 
+	  _logger2.default.debug('createCompetitorCompany', p);
 	  _productActions2.default.createCompetitorCompany(p);
 	};
 
@@ -11969,19 +11970,23 @@
 	exports.default = {
 	  create: function create(parameters) {
 	    var idea = parameters.idea,
-	        name = parameters.name;
+	        name = parameters.name,
+	        isCompetitor = parameters.isCompetitor;
 
 
 	    if (!idea) throw 'no idea in product-generator.js';
 
 	    if (!name) {
-	      name = names[(0, _random2.default)(0, names.length)];
+	      var index = Math.floor((0, _random2.default)(0, names.length - 1));
+	      name = names[index];
 	    }
 
 	    var defaultFeatures = (0, _productDescriptions2.default)(idea).features;
 
-	    var luck = (0, _random2.default)(1, 6) / 10; // luck in 0.1-0.6
-	    _logger2.default.debug(idea, defaultFeatures);
+	    var maxRating = 6;
+	    if (isCompetitor) maxRating = 8;
+
+	    var luck = (0, _random2.default)(1, maxRating) / 10; // luck in 0.1-0.6
 
 	    var offer = {};
 	    defaultFeatures.forEach(function (f) {

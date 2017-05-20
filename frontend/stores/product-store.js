@@ -607,10 +607,10 @@ class ProductStore extends EventEmitter {
   }
 
   getCompetitorsList(id) {
-    return _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))
+    return _products.filter(p => !this.isOurProduct(p) && p.idea === this.getIdea(id))
       .map(p => {
         const name = p.name;
-        const rating = computeRating(p, 0);
+        const rating = round(computeRating(p, 0));
         const clients = p.KPI.clients;
 
 
