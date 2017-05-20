@@ -603,9 +603,9 @@ class ProductStore extends EventEmitter {
 
   getCompetitorsList(id) {
     return [
-      { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
-      { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
-      { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
+      // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
+      // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
+      // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
     ].sort((a, b) => a.rating > b.rating);
   }
 

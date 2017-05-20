@@ -6883,7 +6883,11 @@
 	  }, {
 	    key: 'getCompetitorsList',
 	    value: function getCompetitorsList(id) {
-	      return [{ rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' }, { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' }, { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }].sort(function (a, b) {
+	      return [
+	        // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
+	        // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
+	        // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
+	      ].sort(function (a, b) {
 	        return a.rating > b.rating;
 	      });
 	    }
@@ -7348,7 +7352,7 @@
 	      CAC: 1,
 	      marketSize: 50000 * marketModifier(),
 	      mvp: {
-	        pp: 300,
+	        pp: 100,
 	        mp: 100
 	      },
 	      hypothesis: {
@@ -8731,13 +8735,9 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productDescriptions = __webpack_require__(141);
+	var _productGenerator = __webpack_require__(174);
 
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
-	var _random = __webpack_require__(158);
-
-	var _random2 = _interopRequireDefault(_random);
+	var _productGenerator2 = _interopRequireDefault(_productGenerator);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8755,50 +8755,21 @@
 	    });
 
 	    if (hasEnoughPoints) {
-	      (function () {
-	        // we can make prototype
+	      // we can make prototype
 
-	        _logger2.default.shit('WRITE proper randomizer in mvp-creator.js');
-	        var randomDefaultKPIs = {
-	          debt: 0, // technical debt. Shows, how fast can you implement new features
-	          clients: 10,
-	          newClients: 10,
+	      _logger2.default.shit('WRITE proper randomizer in mvp-creator.js');
 
-	          bugs: 10,
+	      var p = _productGenerator2.default.create({ idea: idea, name: 'WWWEB HOSTING' });
 
-	          currentUXBugs: 100,
-	          foundUXBugs: 0,
-	          fixedUXBugs: 0
-	        };
-
-	        var features = (0, _productDescriptions2.default)(idea).features;
-
-	        var luck = (0, _random2.default)(1, 6) / 10; // luck in 0.1-0.6
-	        _logger2.default.debug(idea, features);
-
-	        var offer = {};
-	        features.forEach(function (f) {
-	          offer[f.name] = Math.floor(luck * f.data);
-	        });
-
-	        var randomDefaultFeatures = {
-	          offer: offer, // features, that are attached to main idea
-	          development: {}, // backups, more dev servers, e.t.c.
-
-	          marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-	          analytics: {}, // simple analytics (main KPIs),
-	          // middle (segments analytics), mid+ (segments + versions),
-
-	          // not only chat with users, but also localisations, content updates
-	          // and all sort of things, that you need doing constantly
-	          support: {},
-	          payment: {}
-	        };
-
-	        _playerActions2.default.spendPoints(basePoints[1].amount, basePoints[0].amount);
-	        _productActions2.default.setInitialProductSettings(i, randomDefaultFeatures, randomDefaultKPIs);
-	      })();
+	      _playerActions2.default.spendPoints(basePoints[1].amount, basePoints[0].amount);
+	      _productActions2.default.setInitialProductSettings(i, p.features, p.KPI);
 	    }
+	  },
+
+	  createCompetitorCompany: function createCompetitorCompany(idea) {
+	    var p = _productGenerator2.default.create({ idea: idea });
+
+	    _productActions2.default.createCompetitorCompany(p);
 	  }
 	};
 
@@ -11916,6 +11887,84 @@
 	}(_preact.Component);
 
 	exports.default = ProductPanel;
+
+/***/ },
+/* 174 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _productDescriptions = __webpack_require__(141);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	var _random = __webpack_require__(158);
+
+	var _random2 = _interopRequireDefault(_random);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
+
+	exports.default = {
+	  create: function create(parameters) {
+	    var idea = parameters.idea,
+	        name = parameters.name;
+
+
+	    if (!idea) throw 'no idea in product-generator.js';
+
+	    if (!name) {
+	      name = names[(0, _random2.default)(0, names.length)];
+	    }
+
+	    var defaultFeatures = (0, _productDescriptions2.default)(idea).features;
+
+	    var luck = (0, _random2.default)(1, 6) / 10; // luck in 0.1-0.6
+	    _logger2.default.debug(idea, defaultFeatures);
+
+	    var offer = {};
+	    defaultFeatures.forEach(function (f) {
+	      offer[f.name] = Math.floor(luck * f.data);
+	    });
+
+	    var features = {
+	      offer: offer, // features, that are attached to main idea
+	      development: {}, // backups, more dev servers, e.t.c.
+
+	      marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
+	      analytics: {}, // simple analytics (main KPIs),
+	      // middle (segments analytics), mid+ (segments + versions),
+
+	      // not only chat with users, but also localisations, content updates
+	      // and all sort of things, that you need doing constantly
+	      support: {},
+	      payment: {}
+	    };
+
+	    var KPI = {
+	      debt: 0, // technical debt. Shows, how fast can you implement new features
+	      clients: 10,
+	      newClients: 10,
+
+	      bugs: 10,
+
+	      currentUXBugs: 100,
+	      foundUXBugs: 0,
+	      fixedUXBugs: 0
+	    };
+
+	    return { features: features, KPI: KPI, idea: idea, name: name };
+	  }
+	};
 
 /***/ }
 /******/ ]);

@@ -81,7 +81,7 @@ export default {
       CAC: 1,
       marketSize: 50000 * marketModifier(),
       mvp: {
-        pp: 300,
+        pp: 100,
         mp: 100
       },
       hypothesis: {
