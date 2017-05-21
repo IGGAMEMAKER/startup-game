@@ -6,6 +6,8 @@
   /*--light-green: #00cc99;*/
   --light-green: rgba(0, 204, 37, 0.22);
   --light-red: rgba(200, 0, 0, 0.22);
+
+  --bright-green: rgba(0, 204, 37, 1);
   /*--light-red: #8b454f;*/
 
   --active-menu-item-color: red;
@@ -197,6 +199,14 @@ textarea {
   display: none;
 }
 
+.positive {
+  color: var(--bright-green);
+}
+
+.negative {
+  color: var(--light-red);
+}
+
 .navigation {
   display: inline-block;
   padding: 7px;
@@ -348,10 +358,6 @@ textarea {
   padding-left: 20px;
 }
 
-.competitor {
-  padding-bottom: 9px;
-}
-
 .info {
   /*color: var(--info);*/
   color: blue;
@@ -363,6 +369,13 @@ textarea {
   text-align: center;
   cursor: pointer;
   background-color: aliceblue;
+}
+
+
+.competitor {
+  padding: 9px;
+  border: solid thin #8B2252;
+  margin-bottom: 9px;
 }
 
 .competitor.competeable {

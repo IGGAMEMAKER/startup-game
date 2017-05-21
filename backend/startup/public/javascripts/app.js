@@ -5713,8 +5713,13 @@
 	  up: '\u2191',
 	  upRight: '\u2197',
 	  downRight: '\u2198',
+	  down: '\u2193',
 	  ok: '\u2713',
-	  dot: '\xB7'
+	  dot: '\xB7',
+
+	  triangle: {
+	    up: '\u25B2'
+	  }
 	};
 
 /***/ },
@@ -6929,7 +6934,8 @@
 
 	        var offer = _this4.getDefaults(id).features.map(function (f) {
 	          return {
-	            name: f.shortDescription,
+	            name: f.name,
+	            description: f.shortDescription,
 	            value: features[f.name]
 	          };
 	        }).sort(function (a, b) {
@@ -6942,7 +6948,7 @@
 	          name: name,
 	          features: offer,
 	          cost: _computeCompanyCost2.default.compute(p),
-	          improvements: _companyMerger2.default.merge(ourCompany, p)
+	          improvements: _companyMerger2.default.merge(ourCompany, p).improvements
 	        };
 	      })
 	      // return [
@@ -11080,10 +11086,6 @@
 	  value: true
 	});
 
-	var _stringify = __webpack_require__(98);
-
-	var _stringify2 = _interopRequireDefault(_stringify);
-
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -11109,6 +11111,10 @@
 	var _round = __webpack_require__(96);
 
 	var _round2 = _interopRequireDefault(_round);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
 
 	var _UI = __webpack_require__(102);
 
@@ -11145,22 +11151,60 @@
 	      }
 
 	      var name = i >= 0 ? '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
-	      // <hr width="80%" />
 
 	      var features = c.features.map(function (f, ii) {
+	        _logger2.default.debug('compet improvs', i, c.improvements, f);
+	        _logger2.default.shit('EXTRA SHIT!!! I=== -1 IS HARDCODED CHECKING FOR OUR COMPANY. REWRITE THIS');
+
+	        var difference = c.improvements.filter(function (d) {
+	          return d.name === f.name;
+	        });
+
+	        var differencePhrase = '';
+	        if (difference.length) {
+	          // competitor feature is better than ours
+
+	          differencePhrase = (0, _preact.h)(
+	            'span',
+	            null,
+	            (0, _preact.h)(
+	              'span',
+	              { className: 'positive' },
+	              _UI2.default.symbols.triangle.up
+	            ),
+	            ' (+',
+	            difference[0].difference,
+	            ' XP)'
+	          );
+	        } else {
+	          differencePhrase = ''; // <span className="negative">{UI.symbols.up}</span>;
+	        }
+
 	        return (0, _preact.h)(
 	          'li',
 	          null,
-	          f.name,
+	          f.description,
 	          ': ',
 	          f.value,
-	          'XP'
+	          'XP ',
+	          differencePhrase
 	        );
 	      });
 
 	      var hasEnoughMoney = money >= c.cost;
 
-	      var improvements = (0, _stringify2.default)(c.improvements);
+	      var theyAreBetterPhrase = '';
+
+	      var betterFeaturesCount = c.improvements.length;
+	      if (betterFeaturesCount) {
+	        theyAreBetterPhrase = (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          '\u041E\u043D\u0438 \u043B\u0443\u0447\u0448\u0435 \u043D\u0430\u0441 \u0432 ',
+	          betterFeaturesCount,
+	          ' \u043E\u0431\u043B\u0430\u0441\u0442\u044F\u0445'
+	        );
+	      }
 
 	      return (0, _preact.h)(
 	        'div',
@@ -11191,6 +11235,7 @@
 	          { className: 'offset-mid' },
 	          '\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438'
 	        ),
+	        theyAreBetterPhrase,
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'offset-mid' },
@@ -11209,16 +11254,9 @@
 	        ),
 	        (0, _preact.h)(
 	          'div',
-	          { className: 'offset-mid' },
-	          '\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: $',
-	          improvements,
-	          '$'
-	        ),
-	        (0, _preact.h)(
-	          'div',
 	          { className: 'offset-mid ' + (i === -1 ? 'hide' : '') },
 	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u041A\u0443\u043F\u0438\u0442\u044C \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044E \u0437\u0430 ' + c.cost + '$',
+	            text: '\u041A\u0443\u043F\u0438\u0442\u044C \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044E "' + c.name + '"',
 	            primary: hasEnoughMoney,
 	            disabled: !hasEnoughMoney,
 	            onClick: onBuyCompany ? onBuyCompany : function () {}

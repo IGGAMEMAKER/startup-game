@@ -629,7 +629,8 @@ class ProductStore extends EventEmitter {
         const offer = this.getDefaults(id).features
           .map(f => {
             return {
-              name: f.shortDescription,
+              name: f.name,
+              description: f.shortDescription,
               value: features[f.name]
             }
           })
@@ -641,7 +642,7 @@ class ProductStore extends EventEmitter {
           name,
           features: offer,
           cost: companyCostComputer.compute(p),
-          improvements: companyMerger.merge(ourCompany, p)
+          improvements: companyMerger.merge(ourCompany, p).improvements
         }
       })
       // return [

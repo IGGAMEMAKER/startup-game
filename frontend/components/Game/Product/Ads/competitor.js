@@ -1,6 +1,8 @@
 import { h, Component } from 'preact';
 import round from '../../../../helpers/math/round';
 
+import logger from '../../../../helpers/logger/logger';
+
 import UI from '../../../UI';
 
 type PropsType = {};
@@ -26,13 +28,41 @@ export default class Competitor extends Component {
     }
 
     const name = i >= 0 ? `Конкурент №${i + 1} - "${c.name}"` : `"${c.name}"`;
-    // <hr width="80%" />
 
-    const features = c.features.map((f, ii) => (<li>{f.name}: {f.value}XP</li>));
+    const features = c.features.map((f, ii) => {
+      logger.debug('compet improvs', i, c.improvements, f);
+      logger.shit('EXTRA SHIT!!! I=== -1 IS HARDCODED CHECKING FOR OUR COMPANY. REWRITE THIS');
+
+      const difference = c.improvements.filter(d => d.name === f.name);
+
+      let differencePhrase = '';
+      if (difference.length) {
+        // competitor feature is better than ours
+
+        differencePhrase = (
+          <span>
+            <span className="positive">{UI.symbols.triangle.up}</span> (+{difference[0].difference} XP)
+          </span>
+        )
+      } else {
+        differencePhrase = ''; // <span className="negative">{UI.symbols.up}</span>;
+      }
+
+      return (
+        <li>{f.description}: {f.value}XP {differencePhrase}</li>
+      );
+    });
 
     const hasEnoughMoney = money >= c.cost;
 
-    const improvements = JSON.stringify(c.improvements);
+    let theyAreBetterPhrase = '';
+
+    const betterFeaturesCount = c.improvements.length;
+    if (betterFeaturesCount) {
+      theyAreBetterPhrase = (
+        <div className="offset-mid">Они лучше нас в {betterFeaturesCount} областях</div>
+      )
+    }
 
     return (
       <div className={background}>
@@ -40,13 +70,13 @@ export default class Competitor extends Component {
         <div className="offset-min">Рейтинг: {c.rating} ({canWeCompeteThem})</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
         <div className="offset-mid">Технологии</div>
+        {theyAreBetterPhrase}
         <div className="offset-mid"><ul>{features}</ul></div>
         <div className="offset-mid">Рыночная стоимость: ${c.cost}$</div>
-        <div className="offset-mid">Улучшения: ${improvements}$</div>
 
         <div className={`offset-mid ${i === -1 ? 'hide' : ''}`}>
           <UI.Button
-            text={`Купить компанию за ${c.cost}$`}
+            text={`Купить компанию "${c.name}"`}
             primary={hasEnoughMoney}
             disabled={!hasEnoughMoney}
             onClick={onBuyCompany ? onBuyCompany : () => {}}
