@@ -64,6 +64,8 @@ export default class Competitor extends Component {
       )
     }
 
+    const buyingCompanyButtonVisible = i === -1 ? 'hide' : '';
+
     return (
       <div className={background}>
         <div className="offset-min">{name}</div>
@@ -74,7 +76,7 @@ export default class Competitor extends Component {
         <div className="offset-mid"><ul>{features}</ul></div>
         <div className="offset-mid">Рыночная стоимость: ${c.cost}$</div>
 
-        <div className={`offset-mid ${i === -1 ? 'hide' : ''}`}>
+        <div className={`offset-mid ${buyingCompanyButtonVisible}`}>
           <UI.Button
             text={`Купить компанию "${c.name}"`}
             primary={hasEnoughMoney}

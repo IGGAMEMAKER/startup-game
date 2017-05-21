@@ -11206,6 +11206,8 @@
 	        );
 	      }
 
+	      var buyingCompanyButtonVisible = i === -1 ? 'hide' : '';
+
 	      return (0, _preact.h)(
 	        'div',
 	        { className: background },
@@ -11254,7 +11256,7 @@
 	        ),
 	        (0, _preact.h)(
 	          'div',
-	          { className: 'offset-mid ' + (i === -1 ? 'hide' : '') },
+	          { className: 'offset-mid ' + buyingCompanyButtonVisible },
 	          (0, _preact.h)(_UI2.default.Button, {
 	            text: '\u041A\u0443\u043F\u0438\u0442\u044C \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044E "' + c.name + '"',
 	            primary: hasEnoughMoney,
