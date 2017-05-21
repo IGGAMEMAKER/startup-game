@@ -97,7 +97,7 @@ export default {
   },
 
   canShowCompetitorsTab() {
-    return true;
+    // return true;
     return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
   },
 
