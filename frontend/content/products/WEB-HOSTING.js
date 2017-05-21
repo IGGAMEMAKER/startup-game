@@ -1,4 +1,3 @@
-// import flux from '../../flux';
 import scheduleStore from '../../stores/schedule-store';
 
 const timeModifier = (value) => {

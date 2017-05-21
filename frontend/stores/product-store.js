@@ -616,6 +616,8 @@ class ProductStore extends EventEmitter {
   }
 
   getCompetitorsList(id) {
+    const ourCompany = _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))[0];
+
     return _products.filter(p => !this.isOurProduct(p) && p.idea === this.getIdea(id))
       .map(p => {
         const name = p.name;
@@ -638,7 +640,8 @@ class ProductStore extends EventEmitter {
           clients,
           name,
           features: offer,
-          cost: companyCostComputer.compute(p)
+          cost: companyCostComputer.compute(p),
+          improvements: companyMerger.merge(ourCompany, p)
         }
       })
       // return [
@@ -838,16 +841,17 @@ Dispatcher.register((p: PayloadType) => {
 
       _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
       break;
-    
+
     case c.PRODUCT_ACTIONS_COMPANY_BUY:
       const { buyerId, sellerId } = p;
       const buyer = _products[buyerId];
       const seller = _products[sellerId];
-      
+
       const difference = companyMerger.merge(buyer, seller);
+
       _products[buyerId].KPI.clients = difference.clients;
-      _products[buyerId].features = difference.features;
-      
+      _products[buyerId].features.offer = difference.features;
+
       _products.splice(sellerId, 1);
       break;
 

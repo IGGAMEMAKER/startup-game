@@ -6914,6 +6914,10 @@
 	    value: function getCompetitorsList(id) {
 	      var _this4 = this;
 
+	      var ourCompany = _products.filter(function (p) {
+	        return _this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
+	      })[0];
+
 	      return _products.filter(function (p) {
 	        return !_this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
 	      }).map(function (p) {
@@ -6937,7 +6941,8 @@
 	          clients: clients,
 	          name: name,
 	          features: offer,
-	          cost: _computeCompanyCost2.default.compute(p)
+	          cost: _computeCompanyCost2.default.compute(p),
+	          improvements: _companyMerger2.default.merge(ourCompany, p)
 	        };
 	      })
 	      // return [
@@ -7174,8 +7179,9 @@
 	      var seller = _products[sellerId];
 
 	      var difference = _companyMerger2.default.merge(buyer, seller);
+
 	      _products[buyerId].KPI.clients = difference.clients;
-	      _products[buyerId].features = difference.features;
+	      _products[buyerId].features.offer = difference.features;
 
 	      _products.splice(sellerId, 1);
 	      break;
@@ -7324,8 +7330,7 @@
 	  var year = Math.floor(day / 30 / 12);
 
 	  return Math.floor(Math.pow(1.25, year) * value);
-	}; // import flux from '../../flux';
-
+	};
 
 	var marketModifier = function marketModifier() {
 	  var day = _scheduleStore2.default.getDay();
@@ -11075,6 +11080,10 @@
 	  value: true
 	});
 
+	var _stringify = __webpack_require__(98);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
+
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -11151,6 +11160,8 @@
 
 	      var hasEnoughMoney = money >= c.cost;
 
+	      var improvements = (0, _stringify2.default)(c.improvements);
+
 	      return (0, _preact.h)(
 	        'div',
 	        { className: background },
@@ -11194,6 +11205,13 @@
 	          { className: 'offset-mid' },
 	          '\u0420\u044B\u043D\u043E\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: $',
 	          c.cost,
+	          '$'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          '\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: $',
+	          improvements,
 	          '$'
 	        ),
 	        (0, _preact.h)(
@@ -12207,13 +12225,30 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var merge = function merge(buyer, seller) {
-	  _logger2.default.debug('buyer is', buyer);
+	  var features = {};
+	  var improvements = [];
 
-	  (0, _productDescriptions2.default)(buyer.idea);
+	  // logger.debug('buyer is', buyer);
+	  // logger.debug('seller is', seller);
+
+	  (0, _productDescriptions2.default)(buyer.idea).features.map(function (f, i) {
+	    var current = buyer.features.offer[f.name];
+	    var next = seller.features.offer[f.name];
+
+	    if (current < next) {
+	      improvements.push({ name: f.name, i: i, value: next, difference: next - current });
+	      features[f.name] = next;
+	    } else {
+	      features[f.name] = current;
+	    }
+	  });
+
+	  // logger.debug({ improvements, features });
 
 	  return {
 	    clients: buyer.KPI.clients,
-	    features: buyer.features
+	    improvements: improvements,
+	    features: features
 	  };
 	};
 
