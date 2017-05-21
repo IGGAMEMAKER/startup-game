@@ -12236,8 +12236,8 @@
 	  // customers also influence cost
 	  cost += c.KPI.clients * defaults.CAC * 1.5;
 
-	  // return Math.ceil(cost);
-	  return 1;
+	  return Math.ceil(cost);
+	  // return 1;
 	};
 
 	exports.default = {
