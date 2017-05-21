@@ -11074,9 +11074,9 @@
 	      var rating = _flux2.default.productStore.getRating(id);
 	      // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
 
-	      var buyCompany = function buyCompany(buyerId, sellerId) {
+	      var buyCompany = function buyCompany(buyerId, sellerId, transferSum) {
 	        _flux2.default.productActions.buyCompany(buyerId, sellerId);
-	        _flux2.default.playerActions.decreaseMoney(money);
+	        _flux2.default.playerActions.decreaseMoney(transferSum);
 	      };
 
 	      var competitorList = competitors.map(function (c, i) {
@@ -11085,7 +11085,9 @@
 	          i: i,
 	          rating: rating,
 	          money: money,
-	          onBuyCompany: buyCompany(0, i + 1)
+	          onBuyCompany: function onBuyCompany() {
+	            buyCompany(0, i + 1, c.cost);
+	          }
 	        });
 	      });
 
@@ -11234,7 +11236,7 @@
 	        ),
 	        (0, _preact.h)(
 	          'div',
-	          { className: 'offset-mid' },
+	          { className: 'offset-mid ' + (i === -1 ? 'hide' : '') },
 	          (0, _preact.h)(_UI2.default.Button, {
 	            text: '\u041A\u0443\u043F\u0438\u0442\u044C \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044E \u0437\u0430 ' + c.cost + '$',
 	            primary: hasEnoughMoney,
@@ -12189,7 +12191,7 @@
 
 	  var featureCost = 15;
 
-	  _logger2.default.debug('computeCompanyCost', c);
+	  // logger.debug('computeCompanyCost', c);
 
 	  var defaults = (0, _productDescriptions2.default)(c.idea);
 	  var defaultFeatures = defaults.features;
@@ -12215,6 +12217,7 @@
 	  cost += c.KPI.clients * defaults.CAC * 1.5;
 
 	  return Math.ceil(cost);
+	  // return 1;
 	};
 
 	exports.default = {

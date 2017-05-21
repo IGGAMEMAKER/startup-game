@@ -8,7 +8,7 @@ const compute = (c) => {
 
   const featureCost = 15;
 
-  logger.debug('computeCompanyCost', c);
+  // logger.debug('computeCompanyCost', c);
 
   const defaults = productDescriptions(c.idea);
   const defaultFeatures = defaults.features;
@@ -35,6 +35,7 @@ const compute = (c) => {
 
 
   return Math.ceil(cost);
+  // return 1;
 };
 
 export default {

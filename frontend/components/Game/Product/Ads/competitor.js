@@ -40,7 +40,7 @@ export default class Competitor extends Component {
         <div className="offset-mid">Технологии</div>
         <div className="offset-mid"><ul>{features}</ul></div>
         <div className="offset-mid">Рыночная стоимость: ${c.cost}$</div>
-        <div className="offset-mid">
+        <div className={`offset-mid ${i === -1 ? 'hide' : ''}`}>
           <UI.Button
             text={`Купить компанию за ${c.cost}$`}
             primary={hasEnoughMoney}

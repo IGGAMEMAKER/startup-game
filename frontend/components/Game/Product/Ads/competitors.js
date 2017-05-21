@@ -27,9 +27,9 @@ export default class Competitors extends Component {
     const rating = flux.productStore.getRating(id);
         // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
 
-    const buyCompany = (buyerId, sellerId) => {
+    const buyCompany = (buyerId, sellerId, transferSum) => {
       flux.productActions.buyCompany(buyerId, sellerId);
-      flux.playerActions.decreaseMoney(money);
+      flux.playerActions.decreaseMoney(transferSum);
     };
 
     const competitorList = competitors.map((c, i) =>
@@ -38,7 +38,7 @@ export default class Competitors extends Component {
         i={i}
         rating={rating}
         money={money}
-        onBuyCompany={buyCompany(0, i + 1)}
+        onBuyCompany={() => { buyCompany(0, i + 1, c.cost) }}
       />
     );
 
