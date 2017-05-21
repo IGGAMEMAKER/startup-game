@@ -9335,18 +9335,37 @@
 	    }, _this.renderClientTab = function (id, product) {
 	      var idea = product.idea;
 
-	      var marketing = _this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
 	      var churn = _productStore2.default.getChurnRate(id).pretty;
 	      var disloyalClients = _productStore2.default.getDisloyalClients(id);
 
 	      var market = _productStore2.default.getMarketShare(id);
+	      var ourCompanyCost = _productStore2.default.getCompanyCost(id);
 
 	      var nearestCompetitor = _this.renderCompetitors(id, _productStore2.default.getRating(id));
 	      var segmentTab = _this.renderSegmentTab(id);
+	      var adTab = _this.renderAdTab(id, product);
 
-	      // ({market.share}% рынка)
-	      var ourCompanyCost = _productStore2.default.getCompanyCost(id);
+	      var churnFeatures = '';
+	      if (_stages2.default.canShowChurnFeatures()) {
+	        var marketing = _this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
+
+	        churnFeatures = (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupDescriptionWrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0441\u043D\u0438\u0437\u0438\u0442\u044C \u043E\u0442\u0442\u043E\u043A \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u043E\u0432\u044B\u0448\u0430\u044F \u0438\u0445 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            marketing
+	          )
+	        );
+	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -9368,11 +9387,10 @@
 	          ourCompanyCost,
 	          '$'
 	        ),
-	        _this.renderAdTab(id, product),
+	        adTab,
 	        nearestCompetitor,
 	        (0, _preact.h)('br', null),
 	        segmentTab,
-	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
 	          null,
@@ -9382,20 +9400,7 @@
 	          churn,
 	          '%)'
 	        ),
-	        _stages2.default.canShowChurnFeatures() ? (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupDescriptionWrapper' },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupDescription' },
-	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0441\u043D\u0438\u0437\u0438\u0442\u044C \u043E\u0442\u0442\u043E\u043A \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u043E\u0432\u044B\u0448\u0430\u044F \u0438\u0445 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupBody' },
-	            marketing
-	          )
-	        ) : ''
+	        churnFeatures
 	      );
 	    }, _this.renderAdTab = function (id, product) {
 	      return (0, _preact.h)(
@@ -11040,6 +11045,7 @@
 	      var freeClients = marketSize - ourClients - unbeatableClients;
 
 	      var rating = _flux2.default.productStore.getRating(id);
+	      var money = _flux2.default.playerStore.getMoney();
 	      // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
 	      return (0, _preact.h)(
 	        'div',
@@ -11048,7 +11054,7 @@
 	          'div',
 	          null,
 	          competitors.map(function (c, i) {
-	            return (0, _preact.h)(_competitor2.default, { rating: rating, c: c, i: i });
+	            return (0, _preact.h)(_competitor2.default, { rating: rating, c: c, i: i, money: money });
 	          })
 	        )
 	      );
@@ -11117,7 +11123,8 @@
 	    value: function render(_ref) {
 	      var rating = _ref.rating,
 	          c = _ref.c,
-	          i = _ref.i;
+	          i = _ref.i,
+	          money = _ref.money;
 
 	      var needToCompeteRating = c.rating + 1;
 	      var competeable = needToCompeteRating < rating;
@@ -11143,6 +11150,8 @@
 	          'XP'
 	        );
 	      });
+
+	      var hasEnoughMoney = money >= c.cost;
 
 	      return (0, _preact.h)(
 	        'div',
@@ -11185,7 +11194,7 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'offset-mid' },
-	          (0, _preact.h)(_UI2.default.Button, { text: '\u041A\u0443\u043F\u0438\u0442\u044C \u0437\u0430 ' + c.cost + '$' })
+	          (0, _preact.h)(_UI2.default.Button, { text: '\u041A\u0443\u043F\u0438\u0442\u044C \u0437\u0430 ' + c.cost + '$', primary: hasEnoughMoney, disabled: !hasEnoughMoney })
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -12140,14 +12149,12 @@
 	  var defaultFeatures = defaults.features;
 
 	  // sum technology part
-	  var offer = {};
 	  _logger2.default.shit('each feature has it\'s own cost. Servers are more expensive');
 
 	  var totalXP = 0;
 
 	  var featureSum = 0;
 	  defaultFeatures.forEach(function (f) {
-	    // offer[f.name] = Math.floor(luck * f.data);
 	    var xp = c.features.offer[f.name];
 
 	    totalXP += xp / 1000;

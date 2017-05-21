@@ -12,7 +12,7 @@ type ResponseType = {}
 export default class Competitor extends Component {
   componentWillMount() {}
 
-  render({ rating, c, i }) {
+  render({ rating, c, i, money }) {
     const needToCompeteRating = c.rating + 1;
     const competeable = needToCompeteRating < rating;
     const canWeCompeteThem = competeable ?
@@ -32,6 +32,8 @@ export default class Competitor extends Component {
 
     const features = c.features.map((f, ii) => (<li>{f.name}: {f.value}XP</li>));
 
+    const hasEnoughMoney = money >= c.cost;
+
     return (
       <div className={background}>
         <div className="offset-min">{name}</div>
@@ -40,7 +42,7 @@ export default class Competitor extends Component {
         <div className="offset-mid">Технологии</div>
         <div className="offset-mid"><ul>{features}</ul></div>
         <div className="offset-mid">
-          <UI.Button text={`Купить за ${c.cost}$`} />
+          <UI.Button text={`Купить за ${c.cost}$`} primary={hasEnoughMoney} disabled={!hasEnoughMoney} />
         </div>
 
 

@@ -406,39 +406,39 @@ export default class ProductPanel extends Component {
 
   renderClientTab = (id, product) => {
     const { idea } = product;
-    const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
     const churn = productStore.getChurnRate(id).pretty;
     const disloyalClients = productStore.getDisloyalClients(id);
 
     const market = productStore.getMarketShare(id);
+    const ourCompanyCost = productStore.getCompanyCost(id);
 
     const nearestCompetitor = this.renderCompetitors(id, productStore.getRating(id));
     const segmentTab = this.renderSegmentTab(id);
+    const adTab = this.renderAdTab(id, product);
 
-    // ({market.share}% рынка)
-    const ourCompanyCost = productStore.getCompanyCost(id);
+    let churnFeatures = '';
+    if (stageHelper.canShowChurnFeatures()) {
+      const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
+
+      churnFeatures =
+        <div className="featureGroupDescriptionWrapper">
+          <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
+          <div className="featureGroupBody">{marketing}</div>
+        </div>
+    }
+
     return (
       <div>
         <div className="featureGroupTitle">Работа с клиентами</div>
         <div>Наши клиенты: {market.clients}</div>
         <div>Наша рыночная стоимость: {ourCompanyCost}$</div>
-
-        {this.renderAdTab(id, product)}
-
+        {adTab}
         {nearestCompetitor}
         <br />
         {segmentTab}
-        <br />
         <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
-        {stageHelper.canShowChurnFeatures()
-          ?
-          <div className="featureGroupDescriptionWrapper">
-            <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
-            <div className="featureGroupBody">{marketing}</div>
-          </div>
-          : ''
-        }
+        {churnFeatures}
       </div>
     );
   };

@@ -23,10 +23,13 @@ export default class Competitors extends Component {
     const freeClients = marketSize - ourClients - unbeatableClients;
 
     const rating = flux.productStore.getRating(id);
+    const money = flux.playerStore.getMoney();
         // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
     return (
       <div>
-        <div>{competitors.map((c, i) => <Competitor rating={rating} c={c} i={i} />)}</div>
+        <div>
+          {competitors.map((c, i) => <Competitor rating={rating} c={c} i={i} money={money} />)}
+        </div>
       </div>
     );
   }

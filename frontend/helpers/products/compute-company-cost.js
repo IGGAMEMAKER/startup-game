@@ -14,14 +14,12 @@ const compute = (c) => {
   const defaultFeatures = defaults.features;
 
   // sum technology part
-  const offer = {};
   logger.shit(`each feature has it's own cost. Servers are more expensive`);
 
   let totalXP = 0;
 
   let featureSum = 0;
   defaultFeatures.forEach(f => {
-    // offer[f.name] = Math.floor(luck * f.data);
     const xp = c.features.offer[f.name];
 
     totalXP += xp / 1000;
