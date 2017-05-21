@@ -1,4 +1,4 @@
-import productDescriptions from '../../constants/products/product-descriptions';
+import productDescriptions from './product-descriptions';
 import random from '../math/random';
 
 import logger from '../logger/logger';

@@ -1,4 +1,4 @@
-import ProductDescriptions from '../../constants/products/product-descriptions';
+import ProductDescriptions from './product-descriptions';
 import logger from '../logger/logger';
 
 const getSpecificProductFeatureListByIdea = idea => {

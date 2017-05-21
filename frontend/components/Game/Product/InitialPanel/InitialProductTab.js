@@ -5,7 +5,7 @@ import Button from '../../../Shared/Button';
 
 import mvpCreator from './mvp-creator';
 
-import productDescriptions from '../../../../constants/products/product-descriptions';
+import productDescriptions from '../../../../helpers/products/product-descriptions';
 
 export default class InitialProductTab extends Component {
   render({ product, id, onCreatePrototype }) {

@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 
-import ProductDescriptions from '../../../../constants/products/product-descriptions';
+import ProductDescriptions from '../../../../helpers/products/product-descriptions';
 import flux from '../../../../flux';
 import UI from '../../../UI';
 

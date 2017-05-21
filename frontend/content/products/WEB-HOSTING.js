@@ -29,7 +29,7 @@ const marketModifier = () => {
 
 const cacModifier = () => {
   return marketModifier()
-}
+};
 
 export default {
   compute: () => {

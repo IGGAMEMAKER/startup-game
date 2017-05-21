@@ -6232,7 +6232,7 @@
 
 	var _computeRating2 = _interopRequireDefault(_computeRating);
 
-	var _productDescriptions = __webpack_require__(141);
+	var _productDescriptions = __webpack_require__(176);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -7245,7 +7245,7 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(141);
+	var _productDescriptions = __webpack_require__(176);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -7280,45 +7280,7 @@
 	};
 
 /***/ },
-/* 141 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (idea) {
-	  switch (idea) {
-	    case IDEAS.IDEA_WEB_STUDIO:
-	      return _WEBSTUDIO2.default;
-	      break;
-	    case IDEAS.IDEA_WEB_HOSTING:
-	      return _WEBHOSTING2.default.compute();
-	      break;
-	  }
-	};
-
-	var _ideas = __webpack_require__(138);
-
-	var IDEAS = _interopRequireWildcard(_ideas);
-
-	var _WEBSTUDIO = __webpack_require__(142);
-
-	var _WEBSTUDIO2 = _interopRequireDefault(_WEBSTUDIO);
-
-	var _WEBHOSTING = __webpack_require__(143);
-
-	var _WEBHOSTING2 = _interopRequireDefault(_WEBHOSTING);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	;
-
-/***/ },
+/* 141 */,
 /* 142 */
 /***/ function(module, exports) {
 
@@ -8757,7 +8719,7 @@
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _productDescriptions = __webpack_require__(141);
+	var _productDescriptions = __webpack_require__(176);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -8888,7 +8850,7 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(141);
+	var _productDescriptions = __webpack_require__(176);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -10780,7 +10742,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productDescriptions = __webpack_require__(141);
+	var _productDescriptions = __webpack_require__(176);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -12172,7 +12134,7 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(141);
+	var _productDescriptions = __webpack_require__(176);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -12216,8 +12178,8 @@
 	  // customers also influence cost
 	  cost += c.KPI.clients * defaults.CAC * 1.5;
 
-	  return Math.ceil(cost);
-	  // return 1;
+	  // return Math.ceil(cost);
+	  return 1;
 	};
 
 	exports.default = {
@@ -12226,14 +12188,28 @@
 
 /***/ },
 /* 175 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _productDescriptions = __webpack_require__(176);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	var merge = function merge(buyer, seller) {
+	  _logger2.default.debug('buyer is', buyer);
+
+	  (0, _productDescriptions2.default)(buyer.idea);
 
 	  return {
 	    clients: buyer.KPI.clients,
@@ -12244,6 +12220,45 @@
 	exports.default = {
 	  merge: merge
 	};
+
+/***/ },
+/* 176 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (idea) {
+	  switch (idea) {
+	    case IDEAS.IDEA_WEB_STUDIO:
+	      return _WEBSTUDIO2.default;
+	      break;
+	    case IDEAS.IDEA_WEB_HOSTING:
+	      return _WEBHOSTING2.default.compute();
+	      break;
+	  }
+	};
+
+	var _ideas = __webpack_require__(138);
+
+	var IDEAS = _interopRequireWildcard(_ideas);
+
+	var _WEBSTUDIO = __webpack_require__(142);
+
+	var _WEBSTUDIO2 = _interopRequireDefault(_WEBSTUDIO);
+
+	var _WEBHOSTING = __webpack_require__(143);
+
+	var _WEBHOSTING2 = _interopRequireDefault(_WEBHOSTING);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	;
 
 /***/ }
 /******/ ]);

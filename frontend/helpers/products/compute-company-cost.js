@@ -1,4 +1,4 @@
-import productDescriptions from '../../constants/products/product-descriptions';
+import productDescriptions from './product-descriptions';
 import logger from '../logger/logger';
 
 import random from '../math/random';
@@ -34,8 +34,8 @@ const compute = (c) => {
   cost += c.KPI.clients * defaults.CAC * 1.5;
 
 
-  return Math.ceil(cost);
-  // return 1;
+  // return Math.ceil(cost);
+  return 1;
 };
 
 export default {

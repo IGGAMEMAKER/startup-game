@@ -13,7 +13,7 @@ const EC = 'PRODUCT_EVENT_CHANGE';
 import percentify from '../helpers/math/percentify';
 
 import computeRating from '../helpers/products/compute-rating';
-import productDescriptions from '../constants/products/product-descriptions';
+import productDescriptions from '../helpers/products/product-descriptions';
 
 import * as PRODUCT_STAGES from '../constants/products/product-stages';
 
