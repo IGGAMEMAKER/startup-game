@@ -45,7 +45,7 @@ export default class Competitor extends Component {
             text={`Купить компанию за ${c.cost}$`}
             primary={hasEnoughMoney}
             disabled={!hasEnoughMoney}
-            onClick={onBuyCompany ? onBuyCompany || () => {}}
+            onClick={onBuyCompany ? onBuyCompany : () => {}}
           />
         </div>
 
