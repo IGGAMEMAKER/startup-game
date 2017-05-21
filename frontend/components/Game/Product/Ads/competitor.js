@@ -3,16 +3,14 @@ import round from '../../../../helpers/math/round';
 
 import UI from '../../../UI';
 
-type PropsType = {}
+type PropsType = {};
 
-type StateType = {}
+type StateType = {};
 
-type ResponseType = {}
+type ResponseType = {};
 
 export default class Competitor extends Component {
-  componentWillMount() {}
-
-  render({ rating, c, i, money }) {
+  render({ rating, c, i, onBuyCompany, money }) {
     const needToCompeteRating = c.rating + 1;
     const competeable = needToCompeteRating < rating;
     const canWeCompeteThem = competeable ?
@@ -41,8 +39,14 @@ export default class Competitor extends Component {
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
         <div className="offset-mid">Технологии</div>
         <div className="offset-mid"><ul>{features}</ul></div>
+        <div className="offset-mid">Рыночная стоимость: ${c.cost}$</div>
         <div className="offset-mid">
-          <UI.Button text={`Купить за ${c.cost}$`} primary={hasEnoughMoney} disabled={!hasEnoughMoney} />
+          <UI.Button
+            text={`Купить компанию за ${c.cost}$`}
+            primary={hasEnoughMoney}
+            disabled={!hasEnoughMoney}
+            onClick={onBuyCompany ? onBuyCompany || () => {}}
+          />
         </div>
 
 

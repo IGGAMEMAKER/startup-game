@@ -13,7 +13,9 @@ export default class Competitors extends Component {
   componentWillMount() {}
 
   render({ id }) {
-    const marketStats = flux.productStore.getMaxAmountOfPossibleClients(id, flux.playerStore.getMoney());
+    const money = flux.playerStore.getMoney();
+
+    const marketStats = flux.productStore.getMaxAmountOfPossibleClients(id, money);
     const {
       marketSize,
       ourClients,
@@ -23,14 +25,23 @@ export default class Competitors extends Component {
     const freeClients = marketSize - ourClients - unbeatableClients;
 
     const rating = flux.productStore.getRating(id);
-    const money = flux.playerStore.getMoney();
         // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
-    return (
-      <div>
-        <div>
-          {competitors.map((c, i) => <Competitor rating={rating} c={c} i={i} money={money} />)}
-        </div>
-      </div>
+
+    const buyCompany = (buyerId, sellerId) => {
+      flux.productActions.buyCompany(buyerId, sellerId);
+      flux.playerActions.decreaseMoney(money);
+    };
+
+    const competitorList = competitors.map((c, i) =>
+      <Competitor
+        c={c}
+        i={i}
+        rating={rating}
+        money={money}
+        onBuyCompany={buyCompany(0, i + 1)}
+      />
     );
+
+    return <div>{competitorList}</div>;
   }
 }

@@ -15,6 +15,12 @@ export default {
       amount
     })
   },
+  decreaseMoney: (amount) => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_INCREASE_MONEY,
+      amount: -amount
+    })
+  },
   hireWorker: (player, i) => {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_HIRE_WORKER,

@@ -18,6 +18,7 @@ import productDescriptions from '../constants/products/product-descriptions';
 import * as PRODUCT_STAGES from '../constants/products/product-stages';
 
 import companyCostComputer from '../helpers/products/compute-company-cost';
+import companyMerger from '../helpers/products/company-merger';
 
 
 
@@ -592,7 +593,7 @@ class ProductStore extends EventEmitter {
   getHypothesisPoints(id) {
     const complexityModifier = this.getTechnologyComplexityModifier(id);
 
-    logger.debug('getHypothesisPoints', complexityModifier);
+    // logger.debug('getHypothesisPoints', complexityModifier);
 
     const defaults = this.getDefaults(id).hypothesis;
 
@@ -700,10 +701,10 @@ class ProductStore extends EventEmitter {
 
   getAvailableSegments(id) {
     const value = this.getSegments(id)
-      .filter((s, segId) => this.requirementsOKforSegment(id, segId).valid && this.clientsEnoughToFormSegment(id, segId))
+      .filter((s, segId) => this.requirementsOKforSegment(id, segId).valid && this.clientsEnoughToFormSegment(id, segId));
 
-    logger.debug('getAvailableSegments', value);
-    //
+    // logger.debug('getAvailableSegments', value);
+
     return value;
   }
 
@@ -836,10 +837,18 @@ Dispatcher.register((p: PayloadType) => {
       const competitor = p.p;
 
       _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
-      // _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
-      // _products[id].KPI = p.KPI;
-      // _products[id].features = p.features;
-      // _products[id].XP = 999;
+      break;
+    
+    case c.PRODUCT_ACTIONS_COMPANY_BUY:
+      const { buyerId, sellerId } = p;
+      const buyer = _products[buyerId];
+      const seller = _products[sellerId];
+      
+      const difference = companyMerger.merge(buyer, seller);
+      _products[buyerId].KPI.clients = difference.clients;
+      _products[buyerId].features = difference.features;
+      
+      _products.splice(sellerId, 1);
       break;
 
     default:

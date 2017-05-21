@@ -9,7 +9,7 @@ function getRandomRange(min, max) {
 }
 
 export default {
-  improveFeature: (id, featureGroup, featureName, h, max, XP) => {
+  improveFeature(id, featureGroup, featureName, h, max, XP) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
       id,
@@ -19,7 +19,13 @@ export default {
       max
     })
   },
-  testHypothesis: (id) => {
+  buyCompany(buyerId, sellerId) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_COMPANY_BUY,
+      buyerId, sellerId
+    })
+  },
+  testHypothesis(id) {
     const range = productStore.getImprovementChances(id);
 
     const xp = range.middle; // Math.floor(getRandomRange(range.min, range.max));
@@ -30,7 +36,7 @@ export default {
       value: xp
     })
   },
-  improveFeatureByPoints: (id, featureGroup, featureName) => {
+  improveFeatureByPoints(id, featureGroup, featureName) {
     logger.debug('improveFeatureByPoints', arguments);
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
@@ -39,27 +45,27 @@ export default {
       featureName
     })
   },
-  setInitialProductSettings: (id, features, KPI) => {
+  setInitialProductSettings(id, features, KPI) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS,
       id, features, KPI
     })
   },
-  addClients: (id, clients) => {
+  addClients(id, clients) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,
       id,
       clients
     })
   },
-  viralClients: (id, clients) => {
+  viralClients(id, clients) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD,
       id,
       clients
     })
   },
-  removeClients: (id, clients) => {
+  removeClients(id, clients) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_REMOVE,
       id,

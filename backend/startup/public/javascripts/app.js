@@ -4692,6 +4692,12 @@
 	      amount: amount
 	    });
 	  },
+	  decreaseMoney: function decreaseMoney(amount) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PLAYER_ACTIONS_INCREASE_MONEY,
+	      amount: -amount
+	    });
+	  },
 	  hireWorker: function hireWorker(player, i) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PLAYER_ACTIONS_HIRE_WORKER,
@@ -6875,7 +6881,7 @@
 	    value: function getHypothesisPoints(id) {
 	      var complexityModifier = this.getTechnologyComplexityModifier(id);
 
-	      _logger2.default.debug('getHypothesisPoints', complexityModifier);
+	      // logger.debug('getHypothesisPoints', complexityModifier);
 
 	      var defaults = this.getDefaults(id).hypothesis;
 
@@ -7011,8 +7017,8 @@
 	        return _this5.requirementsOKforSegment(id, segId).valid && _this5.clientsEnoughToFormSegment(id, segId);
 	      });
 
-	      _logger2.default.debug('getAvailableSegments', value);
-	      //
+	      // logger.debug('getAvailableSegments', value);
+
 	      return value;
 	    }
 	  }, {
@@ -7154,10 +7160,15 @@
 	      var competitor = p.p;
 
 	      _products.push((0, _assign2.default)({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
-	      // _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
-	      // _products[id].KPI = p.KPI;
-	      // _products[id].features = p.features;
-	      // _products[id].XP = 999;
+	      break;
+
+	    case c.PRODUCT_ACTIONS_COMPANY_BUY:
+	      var buyerId = p.buyerId,
+	          sellerId = p.sellerId;
+
+	      var buyer = _products[buyerId];
+	      var seller = _products[sellerId];
+
 	      break;
 
 	    default:
@@ -7187,6 +7198,7 @@
 	var PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = exports.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = 'PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS';
 	var PRODUCT_ACTIONS_TEST_HYPOTHESIS = exports.PRODUCT_ACTIONS_TEST_HYPOTHESIS = 'PRODUCT_ACTIONS_TEST_HYPOTHESIS';
 	var PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = exports.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = 'PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY';
+	var PRODUCT_ACTIONS_COMPANY_BUY = exports.PRODUCT_ACTIONS_COMPANY_BUY = 'PRODUCT_ACTIONS_COMPANY_BUY';
 
 /***/ },
 /* 138 */
@@ -7558,7 +7570,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var _arguments = arguments;
 
 	var _dispatcher = __webpack_require__(107);
 
@@ -7595,6 +7606,12 @@
 	      max: max
 	    });
 	  },
+	  buyCompany: function buyCompany(buyerId, sellerId) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_COMPANY_BUY,
+	      buyerId: buyerId, sellerId: sellerId
+	    });
+	  },
 	  testHypothesis: function testHypothesis(id) {
 	    var range = _productStore2.default.getImprovementChances(id);
 
@@ -7607,7 +7624,7 @@
 	    });
 	  },
 	  improveFeatureByPoints: function improveFeatureByPoints(id, featureGroup, featureName) {
-	    _logger2.default.debug('improveFeatureByPoints', _arguments);
+	    _logger2.default.debug('improveFeatureByPoints', arguments);
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
 	      id: id,
@@ -7642,7 +7659,6 @@
 	      clients: clients
 	    });
 	  },
-
 	  createCompetitorCompany: function createCompetitorCompany(p) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY,
@@ -9052,7 +9068,7 @@
 
 	var _competitors2 = _interopRequireDefault(_competitors);
 
-	var _competitor = __webpack_require__(168);
+	var _competitor = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../Ads/competitor\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
@@ -11014,7 +11030,7 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _competitor = __webpack_require__(168);
+	var _competitor = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./competitor\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
@@ -11036,7 +11052,9 @@
 	    value: function render(_ref) {
 	      var id = _ref.id;
 
-	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney());
+	      var money = _flux2.default.playerStore.getMoney();
+
+	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, money);
 	      var marketSize = marketStats.marketSize,
 	          ourClients = marketStats.ourClients,
 	          unbeatableClients = marketStats.unbeatableClients,
@@ -11045,18 +11063,27 @@
 	      var freeClients = marketSize - ourClients - unbeatableClients;
 
 	      var rating = _flux2.default.productStore.getRating(id);
-	      var money = _flux2.default.playerStore.getMoney();
 	      // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
+
+	      var buyCompany = function buyCompany(buyerId, sellerId) {
+	        _flux2.default.productActions.buyCompany(buyerId, sellerId);
+	        _flux2.default.playerActions.decreaseMoney(money);
+	      };
+
+	      var competitorList = competitors.map(function (c, i) {
+	        return (0, _preact.h)(_competitor2.default, {
+	          c: c,
+	          i: i,
+	          rating: rating,
+	          money: money,
+	          onBuyCompany: buyCompany(0, i + 1)
+	        });
+	      });
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          competitors.map(function (c, i) {
-	            return (0, _preact.h)(_competitor2.default, { rating: rating, c: c, i: i, money: money });
-	          })
-	        )
+	        competitorList
 	      );
 	    }
 	  }]);
@@ -11066,150 +11093,7 @@
 	exports.default = Competitors;
 
 /***/ },
-/* 168 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _round = __webpack_require__(96);
-
-	var _round2 = _interopRequireDefault(_round);
-
-	var _UI = __webpack_require__(102);
-
-	var _UI2 = _interopRequireDefault(_UI);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Competitor = function (_Component) {
-	  (0, _inherits3.default)(Competitor, _Component);
-
-	  function Competitor() {
-	    (0, _classCallCheck3.default)(this, Competitor);
-	    return (0, _possibleConstructorReturn3.default)(this, (Competitor.__proto__ || (0, _getPrototypeOf2.default)(Competitor)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Competitor, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
-	    key: 'render',
-	    value: function render(_ref) {
-	      var rating = _ref.rating,
-	          c = _ref.c,
-	          i = _ref.i,
-	          money = _ref.money;
-
-	      var needToCompeteRating = c.rating + 1;
-	      var competeable = needToCompeteRating < rating;
-	      var canWeCompeteThem = competeable ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + (0, _round2.default)(needToCompeteRating) + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
-
-	      var background = 'competitor ';
-	      if (competeable) {
-	        background += 'competeable';
-	      } else {
-	        background += 'uncompeteable';
-	      }
-
-	      var name = i >= 0 ? '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
-	      // <hr width="80%" />
-
-	      var features = c.features.map(function (f, ii) {
-	        return (0, _preact.h)(
-	          'li',
-	          null,
-	          f.name,
-	          ': ',
-	          f.value,
-	          'XP'
-	        );
-	      });
-
-	      var hasEnoughMoney = money >= c.cost;
-
-	      return (0, _preact.h)(
-	        'div',
-	        { className: background },
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-min' },
-	          name
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-min' },
-	          '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
-	          c.rating,
-	          ' (',
-	          canWeCompeteThem,
-	          ')'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	          c.clients,
-	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          '\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          (0, _preact.h)(
-	            'ul',
-	            null,
-	            features
-	          )
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          (0, _preact.h)(_UI2.default.Button, { text: '\u041A\u0443\u043F\u0438\u0442\u044C \u0437\u0430 ' + c.cost + '$', primary: hasEnoughMoney, disabled: !hasEnoughMoney })
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          (0, _preact.h)('hr', { width: '80%' })
-	        )
-	      );
-	    }
-	  }]);
-	  return Competitor;
-	}(_preact.Component);
-
-	exports.default = Competitor;
-
-/***/ },
+/* 168 */,
 /* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
