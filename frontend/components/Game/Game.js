@@ -13,6 +13,8 @@ import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
 import messageStore from '../../stores/message-store';
 
+import flux from '../../flux';
+
 import gameRunner from '../../game';
 
 import logger from '../../helpers/logger/logger';
@@ -75,6 +77,10 @@ export default class Game extends Component {
 
   resumeGame = () => {
     this.setState({ pause: false })
+  };
+
+  onNextMonth = () => {
+    flux.scheduleActions.nextMonth();
   };
 
   componentWillMount() {
@@ -188,6 +194,7 @@ export default class Game extends Component {
             isChosenStaffMenu={state.mode === GAME_MODE_STAFF ? 'active' : ''}
 
             gamePhase={gamePhase}
+            onNextMonth={this.onNextMonth}
           />
           <hr />
 

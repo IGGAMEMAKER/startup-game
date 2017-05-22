@@ -10,6 +10,8 @@
   --bright-green: rgba(0, 204, 37, 1);
   /*--light-red: #8b454f;*/
 
+  --dark-red-border: #8B2252;
+
   --active-menu-item-color: red;
 
   --info: rgba(0, 0, 200, 0.3);
@@ -374,7 +376,7 @@ textarea {
 
 .competitor {
   padding: 9px;
-  border: solid thin #8B2252;
+  border: solid thin var(--dark-red-border);
   margin-bottom: 9px;
 }
 
@@ -403,6 +405,23 @@ textarea {
 
 .client-segment-item {
   margin-bottom: 15px;
+  border: solid thin var(--dark-red-border);
+  padding: 15px;
+}
+
+.client-segment-header {
+  font-size: larger;
+  margin-bottom: 10px;
+}
+
+.client-segment {
+
+}
+
+.main-feature-item {
+  margin-bottom: 15px;
+  border: solid thin var(--dark-red-border);
+  padding: 10px;
 }
 
 .product-menu-toggler {

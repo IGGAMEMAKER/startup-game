@@ -55,26 +55,39 @@ export default class MainFeature extends Component {
       )
     }
 
+    let openedInfluence = false;
     const segmentRatingImprovementList = segments
       .map((s) => {
-        const rating = s.rating;
-        const normalisedRatingDelta = round(rating[i] * 1000 / flux.productStore.getMainFeatureDefaultQualityByFeatureId(id, i));
+        const rating = s.rating[i];
+        const defaultQuality = flux.productStore.getMainFeatureDefaultQualityByFeatureId(id, i);
+        const normalisedRatingDelta = round(rating * 1000 / defaultQuality);
 
-        if (rating[i] === 0) return '';
+        if (rating === 0) return '';
 
-        return (
-          <li>Рейтинг у сегмента "{s.userOrientedName}" повысится на {normalisedRatingDelta}</li>
-        )
+        openedInfluence = true;
+
+        return <li>Рейтинг у группы "{s.userOrientedName}" повысится на {normalisedRatingDelta}</li>;
       });
+
+    // if (!openedInfluence) return '';
+
+    // display: inline-block;
+    // margin-left: 10px;
 
     return (
       <div key={key}>
-        {userOrientedFeatureName} ({current}/{max}XP)
+        <div>
+          <span>{userOrientedFeatureName} ({current}/{max}XP)</span>
+          <div style="width: 300px;">
+            <UI.Bar min={0} max={max} current={current} />
+          </div>
+        </div>
         <br />
         <div className="featureDescription">{description}</div>
         <div>{segmentRatingImprovementList}</div>
         {hypothesisList}
         <br />
+        <hr color="white" />
       </div>
     )
   };
@@ -86,7 +99,7 @@ export default class MainFeature extends Component {
     const { pp, mp } = necessaryPoints;
 
     const action = () => {
-      // playerActions.spendPoints(pp, mp);
+      // flux.playerActions.spendPoints(pp, mp);
       flux.productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
 
       if (stageHelper.isFirstFeatureMission()) {
@@ -102,6 +115,7 @@ export default class MainFeature extends Component {
         }
       }
     };
+
     // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
     const ratingOverflow = current >= max;
     const currentXP = flux.productStore.getXP(id);
@@ -127,7 +141,6 @@ export default class MainFeature extends Component {
     const product = flux.productStore.getProduct(id);
     const availableSegments = flux.productStore.getAvailableSegments(id);
     const defaults = flux.productStore.getDefaults(id);
-    // logger.debug('MainFeature', id, flux.productStore.getProducts(id), product.idea);
 
     const featureList = this
       .getSpecificProductFeatureListByIdea(product.idea)

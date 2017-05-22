@@ -398,7 +398,7 @@ export default class ProductPanel extends Component {
 
     return (
       <div>
-        <div>Сегменты пользователей</div>
+        <div className="client-segment-header">Группы пользователей</div>
         <div>{segmentList}</div>
       </div>
     )
@@ -428,11 +428,16 @@ export default class ProductPanel extends Component {
         </div>
     }
 
+    let companyCostTab;
+    if (stageHelper.canShowCompetitorsTab()) {
+      companyCostTab = <div>Наша рыночная стоимость: {ourCompanyCost}$</div>
+    }
+
     return (
       <div>
         <div className="featureGroupTitle">Работа с клиентами</div>
         <div>Наши клиенты: {market.clients}</div>
-        <div>Наша рыночная стоимость: {ourCompanyCost}$</div>
+        {companyCostTab}
         {adTab}
         {nearestCompetitor}
         <br />

@@ -34,7 +34,8 @@ export default class Menu extends Component {
       pause,
       gamePhase,
 
-      pauseGame
+      pauseGame,
+      onNextMonth
     } = props;
 
     const saldoValue = Math.floor(moneyCalculator.saldo());
@@ -82,7 +83,12 @@ export default class Menu extends Component {
       />
     );
 
-    const speedVariants = [{ s: 1, icon: '>' }, { s: 4, icon: '>>' }, { s: 7, icon: '>>>' }, { s: 10, icon: '>>>>' }];
+    const speedVariants = [
+      { s: 1, icon: '>' },
+      { s: 4, icon: '>>' },
+      // { s: 7, icon: '>>>' },
+      { s: 10, icon: '>>>>' }
+    ];
 
     let pauseOrContinue;
     if (isRunning) {
@@ -94,31 +100,42 @@ export default class Menu extends Component {
 
     let nextSpeeder;
 
-    let currentSpeedIndex = speedVariants.findIndex(s => s.s === gameSpeed);
-    if (currentSpeedIndex < speedVariants.length - 1) {
-      // can accelerate speed
+    // let currentSpeedIndex = speedVariants.findIndex(s => s.s === gameSpeed);
+    // if (currentSpeedIndex < speedVariants.length - 1) {
+    //   // can accelerate speed
+    //   const s = speedVariants[currentSpeedIndex + 1];
+    //
+    //   nextSpeeder = speeder(s.s, s.icon);
+    // } else {
+    //   // we are on max speed
+    //
+    //   nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
+    // }
 
-      const s = speedVariants[currentSpeedIndex + 1];
-      nextSpeeder = speeder(s.s, s.icon);
-    } else {
-      // we are on max speed
-
-      nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
-    }
+    nextSpeeder = speedVariants.map(s => speeder(s.s, s.icon));
 
     const onMPPP = () => {
       logger.debug('onMPPP');
       props.onRenderStaffMenu()
-    }
+    };
+
     let upperTab;
+            // <div>Месяц: {(props.day % 30) + 1}</div>
+          // <div className={navigation} onClick={onNextMonth}>Следующий месяц</div>
     if (stageHelper.canShowUpperTabInMenu()) {
+      const year = Math.floor(props.day / 360);
+      const month = Math.floor((props.day - year * 360) / 30);
+      const day = props.day - year * 360 - month * 30;
+
+      let date = `Год: ${year} Месяц: ${month} День: ${day}`;
+
       upperTab = (
         <div>
           <div className={navigation}>
             <div className={moneyIndication} onClick={props.onRenderEconomicsMenu}>{moneyPhrase}</div>
           </div>
           <div className={navigation}>
-            <div>День: {props.day}</div>
+            <div>{date}</div>
           </div>
           {nextSpeeder}
           <div className={navigation}>{pauseOrContinue}</div>

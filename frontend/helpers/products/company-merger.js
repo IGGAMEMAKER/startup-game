@@ -21,13 +21,20 @@ const merge = (buyer, seller) => {
       }
     });
 
-  // logger.debug({ improvements, features });
 
-  return {
-    clients: buyer.KPI.clients,
+  const sellerClients = seller.KPI.clients;
+  const buyerClients = buyer.KPI.clients;
+  const clients = sellerClients > buyerClients ? sellerClients : buyerClients;
+
+  const result = {
+    clients,
     improvements,
-    features,
-  }
+    features
+  };
+
+  logger.debug('buy result will be', result);
+
+  return result;
 };
 
 export default {

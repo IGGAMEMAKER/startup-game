@@ -4,6 +4,21 @@ import flux from '../../../../flux';
 import ColoredRating from '../KPI/colored-rating';
 
 export default class Segment extends Component {
+  renderSegment(id, userOrientedName, clients, price, requirementTab) {
+    return (
+      <div className="client-segment-item">
+        <div>Группа №{id + 1}: {userOrientedName}</div>
+        <div className="offset-mid">
+          <div>Клиенты: {clients} человек</div>
+          <div className="offset-mid">
+            <div>Платёжеспособность: {price}$</div>
+            <div>{requirementTab}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render({ productId, segment, id }) {
     const { name, userOrientedName, percentage, price, rating, requirements } = segment;
 
@@ -46,19 +61,8 @@ export default class Segment extends Component {
       .map(s => s.feature)
       .join(', ');
 
-    if (clients < 100) return '';
+    if (clients < 100) return this.renderSegment(id, userOrientedName, '???', '???', 'Приведите больше клиентов, чтобы открыть эту группу');
 
-    return (
-      <div className="client-segment-item">
-        <div>Сегмент №{id + 1}: {userOrientedName}</div>
-        <div className="offset-mid">
-          <div>Клиенты: {clients} человек</div>
-          <div className="offset-mid">
-            <div>Платёжеспособность: {price}$</div>
-            <div>{requirementTab}</div>
-          </div>
-        </div>
-      </div>
-    );
+    return this.renderSegment(id, userOrientedName, clients, price, requirementTab);
   }
 }

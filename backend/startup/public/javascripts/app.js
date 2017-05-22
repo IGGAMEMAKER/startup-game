@@ -594,23 +594,23 @@
 
 	var _Staff2 = _interopRequireDefault(_Staff);
 
-	var _Menu = __webpack_require__(151);
+	var _Menu = __webpack_require__(154);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Economics = __webpack_require__(153);
+	var _Economics = __webpack_require__(156);
 
 	var _Economics2 = _interopRequireDefault(_Economics);
 
-	var _Product = __webpack_require__(155);
+	var _Product = __webpack_require__(158);
 
 	var _Product2 = _interopRequireDefault(_Product);
 
-	var _Advice = __webpack_require__(170);
+	var _Advice = __webpack_require__(172);
 
 	var _Advice2 = _interopRequireDefault(_Advice);
 
-	var _Tutorial = __webpack_require__(171);
+	var _Tutorial = __webpack_require__(173);
 
 	var _Tutorial2 = _interopRequireDefault(_Tutorial);
 
@@ -626,7 +626,11 @@
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _game = __webpack_require__(172);
+	var _flux = __webpack_require__(131);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	var _game = __webpack_require__(174);
 
 	var _game2 = _interopRequireDefault(_game);
 
@@ -646,9 +650,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	// import React, { Component, PropTypes } from 'react';
 
+	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	var GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
 	var GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
 	var GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
@@ -707,6 +711,8 @@
 	      _this.setState({ pause: true, timerId: null });
 	    }, _this.resumeGame = function () {
 	      _this.setState({ pause: false });
+	    }, _this.onNextMonth = function () {
+	      _flux2.default.scheduleActions.nextMonth();
 	    }, _this.getMessages = function () {
 	      // logger.debug('MessageStore callback pausing');
 	      if (_messageStore2.default.isDrawable()) {
@@ -797,7 +803,8 @@
 	            isChosenEconomicsMenu: state.mode === GAME_MODE_ECONOMICS ? 'active' : '',
 	            isChosenStaffMenu: state.mode === GAME_MODE_STAFF ? 'active' : '',
 
-	            gamePhase: gamePhase
+	            gamePhase: gamePhase,
+	            onNextMonth: _this.onNextMonth
 	          }),
 	          (0, _preact.h)('hr', null),
 	          (0, _preact.h)(_Advice2.default, {
@@ -2718,11 +2725,11 @@
 
 	var _Select2 = _interopRequireDefault(_Select);
 
-	var _coloringRange = __webpack_require__(147);
+	var _coloringRange = __webpack_require__(150);
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
-	var _stages = __webpack_require__(148);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -3217,6 +3224,10 @@
 
 	var _Info2 = _interopRequireDefault(_Info);
 
+	var _Bar = __webpack_require__(176);
+
+	var _Bar2 = _interopRequireDefault(_Bar);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = {
@@ -3225,7 +3236,8 @@
 	  Select: _Select2.default,
 	  Range: _Range2.default,
 	  symbols: _arrows2.default,
-	  Info: _Info2.default
+	  Info: _Info2.default,
+	  Bar: _Bar2.default
 	};
 
 /***/ },
@@ -5844,7 +5856,7 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _scheduleActions = __webpack_require__(145);
+	var _scheduleActions = __webpack_require__(148);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
@@ -5852,7 +5864,7 @@
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
-	var _productActions = __webpack_require__(146);
+	var _productActions = __webpack_require__(149);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -6237,7 +6249,7 @@
 
 	var _computeRating2 = _interopRequireDefault(_computeRating);
 
-	var _productDescriptions = __webpack_require__(176);
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -6245,11 +6257,11 @@
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
-	var _computeCompanyCost = __webpack_require__(174);
+	var _computeCompanyCost = __webpack_require__(145);
 
 	var _computeCompanyCost2 = _interopRequireDefault(_computeCompanyCost);
 
-	var _companyMerger = __webpack_require__(175);
+	var _companyMerger = __webpack_require__(147);
 
 	var _companyMerger2 = _interopRequireDefault(_companyMerger);
 
@@ -7178,8 +7190,10 @@
 	      break;
 
 	    case c.PRODUCT_ACTIONS_COMPANY_BUY:
+	      _logger2.default.debug('buy company store');
 	      var buyerId = p.buyerId,
 	          sellerId = p.sellerId;
+
 
 	      var buyer = _products[buyerId];
 	      var seller = _products[sellerId];
@@ -7257,7 +7271,7 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(176);
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -7292,7 +7306,45 @@
 	};
 
 /***/ },
-/* 141 */,
+/* 141 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (idea) {
+	  switch (idea) {
+	    case IDEAS.IDEA_WEB_STUDIO:
+	      return _WEBSTUDIO2.default;
+	      break;
+	    case IDEAS.IDEA_WEB_HOSTING:
+	      return _WEBHOSTING2.default.compute();
+	      break;
+	  }
+	};
+
+	var _ideas = __webpack_require__(138);
+
+	var IDEAS = _interopRequireWildcard(_ideas);
+
+	var _WEBSTUDIO = __webpack_require__(142);
+
+	var _WEBSTUDIO2 = _interopRequireDefault(_WEBSTUDIO);
+
+	var _WEBHOSTING = __webpack_require__(143);
+
+	var _WEBHOSTING2 = _interopRequireDefault(_WEBHOSTING);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	;
+
+/***/ },
 /* 142 */
 /***/ function(module, exports) {
 
@@ -7466,6 +7518,142 @@
 	  value: true
 	});
 
+	var _productDescriptions = __webpack_require__(141);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _random = __webpack_require__(146);
+
+	var _random2 = _interopRequireDefault(_random);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var compute = function compute(c) {
+	  var cost = 10000;
+
+	  var featureCost = 15;
+
+	  // logger.debug('computeCompanyCost', c);
+
+	  var defaults = (0, _productDescriptions2.default)(c.idea);
+	  var defaultFeatures = defaults.features;
+
+	  // sum technology part
+	  _logger2.default.shit('each feature has it\'s own cost. Servers are more expensive');
+
+	  var totalXP = 0;
+
+	  var featureSum = 0;
+	  defaultFeatures.forEach(function (f) {
+	    var xp = c.features.offer[f.name];
+
+	    totalXP += xp / 1000;
+	    featureSum += xp * featureCost;
+	  });
+
+	  // complexity modifier
+	  var complexityModifier = Math.pow(1.01, totalXP);
+	  cost += featureSum * complexityModifier;
+
+	  // customers also influence cost
+	  cost += c.KPI.clients * defaults.CAC * 1.5;
+
+	  return Math.ceil(cost);
+	  // return 1;
+	};
+
+	exports.default = {
+	  compute: compute
+	};
+
+/***/ },
+/* 146 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (min, max) {
+	  return Math.random() * (max - min) + min;
+	};
+
+	;
+
+/***/ },
+/* 147 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _productDescriptions = __webpack_require__(141);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var merge = function merge(buyer, seller) {
+	  var features = {};
+	  var improvements = [];
+
+	  // logger.debug('buyer is', buyer);
+	  // logger.debug('seller is', seller);
+
+	  (0, _productDescriptions2.default)(buyer.idea).features.map(function (f, i) {
+	    var current = buyer.features.offer[f.name];
+	    var next = seller.features.offer[f.name];
+
+	    if (current < next) {
+	      improvements.push({ name: f.name, i: i, value: next, difference: next - current });
+	      features[f.name] = next;
+	    } else {
+	      features[f.name] = current;
+	    }
+	  });
+
+	  var sellerClients = seller.KPI.clients;
+	  var buyerClients = buyer.KPI.clients;
+	  var clients = sellerClients > buyerClients ? sellerClients : buyerClients;
+
+	  var result = {
+	    clients: clients,
+	    improvements: improvements,
+	    features: features
+	  };
+
+	  _logger2.default.debug('buy result will be', result);
+
+	  return result;
+	};
+
+	exports.default = {
+	  merge: merge
+	};
+
+/***/ },
+/* 148 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
 	var _dispatcher = __webpack_require__(107);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
@@ -7491,6 +7679,11 @@
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.SCHEDULE_ACTIONS_DAY_TICK
 	    });
+	  },
+	  nextMonth: function nextMonth() {
+	    // Dispatcher.dispatch({
+	    //   type: ACTIONS.SCHEDULE_ACTIONS_MONTH_TICK
+	    // })
 	  },
 	  startGame: function startGame() {
 	    _dispatcher2.default.dispatch({
@@ -7544,7 +7737,7 @@
 	};
 
 /***/ },
-/* 146 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7650,7 +7843,7 @@
 	};
 
 /***/ },
-/* 147 */
+/* 150 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7668,7 +7861,7 @@
 	};
 
 /***/ },
-/* 148 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7681,7 +7874,7 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _constants = __webpack_require__(149);
+	var _constants = __webpack_require__(152);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
@@ -7792,7 +7985,7 @@
 	};
 
 /***/ },
-/* 149 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7805,7 +7998,7 @@
 
 	var jobConstants = _interopRequireWildcard(_job);
 
-	var _professions = __webpack_require__(150);
+	var _professions = __webpack_require__(153);
 
 	var professionsConstants = _interopRequireWildcard(_professions);
 
@@ -7842,13 +8035,13 @@
 	};
 
 /***/ },
-/* 150 */
+/* 153 */
 /***/ function(module, exports) {
 
 	"use strict";
 
 /***/ },
-/* 151 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7879,7 +8072,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _moneyDifference = __webpack_require__(152);
+	var _moneyDifference = __webpack_require__(155);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
@@ -7895,7 +8088,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _stages = __webpack_require__(148);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -7945,7 +8138,8 @@
 	          gameSpeed = props.gameSpeed,
 	          pause = props.pause,
 	          gamePhase = props.gamePhase,
-	          pauseGame = props.pauseGame;
+	          pauseGame = props.pauseGame,
+	          onNextMonth = props.onNextMonth;
 
 
 	      var saldoValue = Math.floor(_moneyDifference2.default.saldo());
@@ -7991,7 +8185,9 @@
 	        link: true
 	      });
 
-	      var speedVariants = [{ s: 1, icon: '>' }, { s: 4, icon: '>>' }, { s: 7, icon: '>>>' }, { s: 10, icon: '>>>>' }];
+	      var speedVariants = [{ s: 1, icon: '>' }, { s: 4, icon: '>>' },
+	      // { s: 7, icon: '>>>' },
+	      { s: 10, icon: '>>>>' }];
 
 	      var pauseOrContinue = void 0;
 	      if (isRunning) {
@@ -8003,26 +8199,37 @@
 
 	      var nextSpeeder = void 0;
 
-	      var currentSpeedIndex = speedVariants.findIndex(function (s) {
-	        return s.s === gameSpeed;
+	      // let currentSpeedIndex = speedVariants.findIndex(s => s.s === gameSpeed);
+	      // if (currentSpeedIndex < speedVariants.length - 1) {
+	      //   // can accelerate speed
+	      //   const s = speedVariants[currentSpeedIndex + 1];
+	      //
+	      //   nextSpeeder = speeder(s.s, s.icon);
+	      // } else {
+	      //   // we are on max speed
+	      //
+	      //   nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
+	      // }
+
+	      nextSpeeder = speedVariants.map(function (s) {
+	        return speeder(s.s, s.icon);
 	      });
-	      if (currentSpeedIndex < speedVariants.length - 1) {
-	        // can accelerate speed
-
-	        var _s = speedVariants[currentSpeedIndex + 1];
-	        nextSpeeder = speeder(_s.s, _s.icon);
-	      } else {
-	        // we are on max speed
-
-	        nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
-	      }
 
 	      var onMPPP = function onMPPP() {
 	        _logger2.default.debug('onMPPP');
 	        props.onRenderStaffMenu();
 	      };
+
 	      var upperTab = void 0;
+	      // <div>Месяц: {(props.day % 30) + 1}</div>
+	      // <div className={navigation} onClick={onNextMonth}>Следующий месяц</div>
 	      if (_stages2.default.canShowUpperTabInMenu()) {
+	        var year = Math.floor(props.day / 360);
+	        var month = Math.floor((props.day - year * 360) / 30);
+	        var day = props.day - year * 360 - month * 30;
+
+	        var date = '\u0413\u043E\u0434: ' + year + ' \u041C\u0435\u0441\u044F\u0446: ' + month + ' \u0414\u0435\u043D\u044C: ' + day;
+
 	        upperTab = (0, _preact.h)(
 	          'div',
 	          null,
@@ -8041,8 +8248,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0414\u0435\u043D\u044C: ',
-	              props.day
+	              date
 	            )
 	          ),
 	          nextSpeeder,
@@ -8094,7 +8300,7 @@
 	exports.default = Menu;
 
 /***/ },
-/* 152 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8179,7 +8385,7 @@
 	};
 
 /***/ },
-/* 153 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8214,7 +8420,7 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _moneyDifference = __webpack_require__(152);
+	var _moneyDifference = __webpack_require__(155);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
@@ -8230,7 +8436,7 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _Expenses = __webpack_require__(154);
+	var _Expenses = __webpack_require__(157);
 
 	var _Expenses2 = _interopRequireDefault(_Expenses);
 
@@ -8430,7 +8636,7 @@
 	exports.default = Economics;
 
 /***/ },
-/* 154 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8600,7 +8806,7 @@
 	;
 
 /***/ },
-/* 155 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8635,11 +8841,11 @@
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
-	var _InitialProductTab = __webpack_require__(156);
+	var _InitialProductTab = __webpack_require__(159);
 
 	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
 
-	var _productPanel = __webpack_require__(160);
+	var _productPanel = __webpack_require__(162);
 
 	var _productPanel2 = _interopRequireDefault(_productPanel);
 
@@ -8687,7 +8893,7 @@
 	exports.default = Product;
 
 /***/ },
-/* 156 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8726,11 +8932,11 @@
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _mvpCreator = __webpack_require__(157);
+	var _mvpCreator = __webpack_require__(160);
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _productDescriptions = __webpack_require__(176);
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -8780,7 +8986,7 @@
 	exports.default = InitialProductTab;
 
 /***/ },
-/* 157 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8789,7 +8995,7 @@
 	  value: true
 	});
 
-	var _productActions = __webpack_require__(146);
+	var _productActions = __webpack_require__(149);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -8805,7 +9011,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productGenerator = __webpack_require__(158);
+	var _productGenerator = __webpack_require__(161);
 
 	var _productGenerator2 = _interopRequireDefault(_productGenerator);
 
@@ -8852,7 +9058,7 @@
 	};
 
 /***/ },
-/* 158 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8861,11 +9067,11 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(176);
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _random = __webpack_require__(159);
+	var _random = __webpack_require__(146);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -8937,23 +9143,7 @@
 	};
 
 /***/ },
-/* 159 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (min, max) {
-	  return Math.random() * (max - min) + min;
-	};
-
-	;
-
-/***/ },
-/* 160 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8984,11 +9174,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _metrics = __webpack_require__(161);
+	var _metrics = __webpack_require__(163);
 
 	var _metrics2 = _interopRequireDefault(_metrics);
 
-	var _Schedule = __webpack_require__(163);
+	var _Schedule = __webpack_require__(165);
 
 	var _Schedule2 = _interopRequireDefault(_Schedule);
 
@@ -8996,11 +9186,11 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _professions = __webpack_require__(150);
+	var _professions = __webpack_require__(153);
 
 	var PROFESSIONS = _interopRequireWildcard(_professions);
 
-	var _productActions = __webpack_require__(146);
+	var _productActions = __webpack_require__(149);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -9016,17 +9206,17 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _featurePrice = __webpack_require__(164);
+	var _featurePrice = __webpack_require__(166);
 
 	var _featurePrice2 = _interopRequireDefault(_featurePrice);
 
-	var _scheduleActions = __webpack_require__(145);
+	var _scheduleActions = __webpack_require__(148);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
 	var _workSpeed = __webpack_require__(135);
 
-	var _constants = __webpack_require__(149);
+	var _constants = __webpack_require__(152);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
@@ -9034,27 +9224,27 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _advertPlannerPanel = __webpack_require__(165);
+	var _advertPlannerPanel = __webpack_require__(167);
 
 	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
 
-	var _MainFeature = __webpack_require__(166);
+	var _MainFeature = __webpack_require__(168);
 
 	var _MainFeature2 = _interopRequireDefault(_MainFeature);
 
-	var _stages = __webpack_require__(148);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
-	var _competitors = __webpack_require__(167);
+	var _competitors = __webpack_require__(169);
 
 	var _competitors2 = _interopRequireDefault(_competitors);
 
-	var _competitor = __webpack_require__(168);
+	var _competitor = __webpack_require__(170);
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
-	var _segment = __webpack_require__(169);
+	var _segment = __webpack_require__(171);
 
 	var _segment2 = _interopRequireDefault(_segment);
 
@@ -9364,6 +9554,17 @@
 	        );
 	      }
 
+	      var companyCostTab = void 0;
+	      if (_stages2.default.canShowCompetitorsTab()) {
+	        companyCostTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041D\u0430\u0448\u0430 \u0440\u044B\u043D\u043E\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: ',
+	          ourCompanyCost,
+	          '$'
+	        );
+	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -9378,13 +9579,7 @@
 	          '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
 	          market.clients
 	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430\u0448\u0430 \u0440\u044B\u043D\u043E\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: ',
-	          ourCompanyCost,
-	          '$'
-	        ),
+	        companyCostTab,
 	        adTab,
 	        nearestCompetitor,
 	        (0, _preact.h)('br', null),
@@ -9792,8 +9987,8 @@
 	        null,
 	        (0, _preact.h)(
 	          'div',
-	          null,
-	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439'
+	          { className: 'client-segment-header' },
+	          '\u0413\u0440\u0443\u043F\u043F\u044B \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439'
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -9931,7 +10126,7 @@
 	exports.default = ProductPanel;
 
 /***/ },
-/* 161 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9978,11 +10173,11 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _coloredRating = __webpack_require__(162);
+	var _coloredRating = __webpack_require__(164);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
-	var _stages = __webpack_require__(148);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -10246,7 +10441,7 @@
 	;
 
 /***/ },
-/* 162 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10277,7 +10472,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _coloringRange = __webpack_require__(147);
+	var _coloringRange = __webpack_require__(150);
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
@@ -10319,7 +10514,7 @@
 	exports.default = ColoredRating;
 
 /***/ },
-/* 163 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10482,7 +10677,7 @@
 	;
 
 /***/ },
-/* 164 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10505,7 +10700,7 @@
 	// export default cost => e => e;
 
 /***/ },
-/* 165 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10536,7 +10731,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _stages = __webpack_require__(148);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -10722,7 +10917,7 @@
 	;
 
 /***/ },
-/* 166 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10753,7 +10948,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productDescriptions = __webpack_require__(176);
+	var _productDescriptions = __webpack_require__(141);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -10773,7 +10968,7 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _stages = __webpack_require__(148);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -10838,31 +11033,53 @@
 	          );
 	        }
 
+	        var openedInfluence = false;
 	        var segmentRatingImprovementList = segments.map(function (s) {
-	          var rating = s.rating;
-	          var normalisedRatingDelta = (0, _round2.default)(rating[i] * 1000 / _flux2.default.productStore.getMainFeatureDefaultQualityByFeatureId(id, i));
+	          var rating = s.rating[i];
+	          var defaultQuality = _flux2.default.productStore.getMainFeatureDefaultQualityByFeatureId(id, i);
+	          var normalisedRatingDelta = (0, _round2.default)(rating * 1000 / defaultQuality);
 
-	          if (rating[i] === 0) return '';
+	          if (rating === 0) return '';
+
+	          openedInfluence = true;
 
 	          return (0, _preact.h)(
 	            'li',
 	            null,
-	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0443 \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430 "',
+	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0443 \u0433\u0440\u0443\u043F\u043F\u044B "',
 	            s.userOrientedName,
 	            '" \u043F\u043E\u0432\u044B\u0441\u0438\u0442\u0441\u044F \u043D\u0430 ',
 	            normalisedRatingDelta
 	          );
 	        });
 
+	        // if (!openedInfluence) return '';
+
+	        // display: inline-block;
+	        // margin-left: 10px;
+
 	        return (0, _preact.h)(
 	          'div',
 	          { key: key },
-	          userOrientedFeatureName,
-	          ' (',
-	          current,
-	          '/',
-	          max,
-	          'XP)',
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'span',
+	              null,
+	              userOrientedFeatureName,
+	              ' (',
+	              current,
+	              '/',
+	              max,
+	              'XP)'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              { style: 'width: 300px;' },
+	              (0, _preact.h)(_UI2.default.Bar, { min: 0, max: max, current: current })
+	            )
+	          ),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)(
 	            'div',
@@ -10875,7 +11092,8 @@
 	            segmentRatingImprovementList
 	          ),
 	          hypothesisList,
-	          (0, _preact.h)('br', null)
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)('hr', { color: 'white' })
 	        );
 	      };
 	    }, _this.renderHypothesisItem = function (id, featureName, time, current, max, product) {
@@ -10888,7 +11106,7 @@
 
 
 	        var action = function action() {
-	          // playerActions.spendPoints(pp, mp);
+	          // flux.playerActions.spendPoints(pp, mp);
 	          _flux2.default.productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
 
 	          if (_stages2.default.isFirstFeatureMission()) {
@@ -10904,6 +11122,7 @@
 	            }
 	          }
 	        };
+
 	        // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
 	        var ratingOverflow = current >= max;
 	        var currentXP = _flux2.default.productStore.getXP(id);
@@ -10935,7 +11154,6 @@
 	      var product = _flux2.default.productStore.getProduct(id);
 	      var availableSegments = _flux2.default.productStore.getAvailableSegments(id);
 	      var defaults = _flux2.default.productStore.getDefaults(id);
-	      // logger.debug('MainFeature', id, flux.productStore.getProducts(id), product.idea);
 
 	      var featureList = this.getSpecificProductFeatureListByIdea(product.idea).map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
 
@@ -10977,7 +11195,7 @@
 	exports.default = MainFeature;
 
 /***/ },
-/* 167 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11012,7 +11230,7 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _competitor = __webpack_require__(168);
+	var _competitor = __webpack_require__(170);
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
@@ -11077,7 +11295,7 @@
 	exports.default = Competitors;
 
 /***/ },
-/* 168 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11153,7 +11371,7 @@
 	      var name = i >= 0 ? '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
 
 	      var features = c.features.map(function (f, ii) {
-	        _logger2.default.debug('compet improvs', i, c.improvements, f);
+	        // logger.debug('compet improvs', i, c.improvements, f);
 	        _logger2.default.shit('EXTRA SHIT!!! I=== -1 IS HARDCODED CHECKING FOR OUR COMPANY. REWRITE THIS');
 
 	        var difference = c.improvements.filter(function (d) {
@@ -11278,7 +11496,7 @@
 	exports.default = Competitor;
 
 /***/ },
-/* 169 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11313,7 +11531,7 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _coloredRating = __webpack_require__(162);
+	var _coloredRating = __webpack_require__(164);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
@@ -11328,6 +11546,49 @@
 	  }
 
 	  (0, _createClass3.default)(Segment, [{
+	    key: 'renderSegment',
+	    value: function renderSegment(id, userOrientedName, clients, price, requirementTab) {
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'client-segment-item' },
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0413\u0440\u0443\u043F\u043F\u0430 \u2116',
+	          id + 1,
+	          ': ',
+	          userOrientedName
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-mid' },
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	            clients,
+	            ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'offset-mid' },
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
+	              price,
+	              '$'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              requirementTab
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render(_ref) {
 	      var productId = _ref.productId,
@@ -11406,47 +11667,9 @@
 	        return s.feature;
 	      }).join(', ');
 
-	      if (clients < 100) return '';
+	      if (clients < 100) return this.renderSegment(id, userOrientedName, '???', '???', 'Приведите больше клиентов, чтобы открыть эту группу');
 
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'client-segment-item' },
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u2116',
-	          id + 1,
-	          ': ',
-	          userOrientedName
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	            clients,
-	            ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'offset-mid' },
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
-	              price,
-	              '$'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              requirementTab
-	            )
-	          )
-	        )
-	      );
+	      return this.renderSegment(id, userOrientedName, clients, price, requirementTab);
 	    }
 	  }]);
 	  return Segment;
@@ -11455,7 +11678,7 @@
 	exports.default = Segment;
 
 /***/ },
-/* 170 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11490,7 +11713,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _constants = __webpack_require__(149);
+	var _constants = __webpack_require__(152);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
@@ -11498,7 +11721,7 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _coloredRating = __webpack_require__(162);
+	var _coloredRating = __webpack_require__(164);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
@@ -11698,7 +11921,7 @@
 	exports.default = AdviceTab;
 
 /***/ },
-/* 171 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11741,19 +11964,19 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _InitialProductTab = __webpack_require__(156);
+	var _InitialProductTab = __webpack_require__(159);
 
 	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
 
-	var _mvpCreator = __webpack_require__(157);
+	var _mvpCreator = __webpack_require__(160);
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _Menu = __webpack_require__(151);
+	var _Menu = __webpack_require__(154);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _index = __webpack_require__(149);
+	var _index = __webpack_require__(152);
 
 	var _index2 = _interopRequireDefault(_index);
 
@@ -11877,7 +12100,7 @@
 	exports.default = Tutorial;
 
 /***/ },
-/* 172 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11898,11 +12121,11 @@
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productActions = __webpack_require__(146);
+	var _productActions = __webpack_require__(149);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _scheduleActions = __webpack_require__(145);
+	var _scheduleActions = __webpack_require__(148);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
@@ -11914,11 +12137,11 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _moneyDifference = __webpack_require__(152);
+	var _moneyDifference = __webpack_require__(155);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _eventGenerator = __webpack_require__(173);
+	var _eventGenerator = __webpack_require__(175);
 
 	var _eventGenerator2 = _interopRequireDefault(_eventGenerator);
 
@@ -11926,7 +12149,7 @@
 
 	var _skills2 = _interopRequireDefault(_skills);
 
-	var _stages = __webpack_require__(148);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -12048,7 +12271,7 @@
 	};
 
 /***/ },
-/* 173 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12057,7 +12280,7 @@
 	  value: true
 	});
 
-	var _random = __webpack_require__(159);
+	var _random = __webpack_require__(146);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -12183,157 +12406,71 @@
 	};
 
 /***/ },
-/* 174 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _productDescriptions = __webpack_require__(176);
-
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
-	var _logger = __webpack_require__(100);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _random = __webpack_require__(159);
-
-	var _random2 = _interopRequireDefault(_random);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var compute = function compute(c) {
-	  var cost = 10000;
-
-	  var featureCost = 15;
-
-	  // logger.debug('computeCompanyCost', c);
-
-	  var defaults = (0, _productDescriptions2.default)(c.idea);
-	  var defaultFeatures = defaults.features;
-
-	  // sum technology part
-	  _logger2.default.shit('each feature has it\'s own cost. Servers are more expensive');
-
-	  var totalXP = 0;
-
-	  var featureSum = 0;
-	  defaultFeatures.forEach(function (f) {
-	    var xp = c.features.offer[f.name];
-
-	    totalXP += xp / 1000;
-	    featureSum += xp * featureCost;
-	  });
-
-	  // complexity modifier
-	  var complexityModifier = Math.pow(1.01, totalXP);
-	  cost += featureSum * complexityModifier;
-
-	  // customers also influence cost
-	  cost += c.KPI.clients * defaults.CAC * 1.5;
-
-	  return Math.ceil(cost);
-	  // return 1;
-	};
-
-	exports.default = {
-	  compute: compute
-	};
-
-/***/ },
-/* 175 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _logger = __webpack_require__(100);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _productDescriptions = __webpack_require__(176);
-
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var merge = function merge(buyer, seller) {
-	  var features = {};
-	  var improvements = [];
-
-	  // logger.debug('buyer is', buyer);
-	  // logger.debug('seller is', seller);
-
-	  (0, _productDescriptions2.default)(buyer.idea).features.map(function (f, i) {
-	    var current = buyer.features.offer[f.name];
-	    var next = seller.features.offer[f.name];
-
-	    if (current < next) {
-	      improvements.push({ name: f.name, i: i, value: next, difference: next - current });
-	      features[f.name] = next;
-	    } else {
-	      features[f.name] = current;
-	    }
-	  });
-
-	  // logger.debug({ improvements, features });
-
-	  return {
-	    clients: buyer.KPI.clients,
-	    improvements: improvements,
-	    features: features
-	  };
-	};
-
-	exports.default = {
-	  merge: merge
-	};
-
-/***/ },
 /* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 
-	exports.default = function (idea) {
-	  switch (idea) {
-	    case IDEAS.IDEA_WEB_STUDIO:
-	      return _WEBSTUDIO2.default;
-	      break;
-	    case IDEAS.IDEA_WEB_HOSTING:
-	      return _WEBHOSTING2.default.compute();
-	      break;
-	  }
-	};
+	var _getPrototypeOf = __webpack_require__(40);
 
-	var _ideas = __webpack_require__(138);
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
 
-	var IDEAS = _interopRequireWildcard(_ideas);
+	var _classCallCheck2 = __webpack_require__(45);
 
-	var _WEBSTUDIO = __webpack_require__(142);
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-	var _WEBSTUDIO2 = _interopRequireDefault(_WEBSTUDIO);
+	var _createClass2 = __webpack_require__(46);
 
-	var _WEBHOSTING = __webpack_require__(143);
+	var _createClass3 = _interopRequireDefault(_createClass2);
 
-	var _WEBHOSTING2 = _interopRequireDefault(_WEBHOSTING);
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var Bar = function (_Component) {
+	  (0, _inherits3.default)(Bar, _Component);
 
-	;
+	  function Bar() {
+	    (0, _classCallCheck3.default)(this, Bar);
+	    return (0, _possibleConstructorReturn3.default)(this, (Bar.__proto__ || (0, _getPrototypeOf2.default)(Bar)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Bar, [{
+	    key: "componentWillMount",
+	    value: function componentWillMount() {}
+	  }, {
+	    key: "render",
+	    value: function render(props) {
+	      return (0, _preact.h)(
+	        "div",
+	        { className: "progress" },
+	        (0, _preact.h)("div", {
+	          className: "progress-bar",
+	          role: "progressbar",
+	          style: { width: props.current * 100 / (props.min + props.max) + "%" },
+	          "aria-valuenow": props.current,
+	          "aria-valuemin": props.min,
+	          "aria-valuemax": props.max
+	        })
+	      );
+	    }
+	  }]);
+	  return Bar;
+	}(_preact.Component);
+
+	exports.default = Bar;
 
 /***/ }
 /******/ ]);

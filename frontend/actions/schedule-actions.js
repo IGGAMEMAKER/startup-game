@@ -5,10 +5,15 @@ import logger from '../helpers/logger/logger';
 import scheduleStore from '../stores/schedule-store';
 
 export default {
-  increaseDay: () => {
+  increaseDay() {
     Dispatcher.dispatch({
       type: ACTIONS.SCHEDULE_ACTIONS_DAY_TICK
     })
+  },
+  nextMonth() {
+    // Dispatcher.dispatch({
+    //   type: ACTIONS.SCHEDULE_ACTIONS_MONTH_TICK
+    // })
   },
   startGame() {
     Dispatcher.dispatch({

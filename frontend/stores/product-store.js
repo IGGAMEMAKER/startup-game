@@ -844,7 +844,9 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PRODUCT_ACTIONS_COMPANY_BUY:
+      logger.debug('buy company store');
       const { buyerId, sellerId } = p;
+
       const buyer = _products[buyerId];
       const seller = _products[sellerId];
 

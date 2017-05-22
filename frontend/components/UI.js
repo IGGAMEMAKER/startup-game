@@ -4,6 +4,7 @@ import Range from './Shared/Range';
 import Select from './Shared/Select';
 import arrows from './Shared/arrows';
 import Info from './Shared/Info';
+import Bar from './Shared/Bar';
 
 export default {
   Button,
@@ -11,5 +12,6 @@ export default {
   Select,
   Range,
   symbols: arrows,
-  Info
+  Info,
+  Bar
 };

@@ -30,7 +30,7 @@ export default class Competitor extends Component {
     const name = i >= 0 ? `Конкурент №${i + 1} - "${c.name}"` : `"${c.name}"`;
 
     const features = c.features.map((f, ii) => {
-      logger.debug('compet improvs', i, c.improvements, f);
+      // logger.debug('compet improvs', i, c.improvements, f);
       logger.shit('EXTRA SHIT!!! I=== -1 IS HARDCODED CHECKING FOR OUR COMPANY. REWRITE THIS');
 
       const difference = c.improvements.filter(d => d.name === f.name);
