@@ -6,20 +6,27 @@ type PropsType = {
   current: number
 };
 
-export default class Bar extends Component {
-  componentWillMount() {}
+type BarType = {
+  value: number,
+  style: string
+};
 
+export default class Bar extends Component {
   render(props: PropsType) {
+    const data = props.data.map((d: BarType, i) => {
+      return <div
+        className={`progress-bar ${d.style}`}
+        role="progressbar"
+        style={{ width: `${d.value * 100 / (props.min + props.max)}%`}}
+        aria-valuenow={props.current}
+        aria-valuemin={props.min}
+        aria-valuemax={props.max}
+      ></div>
+    });
+
     return (
       <div className="progress">
-        <div
-          className="progress-bar"
-          role="progressbar"
-          style={{ width: `${props.current * 100 / (props.min + props.max)}%`}}
-          aria-valuenow={props.current}
-          aria-valuemin={props.min}
-          aria-valuemax={props.max}
-        ></div>
+        {data}
       </div>
     );
   }

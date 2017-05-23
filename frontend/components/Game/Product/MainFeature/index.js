@@ -4,6 +4,8 @@ import ProductDescriptions from '../../../../helpers/products/product-descriptio
 import flux from '../../../../flux';
 import UI from '../../../UI';
 
+import Programmers from '../../Team/Programmers';
+
 import logger from '../../../../helpers/logger/logger';
 import round from '../../../../helpers/math/round';
 
@@ -74,22 +76,32 @@ export default class MainFeature extends Component {
     // display: inline-block;
     // margin-left: 10px;
 
-    return (
-      <div key={key}>
-        <div>
-          <span>{userOrientedFeatureName} ({current}/{max}XP)</span>
-          <div style="width: 300px;">
-            <UI.Bar min={0} max={max} current={current} />
-          </div>
+    const data = [
+      { value: current },
+    ];
+
+    if (product.XP >= 1000) {
+      data.push({ value: 1000, style: 'bg-success' })
+    }
+
+    if (product.XP >= 2000) {
+      data.push({ value: 1000, style: 'bg-danger' })
+    }
+
+    return <div key={key}>
+      <div>
+        <span>{userOrientedFeatureName} ({current}/{max}XP)</span>
+        <div style="width: 300px;">
+          <UI.Bar min={0} max={max} data={data} />
         </div>
-        <br />
-        <div className="featureDescription">{description}</div>
-        <div>{segmentRatingImprovementList}</div>
-        {hypothesisList}
-        <br />
-        <hr color="white" />
       </div>
-    )
+      <br />
+      <div className="featureDescription">{description}</div>
+      <div>{segmentRatingImprovementList}</div>
+      {hypothesisList}
+      <br />
+      <hr color="white" />
+    </div>
   };
 
   renderHypothesisItem = (id, featureName, time, current, max, product) => (hypothesis, i) => {
@@ -148,7 +160,7 @@ export default class MainFeature extends Component {
 
     return (
       <div>
-        <div className="featureGroupTitle">Основные характеристики продукта</div>
+        <div className="featureGroupTitle">Разработка</div>
         <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">
             Улучшая главные характеристики продукта, вы повышаете его рейтинг,
@@ -158,6 +170,7 @@ export default class MainFeature extends Component {
           <div>Доступно: {product.XP}XP</div>
           <div className="featureGroupBody">{featureList}</div>
         </div>
+        <Programmers />
       </div>
     );
   }

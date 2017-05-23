@@ -23,7 +23,7 @@ export default class Programmers extends Component {
     })
   };
 
-  render(props: PropsType, { staff, employees }) {
+  render(props: PropsType, { staff, employees, points }) {
     return (
       <div>
         <div>Наши программисты производят +{points} программистских очков (PP) в месяц</div>

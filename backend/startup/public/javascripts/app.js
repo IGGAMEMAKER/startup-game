@@ -5897,22 +5897,23 @@
 	  }
 
 	  (0, _createClass3.default)(Bar, [{
-	    key: "componentWillMount",
-	    value: function componentWillMount() {}
-	  }, {
 	    key: "render",
 	    value: function render(props) {
-	      return (0, _preact.h)(
-	        "div",
-	        { className: "progress" },
-	        (0, _preact.h)("div", {
-	          className: "progress-bar",
+	      var data = props.data.map(function (d, i) {
+	        return (0, _preact.h)("div", {
+	          className: "progress-bar " + d.style,
 	          role: "progressbar",
-	          style: { width: props.current * 100 / (props.min + props.max) + "%" },
+	          style: { width: d.value * 100 / (props.min + props.max) + "%" },
 	          "aria-valuenow": props.current,
 	          "aria-valuemin": props.min,
 	          "aria-valuemax": props.max
-	        })
+	        });
+	      });
+
+	      return (0, _preact.h)(
+	        "div",
+	        { className: "progress" },
+	        data
 	      );
 	    }
 	  }]);
@@ -9547,7 +9548,7 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'featureGroupTitle' },
-	          '\u0422\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437'
+	          '\u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430'
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -9708,13 +9709,13 @@
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        (0, _preact.h)(_Marketers2.default, null),
 	        clientTab,
 	        companyCostTab,
 	        adTab,
 	        nearestCompetitor,
 	        segmentTab,
-	        churnFeatures
+	        churnFeatures,
+	        (0, _preact.h)(_Marketers2.default, null)
 	      );
 	    }, _this.renderAdTab = function (id, product) {
 	      if (!_stages2.default.canShowAdTab()) return '';
@@ -9737,6 +9738,23 @@
 	      return (0, _preact.h)(
 	        'div',
 	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'b',
+	            null,
+	            '\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430 "',
+	            product.name,
+	            '"'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
+	            _productStore2.default.getDescriptionOfProduct(id)
+	          )
+	        ),
 	        (0, _preact.h)(
 	          'b',
 	          null,
@@ -9882,7 +9900,7 @@
 	    }, _this.renderProductMenuNavbar = function () {
 	      var hypothesis = void 0;
 	      if (_stages2.default.canShowHypothesisTab()) {
-	        hypothesis = _this.renderNavbar(MODE_HYPOTHESIS, 'Исследования');
+	        hypothesis = _this.renderNavbar(MODE_HYPOTHESIS, 'Аналитика');
 	      }
 
 	      var improvements = void 0;
@@ -9917,8 +9935,8 @@
 	        'ul',
 	        { className: 'nav nav-tabs' },
 	        hypothesis,
-	        clients,
 	        improvements,
+	        clients,
 	        payments,
 	        competitors,
 	        bonuses
@@ -9978,9 +9996,9 @@
 	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев', description: '', // 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез',
 	        points: { programming: 50, marketing: 0 }
 	      }, { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
-	        points: { programming: 50, marketing: 0 }
+	        points: { programming: 150, marketing: 0 }
 	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
-	        points: { programming: 150, marketing: 100 }
+	        points: { programming: 250, marketing: 0 }
 	      }];
 	    }
 	  }, {
@@ -10220,31 +10238,19 @@
 	      var metrics = this.renderMetricsTab(id, product);
 	      var menu = this.renderProductMenuNavbar();
 
-	      var description = void 0;
-	      if (!_stages2.default.isFirstWorkerMission()) {
-	        description = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'b',
-	            null,
-	            '\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430 "',
-	            product.name,
-	            '"'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
-	            _productStore2.default.getDescriptionOfProduct(id)
-	          )
-	        );
-	      }
+	      // let description;
+	      // if (!stageHelper.isFirstWorkerMission()) {
+	      //   description = (
+	      //     <div>
+	      //       <b>Развитие продукта "{product.name}"</b>
+	      //       <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
+	      //     </div>
+	      //   );
+	      // }
 
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        description,
 	        metrics,
 	        menu,
 	        (0, _preact.h)(
@@ -10528,7 +10534,8 @@
 	    key: 'render',
 	    value: function render(props, _ref2) {
 	      var staff = _ref2.staff,
-	          employees = _ref2.employees;
+	          employees = _ref2.employees,
+	          points = _ref2.points;
 
 	      return (0, _preact.h)(
 	        'div',
@@ -11384,6 +11391,10 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
+	var _Programmers = __webpack_require__(166);
+
+	var _Programmers2 = _interopRequireDefault(_Programmers);
+
 	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
@@ -11482,6 +11493,16 @@
 	        // display: inline-block;
 	        // margin-left: 10px;
 
+	        var data = [{ value: current }];
+
+	        if (product.XP >= 1000) {
+	          data.push({ value: 1000, style: 'bg-success' });
+	        }
+
+	        if (product.XP >= 2000) {
+	          data.push({ value: 1000, style: 'bg-danger' });
+	        }
+
 	        return (0, _preact.h)(
 	          'div',
 	          { key: key },
@@ -11501,7 +11522,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              { style: 'width: 300px;' },
-	              (0, _preact.h)(_UI2.default.Bar, { min: 0, max: max, current: current })
+	              (0, _preact.h)(_UI2.default.Bar, { min: 0, max: max, data: data })
 	            )
 	          ),
 	          (0, _preact.h)('br', null),
@@ -11587,7 +11608,7 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'featureGroupTitle' },
-	          '\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	          '\u0420\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0430'
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -11610,7 +11631,8 @@
 	            { className: 'featureGroupBody' },
 	            featureList
 	          )
-	        )
+	        ),
+	        (0, _preact.h)(_Programmers2.default, null)
 	      );
 	    }
 	  }]);
@@ -12220,7 +12242,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
+	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
 	            )
 	          );
 	          break;

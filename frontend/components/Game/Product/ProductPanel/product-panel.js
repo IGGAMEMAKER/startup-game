@@ -118,10 +118,10 @@ export default class ProductPanel extends Component {
         points: { programming: 50, marketing: 0 }
       },
       { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
-        points: { programming: 50, marketing: 0 }
+        points: { programming: 150, marketing: 0 }
       },
       { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
-        points: { programming: 150, marketing: 100 }
+        points: { programming: 250, marketing: 0 }
       }
     ];
   };
@@ -294,7 +294,7 @@ export default class ProductPanel extends Component {
           // <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
     return (
       <div>
-        <div className="featureGroupTitle">Тестирование гипотез</div>
+        <div className="featureGroupTitle">Аналитика</div>
         <div className="featureGroupDescription">
           <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
           <div className="smallText">{possibleXPtext}</div>
@@ -388,7 +388,7 @@ export default class ProductPanel extends Component {
       </div>
     }
 
-    return (<div>Вы - №1 на рынке!</div>)
+    return <div>Вы - №1 на рынке!</div>
   }
 
   renderSegmentTab(id) {
@@ -439,24 +439,22 @@ export default class ProductPanel extends Component {
 
     let clientTab;
     if (stageHelper.canShowAdTab()) {
-      clientTab = (
-        <div>
-          <div className="featureGroupTitle">Работа с клиентами</div>
-          <div>Наши клиенты: {market.clients}</div>
-          <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
-        </div>
-      )
+      clientTab = <div>
+        <div className="featureGroupTitle">Работа с клиентами</div>
+        <div>Наши клиенты: {market.clients}</div>
+        <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
+      </div>
     }
 
     return (
       <div>
-        <Marketers />
         {clientTab}
         {companyCostTab}
         {adTab}
         {nearestCompetitor}
         {segmentTab}
         {churnFeatures}
+        <Marketers />
       </div>
     );
   };
@@ -479,6 +477,10 @@ export default class ProductPanel extends Component {
 
     return (
       <div>
+        <div>
+          <b>Развитие продукта "{product.name}"</b>
+          <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
+        </div>
         <b>Основные показатели продукта</b>
         <Metrics
           product={product}
@@ -611,7 +613,7 @@ export default class ProductPanel extends Component {
   renderProductMenuNavbar = () => {
     let hypothesis;
     if (stageHelper.canShowHypothesisTab()) {
-      hypothesis = this.renderNavbar(MODE_HYPOTHESIS, 'Исследования');
+      hypothesis = this.renderNavbar(MODE_HYPOTHESIS, 'Аналитика');
     }
 
     let improvements;
@@ -645,8 +647,8 @@ export default class ProductPanel extends Component {
     return (
       <ul className="nav nav-tabs">
         {hypothesis}
-        {clients}
         {improvements}
+        {clients}
         {payments}
         {competitors}
         {bonuses}
@@ -706,19 +708,18 @@ export default class ProductPanel extends Component {
     const metrics = this.renderMetricsTab(id, product);
     const menu = this.renderProductMenuNavbar();
 
-    let description;
-    if (!stageHelper.isFirstWorkerMission()) {
-      description = (
-        <div>
-          <b>Развитие продукта "{product.name}"</b>
-          <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
-        </div>
-      );
-    }
+    // let description;
+    // if (!stageHelper.isFirstWorkerMission()) {
+    //   description = (
+    //     <div>
+    //       <b>Развитие продукта "{product.name}"</b>
+    //       <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
+    //     </div>
+    //   );
+    // }
 
     return (
       <div>
-        {description}
         {metrics}
         {menu}
         <div style={{padding: '15px', 'min-height': '500px'}}>
