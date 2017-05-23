@@ -5858,7 +5858,7 @@
 /* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -5897,22 +5897,35 @@
 	  }
 
 	  (0, _createClass3.default)(Bar, [{
-	    key: "render",
-	    value: function render(props) {
-	      var data = props.data.map(function (d, i) {
-	        return (0, _preact.h)("div", {
-	          className: "progress-bar " + d.style,
-	          role: "progressbar",
-	          style: { width: d.value * 100 / (props.min + props.max) + "%" },
-	          "aria-valuenow": props.current,
-	          "aria-valuemin": props.min,
-	          "aria-valuemax": props.max
-	        });
+	    key: 'renderBar',
+	    value: function renderBar(min, max, value, style) {
+	      return (0, _preact.h)('div', {
+	        className: 'progress-bar ' + style,
+	        role: 'progressbar',
+	        style: { width: value * 100 / (min + max) + '%' },
+	        'aria-valuenow': value,
+	        'aria-valuemin': min,
+	        'aria-valuemax': max
 	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(props) {
+	      var _this2 = this;
+
+	      var data = void 0;
+
+	      if (Array.isArray(props.data)) {
+	        data = props.data.map(function (d, i) {
+	          return _this2.renderBar(props.min, props.max, d.value, d.style);
+	        });
+	      } else {
+	        data = this.renderBar(props.min, props.max, props.data, '');
+	      }
 
 	      return (0, _preact.h)(
-	        "div",
-	        { className: "progress" },
+	        'div',
+	        { className: 'progress' },
 	        data
 	      );
 	    }

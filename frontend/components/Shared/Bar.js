@@ -12,17 +12,27 @@ type BarType = {
 };
 
 export default class Bar extends Component {
+  renderBar(min, max, value, style) {
+    return <div
+      className={`progress-bar ${style}`}
+      role="progressbar"
+      style={{ width: `${value * 100 / (min + max)}%`}}
+      aria-valuenow={value}
+      aria-valuemin={min}
+      aria-valuemax={max}
+    ></div>
+  }
+
   render(props: PropsType) {
-    const data = props.data.map((d: BarType, i) => {
-      return <div
-        className={`progress-bar ${d.style}`}
-        role="progressbar"
-        style={{ width: `${d.value * 100 / (props.min + props.max)}%`}}
-        aria-valuenow={props.current}
-        aria-valuemin={props.min}
-        aria-valuemax={props.max}
-      ></div>
-    });
+    let data;
+
+    if (Array.isArray(props.data)) {
+      data = props.data.map((d: BarType, i) => {
+        return this.renderBar(props.min, props.max, d.value, d.style)
+      });
+    } else {
+      data = this.renderBar(props.min, props.max, props.data, '');
+    }
 
     return (
       <div className="progress">
