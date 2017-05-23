@@ -109,6 +109,20 @@ export default {
     return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
   },
 
+  canShowTeamTabs() {
+    const s = getStage();
+
+    if (s === gameStages.GAME_STAGE_GAME_STARTED) return true;
+
+    if (s > gameStages.GAME_STAGE_GAME_STARTED && s < gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE) return false;
+
+    return true;
+  },
+
+  canShowAdTab() {
+    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+  },
+
   canShowSegments() {
     return this.canShowCompetitorsTab();
   },

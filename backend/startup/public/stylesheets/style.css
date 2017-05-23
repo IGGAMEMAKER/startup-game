@@ -1,7 +1,8 @@
 * {
   --positive: #00A000;
   --negative: red;
-  --link: blue;
+  /*--link: blue;*/
+  --link: #0275d8;
 
   /*--light-green: #00cc99;*/
   --light-green: rgba(0, 204, 37, 0.22);
@@ -416,6 +417,21 @@ textarea {
 
 .client-segment {
 
+}
+
+.staff-switcher {
+  display: inline-block;
+}
+
+.link {
+  display: inline-block;
+  margin-left: 10px;
+  color: #0275d8;
+  cursor: pointer;
+}
+
+.staff-table {
+  /*min-height: 200px;*/
 }
 
 .main-feature-item {

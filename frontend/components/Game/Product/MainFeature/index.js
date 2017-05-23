@@ -154,6 +154,7 @@ export default class MainFeature extends Component {
             Улучшая главные характеристики продукта, вы повышаете его рейтинг,
             что приводит к снижению оттока клиентов и увеличению доходов с продукта
           </div>
+          <br />
           <div>Доступно: {product.XP}XP</div>
           <div className="featureGroupBody">{featureList}</div>
         </div>

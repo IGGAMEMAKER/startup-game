@@ -24,10 +24,10 @@ export default class AdviceTab extends Component {
         break;
 
       case c.gameStages.GAME_STAGE_HIRED_FIRST_WORKER:
+            // <div>Приведите более 200 клиентов на ваш сайт в разделе "Проекты->Клиенты"</div>
         target = (
           <div>
-            <div>Отлично! Нам нужны первые пользователи</div>
-            <div>Приведите более 200 клиентов на ваш сайт в разделе "Проекты->Клиенты"</div>
+            <div>Отлично! Нам нужны первые пользователи. Проведите рекламную кампанию</div>
           </div>
         );
         break;

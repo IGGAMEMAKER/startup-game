@@ -181,6 +181,8 @@ export default class Staff extends Component {
   };
 
   render({ staff, employees }, { switcher, teamToggle, employeeToggle }) {
+    if (!stageHelper.canShowTeamTabs()) return <div></div>;
+
     const staffList =        staff.map((p, i) => this.renderPerson(p, i, false));
     const employeeList = employees.map((p, i) => this.renderPerson(p, i, true));
 
@@ -217,37 +219,46 @@ export default class Staff extends Component {
     }
 
     let employeePhrase;
-    if (!employees.length) {
-      employeePhrase = <h6>Никто не хочет присоединиться к нам :( Перемотайте время и у нас появятся варианты!</h6>
-    } else {
-      employeePhrase = <h6>К нашей команде хотят присоединиться {employees.length} человек</h6>
-    }
+    // if (!employees.length) {
+    //   employeePhrase = <h6>Никто не хочет присоединиться к нам :( Перемотайте время и у нас появятся варианты!</h6>
+    // } else {
+    //   employeePhrase = <h6>К нашей команде хотят присоединиться {employees.length} человек</h6>
+    // }
 
     let teamPhrase;
     const staffLength = staff.length;
-    if (staffLength < 2) {
-      // teamPhrase = 'Наймите маркетолога';
-    } else {
-      teamPhrase = ''; // `В нашей команде ${staffLength} человек`;
-    }
+    // if (staffLength < 2) {
+    //   // teamPhrase = 'Наймите маркетолога';
+    // } else {
+    //   teamPhrase = ''; // `В нашей команде ${staffLength} человек`;
+    // }
 
     let tab;
-
+    let amount;
     switch (switcher) {
       case IS_EMPLOYEES:
+        amount = employees.length ? `(${employees.length})` : '';
         tab = (
           <div>
-            <h4>Соискатели</h4>
-            <h6 className="offset-mid">{employeePhrase}</h6>
+            <div>
+              <h4 className="staff-switcher">Найм сотрудников {amount}</h4>
+              <span className="link" onClick={this.setStaff}>Команда</span>
+            </div>
+            <br />
             {employeeTab}
           </div>
         );
         break;
       case IS_STAFF:
+        amount = staffLength ? `(${staffLength})` : '';
+            // <UI.Button text="Нанять сотрудника" link onClick={this.setEmployees} />
         tab = (
           <div>
-            <h4>Команда</h4>
-            <h6 className="offset-mid">{teamPhrase}</h6>
+            <div>
+              <h4 className="staff-switcher">Команда {amount}</h4>
+              <span className="link" onClick={this.setEmployees}>Нанять сотрудника</span>
+            </div>
+            <br />
             {staffTab}
           </div>
         );
@@ -255,18 +266,20 @@ export default class Staff extends Component {
     }
 
         // <div>Месячная производительность команды: +{mp}MP +{pp}PP </div>
+
+        // <nav aria-label="Page navigation example">
+        //   <ul className="pagination justify-content-center">
+        //     <li className={`page-item ${switcher === IS_STAFF ? 'active' : ''}`}>
+        //       <span onClick={this.setStaff} className="page-link" tabindex="-1">Команда ({staffLength})</span>
+        //     </li>
+        //     <li className={`page-item ${switcher === IS_EMPLOYEES ? 'active' : ''}`}>
+        //       <span onClick={this.setEmployees} className="page-link">Нанять ({employees.length})</span>
+        //     </li>
+        //   </ul>
+        // </nav>
     return (
-      <div>
-        <nav aria-label="Page navigation example">
-          <ul className="pagination justify-content-center">
-            <li className={`page-item ${switcher === IS_STAFF ? 'active' : ''}`}>
-              <span onClick={this.setStaff} className="page-link" tabindex="-1">Команда ({staffLength})</span>
-            </li>
-            <li className={`page-item ${switcher === IS_EMPLOYEES ? 'active' : ''}`}>
-              <span onClick={this.setEmployees} className="page-link">Нанять ({employees.length})</span>
-            </li>
-          </ul>
-        </nav>
+      <div className="staff-table">
+        <br />
         {tab}
       </div>
     );

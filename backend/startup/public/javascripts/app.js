@@ -2960,6 +2960,8 @@
 	          teamToggle = _ref3.teamToggle,
 	          employeeToggle = _ref3.employeeToggle;
 
+	      if (!_stages2.default.canShowTeamTabs()) return (0, _preact.h)('div', null);
+
 	      var staffList = staff.map(function (p, i) {
 	        return _this2.renderPerson(p, i, false);
 	      });
@@ -3012,103 +3014,90 @@
 	      }
 
 	      var employeePhrase = void 0;
-	      if (!employees.length) {
-	        employeePhrase = (0, _preact.h)(
-	          'h6',
-	          null,
-	          '\u041D\u0438\u043A\u0442\u043E \u043D\u0435 \u0445\u043E\u0447\u0435\u0442 \u043F\u0440\u0438\u0441\u043E\u0435\u0434\u0438\u043D\u0438\u0442\u044C\u0441\u044F \u043A \u043D\u0430\u043C :( \u041F\u0435\u0440\u0435\u043C\u043E\u0442\u0430\u0439\u0442\u0435 \u0432\u0440\u0435\u043C\u044F \u0438 \u0443 \u043D\u0430\u0441 \u043F\u043E\u044F\u0432\u044F\u0442\u0441\u044F \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u044B!'
-	        );
-	      } else {
-	        employeePhrase = (0, _preact.h)(
-	          'h6',
-	          null,
-	          '\u041A \u043D\u0430\u0448\u0435\u0439 \u043A\u043E\u043C\u0430\u043D\u0434\u0435 \u0445\u043E\u0442\u044F\u0442 \u043F\u0440\u0438\u0441\u043E\u0435\u0434\u0438\u043D\u0438\u0442\u044C\u0441\u044F ',
-	          employees.length,
-	          ' \u0447\u0435\u043B\u043E\u0432\u0435\u043A'
-	        );
-	      }
+	      // if (!employees.length) {
+	      //   employeePhrase = <h6>Никто не хочет присоединиться к нам :( Перемотайте время и у нас появятся варианты!</h6>
+	      // } else {
+	      //   employeePhrase = <h6>К нашей команде хотят присоединиться {employees.length} человек</h6>
+	      // }
 
 	      var teamPhrase = void 0;
 	      var staffLength = staff.length;
-	      if (staffLength < 2) {
-	        // teamPhrase = 'Наймите маркетолога';
-	      } else {
-	        teamPhrase = ''; // `В нашей команде ${staffLength} человек`;
-	      }
+	      // if (staffLength < 2) {
+	      //   // teamPhrase = 'Наймите маркетолога';
+	      // } else {
+	      //   teamPhrase = ''; // `В нашей команде ${staffLength} человек`;
+	      // }
 
 	      var tab = void 0;
-
+	      var amount = void 0;
 	      switch (switcher) {
 	        case IS_EMPLOYEES:
+	          amount = employees.length ? '(' + employees.length + ')' : '';
 	          tab = (0, _preact.h)(
 	            'div',
 	            null,
 	            (0, _preact.h)(
-	              'h4',
+	              'div',
 	              null,
-	              '\u0421\u043E\u0438\u0441\u043A\u0430\u0442\u0435\u043B\u0438'
+	              (0, _preact.h)(
+	                'h4',
+	                { className: 'staff-switcher' },
+	                '\u041D\u0430\u0439\u043C \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u043A\u043E\u0432 ',
+	                amount
+	              ),
+	              (0, _preact.h)(
+	                'span',
+	                { className: 'link', onClick: this.setStaff },
+	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
+	              )
 	            ),
-	            (0, _preact.h)(
-	              'h6',
-	              { className: 'offset-mid' },
-	              employeePhrase
-	            ),
+	            (0, _preact.h)('br', null),
 	            employeeTab
 	          );
 	          break;
 	        case IS_STAFF:
+	          amount = staffLength ? '(' + staffLength + ')' : '';
+	          // <UI.Button text="Нанять сотрудника" link onClick={this.setEmployees} />
 	          tab = (0, _preact.h)(
 	            'div',
 	            null,
 	            (0, _preact.h)(
-	              'h4',
+	              'div',
 	              null,
-	              '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
+	              (0, _preact.h)(
+	                'h4',
+	                { className: 'staff-switcher' },
+	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 ',
+	                amount
+	              ),
+	              (0, _preact.h)(
+	                'span',
+	                { className: 'link', onClick: this.setEmployees },
+	                '\u041D\u0430\u043D\u044F\u0442\u044C \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u043A\u0430'
+	              )
 	            ),
-	            (0, _preact.h)(
-	              'h6',
-	              { className: 'offset-mid' },
-	              teamPhrase
-	            ),
+	            (0, _preact.h)('br', null),
 	            staffTab
 	          );
 	          break;
 	      }
 
 	      // <div>Месячная производительность команды: +{mp}MP +{pp}PP </div>
+
+	      // <nav aria-label="Page navigation example">
+	      //   <ul className="pagination justify-content-center">
+	      //     <li className={`page-item ${switcher === IS_STAFF ? 'active' : ''}`}>
+	      //       <span onClick={this.setStaff} className="page-link" tabindex="-1">Команда ({staffLength})</span>
+	      //     </li>
+	      //     <li className={`page-item ${switcher === IS_EMPLOYEES ? 'active' : ''}`}>
+	      //       <span onClick={this.setEmployees} className="page-link">Нанять ({employees.length})</span>
+	      //     </li>
+	      //   </ul>
+	      // </nav>
 	      return (0, _preact.h)(
 	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'nav',
-	          { 'aria-label': 'Page navigation example' },
-	          (0, _preact.h)(
-	            'ul',
-	            { className: 'pagination justify-content-center' },
-	            (0, _preact.h)(
-	              'li',
-	              { className: 'page-item ' + (switcher === IS_STAFF ? 'active' : '') },
-	              (0, _preact.h)(
-	                'span',
-	                { onClick: this.setStaff, className: 'page-link', tabindex: '-1' },
-	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 (',
-	                staffLength,
-	                ')'
-	              )
-	            ),
-	            (0, _preact.h)(
-	              'li',
-	              { className: 'page-item ' + (switcher === IS_EMPLOYEES ? 'active' : '') },
-	              (0, _preact.h)(
-	                'span',
-	                { onClick: this.setEmployees, className: 'page-link' },
-	                '\u041D\u0430\u043D\u044F\u0442\u044C (',
-	                employees.length,
-	                ')'
-	              )
-	            )
-	          )
-	        ),
+	        { className: 'staff-table' },
+	        (0, _preact.h)('br', null),
 	        tab
 	      );
 	    }
@@ -8082,6 +8071,18 @@
 	  canShowBonusesTab: function canShowBonusesTab() {
 	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
 	  },
+	  canShowTeamTabs: function canShowTeamTabs() {
+	    var s = getStage();
+
+	    if (s === gameStages.GAME_STAGE_GAME_STARTED) return true;
+
+	    if (s > gameStages.GAME_STAGE_GAME_STARTED && s < gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE) return false;
+
+	    return true;
+	  },
+	  canShowAdTab: function canShowAdTab() {
+	    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+	  },
 	  canShowSegments: function canShowSegments() {
 	    return this.canShowCompetitorsTab();
 	  },
@@ -9676,41 +9677,52 @@
 	        );
 	      }
 
+	      var clientTab = void 0;
+	      if (_stages2.default.canShowAdTab()) {
+	        clientTab = (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupTitle' },
+	            '\u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
+	            market.clients
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041A\u0430\u0436\u0434\u044B\u0439 \u043C\u0435\u0441\u044F\u0446 \u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
+	            disloyalClients,
+	            ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (\u043E\u0442\u0442\u043E\u043A: ',
+	            churn,
+	            '%)'
+	          )
+	        );
+	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
 	        (0, _preact.h)(_Marketers2.default, null),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupTitle' },
-	          '\u0420\u0430\u0431\u043E\u0442\u0430 \u0441 \u043A\u043B\u0438\u0435\u043D\u0442\u0430\u043C\u0438'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	          market.clients
-	        ),
+	        clientTab,
 	        companyCostTab,
 	        adTab,
 	        nearestCompetitor,
-	        (0, _preact.h)('br', null),
 	        segmentTab,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041A\u0430\u0436\u0434\u044B\u0439 \u043C\u0435\u0441\u044F\u0446 \u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
-	          disloyalClients,
-	          ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (\u043E\u0442\u0442\u043E\u043A: ',
-	          churn,
-	          '%)'
-	        ),
 	        churnFeatures
 	      );
 	    }, _this.renderAdTab = function (id, product) {
+	      if (!_stages2.default.canShowAdTab()) return '';
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
+	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'b',
 	          null,
@@ -10071,7 +10083,8 @@
 	            null,
 	            '\u041D\u0430\u0448 \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u0439 \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442'
 	          ),
-	          (0, _preact.h)(_competitor2.default, { rating: rating, c: competitor, i: -1 })
+	          (0, _preact.h)(_competitor2.default, { rating: rating, c: competitor, i: -1 }),
+	          (0, _preact.h)('br', null)
 	        );
 	      }
 
@@ -10087,7 +10100,8 @@
 	      var segments = _productStore2.default.getSegments(id);
 
 	      if (!_stages2.default.canShowSegments()) {
-	        segments = [segments[0]];
+	        return '';
+	        // segments = [segments[0]];
 	      }
 
 	      var segmentList = segments.map(function (s, i) {
@@ -11583,6 +11597,7 @@
 	            { className: 'featureGroupDescription' },
 	            '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0441\u043D\u0438\u0436\u0435\u043D\u0438\u044E \u043E\u0442\u0442\u043E\u043A\u0430 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0434\u043E\u0445\u043E\u0434\u043E\u0432 \u0441 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
 	          ),
+	          (0, _preact.h)('br', null),
 	          (0, _preact.h)(
 	            'div',
 	            null,
@@ -12181,18 +12196,14 @@
 	          break;
 
 	        case _constants2.default.gameStages.GAME_STAGE_HIRED_FIRST_WORKER:
+	          // <div>Приведите более 200 клиентов на ваш сайт в разделе "Проекты->Клиенты"</div>
 	          target = (0, _preact.h)(
 	            'div',
 	            null,
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u041E\u0442\u043B\u0438\u0447\u043D\u043E! \u041D\u0430\u043C \u043D\u0443\u0436\u043D\u044B \u043F\u0435\u0440\u0432\u044B\u0435 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041F\u0440\u0438\u0432\u0435\u0434\u0438\u0442\u0435 \u0431\u043E\u043B\u0435\u0435 200 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043D\u0430 \u0432\u0430\u0448 \u0441\u0430\u0439\u0442 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u041F\u0440\u043E\u0435\u043A\u0442\u044B->\u041A\u043B\u0438\u0435\u043D\u0442\u044B"'
+	              '\u041E\u0442\u043B\u0438\u0447\u043D\u043E! \u041D\u0430\u043C \u043D\u0443\u0436\u043D\u044B \u043F\u0435\u0440\u0432\u044B\u0435 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438. \u041F\u0440\u043E\u0432\u0435\u0434\u0438\u0442\u0435 \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E'
 	            )
 	          );
 	          break;

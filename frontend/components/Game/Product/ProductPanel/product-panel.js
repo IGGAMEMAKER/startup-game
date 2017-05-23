@@ -381,12 +381,11 @@ export default class ProductPanel extends Component {
     const competitor = productStore.getNextCompetitorInfo(id);
 
     if (competitor) {
-      return (
-        <div>
-          <div>Наш ближайший конкурент</div>
-          <Competitor rating={rating} c={competitor} i={-1} />
-        </div>
-      )
+      return <div>
+        <div>Наш ближайший конкурент</div>
+        <Competitor rating={rating} c={competitor} i={-1} />
+        <br />
+      </div>
     }
 
     return (<div>Вы - №1 на рынке!</div>)
@@ -396,7 +395,8 @@ export default class ProductPanel extends Component {
     let segments = productStore.getSegments(id);
 
     if (!stageHelper.canShowSegments()) {
-      segments = [segments[0]];
+      return '';
+      // segments = [segments[0]];
     }
 
     const segmentList = segments.map((s, i) => <Segment productId={id} segment={s} id={i} />);
@@ -437,25 +437,36 @@ export default class ProductPanel extends Component {
       companyCostTab = <div>Наша рыночная стоимость: {ourCompanyCost}$</div>
     }
 
+    let clientTab;
+    if (stageHelper.canShowAdTab()) {
+      clientTab = (
+        <div>
+          <div className="featureGroupTitle">Работа с клиентами</div>
+          <div>Наши клиенты: {market.clients}</div>
+          <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
+        </div>
+      )
+    }
+
     return (
       <div>
         <Marketers />
-        <div className="featureGroupTitle">Работа с клиентами</div>
-        <div>Наши клиенты: {market.clients}</div>
+        {clientTab}
         {companyCostTab}
         {adTab}
         {nearestCompetitor}
-        <br />
         {segmentTab}
-        <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
         {churnFeatures}
       </div>
     );
   };
 
   renderAdTab = (id, product) => {
+    if (!stageHelper.canShowAdTab()) return '';
+
     return (
       <div>
+        <br />
         <b>Рекламная кампания</b>
         <AdsPanel product={product} id={id} />
         <br />
