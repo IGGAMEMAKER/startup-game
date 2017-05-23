@@ -42,6 +42,8 @@ const createCompetitorCompany = (idea) => {
 
   logger.debug('createCompetitorCompany', p);
   productActions.createCompetitorCompany(p);
+
+  return p;
 };
 
 export default {

@@ -159,8 +159,6 @@ export default class Game extends Component {
     const { gamePhase, mode } = state;
     let body = '';
 
-    logger.debug(mode);
-
     switch (mode) {
       case GAME_MODE_ECONOMICS:
         body = <Economics />;

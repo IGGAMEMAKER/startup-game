@@ -594,31 +594,31 @@
 
 	var _Staff2 = _interopRequireDefault(_Staff);
 
-	var _Menu = __webpack_require__(155);
+	var _Menu = __webpack_require__(153);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Economics = __webpack_require__(157);
+	var _Economics = __webpack_require__(155);
 
 	var _Economics2 = _interopRequireDefault(_Economics);
 
-	var _Product = __webpack_require__(159);
+	var _Product = __webpack_require__(157);
 
 	var _Product2 = _interopRequireDefault(_Product);
 
-	var _Advice = __webpack_require__(176);
+	var _Advice = __webpack_require__(174);
 
 	var _Advice2 = _interopRequireDefault(_Advice);
 
-	var _Tutorial = __webpack_require__(177);
+	var _Tutorial = __webpack_require__(175);
 
 	var _Tutorial2 = _interopRequireDefault(_Tutorial);
 
-	var _productStore = __webpack_require__(137);
+	var _productStore = __webpack_require__(133);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _scheduleStore = __webpack_require__(133);
+	var _scheduleStore = __webpack_require__(129);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -626,11 +626,11 @@
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _game = __webpack_require__(178);
+	var _game = __webpack_require__(176);
 
 	var _game2 = _interopRequireDefault(_game);
 
@@ -642,7 +642,7 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _gameStages = __webpack_require__(135);
+	var _gameStages = __webpack_require__(131);
 
 	var GAME_STAGES = _interopRequireWildcard(_gameStages);
 
@@ -766,8 +766,6 @@
 	          mode = state.mode;
 
 	      var body = '';
-
-	      _logger2.default.debug(mode);
 
 	      switch (mode) {
 	        case GAME_MODE_ECONOMICS:
@@ -2716,23 +2714,23 @@
 
 	var _skills2 = _interopRequireDefault(_skills);
 
-	var _playerActions = __webpack_require__(117);
+	var _playerActions = __webpack_require__(124);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _coloringRange = __webpack_require__(151);
+	var _coloringRange = __webpack_require__(149);
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
-	var _stages = __webpack_require__(152);
+	var _stages = __webpack_require__(150);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
@@ -3179,23 +3177,23 @@
 
 	var _Modal2 = _interopRequireDefault(_Modal);
 
-	var _Range = __webpack_require__(126);
+	var _Range = __webpack_require__(116);
 
 	var _Range2 = _interopRequireDefault(_Range);
 
-	var _Select = __webpack_require__(127);
+	var _Select = __webpack_require__(117);
 
 	var _Select2 = _interopRequireDefault(_Select);
 
-	var _arrows = __webpack_require__(128);
+	var _arrows = __webpack_require__(118);
 
 	var _arrows2 = _interopRequireDefault(_arrows);
 
-	var _Info = __webpack_require__(129);
+	var _Info = __webpack_require__(119);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
-	var _Bar = __webpack_require__(131);
+	var _Bar = __webpack_require__(121);
 
 	var _Bar2 = _interopRequireDefault(_Bar);
 
@@ -4433,6 +4431,7 @@
 	var GAME_EVENT_FREE_MONEY = exports.GAME_EVENT_FREE_MONEY = 3;
 	var GAME_EVENT_FREE_POINTS = exports.GAME_EVENT_FREE_POINTS = 4;
 	var GAME_EVENT_BANKRUPT = exports.GAME_EVENT_BANKRUPT = 5;
+	var GAME_EVENT_COMPETITOR_CREATE = exports.GAME_EVENT_COMPETITOR_CREATE = 6;
 
 /***/ },
 /* 114 */
@@ -4495,17 +4494,21 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _FREEMONEYEVENT = __webpack_require__(116);
+	var _FREEMONEYEVENT = __webpack_require__(178);
 
 	var _FREEMONEYEVENT2 = _interopRequireDefault(_FREEMONEYEVENT);
 
-	var _FREEPOINTSEVENT = __webpack_require__(124);
+	var _FREEPOINTSEVENT = __webpack_require__(179);
 
 	var _FREEPOINTSEVENT2 = _interopRequireDefault(_FREEPOINTSEVENT);
 
-	var _HIREENTHUSIASTEVENT = __webpack_require__(125);
+	var _HIREENTHUSIASTEVENT = __webpack_require__(180);
 
 	var _HIREENTHUSIASTEVENT2 = _interopRequireDefault(_HIREENTHUSIASTEVENT);
+
+	var _COMPETITORCREATE = __webpack_require__(181);
+
+	var _COMPETITORCREATE2 = _interopRequireDefault(_COMPETITORCREATE);
 
 	var _events = __webpack_require__(113);
 
@@ -4519,6 +4522,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	// import React, { Component, PropTypes } from 'react';
+
 	exports.default = function (message, id, onClose) {
 	  switch (message.data.type) {
 	    case t.GAME_EVENT_FREE_MONEY:
@@ -4527,6 +4532,10 @@
 
 	    case t.GAME_EVENT_FREE_POINTS:
 	      return (0, _preact.h)(_FREEPOINTSEVENT2.default, { message: message, id: id, onclose: onClose });
+	      break;
+
+	    case t.GAME_EVENT_COMPETITOR_CREATE:
+	      return (0, _preact.h)(_COMPETITORCREATE2.default, { message: message, id: id, onclose: onClose });
 	      break;
 
 	    case t.GAME_EVENT_HIRE_ENTHUSIAST:
@@ -4541,10 +4550,72 @@
 	    (0, _stringify2.default)(message)
 	  );
 	};
-	// import React, { Component, PropTypes } from 'react';
 
 /***/ },
 /* 116 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import React, { Component, PropTypes } from 'react';
+	var Range = function (_Component) {
+	  (0, _inherits3.default)(Range, _Component);
+
+	  function Range() {
+	    (0, _classCallCheck3.default)(this, Range);
+	    return (0, _possibleConstructorReturn3.default)(this, (Range.__proto__ || (0, _getPrototypeOf2.default)(Range)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Range, [{
+	    key: "render",
+	    value: function render() {
+	      var props = this.props;
+
+	      return (0, _preact.h)("input", {
+	        type: "range",
+	        min: props.min,
+	        max: props.max,
+	        onInput: function onInput(event) {
+	          props.onDrag(parseInt(event.target.value));
+	        }
+	      });
+	    }
+	  }]);
+	  return Range;
+	}(_preact.Component);
+
+	exports.default = Range;
+
+/***/ },
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4575,67 +4646,381 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Button = __webpack_require__(103);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
-	var _playerActions = __webpack_require__(117);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _messageActions = __webpack_require__(123);
-
-	var _messageActions2 = _interopRequireDefault(_messageActions);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var FreeMoneyEvent = function (_Component) {
-	  (0, _inherits3.default)(FreeMoneyEvent, _Component);
+	// import React, { Component, PropTypes } from 'react';
 
-	  function FreeMoneyEvent() {
-	    (0, _classCallCheck3.default)(this, FreeMoneyEvent);
-	    return (0, _possibleConstructorReturn3.default)(this, (FreeMoneyEvent.__proto__ || (0, _getPrototypeOf2.default)(FreeMoneyEvent)).apply(this, arguments));
+	var Select = function (_Component) {
+	  (0, _inherits3.default)(Select, _Component);
+
+	  function Select() {
+	    (0, _classCallCheck3.default)(this, Select);
+	    return (0, _possibleConstructorReturn3.default)(this, (Select.__proto__ || (0, _getPrototypeOf2.default)(Select)).apply(this, arguments));
 	  }
 
-	  (0, _createClass3.default)(FreeMoneyEvent, [{
+	  (0, _createClass3.default)(Select, [{
 	    key: 'render',
 	    value: function render() {
+	      // props: PropsType, state: StateType
 	      var props = this.props;
 
-	      var id = props.id;
-	      var data = props.message.data;
+	      // send info to server, that user pressed the button with some id
+	      var options = props.options;
 
-	      var money = data.money;
 
-	      var onClick = function onClick() {
-	        _playerActions2.default.increaseMoney(money);
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
+	      var optionList = options.map(function (o, i) {
+	        return (0, _preact.h)(
+	          'option',
+	          { value: o.value },
+	          o.text
+	        );
+	      });
 
+	      var onchange = props.onChange ? function (e) {
+	        return props.onChange(e.target.value);
+	      } : function () {};
 	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'modal-head' },
-	          '\u041D\u0435\u043A\u0442\u043E, \u043F\u043E\u0436\u0435\u043B\u0430\u0432\u0448\u0438\u0439 \u043E\u0441\u0442\u0430\u0442\u044C\u0441\u044F \u043D\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043D\u044B\u043C, \u043F\u043E\u0436\u0435\u0440\u0442\u0432\u043E\u0432\u0430\u043B \u0432 \u0432\u0430\u0448 \u043F\u0440\u043E\u0435\u043A\u0442 ',
-	          money,
-	          '$'
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { onClick: onClick, text: '\u041F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0445\u0430\u043B\u044F\u0432\u043D\u044B\u0435 ' + money + '$ !', primary: true })
+	        'select',
+	        { value: props.value, onChange: onchange },
+	        optionList
 	      );
 	    }
 	  }]);
-	  return FreeMoneyEvent;
+	  return Select;
 	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
 
-	exports.default = FreeMoneyEvent;
+	exports.default = Select;
 
 /***/ },
-/* 117 */
+/* 118 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {
+	  up: '\u2191',
+	  upRight: '\u2197',
+	  downRight: '\u2198',
+	  down: '\u2193',
+	  ok: '\u2713',
+	  dot: '\xB7',
+
+	  triangle: {
+	    up: '\u25B2'
+	  }
+	};
+
+/***/ },
+/* 119 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _objectDestructuringEmpty2 = __webpack_require__(120);
+
+	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Info = function (_Component) {
+	  (0, _inherits3.default)(Info, _Component);
+
+	  function Info() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Info);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Info.__proto__ || (0, _getPrototypeOf2.default)(Info)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Info, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'render',
+	    value: function render(_ref2, _ref3) {
+	      var content = _ref2.content;
+	      (0, _objectDestructuringEmpty3.default)(_ref3);
+
+	      return (0, _preact.h)(
+	        'span',
+	        { className: 'info' },
+	        '?'
+	      );
+	    }
+	  }]);
+	  return Info;
+	}(_preact.Component);
+
+	exports.default = Info;
+
+/***/ },
+/* 120 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	exports.default = function (obj) {
+	  if (obj == null) throw new TypeError("Cannot destructure undefined");
+	};
+
+/***/ },
+/* 121 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Bar = function (_Component) {
+	  (0, _inherits3.default)(Bar, _Component);
+
+	  function Bar() {
+	    (0, _classCallCheck3.default)(this, Bar);
+	    return (0, _possibleConstructorReturn3.default)(this, (Bar.__proto__ || (0, _getPrototypeOf2.default)(Bar)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Bar, [{
+	    key: 'renderBar',
+	    value: function renderBar(min, max, value, style) {
+	      return (0, _preact.h)('div', {
+	        className: 'progress-bar ' + style,
+	        role: 'progressbar',
+	        style: { width: value * 100 / (min + max) + '%' },
+	        'aria-valuenow': value,
+	        'aria-valuemin': min,
+	        'aria-valuemax': max
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(props) {
+	      var _this2 = this;
+
+	      var data = void 0;
+
+	      if (Array.isArray(props.data)) {
+	        data = props.data.map(function (d, i) {
+	          return _this2.renderBar(props.min, props.max, d.value, d.style);
+	        });
+	      } else {
+	        data = this.renderBar(props.min, props.max, props.data, '');
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'progress' },
+	        data
+	      );
+	    }
+	  }]);
+	  return Bar;
+	}(_preact.Component);
+
+	exports.default = Bar;
+
+/***/ },
+/* 122 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _specialization = __webpack_require__(123);
+
+	var _specialization2 = _interopRequireDefault(_specialization);
+
+	var _job = __webpack_require__(101);
+
+	var JOB = _interopRequireWildcard(_job);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var getSkill = function getSkill(skill) {
+	  return Math.floor(skill / 100);
+	};
+	exports.default = {
+	  plain: function plain(p) {
+	    return getSkill(p.skills.programming) + '/' + getSkill(p.skills.marketing) + '/' + getSkill(p.skills.analyst);
+	  },
+
+	  getSkill: getSkill,
+	  getBestSkill: function getBestSkill(p) {
+	    var _p$skills = p.skills,
+	        programming = _p$skills.programming,
+	        marketing = _p$skills.marketing,
+	        analyst = _p$skills.analyst;
+
+	    switch ((0, _specialization2.default)(p)) {
+	      case JOB.PROFESSION_PROGRAMMER:
+	        return getSkill(programming);break;
+	      case JOB.PROFESSION_MARKETER:
+	        return getSkill(marketing);break;
+	      case JOB.PROFESSION_ANALYST:
+	        return getSkill(analyst);break;
+	        return 0;
+	    }
+	  },
+	  getTranslatedSpecialization: function getTranslatedSpecialization(p) {
+	    switch ((0, _specialization2.default)(p)) {
+	      case JOB.PROFESSION_PROGRAMMER:
+	        return 'программист';break;
+	      case JOB.PROFESSION_MARKETER:
+	        return 'маркетолог';break;
+	      case JOB.PROFESSION_ANALYST:
+	        return 'аналитик';break;
+	        return 'бездельник';
+	    }
+	  },
+	  isProgrammer: function isProgrammer(p) {
+	    return (0, _specialization2.default)(p) === JOB.PROFESSION_PROGRAMMER;
+	  },
+	  isMarketer: function isMarketer(p) {
+	    return (0, _specialization2.default)(p) === JOB.PROFESSION_MARKETER;
+	  },
+	  isAnalyst: function isAnalyst(p) {
+	    return (0, _specialization2.default)(p) === JOB.PROFESSION_ANALYST;
+	  },
+	  getMaxEfficiencyPhrase: function getMaxEfficiencyPhrase(p) {
+	    switch ((0, _specialization2.default)(p)) {
+	      case JOB.PROFESSION_PROGRAMMER:
+	        return this.getProgrammingPointsProducedBy(p) + ' PP';
+	        break;
+
+	      case JOB.PROFESSION_MARKETER:
+	        return this.getMarketingPointsProducedBy(p) + ' MP';
+	        break;
+
+	      case JOB.PROFESSION_ANALYST:
+	        return 'аналитик';
+	        break;
+
+	      default:
+	        return 'бездельник';
+	        break;
+	    }
+	  },
+	  getMarketingPointsProducedBy: function getMarketingPointsProducedBy(p) {
+	    var marketingEfficiency = 5;
+	    var modifier = Math.floor(Math.pow(getSkill(p.skills.marketing), 1.43));
+
+	    return modifier * marketingEfficiency;
+	  },
+	  getProgrammingPointsProducedBy: function getProgrammingPointsProducedBy(p) {
+	    var programmingEfficiency = 5;
+	    var modifier = Math.floor(Math.pow(getSkill(p.skills.programming), 1.43));
+
+	    return modifier * programmingEfficiency;
+	  },
+
+	  overall: function overall(p) {
+	    return getSkill(p.skills.programming) + getSkill(p.skills.marketing) + getSkill(p.skills.analyst);
+	  }
+	};
+
+/***/ },
+/* 123 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _job = __webpack_require__(101);
+
+	var JOB = _interopRequireWildcard(_job);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	exports.default = function (p) {
+	  var skills = [{ s: 'programming', value: p.skills.programming }, { s: 'analytics', value: p.skills.analyst }, { s: 'marketing', value: p.skills.marketing }];
+
+	  var specialisation = skills.sort(function (a, b) {
+	    return a.value < b.value;
+	  })[0].s;
+	  if (specialisation === 'programming') return JOB.PROFESSION_PROGRAMMER;
+	  if (specialisation === 'analytics') return JOB.PROFESSION_ANALYST;
+	  if (specialisation === 'marketing') return JOB.PROFESSION_MARKETER;
+
+	  return '';
+	};
+
+/***/ },
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4648,7 +5033,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _playerActions = __webpack_require__(118);
+	var _playerActions = __webpack_require__(125);
 
 	var ACTIONS = _interopRequireWildcard(_playerActions);
 
@@ -4656,7 +5041,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
@@ -4757,7 +5142,7 @@
 	};
 
 /***/ },
-/* 118 */
+/* 125 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4782,7 +5167,7 @@
 	var PLAYER_ACTIONS_EMPLOYEE_REMOVE = exports.PLAYER_ACTIONS_EMPLOYEE_REMOVE = 'PLAYER_ACTIONS_EMPLOYEE_REMOVE';
 
 /***/ },
-/* 119 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4817,7 +5202,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _playerActions = __webpack_require__(118);
+	var _playerActions = __webpack_require__(125);
 
 	var c = _interopRequireWildcard(_playerActions);
 
@@ -4829,7 +5214,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _expenses2 = __webpack_require__(120);
+	var _expenses2 = __webpack_require__(127);
 
 	var EXPENSES = _interopRequireWildcard(_expenses2);
 
@@ -4837,7 +5222,7 @@
 
 	var JOB = _interopRequireWildcard(_job);
 
-	var _specialization = __webpack_require__(121);
+	var _specialization = __webpack_require__(123);
 
 	var _specialization2 = _interopRequireDefault(_specialization);
 
@@ -5185,7 +5570,7 @@
 	exports.default = store;
 
 /***/ },
-/* 120 */
+/* 127 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5197,565 +5582,7 @@
 	var EXPENSES_LOAN = exports.EXPENSES_LOAN = 'EXPENSES_LOAN';
 
 /***/ },
-/* 121 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _job = __webpack_require__(101);
-
-	var JOB = _interopRequireWildcard(_job);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	exports.default = function (p) {
-	  var skills = [{ s: 'programming', value: p.skills.programming }, { s: 'analytics', value: p.skills.analyst }, { s: 'marketing', value: p.skills.marketing }];
-
-	  var specialisation = skills.sort(function (a, b) {
-	    return a.value < b.value;
-	  })[0].s;
-	  if (specialisation === 'programming') return JOB.PROFESSION_PROGRAMMER;
-	  if (specialisation === 'analytics') return JOB.PROFESSION_ANALYST;
-	  if (specialisation === 'marketing') return JOB.PROFESSION_MARKETER;
-
-	  return '';
-	};
-
-/***/ },
-/* 122 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _specialization = __webpack_require__(121);
-
-	var _specialization2 = _interopRequireDefault(_specialization);
-
-	var _job = __webpack_require__(101);
-
-	var JOB = _interopRequireWildcard(_job);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var getSkill = function getSkill(skill) {
-	  return Math.floor(skill / 100);
-	};
-	exports.default = {
-	  plain: function plain(p) {
-	    return getSkill(p.skills.programming) + '/' + getSkill(p.skills.marketing) + '/' + getSkill(p.skills.analyst);
-	  },
-
-	  getSkill: getSkill,
-	  getBestSkill: function getBestSkill(p) {
-	    var _p$skills = p.skills,
-	        programming = _p$skills.programming,
-	        marketing = _p$skills.marketing,
-	        analyst = _p$skills.analyst;
-
-	    switch ((0, _specialization2.default)(p)) {
-	      case JOB.PROFESSION_PROGRAMMER:
-	        return getSkill(programming);break;
-	      case JOB.PROFESSION_MARKETER:
-	        return getSkill(marketing);break;
-	      case JOB.PROFESSION_ANALYST:
-	        return getSkill(analyst);break;
-	        return 0;
-	    }
-	  },
-	  getTranslatedSpecialization: function getTranslatedSpecialization(p) {
-	    switch ((0, _specialization2.default)(p)) {
-	      case JOB.PROFESSION_PROGRAMMER:
-	        return 'программист';break;
-	      case JOB.PROFESSION_MARKETER:
-	        return 'маркетолог';break;
-	      case JOB.PROFESSION_ANALYST:
-	        return 'аналитик';break;
-	        return 'бездельник';
-	    }
-	  },
-	  isProgrammer: function isProgrammer(p) {
-	    return (0, _specialization2.default)(p) === JOB.PROFESSION_PROGRAMMER;
-	  },
-	  isMarketer: function isMarketer(p) {
-	    return (0, _specialization2.default)(p) === JOB.PROFESSION_MARKETER;
-	  },
-	  isAnalyst: function isAnalyst(p) {
-	    return (0, _specialization2.default)(p) === JOB.PROFESSION_ANALYST;
-	  },
-	  getMaxEfficiencyPhrase: function getMaxEfficiencyPhrase(p) {
-	    switch ((0, _specialization2.default)(p)) {
-	      case JOB.PROFESSION_PROGRAMMER:
-	        return this.getProgrammingPointsProducedBy(p) + ' PP';
-	        break;
-
-	      case JOB.PROFESSION_MARKETER:
-	        return this.getMarketingPointsProducedBy(p) + ' MP';
-	        break;
-
-	      case JOB.PROFESSION_ANALYST:
-	        return 'аналитик';
-	        break;
-
-	      default:
-	        return 'бездельник';
-	        break;
-	    }
-	  },
-	  getMarketingPointsProducedBy: function getMarketingPointsProducedBy(p) {
-	    var marketingEfficiency = 5;
-	    var modifier = Math.floor(Math.pow(getSkill(p.skills.marketing), 1.43));
-
-	    return modifier * marketingEfficiency;
-	  },
-	  getProgrammingPointsProducedBy: function getProgrammingPointsProducedBy(p) {
-	    var programmingEfficiency = 5;
-	    var modifier = Math.floor(Math.pow(getSkill(p.skills.programming), 1.43));
-
-	    return modifier * programmingEfficiency;
-	  },
-
-	  overall: function overall(p) {
-	    return getSkill(p.skills.programming) + getSkill(p.skills.marketing) + getSkill(p.skills.analyst);
-	  }
-	};
-
-/***/ },
-/* 123 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _assign = __webpack_require__(3);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
-	var _dispatcher = __webpack_require__(107);
-
-	var _dispatcher2 = _interopRequireDefault(_dispatcher);
-
-	var _messageActions = __webpack_require__(112);
-
-	var ACTIONS = _interopRequireWildcard(_messageActions);
-
-	var _logger = __webpack_require__(100);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _messageStore = __webpack_require__(105);
-
-	var _messageStore2 = _interopRequireDefault(_messageStore);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = {
-	  addGameEvent: function addGameEvent(eventType, data) {
-	    var obj = (0, _assign2.default)({}, data, { type: eventType });
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.GAME_EVENT_ADD,
-	      message: {
-	        type: eventType,
-	        data: obj
-	      }
-	    });
-	  },
-
-	  closeEvent: function closeEvent(id) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.GAME_EVENT_CLOSE_TAB,
-	      id: id
-	    });
-	  }
-	};
-
-/***/ },
-/* 124 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _Button = __webpack_require__(103);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
-	var _playerActions = __webpack_require__(117);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _messageActions = __webpack_require__(123);
-
-	var _messageActions2 = _interopRequireDefault(_messageActions);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var FreePointsEvent = function (_Component) {
-	  (0, _inherits3.default)(FreePointsEvent, _Component);
-
-	  function FreePointsEvent() {
-	    (0, _classCallCheck3.default)(this, FreePointsEvent);
-	    return (0, _possibleConstructorReturn3.default)(this, (FreePointsEvent.__proto__ || (0, _getPrototypeOf2.default)(FreePointsEvent)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(FreePointsEvent, [{
-	    key: 'render',
-	    value: function render() {
-	      var props = this.props;
-
-	      var id = props.id;
-	      var data = props.message.data;
-
-	      var points = data.points;
-
-	      var pickProgrammingPoints = function pickProgrammingPoints() {
-	        _playerActions2.default.increasePoints({ marketing: 0, programming: points * 2 });
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      var pickMarketingPoints = function pickMarketingPoints() {
-	        _playerActions2.default.increasePoints({ marketing: points * 2, programming: 0 });
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      var pickBoth = function pickBoth() {
-	        _playerActions2.default.increasePoints({ marketing: points, programming: points });
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'modal-head' },
-	          '\u0412 \u0441\u0432\u043E\u0431\u043E\u0434\u043D\u043E\u0435 \u043E\u0442 \u0440\u0430\u0431\u043E\u0442\u044B \u0432\u0440\u0435\u043C\u044F \u0432\u044B \u043C\u043D\u043E\u0433\u043E \u0447\u0438\u0442\u0430\u0435\u0442\u0435 \u0438 \u044D\u0442\u043E \u043F\u0440\u0438\u043D\u043E\u0441\u0438\u0442 \u043F\u043B\u043E\u0434\u044B! \u041D\u0430 \u0447\u0442\u043E \u0441\u0434\u0435\u043B\u0430\u0435\u0442\u0435 \u0441\u0442\u0430\u0432\u043A\u0443?'
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickMarketingPoints, text: '\u041C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433 \u043D\u0430\u0448\u0435 \u0432\u0441\u0451! (+' + points * 2 + 'MP)', primary: true }),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickProgrammingPoints, text: '\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438 \u0440\u0443\u043B\u044F\u0442! (+' + points * 2 + 'PP)', primary: true }),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickBoth, text: '\u0411\u0430\u043B\u0430\u043D\u0441 \u0432\u043E \u0432\u0441\u0451\u043C! (+' + points + 'PP \u0438 +' + points + 'MP)', primary: true })
-	      );
-	    }
-	  }]);
-	  return FreePointsEvent;
-	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
-	exports.default = FreePointsEvent;
-
-/***/ },
-/* 125 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _Button = __webpack_require__(103);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
-	var _playerActions = __webpack_require__(117);
-
-	var _playerActions2 = _interopRequireDefault(_playerActions);
-
-	var _messageActions = __webpack_require__(123);
-
-	var _messageActions2 = _interopRequireDefault(_messageActions);
-
-	var _skills = __webpack_require__(122);
-
-	var _skills2 = _interopRequireDefault(_skills);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
-
-	var HireEnthusiastEvent = function (_Component) {
-	  (0, _inherits3.default)(HireEnthusiastEvent, _Component);
-
-	  function HireEnthusiastEvent() {
-	    (0, _classCallCheck3.default)(this, HireEnthusiastEvent);
-	    return (0, _possibleConstructorReturn3.default)(this, (HireEnthusiastEvent.__proto__ || (0, _getPrototypeOf2.default)(HireEnthusiastEvent)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(HireEnthusiastEvent, [{
-	    key: 'render',
-	    value: function render() {
-	      var props = this.props;
-
-	      var id = props.id;
-	      var data = props.message.data;
-
-	      var player = data.player;
-
-	      var hireEnthusiast = function hireEnthusiast() {
-	        _playerActions2.default.hireWorker(player);
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      var cancel = function cancel() {
-	        _messageActions2.default.closeEvent(id);
-	        props.onclose();
-	      };
-
-	      var specialization = _skills2.default.getTranslatedSpecialization(player);
-	      var hireText = '\u041D\u0430\u043D\u044F\u0442\u044C ' + player.name + ', ' + specialization + ', (' + _skills2.default.plain(player) + ')';
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'text' },
-	          '\u041E\u043E! \u041E\u0434\u0438\u043D \u0438\u0437 \u043D\u0430\u0448\u0438\u0445 \u0444\u0430\u043D\u0430\u0442\u043E\u0432 \u043D\u0430\u0448\u0435\u0433\u043E \u043F\u0440\u043E\u0435\u043A\u0442\u0430 \u0445\u043E\u0447\u0435\u0442 \u043F\u043E\u043C\u043E\u0447\u044C \u0432 \u0440\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0435 \u0411\u0415\u0421\u041F\u041B\u0410\u0422\u041D\u041E!'
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: hireEnthusiast, text: hireText, primary: true }),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: cancel, text: '\u0423\u0432\u044B, \u043D\u0430\u0448\u0430 \u043A\u043E\u043C\u0430\u043D\u0434\u0430 \u0443\u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0442\u043E\u0432\u0430\u043D\u0430', primary: true })
-	      );
-	    }
-	  }]);
-	  return HireEnthusiastEvent;
-	}(_preact.Component);
-
-	exports.default = HireEnthusiastEvent;
-
-/***/ },
-/* 126 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
-	var Range = function (_Component) {
-	  (0, _inherits3.default)(Range, _Component);
-
-	  function Range() {
-	    (0, _classCallCheck3.default)(this, Range);
-	    return (0, _possibleConstructorReturn3.default)(this, (Range.__proto__ || (0, _getPrototypeOf2.default)(Range)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Range, [{
-	    key: "render",
-	    value: function render() {
-	      var props = this.props;
-
-	      return (0, _preact.h)("input", {
-	        type: "range",
-	        min: props.min,
-	        max: props.max,
-	        onInput: function onInput(event) {
-	          props.onDrag(parseInt(event.target.value));
-	        }
-	      });
-	    }
-	  }]);
-	  return Range;
-	}(_preact.Component);
-
-	exports.default = Range;
-
-/***/ },
-/* 127 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
-
-	var Select = function (_Component) {
-	  (0, _inherits3.default)(Select, _Component);
-
-	  function Select() {
-	    (0, _classCallCheck3.default)(this, Select);
-	    return (0, _possibleConstructorReturn3.default)(this, (Select.__proto__ || (0, _getPrototypeOf2.default)(Select)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Select, [{
-	    key: 'render',
-	    value: function render() {
-	      // props: PropsType, state: StateType
-	      var props = this.props;
-
-	      // send info to server, that user pressed the button with some id
-	      var options = props.options;
-
-
-	      var optionList = options.map(function (o, i) {
-	        return (0, _preact.h)(
-	          'option',
-	          { value: o.value },
-	          o.text
-	        );
-	      });
-
-	      var onchange = props.onChange ? function (e) {
-	        return props.onChange(e.target.value);
-	      } : function () {};
-	      return (0, _preact.h)(
-	        'select',
-	        { value: props.value, onChange: onchange },
-	        optionList
-	      );
-	    }
-	  }]);
-	  return Select;
-	}(_preact.Component);
-
-	exports.default = Select;
-
-/***/ },
 /* 128 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  up: '\u2191',
-	  upRight: '\u2197',
-	  downRight: '\u2198',
-	  down: '\u2193',
-	  ok: '\u2713',
-	  dot: '\xB7',
-
-	  triangle: {
-	    up: '\u25B2'
-	  }
-	};
-
-/***/ },
-/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5764,184 +5591,11 @@
 	  value: true
 	});
 
-	var _objectDestructuringEmpty2 = __webpack_require__(130);
-
-	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _UI = __webpack_require__(102);
-
-	var _UI2 = _interopRequireDefault(_UI);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Info = function (_Component) {
-	  (0, _inherits3.default)(Info, _Component);
-
-	  function Info() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Info);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Info.__proto__ || (0, _getPrototypeOf2.default)(Info)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Info, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
-	    key: 'render',
-	    value: function render(_ref2, _ref3) {
-	      var content = _ref2.content;
-	      (0, _objectDestructuringEmpty3.default)(_ref3);
-
-	      return (0, _preact.h)(
-	        'span',
-	        { className: 'info' },
-	        '?'
-	      );
-	    }
-	  }]);
-	  return Info;
-	}(_preact.Component);
-
-	exports.default = Info;
-
-/***/ },
-/* 130 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	exports.__esModule = true;
-
-	exports.default = function (obj) {
-	  if (obj == null) throw new TypeError("Cannot destructure undefined");
-	};
-
-/***/ },
-/* 131 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Bar = function (_Component) {
-	  (0, _inherits3.default)(Bar, _Component);
-
-	  function Bar() {
-	    (0, _classCallCheck3.default)(this, Bar);
-	    return (0, _possibleConstructorReturn3.default)(this, (Bar.__proto__ || (0, _getPrototypeOf2.default)(Bar)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Bar, [{
-	    key: 'renderBar',
-	    value: function renderBar(min, max, value, style) {
-	      return (0, _preact.h)('div', {
-	        className: 'progress-bar ' + style,
-	        role: 'progressbar',
-	        style: { width: value * 100 / (min + max) + '%' },
-	        'aria-valuenow': value,
-	        'aria-valuemin': min,
-	        'aria-valuemax': max
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render(props) {
-	      var _this2 = this;
-
-	      var data = void 0;
-
-	      if (Array.isArray(props.data)) {
-	        data = props.data.map(function (d, i) {
-	          return _this2.renderBar(props.min, props.max, d.value, d.style);
-	        });
-	      } else {
-	        data = this.renderBar(props.min, props.max, props.data, '');
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'progress' },
-	        data
-	      );
-	    }
-	  }]);
-	  return Bar;
-	}(_preact.Component);
-
-	exports.default = Bar;
-
-/***/ },
-/* 132 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _scheduleStore = __webpack_require__(133);
+	var _scheduleStore = __webpack_require__(129);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -5949,23 +5603,23 @@
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _productStore = __webpack_require__(137);
+	var _productStore = __webpack_require__(133);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _playerActions = __webpack_require__(117);
+	var _playerActions = __webpack_require__(124);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _scheduleActions = __webpack_require__(149);
+	var _scheduleActions = __webpack_require__(146);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
-	var _messageActions = __webpack_require__(123);
+	var _messageActions = __webpack_require__(147);
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
-	var _productActions = __webpack_require__(150);
+	var _productActions = __webpack_require__(148);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -5983,7 +5637,7 @@
 	};
 
 /***/ },
-/* 133 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6022,7 +5676,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _scheduleActions = __webpack_require__(134);
+	var _scheduleActions = __webpack_require__(130);
 
 	var c = _interopRequireWildcard(_scheduleActions);
 
@@ -6034,11 +5688,11 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _gameStages = __webpack_require__(135);
+	var _gameStages = __webpack_require__(131);
 
 	var GAME_STAGES = _interopRequireWildcard(_gameStages);
 
-	var _workSpeed = __webpack_require__(136);
+	var _workSpeed = __webpack_require__(132);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -6233,7 +5887,7 @@
 	exports.default = store;
 
 /***/ },
-/* 134 */
+/* 130 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6249,7 +5903,7 @@
 	var SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = exports.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = 'SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS';
 
 /***/ },
-/* 135 */
+/* 131 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6270,7 +5924,7 @@
 	var GAME_STAGE_PAYMENTS_INSTALLED = exports.GAME_STAGE_PAYMENTS_INSTALLED = 9; // MONETISATION
 
 /***/ },
-/* 136 */
+/* 132 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6283,7 +5937,7 @@
 	var WORK_SPEED_HAS_MAIN_JOB = exports.WORK_SPEED_HAS_MAIN_JOB = 3;
 
 /***/ },
-/* 137 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6322,7 +5976,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _productActions = __webpack_require__(138);
+	var _productActions = __webpack_require__(134);
 
 	var c = _interopRequireWildcard(_productActions);
 
@@ -6338,35 +5992,35 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _ideas = __webpack_require__(139);
+	var _ideas = __webpack_require__(135);
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
-	var _percentify = __webpack_require__(140);
+	var _percentify = __webpack_require__(136);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
-	var _computeRating = __webpack_require__(141);
+	var _computeRating = __webpack_require__(137);
 
 	var _computeRating2 = _interopRequireDefault(_computeRating);
 
-	var _productDescriptions = __webpack_require__(142);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _productStages = __webpack_require__(145);
+	var _productStages = __webpack_require__(141);
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
-	var _computeCompanyCost = __webpack_require__(146);
+	var _computeCompanyCost = __webpack_require__(142);
 
 	var _computeCompanyCost2 = _interopRequireDefault(_computeCompanyCost);
 
-	var _companyMerger = __webpack_require__(148);
+	var _companyMerger = __webpack_require__(144);
 
 	var _companyMerger2 = _interopRequireDefault(_companyMerger);
 
-	var _balance = __webpack_require__(180);
+	var _balance = __webpack_require__(145);
 
 	var balance = _interopRequireWildcard(_balance);
 
@@ -7053,7 +6707,9 @@
 	        return _this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
 	      })[0];
 
-	      return _products.filter(function (p) {
+	      return _products.map(function (p, i) {
+	        p.id = i;return p;
+	      }).filter(function (p) {
 	        return !_this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
 	      }).map(function (p) {
 	        var name = p.name;
@@ -7338,7 +6994,7 @@
 	exports.default = store;
 
 /***/ },
-/* 138 */
+/* 134 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7358,7 +7014,7 @@
 	var PRODUCT_ACTIONS_COMPANY_BUY = exports.PRODUCT_ACTIONS_COMPANY_BUY = 'PRODUCT_ACTIONS_COMPANY_BUY';
 
 /***/ },
-/* 139 */
+/* 135 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7370,7 +7026,7 @@
 	var IDEA_WEB_HOSTING = exports.IDEA_WEB_HOSTING = 'IDEA_WEB_HOSTING';
 
 /***/ },
-/* 140 */
+/* 136 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7384,7 +7040,7 @@
 	};
 
 /***/ },
-/* 141 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7393,7 +7049,7 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(142);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -7428,7 +7084,7 @@
 	};
 
 /***/ },
-/* 142 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7448,15 +7104,15 @@
 	  }
 	};
 
-	var _ideas = __webpack_require__(139);
+	var _ideas = __webpack_require__(135);
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
-	var _WEBSTUDIO = __webpack_require__(143);
+	var _WEBSTUDIO = __webpack_require__(139);
 
 	var _WEBSTUDIO2 = _interopRequireDefault(_WEBSTUDIO);
 
-	var _WEBHOSTING = __webpack_require__(144);
+	var _WEBHOSTING = __webpack_require__(140);
 
 	var _WEBHOSTING2 = _interopRequireDefault(_WEBHOSTING);
 
@@ -7467,7 +7123,7 @@
 	;
 
 /***/ },
-/* 143 */
+/* 139 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7490,7 +7146,7 @@
 	};
 
 /***/ },
-/* 144 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7499,7 +7155,7 @@
 	  value: true
 	});
 
-	var _scheduleStore = __webpack_require__(133);
+	var _scheduleStore = __webpack_require__(129);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -7618,7 +7274,7 @@
 	};
 
 /***/ },
-/* 145 */
+/* 141 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7631,7 +7287,7 @@
 	var PRODUCT_STAGE_NORMAL = exports.PRODUCT_STAGE_NORMAL = 'PRODUCT_STAGE_NORMAL';
 
 /***/ },
-/* 146 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7640,7 +7296,7 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(142);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -7648,7 +7304,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _random = __webpack_require__(147);
+	var _random = __webpack_require__(143);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -7693,7 +7349,7 @@
 	};
 
 /***/ },
-/* 147 */
+/* 143 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7709,7 +7365,7 @@
 	;
 
 /***/ },
-/* 148 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7722,7 +7378,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productDescriptions = __webpack_require__(142);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -7767,7 +7423,19 @@
 	};
 
 /***/ },
-/* 149 */
+/* 145 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var TECHNICAL_DEBT_MODIFIER = exports.TECHNICAL_DEBT_MODIFIER = 1.03;
+	var TECHNOLOGY_COST_MODIFIER = exports.TECHNOLOGY_COST_MODIFIER = 1.045;
+
+/***/ },
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7780,7 +7448,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _scheduleActions = __webpack_require__(134);
+	var _scheduleActions = __webpack_require__(130);
 
 	var ACTIONS = _interopRequireWildcard(_scheduleActions);
 
@@ -7788,7 +7456,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _scheduleStore = __webpack_require__(133);
+	var _scheduleStore = __webpack_require__(129);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -7859,7 +7527,61 @@
 	};
 
 /***/ },
-/* 150 */
+/* 147 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _assign = __webpack_require__(3);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
+	var _dispatcher = __webpack_require__(107);
+
+	var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+	var _messageActions = __webpack_require__(112);
+
+	var ACTIONS = _interopRequireWildcard(_messageActions);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _messageStore = __webpack_require__(105);
+
+	var _messageStore2 = _interopRequireDefault(_messageStore);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = {
+	  addGameEvent: function addGameEvent(eventType, data) {
+	    var obj = (0, _assign2.default)({}, data, { type: eventType });
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.GAME_EVENT_ADD,
+	      message: {
+	        type: eventType,
+	        data: obj
+	      }
+	    });
+	  },
+
+	  closeEvent: function closeEvent(id) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.GAME_EVENT_CLOSE_TAB,
+	      id: id
+	    });
+	  }
+	};
+
+/***/ },
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7872,7 +7594,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _productActions = __webpack_require__(138);
+	var _productActions = __webpack_require__(134);
 
 	var ACTIONS = _interopRequireWildcard(_productActions);
 
@@ -7880,7 +7602,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productStore = __webpack_require__(137);
+	var _productStore = __webpack_require__(133);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
@@ -7965,7 +7687,7 @@
 	};
 
 /***/ },
-/* 151 */
+/* 149 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7983,7 +7705,7 @@
 	};
 
 /***/ },
-/* 152 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7992,11 +7714,11 @@
 	  value: true
 	});
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _constants = __webpack_require__(153);
+	var _constants = __webpack_require__(151);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
@@ -8004,7 +7726,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _gameStages = __webpack_require__(135);
+	var _gameStages = __webpack_require__(131);
 
 	var gameStages = _interopRequireWildcard(_gameStages);
 
@@ -8119,7 +7841,7 @@
 	};
 
 /***/ },
-/* 153 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8132,27 +7854,27 @@
 
 	var jobConstants = _interopRequireWildcard(_job);
 
-	var _professions = __webpack_require__(154);
+	var _professions = __webpack_require__(152);
 
 	var professionsConstants = _interopRequireWildcard(_professions);
 
-	var _workSpeed = __webpack_require__(136);
+	var _workSpeed = __webpack_require__(132);
 
 	var workSpeedConstants = _interopRequireWildcard(_workSpeed);
 
-	var _gameStages = __webpack_require__(135);
+	var _gameStages = __webpack_require__(131);
 
 	var gameStagesConstants = _interopRequireWildcard(_gameStages);
 
-	var _expenses = __webpack_require__(120);
+	var _expenses = __webpack_require__(127);
 
 	var expensesConstants = _interopRequireWildcard(_expenses);
 
-	var _ideas = __webpack_require__(139);
+	var _ideas = __webpack_require__(135);
 
 	var ideasConstants = _interopRequireWildcard(_ideas);
 
-	var _productStages = __webpack_require__(145);
+	var _productStages = __webpack_require__(141);
 
 	var productStagesConstants = _interopRequireWildcard(_productStages);
 
@@ -8169,13 +7891,13 @@
 	};
 
 /***/ },
-/* 154 */
+/* 152 */
 /***/ function(module, exports) {
 
 	"use strict";
 
 /***/ },
-/* 155 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8206,15 +7928,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _moneyDifference = __webpack_require__(156);
+	var _moneyDifference = __webpack_require__(154);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _scheduleStore = __webpack_require__(133);
+	var _scheduleStore = __webpack_require__(129);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
@@ -8222,7 +7944,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _stages = __webpack_require__(152);
+	var _stages = __webpack_require__(150);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -8423,7 +8145,7 @@
 	exports.default = Menu;
 
 /***/ },
-/* 156 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8432,15 +8154,15 @@
 	  value: true
 	});
 
-	var _productStore = __webpack_require__(137);
+	var _productStore = __webpack_require__(133);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _expenses = __webpack_require__(120);
+	var _expenses = __webpack_require__(127);
 
 	var EXPENSES = _interopRequireWildcard(_expenses);
 
@@ -8508,7 +8230,7 @@
 	};
 
 /***/ },
-/* 157 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8543,23 +8265,23 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _moneyDifference = __webpack_require__(156);
+	var _moneyDifference = __webpack_require__(154);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productStore = __webpack_require__(137);
+	var _productStore = __webpack_require__(133);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _playerActions = __webpack_require__(117);
+	var _playerActions = __webpack_require__(124);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _Expenses = __webpack_require__(158);
+	var _Expenses = __webpack_require__(156);
 
 	var _Expenses2 = _interopRequireDefault(_Expenses);
 
@@ -8759,7 +8481,7 @@
 	exports.default = Economics;
 
 /***/ },
-/* 158 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8790,19 +8512,19 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productStore = __webpack_require__(137);
+	var _productStore = __webpack_require__(133);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _playerActions = __webpack_require__(117);
+	var _playerActions = __webpack_require__(124);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _expenses = __webpack_require__(120);
+	var _expenses = __webpack_require__(127);
 
 	var EXPENSES = _interopRequireWildcard(_expenses);
 
@@ -8929,7 +8651,7 @@
 	;
 
 /***/ },
-/* 159 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8960,15 +8682,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productStages = __webpack_require__(145);
+	var _productStages = __webpack_require__(141);
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
-	var _InitialProductTab = __webpack_require__(160);
+	var _InitialProductTab = __webpack_require__(158);
 
 	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
 
-	var _productPanel = __webpack_require__(163);
+	var _productPanel = __webpack_require__(161);
 
 	var _productPanel2 = _interopRequireDefault(_productPanel);
 
@@ -9020,7 +8742,7 @@
 	exports.default = Product;
 
 /***/ },
-/* 160 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9059,11 +8781,11 @@
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _mvpCreator = __webpack_require__(161);
+	var _mvpCreator = __webpack_require__(159);
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _productDescriptions = __webpack_require__(142);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -9113,7 +8835,7 @@
 	exports.default = InitialProductTab;
 
 /***/ },
-/* 161 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9122,15 +8844,15 @@
 	  value: true
 	});
 
-	var _productActions = __webpack_require__(150);
+	var _productActions = __webpack_require__(148);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _playerActions = __webpack_require__(117);
+	var _playerActions = __webpack_require__(124);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
@@ -9138,7 +8860,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productGenerator = __webpack_require__(162);
+	var _productGenerator = __webpack_require__(160);
 
 	var _productGenerator2 = _interopRequireDefault(_productGenerator);
 
@@ -9177,6 +8899,8 @@
 
 	  _logger2.default.debug('createCompetitorCompany', p);
 	  _productActions2.default.createCompetitorCompany(p);
+
+	  return p;
 	};
 
 	exports.default = {
@@ -9185,7 +8909,7 @@
 	};
 
 /***/ },
-/* 162 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9194,11 +8918,11 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(142);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _random = __webpack_require__(147);
+	var _random = __webpack_require__(143);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -9270,7 +8994,7 @@
 	};
 
 /***/ },
-/* 163 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9301,23 +9025,23 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Analysts = __webpack_require__(164);
+	var _Analysts = __webpack_require__(162);
 
 	var _Analysts2 = _interopRequireDefault(_Analysts);
 
-	var _Marketers = __webpack_require__(165);
+	var _Marketers = __webpack_require__(163);
 
 	var _Marketers2 = _interopRequireDefault(_Marketers);
 
-	var _Programmers = __webpack_require__(166);
+	var _Programmers = __webpack_require__(164);
 
 	var _Programmers2 = _interopRequireDefault(_Programmers);
 
-	var _metrics = __webpack_require__(167);
+	var _metrics = __webpack_require__(165);
 
 	var _metrics2 = _interopRequireDefault(_metrics);
 
-	var _Schedule = __webpack_require__(169);
+	var _Schedule = __webpack_require__(167);
 
 	var _Schedule2 = _interopRequireDefault(_Schedule);
 
@@ -9325,37 +9049,37 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _professions = __webpack_require__(154);
+	var _professions = __webpack_require__(152);
 
 	var PROFESSIONS = _interopRequireWildcard(_professions);
 
-	var _productActions = __webpack_require__(150);
+	var _productActions = __webpack_require__(148);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _productStore = __webpack_require__(137);
+	var _productStore = __webpack_require__(133);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _playerActions = __webpack_require__(117);
+	var _playerActions = __webpack_require__(124);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _featurePrice = __webpack_require__(170);
+	var _featurePrice = __webpack_require__(168);
 
 	var _featurePrice2 = _interopRequireDefault(_featurePrice);
 
-	var _scheduleActions = __webpack_require__(149);
+	var _scheduleActions = __webpack_require__(146);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
-	var _workSpeed = __webpack_require__(136);
+	var _workSpeed = __webpack_require__(132);
 
-	var _constants = __webpack_require__(153);
+	var _constants = __webpack_require__(151);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
@@ -9363,27 +9087,27 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _advertPlannerPanel = __webpack_require__(171);
+	var _advertPlannerPanel = __webpack_require__(169);
 
 	var _advertPlannerPanel2 = _interopRequireDefault(_advertPlannerPanel);
 
-	var _MainFeature = __webpack_require__(172);
+	var _MainFeature = __webpack_require__(170);
 
 	var _MainFeature2 = _interopRequireDefault(_MainFeature);
 
-	var _stages = __webpack_require__(152);
+	var _stages = __webpack_require__(150);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
-	var _competitors = __webpack_require__(173);
+	var _competitors = __webpack_require__(171);
 
 	var _competitors2 = _interopRequireDefault(_competitors);
 
-	var _competitor = __webpack_require__(174);
+	var _competitor = __webpack_require__(172);
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
-	var _segment = __webpack_require__(175);
+	var _segment = __webpack_require__(173);
 
 	var _segment2 = _interopRequireDefault(_segment);
 
@@ -9882,19 +9606,19 @@
 	              'div',
 	              null,
 	              '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F - \xA0',
-	              (0, _preact.h)(
+	              mp > 0 ? (0, _preact.h)(
 	                'span',
 	                { className: mpColors },
 	                'MP:',
 	                mp,
 	                '\xA0'
-	              ),
-	              (0, _preact.h)(
+	              ) : '',
+	              pp > 0 ? (0, _preact.h)(
 	                'span',
 	                { className: ppColors },
 	                'PP:',
 	                pp
-	              )
+	              ) : ''
 	            )
 	          ),
 	          (0, _preact.h)(_UI2.default.Button, {
@@ -10302,7 +10026,7 @@
 	exports.default = ProductPanel;
 
 /***/ },
-/* 164 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10333,7 +10057,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
@@ -10390,7 +10114,7 @@
 	exports.default = Analysts;
 
 /***/ },
-/* 165 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10421,7 +10145,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
@@ -10491,7 +10215,7 @@
 	exports.default = Marketers;
 
 /***/ },
-/* 166 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10522,7 +10246,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
@@ -10592,7 +10316,7 @@
 	exports.default = Programmers;
 
 /***/ },
-/* 167 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10601,7 +10325,7 @@
 	  value: true
 	});
 
-	var _objectDestructuringEmpty2 = __webpack_require__(130);
+	var _objectDestructuringEmpty2 = __webpack_require__(120);
 
 	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
 
@@ -10627,11 +10351,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productStore = __webpack_require__(137);
+	var _productStore = __webpack_require__(133);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _percentify = __webpack_require__(140);
+	var _percentify = __webpack_require__(136);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
@@ -10639,11 +10363,11 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _coloredRating = __webpack_require__(168);
+	var _coloredRating = __webpack_require__(166);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
-	var _stages = __webpack_require__(152);
+	var _stages = __webpack_require__(150);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -10907,7 +10631,7 @@
 	;
 
 /***/ },
-/* 168 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10938,7 +10662,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _coloringRange = __webpack_require__(151);
+	var _coloringRange = __webpack_require__(149);
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
@@ -10980,7 +10704,7 @@
 	exports.default = ColoredRating;
 
 /***/ },
-/* 169 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11015,9 +10739,9 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _workSpeed = __webpack_require__(136);
+	var _workSpeed = __webpack_require__(132);
 
-	var _percentify = __webpack_require__(140);
+	var _percentify = __webpack_require__(136);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
@@ -11025,7 +10749,7 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _scheduleStore = __webpack_require__(133);
+	var _scheduleStore = __webpack_require__(129);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -11143,7 +10867,7 @@
 	;
 
 /***/ },
-/* 170 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -11166,7 +10890,7 @@
 	// export default cost => e => e;
 
 /***/ },
-/* 171 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11197,7 +10921,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _stages = __webpack_require__(152);
+	var _stages = __webpack_require__(150);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -11205,7 +10929,7 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
@@ -11383,7 +11107,7 @@
 	;
 
 /***/ },
-/* 172 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11414,11 +11138,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productDescriptions = __webpack_require__(142);
+	var _productDescriptions = __webpack_require__(138);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
@@ -11426,7 +11150,7 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _Programmers = __webpack_require__(166);
+	var _Programmers = __webpack_require__(164);
 
 	var _Programmers2 = _interopRequireDefault(_Programmers);
 
@@ -11438,7 +11162,7 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _stages = __webpack_require__(152);
+	var _stages = __webpack_require__(150);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -11676,7 +11400,7 @@
 	exports.default = MainFeature;
 
 /***/ },
-/* 173 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11707,11 +11431,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _competitor = __webpack_require__(174);
+	var _competitor = __webpack_require__(172);
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
@@ -11758,7 +11482,7 @@
 	          rating: rating,
 	          money: money,
 	          onBuyCompany: function onBuyCompany() {
-	            buyCompany(0, i + 1, c.cost);
+	            buyCompany(0, c.id, c.cost);
 	          }
 	        });
 	      });
@@ -11776,7 +11500,7 @@
 	exports.default = Competitors;
 
 /***/ },
-/* 174 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11977,7 +11701,7 @@
 	exports.default = Competitor;
 
 /***/ },
-/* 175 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12008,11 +11732,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _coloredRating = __webpack_require__(168);
+	var _coloredRating = __webpack_require__(166);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
@@ -12159,7 +11883,7 @@
 	exports.default = Segment;
 
 /***/ },
-/* 176 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12168,7 +11892,7 @@
 	  value: true
 	});
 
-	var _objectDestructuringEmpty2 = __webpack_require__(130);
+	var _objectDestructuringEmpty2 = __webpack_require__(120);
 
 	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
 
@@ -12194,15 +11918,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _constants = __webpack_require__(153);
+	var _constants = __webpack_require__(151);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _coloredRating = __webpack_require__(168);
+	var _coloredRating = __webpack_require__(166);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
@@ -12393,7 +12117,7 @@
 	exports.default = AdviceTab;
 
 /***/ },
-/* 177 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12402,7 +12126,7 @@
 	  value: true
 	});
 
-	var _objectDestructuringEmpty2 = __webpack_require__(130);
+	var _objectDestructuringEmpty2 = __webpack_require__(120);
 
 	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
 
@@ -12432,23 +12156,23 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _InitialProductTab = __webpack_require__(160);
+	var _InitialProductTab = __webpack_require__(158);
 
 	var _InitialProductTab2 = _interopRequireDefault(_InitialProductTab);
 
-	var _mvpCreator = __webpack_require__(161);
+	var _mvpCreator = __webpack_require__(159);
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _Menu = __webpack_require__(155);
+	var _Menu = __webpack_require__(153);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _index = __webpack_require__(153);
+	var _index = __webpack_require__(151);
 
 	var _index2 = _interopRequireDefault(_index);
 
@@ -12572,7 +12296,7 @@
 	exports.default = Tutorial;
 
 /***/ },
-/* 178 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12581,27 +12305,27 @@
 	  value: true
 	});
 
-	var _productStore = __webpack_require__(137);
+	var _productStore = __webpack_require__(133);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _scheduleStore = __webpack_require__(133);
+	var _scheduleStore = __webpack_require__(129);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
-	var _playerStore = __webpack_require__(119);
+	var _playerStore = __webpack_require__(126);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productActions = __webpack_require__(150);
+	var _productActions = __webpack_require__(148);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _scheduleActions = __webpack_require__(149);
+	var _scheduleActions = __webpack_require__(146);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
-	var _playerActions = __webpack_require__(117);
+	var _playerActions = __webpack_require__(124);
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
@@ -12609,11 +12333,11 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _moneyDifference = __webpack_require__(156);
+	var _moneyDifference = __webpack_require__(154);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _eventGenerator = __webpack_require__(179);
+	var _eventGenerator = __webpack_require__(177);
 
 	var _eventGenerator2 = _interopRequireDefault(_eventGenerator);
 
@@ -12621,7 +12345,7 @@
 
 	var _skills2 = _interopRequireDefault(_skills);
 
-	var _stages = __webpack_require__(152);
+	var _stages = __webpack_require__(150);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -12743,7 +12467,7 @@
 	};
 
 /***/ },
-/* 179 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12752,7 +12476,7 @@
 	  value: true
 	});
 
-	var _random = __webpack_require__(147);
+	var _random = __webpack_require__(143);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -12764,13 +12488,17 @@
 
 	var JOB = _interopRequireWildcard(_job);
 
-	var _flux = __webpack_require__(132);
+	var _flux = __webpack_require__(128);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
 	var _skills = __webpack_require__(122);
 
 	var _skills2 = _interopRequireDefault(_skills);
+
+	var _mvpCreator = __webpack_require__(159);
+
+	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
 	var _logger = __webpack_require__(100);
 
@@ -12805,7 +12533,12 @@
 	    //   let points = Math.ceil(random(50, 275));
 	    //   flux.messageActions.addGameEvent(rnd, { points });
 	    //   break;
-
+	    case GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE:
+	      if (day > 100 && day % 3 === 0) {
+	        var p = _mvpCreator2.default.createCompetitorCompany(_flux2.default.productStore.getIdea(0));
+	        _flux2.default.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p: p });
+	      }
+	      break;
 	    case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
 	      var teamCount = _flux2.default.playerStore.getTeam().length;
 	      // if (teamCount < 4) {
@@ -12819,16 +12552,18 @@
 
 	      var rating = void 0;
 	      var task = void 0;
-	      if (_skills2.default.isMarketer(player)) {
+
+	      var obj = { skills: { marketing: marketing, programming: programming, analyst: analyst } };
+	      if (_skills2.default.isMarketer(obj)) {
 	        task = JOB.JOB_TASK_MARKETING_POINTS;
 	        rating = marketing;
-	      } else if (_skills2.default.isProgrammer(player)) {
+	      } else if (_skills2.default.isProgrammer(obj)) {
 	        task = JOB.JOB_TASK_PROGRAMMER_POINTS;
 	        rating = programming;
 	      } else {
 	        // by default - go to marketing
 	        task = JOB.JOB_TASK_MARKETING_POINTS;
-	        rating = analyst;
+	        rating = marketing;
 	      }
 
 	      var baseSalary = rating * 6;
@@ -12852,11 +12587,6 @@
 	          break;
 	      }
 	      salary.pricingType = pricingType;
-	      // let salary = {
-	      //   money: Math.floor(random(rating * 0.75, rating * 1.25)),
-	      //   percent: Math.floor(random(rating * 0.75, rating * 1.25))
-	      // };
-
 
 	      var player = {
 	        // player: {
@@ -12883,16 +12613,394 @@
 	};
 
 /***/ },
-/* 180 */
-/***/ function(module, exports) {
+/* 178 */
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var TECHNICAL_DEBT_MODIFIER = exports.TECHNICAL_DEBT_MODIFIER = 1.03;
-	var TECHNOLOGY_COST_MODIFIER = exports.TECHNOLOGY_COST_MODIFIER = 1.045;
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _Button = __webpack_require__(103);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	var _playerActions = __webpack_require__(124);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _messageActions = __webpack_require__(147);
+
+	var _messageActions2 = _interopRequireDefault(_messageActions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var FreeMoneyEvent = function (_Component) {
+	  (0, _inherits3.default)(FreeMoneyEvent, _Component);
+
+	  function FreeMoneyEvent() {
+	    (0, _classCallCheck3.default)(this, FreeMoneyEvent);
+	    return (0, _possibleConstructorReturn3.default)(this, (FreeMoneyEvent.__proto__ || (0, _getPrototypeOf2.default)(FreeMoneyEvent)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(FreeMoneyEvent, [{
+	    key: 'render',
+	    value: function render() {
+	      var props = this.props;
+
+	      var id = props.id;
+	      var data = props.message.data;
+
+	      var money = data.money;
+
+	      var onClick = function onClick() {
+	        _playerActions2.default.increaseMoney(money);
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'modal-head' },
+	          '\u041D\u0435\u043A\u0442\u043E, \u043F\u043E\u0436\u0435\u043B\u0430\u0432\u0448\u0438\u0439 \u043E\u0441\u0442\u0430\u0442\u044C\u0441\u044F \u043D\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043D\u044B\u043C, \u043F\u043E\u0436\u0435\u0440\u0442\u0432\u043E\u0432\u0430\u043B \u0432 \u0432\u0430\u0448 \u043F\u0440\u043E\u0435\u043A\u0442 ',
+	          money,
+	          '$'
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { onClick: onClick, text: '\u041F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0445\u0430\u043B\u044F\u0432\u043D\u044B\u0435 ' + money + '$ !', primary: true })
+	      );
+	    }
+	  }]);
+	  return FreeMoneyEvent;
+	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
+	exports.default = FreeMoneyEvent;
+
+/***/ },
+/* 179 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _Button = __webpack_require__(103);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	var _playerActions = __webpack_require__(124);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _messageActions = __webpack_require__(147);
+
+	var _messageActions2 = _interopRequireDefault(_messageActions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var FreePointsEvent = function (_Component) {
+	  (0, _inherits3.default)(FreePointsEvent, _Component);
+
+	  function FreePointsEvent() {
+	    (0, _classCallCheck3.default)(this, FreePointsEvent);
+	    return (0, _possibleConstructorReturn3.default)(this, (FreePointsEvent.__proto__ || (0, _getPrototypeOf2.default)(FreePointsEvent)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(FreePointsEvent, [{
+	    key: 'render',
+	    value: function render() {
+	      var props = this.props;
+
+	      var id = props.id;
+	      var data = props.message.data;
+
+	      var points = data.points;
+
+	      var pickProgrammingPoints = function pickProgrammingPoints() {
+	        _playerActions2.default.increasePoints({ marketing: 0, programming: points * 2 });
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      var pickMarketingPoints = function pickMarketingPoints() {
+	        _playerActions2.default.increasePoints({ marketing: points * 2, programming: 0 });
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      var pickBoth = function pickBoth() {
+	        _playerActions2.default.increasePoints({ marketing: points, programming: points });
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'modal-head' },
+	          '\u0412 \u0441\u0432\u043E\u0431\u043E\u0434\u043D\u043E\u0435 \u043E\u0442 \u0440\u0430\u0431\u043E\u0442\u044B \u0432\u0440\u0435\u043C\u044F \u0432\u044B \u043C\u043D\u043E\u0433\u043E \u0447\u0438\u0442\u0430\u0435\u0442\u0435 \u0438 \u044D\u0442\u043E \u043F\u0440\u0438\u043D\u043E\u0441\u0438\u0442 \u043F\u043B\u043E\u0434\u044B! \u041D\u0430 \u0447\u0442\u043E \u0441\u0434\u0435\u043B\u0430\u0435\u0442\u0435 \u0441\u0442\u0430\u0432\u043A\u0443?'
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickMarketingPoints, text: '\u041C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433 \u043D\u0430\u0448\u0435 \u0432\u0441\u0451! (+' + points * 2 + 'MP)', primary: true }),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickProgrammingPoints, text: '\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438 \u0440\u0443\u043B\u044F\u0442! (+' + points * 2 + 'PP)', primary: true }),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: pickBoth, text: '\u0411\u0430\u043B\u0430\u043D\u0441 \u0432\u043E \u0432\u0441\u0451\u043C! (+' + points + 'PP \u0438 +' + points + 'MP)', primary: true })
+	      );
+	    }
+	  }]);
+	  return FreePointsEvent;
+	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
+	exports.default = FreePointsEvent;
+
+/***/ },
+/* 180 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _Button = __webpack_require__(103);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	var _playerActions = __webpack_require__(124);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _messageActions = __webpack_require__(147);
+
+	var _messageActions2 = _interopRequireDefault(_messageActions);
+
+	var _skills = __webpack_require__(122);
+
+	var _skills2 = _interopRequireDefault(_skills);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import React, { Component, PropTypes } from 'react';
+
+	var HireEnthusiastEvent = function (_Component) {
+	  (0, _inherits3.default)(HireEnthusiastEvent, _Component);
+
+	  function HireEnthusiastEvent() {
+	    (0, _classCallCheck3.default)(this, HireEnthusiastEvent);
+	    return (0, _possibleConstructorReturn3.default)(this, (HireEnthusiastEvent.__proto__ || (0, _getPrototypeOf2.default)(HireEnthusiastEvent)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(HireEnthusiastEvent, [{
+	    key: 'render',
+	    value: function render() {
+	      var props = this.props;
+
+	      var id = props.id;
+	      var data = props.message.data;
+
+	      var player = data.player;
+
+	      var hireEnthusiast = function hireEnthusiast() {
+	        _playerActions2.default.hireWorker(player);
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      var cancel = function cancel() {
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      var specialization = _skills2.default.getTranslatedSpecialization(player);
+	      var hireText = '\u041D\u0430\u043D\u044F\u0442\u044C ' + player.name + ', ' + specialization + ', (' + _skills2.default.plain(player) + ')';
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'text' },
+	          '\u041E\u043E! \u041E\u0434\u0438\u043D \u0438\u0437 \u043D\u0430\u0448\u0438\u0445 \u0444\u0430\u043D\u0430\u0442\u043E\u0432 \u043D\u0430\u0448\u0435\u0433\u043E \u043F\u0440\u043E\u0435\u043A\u0442\u0430 \u0445\u043E\u0447\u0435\u0442 \u043F\u043E\u043C\u043E\u0447\u044C \u0432 \u0440\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0435 \u0411\u0415\u0421\u041F\u041B\u0410\u0422\u041D\u041E!'
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: hireEnthusiast, text: hireText, primary: true }),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: cancel, text: '\u0423\u0432\u044B, \u043D\u0430\u0448\u0430 \u043A\u043E\u043C\u0430\u043D\u0434\u0430 \u0443\u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0442\u043E\u0432\u0430\u043D\u0430', primary: true })
+	      );
+	    }
+	  }]);
+	  return HireEnthusiastEvent;
+	}(_preact.Component);
+
+	exports.default = HireEnthusiastEvent;
+
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _Button = __webpack_require__(103);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	var _playerActions = __webpack_require__(124);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _messageActions = __webpack_require__(147);
+
+	var _messageActions2 = _interopRequireDefault(_messageActions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var CompetitorCreateEvent = function (_Component) {
+	  (0, _inherits3.default)(CompetitorCreateEvent, _Component);
+
+	  function CompetitorCreateEvent() {
+	    (0, _classCallCheck3.default)(this, CompetitorCreateEvent);
+	    return (0, _possibleConstructorReturn3.default)(this, (CompetitorCreateEvent.__proto__ || (0, _getPrototypeOf2.default)(CompetitorCreateEvent)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(CompetitorCreateEvent, [{
+	    key: 'render',
+	    value: function render() {
+	      var props = this.props;
+
+	      var id = props.id;
+	      var data = props.message.data;
+
+	      var p = data.p;
+
+	      var close = function close() {
+	        // playerActions.increasePoints({ marketing: 0, programming: points * 2 });
+	        _messageActions2.default.closeEvent(id);
+	        props.onclose();
+	      };
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'modal-head' },
+	          '\u041F\u043E\u044F\u0432\u0438\u043B\u0441\u044F \u043D\u043E\u0432\u044B\u0439 \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 ',
+	          p.name
+	        ),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(_Button2.default, { className: 'button1', onClick: close, text: '\u042F\u0441\u043D\u043E', primary: true })
+	      );
+	    }
+	  }]);
+	  return CompetitorCreateEvent;
+	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
+
+	exports.default = CompetitorCreateEvent;
 
 /***/ }
 /******/ ]);

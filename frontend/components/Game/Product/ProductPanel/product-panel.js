@@ -593,8 +593,8 @@ export default class ProductPanel extends Component {
         <div>
           <div>
             Стоимость улучшения - &nbsp;
-            <span className={mpColors}>MP:{mp}&nbsp;</span>
-            <span className={ppColors}>PP:{pp}</span>
+            {mp > 0 ? <span className={mpColors}>MP:{mp}&nbsp;</span> : ''}
+            {pp > 0 ? <span className={ppColors}>PP:{pp}</span> : ''}
           </div>
         </div>
         <UI.Button

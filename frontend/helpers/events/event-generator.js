@@ -6,6 +6,8 @@ import flux from '../../flux';
 
 import skillHelper from '../../helpers/team/skills';
 
+import mvpCreator from '../../components/Game/Product/InitialPanel/mvp-creator';
+
 import logger from '../../helpers/logger/logger';
 
 const emit = (day) => {
@@ -33,7 +35,12 @@ const emit = (day) => {
     //   let points = Math.ceil(random(50, 275));
     //   flux.messageActions.addGameEvent(rnd, { points });
     //   break;
-
+    case GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE:
+      if (day > 100 && day % 3 === 0) {
+        const p = mvpCreator.createCompetitorCompany(flux.productStore.getIdea(0));
+        flux.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p });
+      }
+      break;
     case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
       const teamCount = flux.playerStore.getTeam().length;
       // if (teamCount < 4) {
@@ -47,16 +54,18 @@ const emit = (day) => {
 
         let rating;
         let task;
-        if (skillHelper.isMarketer(player)) {
+
+        let obj = { skills: { marketing, programming, analyst }};
+        if (skillHelper.isMarketer(obj)) {
           task = JOB.JOB_TASK_MARKETING_POINTS;
           rating = marketing;
-        } else if (skillHelper.isProgrammer(player)) {
+        } else if (skillHelper.isProgrammer(obj)) {
           task = JOB.JOB_TASK_PROGRAMMER_POINTS;
           rating = programming;
         } else {
           // by default - go to marketing
           task = JOB.JOB_TASK_MARKETING_POINTS;
-          rating = analyst;
+          rating = marketing;
         }
 
         const baseSalary = rating * 6;
@@ -80,11 +89,6 @@ const emit = (day) => {
             break;
         }
         salary.pricingType = pricingType;
-        // let salary = {
-        //   money: Math.floor(random(rating * 0.75, rating * 1.25)),
-        //   percent: Math.floor(random(rating * 0.75, rating * 1.25))
-        // };
-
 
         const player = {
           // player: {
