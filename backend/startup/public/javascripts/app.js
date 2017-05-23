@@ -6374,6 +6374,10 @@
 
 	var _companyMerger2 = _interopRequireDefault(_companyMerger);
 
+	var _balance = __webpack_require__(180);
+
+	var balance = _interopRequireWildcard(_balance);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -6605,12 +6609,24 @@
 	      // mockBuying
 	      // basicPricing
 	      // segmentedPricing
-	      if (payments.segmentedPricing) {
+	      if (payments.segmentedPricing3) {
 	        return 0.95;
 	      }
+	      if (payments.segmentedPricing2) {
+	        return 0.85;
+	      }
+	      if (payments.segmentedPricing) {
+	        return 0.7;
+	      }
 
+	      if (payments.basicPricing3) {
+	        return 0.4;
+	      }
+	      if (payments.basicPricing2) {
+	        return 0.30;
+	      }
 	      if (payments.basicPricing) {
-	        return 0.5;
+	        return 0.25;
 	      }
 
 	      if (payments.mockBuying) {
@@ -6637,9 +6653,9 @@
 	        conversion = 0;
 	      }
 
-	      if (segmentId > 0) {
-	        conversion = rating / 10;
-	      }
+	      // if (segmentId > 0) {
+	      //   conversion = rating * paymentModifier / 10;
+	      // }
 
 	      raw = conversion;
 	      pretty = (0, _percentify2.default)(conversion);
@@ -6667,7 +6683,8 @@
 
 	      if (!this.requirementsOKforSegment(i, segmentId).valid) return 0;
 
-	      if (payments.segmentedPricing || payments.basicPricing) {
+	      // if (payments.segmentedPricing || payments.basicPricing) {
+	      if (payments.basicPricing) {
 	        return 1;
 	      }
 
@@ -7181,9 +7198,6 @@
 
 	      return betterCompetitors.length ? betterCompetitors[0] : null;
 	    }
-
-	    // getConversionRate()
-
 	  }, {
 	    key: 'getTechnologyComplexityModifier',
 	    value: function getTechnologyComplexityModifier(id) {
@@ -7192,7 +7206,14 @@
 
 	      _logger2.default.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
-	      return Math.pow(0.15 * tests + 0.6 * improvements, 1.045);
+	      return Math.pow(0.15 * tests + 0.6 * improvements, balance.TECHNOLOGY_COST_MODIFIER);
+	    }
+	  }, {
+	    key: 'getTechnicalDebtModifier',
+	    value: function getTechnicalDebtModifier(id) {
+	      var improvements = _products[id].improvements || 1;
+
+	      return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
 	    }
 	  }]);
 	  return ProductStore;
@@ -10038,16 +10059,24 @@
 	    }
 	  }, {
 	    key: 'getPaymentFeatures',
-	    value: function getPaymentFeatures(idea) {
-	      var technicalDebtModifier = 1;
+	    value: function getPaymentFeatures(id, idea) {
+	      var technicalDebtModifier = _productStore2.default.getTechnicalDebtModifier(id);
 	      var up = Math.ceil;
 
 	      return [{ name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
 	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
-	      }, { name: 'basicPricing', shortDescription: 'Один тарифный план', description: 'Одна цена для всех. Процент платящих снижается вдвое, однако вы начинаете зарабатывать деньги',
-	        points: { programming: up(150 * technicalDebtModifier), marketing: 50 }
-	      }, { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов', description: 'Несколько ценовых сегментов. Максимально возможный доход с продукта',
-	        points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
+	      }, { name: 'basicPricing', shortDescription: 'Единый тарифный план I', description: 'Единая цена для всех клиентов',
+	        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
+	      }, { name: 'basicPricing2', shortDescription: 'Единый тарифный план II', description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
+	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
+	      }, { name: 'basicPricing3', shortDescription: 'Единый тарифный план III', description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
+	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
+	      }, { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
+	        points: { programming: up(250 * technicalDebtModifier), marketing: 0 }
+	      }, { name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
+	        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
+	      }, { name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III', description: 'Грести деньги лопатами!',
+	        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
 	      }];
 	    }
 	  }, {
@@ -10065,13 +10094,14 @@
 	    key: 'plainifySameTypeFeatures',
 	    value: function plainifySameTypeFeatures(id, idea, groupType, onImprovedPhrase) {
 	      var featureList = void 0;
+
 	      switch (groupType) {
 	        case 'marketing':
 	          featureList = this.getMarketingFeatureList(idea);
 	          break;
 
 	        case 'payment':
-	          featureList = this.getPaymentFeatures(idea);
+	          featureList = this.getPaymentFeatures(id, idea);
 	          break;
 
 	        case 'analytics':
@@ -11573,7 +11603,6 @@
 
 	          if (_stages2.default.isPaymentRatingMission()) {
 	            var rating = _flux2.default.productStore.getRating(id);
-	            _logger2.default.debug('paymentRatingMission', rating);
 
 	            if (rating >= 7) {
 	              _stages2.default.onPaymentRatingMissionCompleted();
@@ -12267,13 +12296,13 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u041F\u043E-\u0445\u043E\u0440\u043E\u0448\u0435\u043C\u0443 \u0431\u044B \u0435\u0449\u0451 \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 \u043F\u043E\u0441\u0442\u0430\u0432\u0438\u0442\u044C... \u0412\u043F\u0440\u043E\u0447\u0435\u043C... \u041F\u0435\u0440\u0435\u043C\u043E\u0442\u0430\u0439\u0442\u0435 \u0432\u0440\u0435\u043C\u044F \u0434\u043E \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0433\u043E \u043C\u0435\u0441\u044F\u0446\u0430, \u043D\u0430\u0436\u0430\u0432 \u043D\u0430 \u0438\u043A\u043E\u043D\u043A\u0443 \u043F\u0435\u0440\u0435\u043C\u043E\u0442\u043A\u0438 \u0432\u0440\u0435\u043C\u0435\u043D\u0438',
+	              '\u0427\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u043E\u0447\u043A\u0438 \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP) \u043F\u0435\u0440\u0435\u043C\u043E\u0442\u0430\u0439\u0442\u0435 \u0432\u0440\u0435\u043C\u044F \u0434\u043E \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0433\u043E \u043C\u0435\u0441\u044F\u0446\u0430, ( \u0438\u043A\u043E\u043D\u043A\u0430 \u043F\u0435\u0440\u0435\u043C\u043E\u0442\u043A\u0438 \u0432\u0440\u0435\u043C\u0435\u043D\u0438 ',
 	              (0, _preact.h)(
 	                'div',
 	                { className: 'navigation' },
 	                (0, _preact.h)(_UI2.default.Button, { text: '>' })
 	              ),
-	              '\u0432 \u043C\u0435\u043D\u044E \u0441\u0432\u0435\u0440\u0445\u0443'
+	              ')'
 	            )
 	          );
 	          break;
@@ -12860,6 +12889,18 @@
 	exports.default = {
 	  emit: emit
 	};
+
+/***/ },
+/* 180 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var TECHNICAL_DEBT_MODIFIER = exports.TECHNICAL_DEBT_MODIFIER = 1.03;
+	var TECHNOLOGY_COST_MODIFIER = exports.TECHNOLOGY_COST_MODIFIER = 1.045;
 
 /***/ }
 /******/ ]);

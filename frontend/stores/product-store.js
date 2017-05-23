@@ -20,6 +20,8 @@ import * as PRODUCT_STAGES from '../constants/products/product-stages';
 import companyCostComputer from '../helpers/products/compute-company-cost';
 import companyMerger from '../helpers/products/company-merger';
 
+import * as balance from '../constants/balance';
+
 
 
 let _products = [{
@@ -212,12 +214,25 @@ class ProductStore extends EventEmitter {
     // mockBuying
     // basicPricing
     // segmentedPricing
-    if (payments.segmentedPricing) {
+    if (payments.segmentedPricing3) {
       return 0.95;
     }
+    if (payments.segmentedPricing2) {
+      return 0.85;
+    }
+    if (payments.segmentedPricing) {
+      return 0.7;
+    }
 
+
+    if (payments.basicPricing3) {
+      return 0.4;
+    }
+    if (payments.basicPricing2) {
+      return 0.30;
+    }
     if (payments.basicPricing) {
-      return 0.5;
+      return 0.25;
     }
 
     if (payments.mockBuying) {
@@ -243,9 +258,9 @@ class ProductStore extends EventEmitter {
       conversion = 0;
     }
 
-    if (segmentId > 0) {
-      conversion = rating / 10;
-    }
+    // if (segmentId > 0) {
+    //   conversion = rating * paymentModifier / 10;
+    // }
 
     raw = conversion;
     pretty = percentify(conversion);
@@ -271,7 +286,8 @@ class ProductStore extends EventEmitter {
 
     if (!this.requirementsOKforSegment(i, segmentId).valid) return 0;
 
-    if (payments.segmentedPricing || payments.basicPricing) {
+    // if (payments.segmentedPricing || payments.basicPricing) {
+    if (payments.basicPricing) {
       return 1;
     }
 
@@ -732,14 +748,19 @@ class ProductStore extends EventEmitter {
     return betterCompetitors.length ? betterCompetitors[0] : null;
   }
 
-  // getConversionRate()
   getTechnologyComplexityModifier(id) {
     const tests = _products[id].tests || 1;
     const improvements = _products[id].improvements || 1;
 
     logger.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
-    return Math.pow(0.15 * tests + 0.6 * improvements, 1.045);
+    return Math.pow(0.15 * tests + 0.6 * improvements, balance.TECHNOLOGY_COST_MODIFIER);
+  }
+
+  getTechnicalDebtModifier(id) {
+    const improvements = _products[id].improvements || 1;
+
+    return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
   }
 }
 

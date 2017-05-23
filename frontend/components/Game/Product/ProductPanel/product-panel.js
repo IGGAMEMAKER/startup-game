@@ -148,19 +148,31 @@ export default class ProductPanel extends Component {
     // ].map(computeFeatureCost(cost));
   };
 
-  getPaymentFeatures(idea) {
-    const technicalDebtModifier = 1;
+  getPaymentFeatures(id, idea) {
+    const technicalDebtModifier = productStore.getTechnicalDebtModifier(id);
     const up = Math.ceil;
 
     return [
       { name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
         points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
       },
-      { name: 'basicPricing', shortDescription: 'Один тарифный план', description: 'Одна цена для всех. Процент платящих снижается вдвое, однако вы начинаете зарабатывать деньги',
-        points: { programming: up(150 * technicalDebtModifier), marketing: 50 }
+      { name: 'basicPricing', shortDescription: 'Единый тарифный план I', description: 'Единая цена для всех клиентов',
+        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
       },
-      { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов', description: 'Несколько ценовых сегментов. Максимально возможный доход с продукта',
-        points: { programming: up(250 * technicalDebtModifier), marketing: 250 }
+      { name: 'basicPricing2', shortDescription: 'Единый тарифный план II', description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
+        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
+      },
+      { name: 'basicPricing3', shortDescription: 'Единый тарифный план III', description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
+        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
+      },
+      { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
+        points: { programming: up(250 * technicalDebtModifier), marketing: 0 }
+      },
+      { name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
+        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
+      },
+      { name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III', description: 'Грести деньги лопатами!',
+        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
       }
     ];
   };
@@ -309,13 +321,14 @@ export default class ProductPanel extends Component {
 
   plainifySameTypeFeatures(id, idea, groupType, onImprovedPhrase) {
     let featureList;
+
     switch (groupType) {
       case 'marketing':
         featureList = this.getMarketingFeatureList(idea);
         break;
 
       case 'payment':
-        featureList = this.getPaymentFeatures(idea);
+        featureList = this.getPaymentFeatures(id, idea);
         break;
 
       case 'analytics':

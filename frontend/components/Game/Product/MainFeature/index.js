@@ -120,7 +120,6 @@ export default class MainFeature extends Component {
 
       if (stageHelper.isPaymentRatingMission()) {
         const rating = flux.productStore.getRating(id);
-        logger.debug(`paymentRatingMission`, rating);
 
         if (rating >= 7) {
           stageHelper.onPaymentRatingMissionCompleted();

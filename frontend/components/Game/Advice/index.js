@@ -44,11 +44,10 @@ export default class AdviceTab extends Component {
       case c.gameStages.GAME_STAGE_IMPROVED_ANALYTICS:
         target = (
           <div>
-            <div>По-хорошему бы ещё вебвизор поставить... Впрочем...
-              Перемотайте время до следующего месяца,
-              нажав на иконку перемотки времени
-              <div className="navigation"><UI.Button text=">" /></div>
-              в меню сверху
+            <div>
+              Чтобы получить очки экспертизы (XP)
+              перемотайте время до следующего месяца,
+              ( иконка перемотки времени <div className="navigation"><UI.Button text=">" /></div>)
             </div>
           </div>
         );
