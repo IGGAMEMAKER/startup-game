@@ -2972,13 +2972,6 @@
 	      var staffVisible = staff.length && !teamToggle;
 	      var staffTab = void 0;
 
-	      var mp = staff.filter(_skills2.default.isMarketer).map(_skills2.default.getMarketingPointsProducedBy).reduce(function (p, c) {
-	        return p + c;
-	      }, 0);
-	      var pp = staff.filter(_skills2.default.isProgrammer).map(_skills2.default.getProgrammingPointsProducedBy).reduce(function (p, c) {
-	        return p + c;
-	      }, 0);
-
 	      if (staffVisible) {
 	        staffTab = (0, _preact.h)(
 	          'div',
@@ -3067,8 +3060,7 @@
 	              (0, _preact.h)(
 	                'h4',
 	                { className: 'staff-switcher' },
-	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 ',
-	                amount
+	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
 	              ),
 	              (0, _preact.h)(
 	                'span',
@@ -7617,7 +7609,7 @@
 	        name: 'middle business',
 	        userOrientedName: 'Малый бизнес',
 	        percentage: 3,
-	        price: 125,
+	        price: 350,
 	        rating: [0.5, 1.5, 1, 0, 7],
 	        requirements: [75, 0, 0, 0, 95]
 	      }]
@@ -12244,17 +12236,12 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '! \u0423 \u0432\u0430\u0441 \u043C\u0430\u043B\u043E \u043C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433\u043E\u0432\u044B\u0445 \u043E\u0447\u043A\u043E\u0432 '
+	              '\u041D\u0430\u0439\u043C\u0438\u0442\u0435 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0430 Lynda'
 	            ),
 	            (0, _preact.h)(
 	              'div',
 	              null,
 	              '\u041C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433\u043E\u0432\u044B\u0435 (MP) \u0438 \u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u0441\u043A\u0438\u0435 (\u0420\u0420) \u043E\u0447\u043A\u0438 \u043D\u0443\u0436\u043D\u044B \u0434\u043B\u044F \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F \u0432\u0430\u0448\u0435\u0433\u043E \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
-	            ),
-	            (0, _preact.h)(
-	              'span',
-	              null,
-	              '\u041D\u0430\u0439\u043C\u0438\u0442\u0435 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0430 Lynda \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u041A\u043E\u043C\u0430\u043D\u0434\u0430".'
 	            )
 	          );
 	          break;
@@ -12822,7 +12809,7 @@
 	    case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
 	      var teamCount = _flux2.default.playerStore.getTeam().length;
 	      // if (teamCount < 4) {
-	      var names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella'];
+	      var names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella', 'Lee', 'Manolo', 'James', 'Luka', 'George'];
 	      var index = Math.floor((0, _random2.default)(0, names.length));
 	      var name = names[index];
 
@@ -12830,7 +12817,21 @@
 	      var marketing = Math.floor((0, _random2.default)(2, 1000));
 	      var analyst = 0; // Math.floor(random(0, 1000));
 
-	      var rating = programming + marketing + analyst;
+	      var rating = void 0;
+	      var task = void 0;
+	      if (_skills2.default.isMarketer(player)) {
+	        task = JOB.JOB_TASK_MARKETING_POINTS;
+	        rating = marketing;
+	      } else if (_skills2.default.isProgrammer(player)) {
+	        task = JOB.JOB_TASK_PROGRAMMER_POINTS;
+	        rating = programming;
+	      } else {
+	        // by default - go to marketing
+	        task = JOB.JOB_TASK_MARKETING_POINTS;
+	        rating = analyst;
+	      }
+
+	      var baseSalary = rating * 6;
 
 	      var salary = void 0;
 	      var pricingType = 1; // Math.floor(random(0, 2));
@@ -12845,7 +12846,7 @@
 	        case 1:
 	          // only money
 	          salary = {
-	            money: Math.floor((0, _random2.default)(rating * 0.75, rating * 1.25)),
+	            money: Math.floor((0, _random2.default)(baseSalary * 0.75, baseSalary * 1.25)),
 	            percent: 0
 	          };
 	          break;
@@ -12869,15 +12870,6 @@
 	        salary: salary
 	        // }
 	      };
-	      var task = void 0;
-	      if (_skills2.default.isMarketer(player)) {
-	        task = JOB.JOB_TASK_MARKETING_POINTS;
-	      } else if (_skills2.default.isProgrammer(player)) {
-	        task = JOB.JOB_TASK_PROGRAMMER_POINTS;
-	      } else {
-	        // by default - go to marketing
-	        task = JOB.JOB_TASK_MARKETING_POINTS;
-	      }
 
 	      player.task = task;
 	      _flux2.default.playerActions.addEmployee(player);

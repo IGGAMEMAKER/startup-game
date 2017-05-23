@@ -167,17 +167,15 @@ export default class Staff extends Component {
 
     const name = p.isPlayer ? 'Вы' : p.name;
 
-    return (
-      <tr className="worker-item" key={key}>
-        <td>
-          {name}, {specialization}&nbsp;
-          {this.renderSkills(p)}
-        </td>
-        <td>{work}</td>
-        <td>{salaryTab}</td>
-        <td>{hireButton}</td>
-      </tr>
-    );
+    return <tr className="worker-item" key={key}>
+      <td>
+        {name}, {specialization}&nbsp;
+        {this.renderSkills(p)}
+      </td>
+      <td>{work}</td>
+      <td>{salaryTab}</td>
+      <td>{hireButton}</td>
+    </tr>
   };
 
   render({ staff, employees }, { switcher, teamToggle, employeeToggle }) {
@@ -188,9 +186,6 @@ export default class Staff extends Component {
 
     const staffVisible = staff.length && !teamToggle;
     let staffTab;
-
-    const mp = staff.filter(teamHelper.isMarketer).map(teamHelper.getMarketingPointsProducedBy).reduce((p, c) => p + c, 0);
-    const pp = staff.filter(teamHelper.isProgrammer).map(teamHelper.getProgrammingPointsProducedBy).reduce((p, c) => p + c, 0);
 
     if (staffVisible) {
       staffTab = (
@@ -255,7 +250,7 @@ export default class Staff extends Component {
         tab = (
           <div>
             <div>
-              <h4 className="staff-switcher">Команда {amount}</h4>
+              <h4 className="staff-switcher">Команда</h4>
               <span className="link" onClick={this.setEmployees}>Нанять сотрудника</span>
             </div>
             <br />

@@ -37,7 +37,7 @@ const emit = (day) => {
     case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
       const teamCount = flux.playerStore.getTeam().length;
       // if (teamCount < 4) {
-        const names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella'];
+        const names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella', 'Lee', 'Manolo', 'James', 'Luka', 'George'];
         const index = Math.floor(random(0, names.length));
         const name = names[index];
 
@@ -45,7 +45,21 @@ const emit = (day) => {
         const marketing = Math.floor(random(2, 1000));
         const analyst = 0; // Math.floor(random(0, 1000));
 
-        const rating = programming + marketing + analyst;
+        let rating;
+        let task;
+        if (skillHelper.isMarketer(player)) {
+          task = JOB.JOB_TASK_MARKETING_POINTS;
+          rating = marketing;
+        } else if (skillHelper.isProgrammer(player)) {
+          task = JOB.JOB_TASK_PROGRAMMER_POINTS;
+          rating = programming;
+        } else {
+          // by default - go to marketing
+          task = JOB.JOB_TASK_MARKETING_POINTS;
+          rating = analyst;
+        }
+
+        const baseSalary = rating * 6;
 
         let salary;
         const pricingType = 1; // Math.floor(random(0, 2));
@@ -60,7 +74,7 @@ const emit = (day) => {
           case 1:
             // only money
             salary = {
-              money: Math.floor(random(rating * 0.75, rating * 1.25)),
+              money: Math.floor(random(baseSalary * 0.75, baseSalary * 1.25)),
               percent: 0
             };
             break;
@@ -84,15 +98,6 @@ const emit = (day) => {
             salary
           // }
         };
-        let task;
-        if (skillHelper.isMarketer(player)) {
-          task = JOB.JOB_TASK_MARKETING_POINTS;
-        } else if (skillHelper.isProgrammer(player)) {
-          task = JOB.JOB_TASK_PROGRAMMER_POINTS;
-        } else {
-          // by default - go to marketing
-          task = JOB.JOB_TASK_MARKETING_POINTS;
-        }
 
         player.task = task;
         flux.playerActions.addEmployee(player);

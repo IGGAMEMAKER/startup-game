@@ -16,9 +16,8 @@ export default class AdviceTab extends Component {
       case c.gameStages.GAME_STAGE_GAME_STARTED:
         target = (
           <div>
-            <div>! У вас мало маркетинговых очков </div>
+            <div>Наймите маркетолога Lynda</div>
             <div>Маркетинговые (MP) и Программистские (РР) очки нужны для улучшения вашего продукта</div>
-            <span>Наймите маркетолога Lynda в разделе "Команда".</span>
           </div>
         );
         break;
