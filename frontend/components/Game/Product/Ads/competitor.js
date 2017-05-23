@@ -41,7 +41,8 @@ export default class Competitor extends Component {
 
         differencePhrase = (
           <span>
-            <span className="positive">{UI.symbols.triangle.up}</span> (+{difference[0].difference} XP)
+            <span className="positive">{UI.symbols.triangle.up}</span>
+            (+{difference[0].difference} XP)
           </span>
         )
       } else {

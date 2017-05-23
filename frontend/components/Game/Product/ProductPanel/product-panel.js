@@ -3,6 +3,10 @@ import { h, Component } from 'preact';
 
 type PropsType = {};
 
+import Analysts from '../../Team/Analysts';
+import Marketers from '../../Team/Marketers';
+import Programmers from '../../Team/Programmers';
+
 import Metrics from '../KPI/metrics';
 import Schedule from '../../Schedule';
 import UI from '../../../UI';
@@ -302,6 +306,7 @@ export default class ProductPanel extends Component {
     )
   };
 
+
   plainifySameTypeFeatures(id, idea, groupType, onImprovedPhrase) {
     let featureList;
     switch (groupType) {
@@ -421,11 +426,10 @@ export default class ProductPanel extends Component {
     if (stageHelper.canShowChurnFeatures()) {
       const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
-      churnFeatures =
-        <div className="featureGroupDescriptionWrapper">
-          <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
-          <div className="featureGroupBody">{marketing}</div>
-        </div>
+      churnFeatures = <div className="featureGroupDescriptionWrapper">
+        <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
+        <div className="featureGroupBody">{marketing}</div>
+      </div>
     }
 
     let companyCostTab;
@@ -435,6 +439,7 @@ export default class ProductPanel extends Component {
 
     return (
       <div>
+        <Marketers />
         <div className="featureGroupTitle">Работа с клиентами</div>
         <div>Наши клиенты: {market.clients}</div>
         {companyCostTab}
@@ -600,7 +605,7 @@ export default class ProductPanel extends Component {
 
     let improvements;
     if (stageHelper.canShowMainFeatureTab()) {
-      improvements = this.renderNavbar(MODE_MAIN_FEATURES, 'Характеристики');
+      improvements = this.renderNavbar(MODE_MAIN_FEATURES, 'Разработка');
     }
 
     let payments;
@@ -613,7 +618,7 @@ export default class ProductPanel extends Component {
 
     let clients;
     // if (stageHelper.canShowClientsTab()) {
-      clients = this.renderNavbar(MODE_MARKETING, 'Клиенты');
+      clients = this.renderNavbar(MODE_MARKETING, 'Маркетинг');
     // }
 
     let competitors;
@@ -639,7 +644,7 @@ export default class ProductPanel extends Component {
   };
 
   render({ product, gamePhase }, state) {
-    if (stageHelper.isFirstWorkerMission()) return <div></div>;
+    // if (stageHelper.isFirstWorkerMission()) return <div></div>;
     // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
 
     const { mode } = state;
@@ -690,10 +695,19 @@ export default class ProductPanel extends Component {
     const metrics = this.renderMetricsTab(id, product);
     const menu = this.renderProductMenuNavbar();
 
+    let description;
+    if (!stageHelper.isFirstWorkerMission()) {
+      description = (
+        <div>
+          <b>Развитие продукта "{product.name}"</b>
+          <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
+        </div>
+      );
+    }
+
     return (
       <div>
-        <b>Развитие продукта "{product.name}"</b>
-        <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
+        {description}
         {metrics}
         {menu}
         <div style={{padding: '15px', 'min-height': '500px'}}>

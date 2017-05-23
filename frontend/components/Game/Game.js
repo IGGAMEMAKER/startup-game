@@ -156,10 +156,12 @@ export default class Game extends Component {
   };
 
   renderGameInNormalMode = (props, state) => {
-    const { gamePhase } = state;
+    const { gamePhase, mode } = state;
     let body = '';
 
-    switch (state.mode) {
+    logger.debug(mode);
+
+    switch (mode) {
       case GAME_MODE_ECONOMICS:
         body = <Economics />;
         break;
@@ -167,7 +169,7 @@ export default class Game extends Component {
         body = this.renderProducts(state);
         break;
       case GAME_MODE_STAFF:
-        body = <Staff />;
+        body = ''; // <Staff staff={} emplo/>;
         break;
       case GAME_MODE_PRODUCT:
         body = this.renderProductMenu(state);

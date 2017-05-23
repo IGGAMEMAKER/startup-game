@@ -31,6 +31,9 @@ export default {
   isMarketer(p) {
     return getSpecialization(p) === JOB.PROFESSION_MARKETER;
   },
+  isAnalyst(p) {
+    return getSpecialization(p) === JOB.PROFESSION_ANALYST;
+  },
   getMaxEfficiencyPhrase(p) {
     switch (getSpecialization(p)) {
       case JOB.PROFESSION_PROGRAMMER:

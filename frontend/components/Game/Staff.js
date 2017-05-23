@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-// import React, { Component, PropTypes } from 'react';
+
 import logger from '../../helpers/logger/logger';
 import * as JOB from '../../constants/job';
 
@@ -9,8 +9,6 @@ import teamHelper from '../../helpers/team/skills';
 
 import actions from '../../actions/player-actions';
 import flux from '../../flux';
-
-import Select from '../Shared/Select';
 
 import coloringRange from '../../helpers/coloring-range';
 
@@ -39,17 +37,17 @@ export default class Staff extends Component {
   };
 
   componentWillMount() {
-    this.getStaff();
-
-    store.addChangeListener(this.getStaff);
+    // this.getStaff();
+    //
+    // store.addChangeListener(this.getStaff);
   }
 
-  setStaff = () => { this.setMode(IS_STAFF); }
-  setEmployees = () => { this.setMode(IS_EMPLOYEES); }
+  setStaff = () => { this.setMode(IS_STAFF); };
+  setEmployees = () => { this.setMode(IS_EMPLOYEES); };
 
   setMode = switcher => {
     this.setState({ switcher })
-  }
+  };
 
   getStaff = () => {
     this.setState({
@@ -123,7 +121,6 @@ export default class Staff extends Component {
 
   renderPerson = (p, i, isEmployee) => {
     const specialization = teamHelper.getTranslatedSpecialization(p);
-    const motivation = this.getMotivation(p);
     const work = this.getWorkPhrase(p);
 
     let hireButton = '';
@@ -132,8 +129,10 @@ export default class Staff extends Component {
       if (stageHelper.isFirstWorkerMission()) {
         stageHelper.onFirstWorkerMissionCompleted();
       }
+
       actions.hireWorker(p, i);
     };
+
     const reject = () => { actions.rejectEmployee(i); };
     const fire = () => { actions.fireWorker(i); };
 
@@ -142,7 +141,13 @@ export default class Staff extends Component {
       hireButton = (
         <div className="worker-button-container">
           <span className="worker-button"><UI.Button onClick={hire} text="Нанять" primary /></span>
-          <span className="worker-button"><UI.Button onClick={reject} text="Отклонить" /></span>
+          {
+            !stageHelper.isFirstWorkerMission()
+            ?
+            <span className="worker-button"><UI.Button onClick={reject} text="Отклонить"/></span>
+            :
+            ''
+          }
         </div>
       );
     } else {
@@ -175,7 +180,7 @@ export default class Staff extends Component {
     );
   };
 
-  render(props, { switcher, staff, employees, teamToggle, employeeToggle }) {
+  render({ staff, employees }, { switcher, teamToggle, employeeToggle }) {
     const staffList =        staff.map((p, i) => this.renderPerson(p, i, false));
     const employeeList = employees.map((p, i) => this.renderPerson(p, i, true));
 
@@ -184,8 +189,8 @@ export default class Staff extends Component {
 
     const mp = staff.filter(teamHelper.isMarketer).map(teamHelper.getMarketingPointsProducedBy).reduce((p, c) => p + c, 0);
     const pp = staff.filter(teamHelper.isProgrammer).map(teamHelper.getProgrammingPointsProducedBy).reduce((p, c) => p + c, 0);
-    if (staffVisible) {
 
+    if (staffVisible) {
       staffTab = (
         <div>
           <br />
@@ -221,7 +226,7 @@ export default class Staff extends Component {
     let teamPhrase;
     const staffLength = staff.length;
     if (staffLength < 2) {
-      teamPhrase = 'Наймите маркетолога';
+      // teamPhrase = 'Наймите маркетолога';
     } else {
       teamPhrase = ''; // `В нашей команде ${staffLength} человек`;
     }
@@ -236,7 +241,7 @@ export default class Staff extends Component {
             <h6 className="offset-mid">{employeePhrase}</h6>
             {employeeTab}
           </div>
-        )
+        );
         break;
       case IS_STAFF:
         tab = (
@@ -245,10 +250,11 @@ export default class Staff extends Component {
             <h6 className="offset-mid">{teamPhrase}</h6>
             {staffTab}
           </div>
-        )
+        );
         break;
     }
 
+        // <div>Месячная производительность команды: +{mp}MP +{pp}PP </div>
     return (
       <div>
         <nav aria-label="Page navigation example">
@@ -261,10 +267,6 @@ export default class Staff extends Component {
             </li>
           </ul>
         </nav>
-
-        <div>Месячная производительность команды: +{mp}MP +{pp}PP </div>
-
-
         {tab}
       </div>
     );

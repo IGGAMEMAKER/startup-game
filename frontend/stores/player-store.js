@@ -8,7 +8,7 @@ import * as EXPENSES from '../constants/expenses';
 import * as JOB from '../constants/job';
 
 import getSpecialization from '../helpers/team/specialization';
-import { getSkill } from '../helpers/team/skills';
+import skillHelper from '../helpers/team/skills';
 
 const EC = 'PLAYER_EVENT_CHANGE';
 
@@ -118,6 +118,34 @@ class PlayerStore extends EventEmitter {
   getTeam() {
     return _team;
   }
+
+  getMonthlyMarketerPoints() {
+    return this.getMarketers().map(skillHelper.getMarketingPointsProducedBy).reduce((p, c) => p + c, 0);
+  }
+  getMonthlyProgrammerPoints() {
+    return this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy).reduce((p, c) => p + c, 0);
+  }
+
+  getTeamProgrammers() {
+    return _team.filter(skillHelper.isProgrammer)
+  }
+  getTeamMarketers() {
+    return _team.filter(skillHelper.isMarketer)
+  }
+  getTeamAnalysts() {
+    return _team.filter(skillHelper.isAnalyst)
+  }
+
+  getEmployeesProgrammers() {
+    return _employees.filter(skillHelper.isProgrammer);
+  }
+  getEmployeesMarketers() {
+    return _employees.filter(skillHelper.isMarketer);
+  }
+  getEmployeesAnalysts() {
+    return _employees.filter(skillHelper.isAnalyst);
+  }
+
 
   getTeamExpenses() {
     return this.getTeam().filter(isMercenary).map(worker => worker.salary.money).reduce((p, c) => p + c, 0);
