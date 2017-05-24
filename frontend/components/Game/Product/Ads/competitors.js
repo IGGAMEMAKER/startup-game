@@ -28,10 +28,11 @@ export default class Competitors extends Component {
         // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
 
     const buyCompany = (buyerId, sellerId, transferSum) => {
-      console.log('buyC', sellerId);
+      // console.log('buyC', sellerId);
 
       flux.productActions.buyCompany(buyerId, sellerId);
       flux.playerActions.decreaseMoney(transferSum);
+      // flux.messageActions.addGameEvent(transferSum);
     };
 
     const competitorList = competitors.map((c, i) =>

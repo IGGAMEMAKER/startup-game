@@ -8213,8 +8213,8 @@
 	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
 	  },
 	  canShowCompetitorsTab: function canShowCompetitorsTab() {
-	    return true;
-	    // return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	    // return true;
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
 	  },
 	  canShowClientsTab: function canShowClientsTab() {
 	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
@@ -8952,8 +8952,12 @@
 	      return (0, _preact.h)(
 	        'div',
 	        { key: 'product-expense' + i },
-	        '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u043F\u0440\u043E\u0435\u043A\u0442 ',
-	        e.name,
+	        (0, _preact.h)(
+	          'h6',
+	          null,
+	          '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u043F\u0440\u043E\u0435\u043A\u0442 ',
+	          e.name
+	        ),
 	        (0, _preact.h)(
 	          'ul',
 	          null,
@@ -8982,6 +8986,7 @@
 	          teamExpenses = _ref.teamExpenses;
 
 	      var loanIndex = 0;
+
 	      var renderBasicExpense = function renderBasicExpense(e, i) {
 	        var phrase = '';
 
@@ -9011,8 +9016,6 @@
 	        );
 	      };
 
-	      // <h5>Базовые расходы</h5>
-	      // {basicExpenses.map(renderBasicExpense)}
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -9021,6 +9024,12 @@
 	          null,
 	          '\u0420\u0430\u0441\u0445\u043E\u0434\u044B'
 	        ),
+	        (0, _preact.h)(
+	          'h5',
+	          null,
+	          '\u0411\u0430\u0437\u043E\u0432\u044B\u0435 \u0440\u0430\u0441\u0445\u043E\u0434\u044B'
+	        ),
+	        basicExpenses.map(renderBasicExpense),
 	        (0, _preact.h)(
 	          'h5',
 	          null,
@@ -9574,57 +9583,34 @@
 	        return Math.ceil(bonus * clientSizePenalty * 2);
 	      };
 
-	      // const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
-	      var improveTab = void 0;
-	      if (!improvements.hasFeedback) {
-	        improveTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            feedbackStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0430 \u0444\u043E\u0440\u043C\u0430 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432 (+',
-	            exp(improvements.feedbackBonus),
-	            'XP)'
-	          ),
-	          _this.getFeedbackButton(idea, id)
-	        );
-	      } else if (!improvements.hasWebvisor) {
-	        improveTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            webvisorStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u0432\u0435\u0431\u0432\u0438\u0437\u043E\u0440 (+',
-	            exp(improvements.webvisorBonus),
-	            'XP)'
-	          ),
-	          _this.getWebvisorButton(idea, id)
-	        );
-	      } else if (!improvements.hasSegmenting) {
-	        improveTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            segmentingStatus,
-	            ' \u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D \u043C\u043E\u0434\u0443\u043B\u044C \u0441\u0435\u0433\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (+',
-	            exp(improvements.segmentingBonus),
-	            'XP)'
-	          ),
-	          _this.getSegmentingButton(idea, id)
-	        );
-	      } else {
-	        improveTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0438 \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E \u0443\u043B\u0443\u0447\u0448\u0435\u043D'
-	        );
-	      }
+	      // let improveTab;
+	      var improveTab = _this.plainifySameTypeFeatures(id, idea, 'analytics', 'Блок аналитики полностью улучшен!');
+	      // if (!improvements.hasFeedback) {
+	      //   improveTab = (
+	      //     <div>
+	      //       <div>{feedbackStatus} Установлена форма комментариев (+{exp(improvements.feedbackBonus)}XP)</div>
+	      //       {this.getFeedbackButton(idea, id)}
+	      //     </div>
+	      //   )
+	      // } else if (!improvements.hasWebvisor) {
+	      //   improveTab = (
+	      //     <div>
+	      //       <div>{webvisorStatus} Установлен вебвизор (+{exp(improvements.webvisorBonus)}XP)</div>
+	      //       {this.getWebvisorButton(idea, id)}
+	      //     </div>
+	      //   )
+	      // } else if (!improvements.hasSegmenting) {
+	      //   improveTab = (
+	      //     <div>
+	      //       <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{exp(improvements.segmentingBonus)}XP)</div>
+	      //       {this.getSegmentingButton(idea, id)}
+	      //     </div>
+	      //   )
+	      // } else {
+	      //   improveTab = (
+	      //     <div>Сегмент аналитики полностью улучшен</div>
+	      //   )
+	      // }
 
 	      var hypothesisPoints = _productStore2.default.getHypothesisPoints(id);
 
@@ -9955,6 +9941,9 @@
 	            _playerActions2.default.spendPoints(pp, mp);
 	            _productActions2.default.improveFeatureByPoints(id, featureGroup, featureName);
 
+	            if (featureGroup === 'analytics' && _stages2.default.isInstallPrimitiveAnalyticsMission()) {
+	              _stages2.default.onInstallPrimitiveAnalyticsMissionCompleted();
+	            }
 	            if (onUpgraded) {
 	              onUpgraded();
 	            }
@@ -10149,8 +10138,12 @@
 	        points: { programming: 50, marketing: 0 }
 	      }, { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
 	        points: { programming: 150, marketing: 0 }
+	      }, { name: 'AB', shortDescription: 'A/B тестирование', description: 'Позволяет тестировать несколько вариантов проекта. +1000XP/мес', // 'Повышает шансы при проверке гипотез',
+	        points: { programming: 175, marketing: 0 }
 	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
 	        points: { programming: 250, marketing: 0 }
+	      }, { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II', description: '', // 'Повышает шансы при проверке гипотез',
+	        points: { programming: 500, marketing: 0 }
 	      }];
 	    }
 	  }, {
@@ -11873,10 +11866,11 @@
 	      // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
 
 	      var buyCompany = function buyCompany(buyerId, sellerId, transferSum) {
-	        console.log('buyC', sellerId);
+	        // console.log('buyC', sellerId);
 
 	        _flux2.default.productActions.buyCompany(buyerId, sellerId);
 	        _flux2.default.playerActions.decreaseMoney(transferSum);
+	        // flux.messageActions.addGameEvent(transferSum);
 	      };
 
 	      var competitorList = competitors.map(function (c, i) {

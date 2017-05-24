@@ -17,9 +17,10 @@
 
   --info: rgba(0, 0, 200, 0.3);
 
-  --modalMainText: black;
-  /*--modalBackground: rgba(135,135,135, 0.8);*/
-  --modalBackground: rgba(235,235,235, 0.95);
+  /*--modalMainText: black;*/
+  --modalMainText: white;
+  --modalBackground: rgba(135,135,135, 0.8);
+  /*--modalBackground: rgba(235,235,235, 0.95);*/
   --font-family-base: Arial;
 
   --main-text-color: beige;

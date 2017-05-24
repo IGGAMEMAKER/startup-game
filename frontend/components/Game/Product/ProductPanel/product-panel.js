@@ -120,9 +120,15 @@ export default class ProductPanel extends Component {
       { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
         points: { programming: 150, marketing: 0 }
       },
+      { name: 'AB', shortDescription: 'A/B тестирование', description: 'Позволяет тестировать несколько вариантов проекта. +1000XP/мес', // 'Повышает шансы при проверке гипотез',
+        points: { programming: 175, marketing: 0 }
+      },
       { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
         points: { programming: 250, marketing: 0 }
-      }
+      },
+      { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II', description: '', // 'Повышает шансы при проверке гипотез',
+        points: { programming: 500, marketing: 0 }
+      },
     ];
   };
 
@@ -213,34 +219,34 @@ export default class ProductPanel extends Component {
     const exp = (bonus) => Math.ceil(bonus * clientSizePenalty * 2);
 
 
-    // const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
-    let improveTab;
-    if (!improvements.hasFeedback) {
-      improveTab = (
-        <div>
-          <div>{feedbackStatus} Установлена форма комментариев (+{exp(improvements.feedbackBonus)}XP)</div>
-          {this.getFeedbackButton(idea, id)}
-        </div>
-      )
-    } else if (!improvements.hasWebvisor) {
-      improveTab = (
-        <div>
-          <div>{webvisorStatus} Установлен вебвизор (+{exp(improvements.webvisorBonus)}XP)</div>
-          {this.getWebvisorButton(idea, id)}
-        </div>
-      )
-    } else if (!improvements.hasSegmenting) {
-      improveTab = (
-        <div>
-          <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{exp(improvements.segmentingBonus)}XP)</div>
-          {this.getSegmentingButton(idea, id)}
-        </div>
-      )
-    } else {
-      improveTab = (
-        <div>Сегмент аналитики полностью улучшен</div>
-      )
-    }
+    // let improveTab;
+    let improveTab = this.plainifySameTypeFeatures(id, idea, 'analytics', 'Блок аналитики полностью улучшен!');
+    // if (!improvements.hasFeedback) {
+    //   improveTab = (
+    //     <div>
+    //       <div>{feedbackStatus} Установлена форма комментариев (+{exp(improvements.feedbackBonus)}XP)</div>
+    //       {this.getFeedbackButton(idea, id)}
+    //     </div>
+    //   )
+    // } else if (!improvements.hasWebvisor) {
+    //   improveTab = (
+    //     <div>
+    //       <div>{webvisorStatus} Установлен вебвизор (+{exp(improvements.webvisorBonus)}XP)</div>
+    //       {this.getWebvisorButton(idea, id)}
+    //     </div>
+    //   )
+    // } else if (!improvements.hasSegmenting) {
+    //   improveTab = (
+    //     <div>
+    //       <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{exp(improvements.segmentingBonus)}XP)</div>
+    //       {this.getSegmentingButton(idea, id)}
+    //     </div>
+    //   )
+    // } else {
+    //   improveTab = (
+    //     <div>Сегмент аналитики полностью улучшен</div>
+    //   )
+    // }
 
     const hypothesisPoints = productStore.getHypothesisPoints(id);
 
@@ -555,6 +561,9 @@ export default class ProductPanel extends Component {
         playerActions.spendPoints(pp, mp);
         productActions.improveFeatureByPoints(id, featureGroup, featureName);
 
+        if (featureGroup === 'analytics' && stageHelper.isInstallPrimitiveAnalyticsMission()) {
+          stageHelper.onInstallPrimitiveAnalyticsMissionCompleted();
+        }
         if (onUpgraded) {
           onUpgraded();
         }
