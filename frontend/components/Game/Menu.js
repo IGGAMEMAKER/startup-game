@@ -139,8 +139,8 @@ export default class Menu extends Component {
           </div>
           {nextSpeeder}
           <div className={navigation}>{pauseOrContinue}</div>
-          <div className={navigation} onClick={onMPPP}>MP: {state.points.marketing}</div>
-          <div className={navigation} onClick={onMPPP}>PP: {state.points.programming}</div>
+          <div className={navigation}>MP: {state.points.marketing}</div>
+          <div className={navigation}>PP: {state.points.programming}</div>
         </div>
       )
     }

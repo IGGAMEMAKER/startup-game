@@ -636,7 +636,7 @@ class ProductStore extends EventEmitter {
 
 
     return _products
-      .map((p, i) => { p.id = i; return p })
+      .map((p, i) => Object.assign({ id: i }, p))
       .filter(p => !this.isOurProduct(p) && p.idea === this.getIdea(id))
       .map(p => {
         const name = p.name;
@@ -661,7 +661,8 @@ class ProductStore extends EventEmitter {
           name,
           features: offer,
           cost: companyCostComputer.compute(p),
-          improvements: companyMerger.merge(ourCompany, p).improvements
+          improvements: companyMerger.merge(ourCompany, p).improvements,
+          id: p.id
         }
       })
       // return [

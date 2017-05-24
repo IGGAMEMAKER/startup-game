@@ -14,12 +14,14 @@ const EC = 'PLAYER_EVENT_CHANGE';
 
 let _skills = {};
 let _money = 1000;
-let _expenses = [{
-  type: EXPENSES.EXPENSES_FOOD,
-  quality: 0, // poor. Eat doshik and be happy (no). costs low money
-  price: 300,
-  regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
-}];
+let _expenses = [
+  // {
+  //   type: EXPENSES.EXPENSES_FOOD,
+  //   quality: 0, // poor. Eat doshik and be happy (no). costs low money
+  //   price: 300,
+  //   regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
+  // }
+];
 
 let _points = {
   programming: 300,
@@ -126,24 +128,28 @@ class PlayerStore extends EventEmitter {
     return this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy).reduce((p, c) => p + c, 0);
   }
 
+  idHelper(e, i) {
+    return Object.assign({}, e, { id: i });
+  }
+
   getTeamProgrammers() {
-    return _team.filter(skillHelper.isProgrammer)
+    return _team.map(this.idHelper).filter(skillHelper.isProgrammer)
   }
   getTeamMarketers() {
-    return _team.filter(skillHelper.isMarketer)
+    return _team.map(this.idHelper).filter(skillHelper.isMarketer)
   }
   getTeamAnalysts() {
-    return _team.filter(skillHelper.isAnalyst)
+    return _team.map(this.idHelper).filter(skillHelper.isAnalyst)
   }
 
   getEmployeesProgrammers() {
-    return _employees.filter(skillHelper.isProgrammer);
+    return _employees.map(this.idHelper).filter(skillHelper.isProgrammer);
   }
   getEmployeesMarketers() {
-    return _employees.filter(skillHelper.isMarketer);
+    return _employees.map(this.idHelper).filter(skillHelper.isMarketer);
   }
   getEmployeesAnalysts() {
-    return _employees.filter(skillHelper.isAnalyst);
+    return _employees.map(this.idHelper).filter(skillHelper.isAnalyst);
   }
 
 

@@ -130,11 +130,11 @@ export default class Staff extends Component {
         stageHelper.onFirstWorkerMissionCompleted();
       }
 
-      actions.hireWorker(p, i);
+      actions.hireWorker(p, p.id);
     };
 
-    const reject = () => { actions.rejectEmployee(i); };
-    const fire = () => { actions.fireWorker(i); };
+    const reject = () => { actions.rejectEmployee(p.id); };
+    const fire = () => { actions.fireWorker(p.id); };
 
 
     if (isEmployee) {

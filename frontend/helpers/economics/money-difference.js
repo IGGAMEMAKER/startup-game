@@ -11,18 +11,18 @@ const calculate = () => {
 
   const income = jobIncome + products
       .map((p, i) => productStore.getProductIncome(i))
-      .reduce((p, c) => p + c);
+      .reduce((p, c) => p + c, 0);
 
   // check expenses
   const nonProductExpenses = playerStore.getExpenses()
     .filter(e => e.type !== EXPENSES.EXPENSES_LOAN)
     .map((e, i) => e.price)
-    .reduce((p, c) => p + c);
+    .reduce((p, c) => p + c, 0);
 
 
   const productExpenses = products
     .map((p, i) => productStore.getProductExpenses(i))
-    .reduce((p, c) => p + c);
+    .reduce((p, c) => p + c, 0);
 
   const loans = playerStore.getLoanPaymentAmount();
 

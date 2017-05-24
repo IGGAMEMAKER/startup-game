@@ -36,7 +36,7 @@ const emit = (day) => {
     //   flux.messageActions.addGameEvent(rnd, { points });
     //   break;
     case GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE:
-      if (day > 100 && day % 3 === 0) {
+      if (day > 100 && day % 2 === 0) {
         const p = mvpCreator.createCompetitorCompany(flux.productStore.getIdea(0));
         flux.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p });
       }
