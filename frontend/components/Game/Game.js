@@ -137,13 +137,16 @@ export default class Game extends Component {
     return <Product product={product} id={id} />;
   };
 
-  renderStaffMenu = () => {
+  renderStaffMenu = (state) => {
+        // <div className="staff-group-title">Наша команда</div>
     return (
       <div>
-        <div className="staff-group-title">Программисты</div>
+        <Staff />
+        <br />
+        <div className="staff-group-title">Найм программистов</div>
         <Programmers />
         <br />
-        <div className="staff-group-title">Маркетологи</div>
+        <div className="staff-group-title">Найм маркетологов</div>
         <Marketers />
       </div>
     )
@@ -183,7 +186,7 @@ export default class Game extends Component {
         body = this.renderProducts(state);
         break;
       case GAME_MODE_STAFF:
-        body = this.renderStaffMenu(); // ''; // <Staff staff={} emplo/>;
+        body = this.renderStaffMenu(state); // ''; // <Staff staff={} emplo/>;
         break;
       case GAME_MODE_PRODUCT:
         body = this.renderProductMenu(state);

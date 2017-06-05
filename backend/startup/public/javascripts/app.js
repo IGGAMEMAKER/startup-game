@@ -759,21 +759,24 @@
 	      var product = state.products[id];
 
 	      return (0, _preact.h)(_Product2.default, { product: product, id: id });
-	    }, _this.renderStaffMenu = function () {
+	    }, _this.renderStaffMenu = function (state) {
+	      // <div className="staff-group-title">Наша команда</div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
+	        (0, _preact.h)(_Staff2.default, null),
+	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'staff-group-title' },
-	          '\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B'
+	          '\u041D\u0430\u0439\u043C \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u043E\u0432'
 	        ),
 	        (0, _preact.h)(_Programmers2.default, null),
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'staff-group-title' },
-	          '\u041C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0438'
+	          '\u041D\u0430\u0439\u043C \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u043E\u0432'
 	        ),
 	        (0, _preact.h)(_Marketers2.default, null)
 	      );
@@ -805,7 +808,7 @@
 	          body = _this.renderProducts(state);
 	          break;
 	        case GAME_MODE_STAFF:
-	          body = _this.renderStaffMenu(); // ''; // <Staff staff={} emplo/>;
+	          body = _this.renderStaffMenu(state); // ''; // <Staff staff={} emplo/>;
 	          break;
 	        case GAME_MODE_PRODUCT:
 	          body = _this.renderProductMenu(state);
@@ -2810,9 +2813,9 @@
 	  (0, _createClass3.default)(Staff, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      // this.getStaff();
+	      this.getStaff();
 	      //
-	      // store.addChangeListener(this.getStaff);
+	      _playerStore2.default.addChangeListener(this.getStaff);
 	    }
 	  }, {
 	    key: 'getMotivation',
@@ -2833,12 +2836,12 @@
 	    }
 	  }, {
 	    key: 'render',
-	    value: function render(_ref2, _ref3) {
+	    value: function render(props, _ref2) {
 	      var staff = _ref2.staff,
-	          employees = _ref2.employees;
-	      var switcher = _ref3.switcher,
-	          teamToggle = _ref3.teamToggle,
-	          employeeToggle = _ref3.employeeToggle;
+	          employees = _ref2.employees,
+	          switcher = _ref2.switcher,
+	          teamToggle = _ref2.teamToggle,
+	          employeeToggle = _ref2.employeeToggle;
 
 	      if (!_stages2.default.canShowTeamTabs()) return (0, _preact.h)('div', null);
 
@@ -2951,11 +2954,29 @@
 	      //     </li>
 	      //   </ul>
 	      // </nav>
+
+	      // {staff.map((s, i) => <Worker p={s} i={i} />)}
+	      // {tab}
+	      //     <span className="link" onClick={this.setEmployees}>Нанять сотрудника</span>
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'staff-table' },
 	        (0, _preact.h)('br', null),
-	        tab
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'h4',
+	              { className: 'staff-switcher' },
+	              '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
+	            )
+	          ),
+	          (0, _preact.h)('br', null),
+	          staffTab
+	        )
 	      );
 	    }
 	  }]);
@@ -4850,6 +4871,16 @@
 	    key: 'getPoints',
 	    value: function getPoints() {
 	      return _points;
+	    }
+	  }, {
+	    key: 'enoughMarketingPoints',
+	    value: function enoughMarketingPoints(mp) {
+	      return _points.marketing >= mp;
+	    }
+	  }, {
+	    key: 'enoughProgrammingPoints',
+	    value: function enoughProgrammingPoints(pp) {
+	      return _points.programming >= pp;
 	    }
 	  }, {
 	    key: 'getTeam',
@@ -9445,6 +9476,10 @@
 	  value: true
 	});
 
+	var _stringify = __webpack_require__(98);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
+
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -9714,14 +9749,10 @@
 	      if (_stages2.default.canShowChurnFeatures()) {
 	        var marketing = _this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
+	        // <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
 	        churnFeatures = (0, _preact.h)(
 	          'div',
 	          { className: 'featureGroupDescriptionWrapper' },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupDescription' },
-	            '\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u0441\u043D\u0438\u0437\u0438\u0442\u044C \u043E\u0442\u0442\u043E\u043A \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u043E\u0432\u044B\u0448\u0430\u044F \u0438\u0445 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C'
-	          ),
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'featureGroupBody' },
@@ -9765,7 +9796,8 @@
 	            ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 (\u043E\u0442\u0442\u043E\u043A: ',
 	            churn,
 	            '%)'
-	          )
+	          ),
+	          churnFeatures
 	        );
 	      }
 
@@ -9906,6 +9938,24 @@
 	        var mpColors = points.marketing < mp ? "noPoints" : "enoughPoints";
 	        var ppColors = points.programming < pp ? "noPoints" : "enoughPoints";
 
+	        var support = void 0;
+	        if (feature.support) {
+	          support = (0, _preact.h)(
+	            'div',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              _this.renderFeatureSupportCost(feature.support)
+	            )
+	          );
+	        }
+
 	        return (0, _preact.h)(
 	          'div',
 	          { key: key },
@@ -9914,36 +9964,45 @@
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'featureDescription' },
-	            description
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            null,
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F - \xA0',
-	              mp > 0 ? (0, _preact.h)(
-	                'span',
-	                { className: mpColors },
-	                'MP:',
-	                mp,
-	                '\xA0'
-	              ) : '',
-	              pp > 0 ? (0, _preact.h)(
-	                'span',
-	                { className: ppColors },
-	                'PP:',
-	                pp
-	              ) : ''
-	            )
+	              description
+	            ),
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              (0, _preact.h)(
+	                'div',
+	                null,
+	                '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F - \xA0',
+	                mp > 0 ? (0, _preact.h)(
+	                  'span',
+	                  { className: mpColors },
+	                  mp,
+	                  'MP\xA0'
+	                ) : '',
+	                pp > 0 ? (0, _preact.h)(
+	                  'span',
+	                  { className: ppColors },
+	                  pp,
+	                  'PP'
+	                ) : ''
+	              ),
+	              (0, _preact.h)(
+	                'div',
+	                null,
+	                support
+	              )
+	            ),
+	            (0, _preact.h)(_UI2.default.Button, {
+	              text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
+	              disabled: !enoughPointsToUpgrade,
+	              onClick: upgradeFeature,
+	              secondary: true
+	            })
 	          ),
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C',
-	            disabled: !enoughPointsToUpgrade,
-	            onClick: upgradeFeature,
-	            secondary: true
-	          }),
 	          separator
 	        );
 	      };
@@ -10150,6 +10209,28 @@
 	          { className: 'offset-mid' },
 	          cliTabDescription
 	        )
+	      );
+	    }
+	  }, {
+	    key: 'renderFeatureSupportCost',
+	    value: function renderFeatureSupportCost(support) {
+	      var money = void 0;
+	      var mp = void 0;
+	      var pp = void 0;
+
+	      if (support.money) money = support.money + '$ ';
+	      if (support.marketing) mp = support.marketing + 'MP ';
+	      if (support.programming) pp = support.programming + 'PP ';
+
+	      // if (!money && !mp && !pp) money = JSON.stringify(support);
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        mp,
+	        pp,
+	        money,
+	        (0, _stringify2.default)(support)
 	      );
 	    }
 	  }, {
@@ -11207,7 +11288,7 @@
 	      toggle: true
 	    }, _this.onDrag = function (possibleClients) {
 	      _this.setState({ possibleClients: possibleClients });
-	    }, _this.inviteUsers = function (id, amountOfUsers, cost, ourClients) {
+	    }, _this.inviteUsers = function (id, amountOfUsers, cost, mp, ourClients) {
 	      return function () {
 	        if (_flux2.default.playerStore.getMoney() >= cost) {
 	          if (ourClients + amountOfUsers > 200 && _stages2.default.isFirstAdCampaignMission()) {
@@ -11216,6 +11297,7 @@
 
 	          _flux2.default.productActions.addClients(id, amountOfUsers);
 	          _flux2.default.playerActions.increaseMoney(-cost);
+	          _flux2.default.playerActions.spendPoints(0, mp);
 
 	          _this.onDrag(0);
 	        }
@@ -11228,7 +11310,7 @@
 	    value: function componentWillMount() {}
 	  }, {
 	    key: 'renderAdCampaignGenerator',
-	    value: function renderAdCampaignGenerator(id, clients, campaignText, money) {
+	    value: function renderAdCampaignGenerator(id, clients, campaignText, mp, money) {
 	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
 	      var campaignCost = Math.ceil(clients * costPerClient);
 
@@ -11244,6 +11326,8 @@
 	        // return <div>Нужно больше золота! На вашем счету: {money}$, а нужно {campaignCost}$</div>
 	      }
 
+	      var disabled = !_flux2.default.playerStore.enoughMarketingPoints(mp);
+
 	      return (0, _preact.h)(
 	        'li',
 	        null,
@@ -11252,16 +11336,22 @@
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u0412\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u0435 ',
-	          clients,
-	          ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0437\u0430 ',
+	          '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u043E\u0439 \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u0438: ',
 	          campaignCost,
-	          '$'
+	          '$ \u0438 ',
+	          mp,
+	          'MP '
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          disabled ? 'У вас не хватает маркетинговых очков' : ''
 	        ),
 	        (0, _preact.h)(_UI2.default.Button, {
 	          item: 'start-campaign ' + clients,
 	          text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E',
-	          onClick: this.inviteUsers(id, clients, campaignCost, ourClients),
+	          onClick: this.inviteUsers(id, clients, campaignCost, mp, ourClients),
+	          disabled: disabled,
 	          primary: true
 	        }),
 	        (0, _preact.h)('br', null)
@@ -11277,35 +11367,10 @@
 
 	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
 	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney());
-	      var potentialClients = marketStats.potentialClients,
-	          marketSize = marketStats.marketSize,
-	          ourClients = marketStats.ourClients,
-	          unbeatableClients = marketStats.unbeatableClients,
-	          amount = marketStats.amount;
+	      var potentialClients = marketStats.potentialClients;
 
 
-	      var maxPossibleClients = amount; // Math.floor(playerStore.getMoney() / costPerClient);
-	      var campaignCost = Math.ceil(possibleClients * costPerClient);
-
-	      // <div>Объём рынка: {marketSize} человек</div>
-	      // <div>Наши клиенты: {ourClients} человек</div>
-	      // <div>Клиенты, которых мы не можем переманить: {unbeatableClients} человек</div>
-	      // <div>Наша потенциальная аудитория: {potentialClients}
-	      //   ({marketSize} - {ourClients} - {unbeatableClients})
-	      // </div>
-
-	      // <UI.Range min={0} max={maxPossibleClients} onDrag={this.onDrag} />
-	      // <div>
-	      // <div>Пригласить {possibleClients} клиентов за {campaignCost}$</div>
-	      // <UI.Button
-	      // item="start-campaign"
-	      // text="Начать рекламную кампанию"
-	      // onClick={this.inviteUsers(id, possibleClients, campaignCost, ourClients)}
-	      // primary
-	      // />
-	      // </div>
-
-	      var ads = [{ clients: 200, text: 'Привести 200 клиентов' }, { clients: 1000, text: 'Привести 1000 клиентов' }, { clients: 10000, text: 'Привести 10000 клиентов' }, { clients: 50000, text: 'Привести 50000 клиентов' }, { clients: 300000, text: 'Привести 300000 клиентов' }];
+	      var ads = [{ clients: 200, text: 'Привести 200 клиентов', mp: 10 }, { clients: 1000, text: 'Привести 1000 клиентов', mp: 10 }, { clients: 10000, text: 'Привести 10000 клиентов', mp: 50 }, { clients: 50000, text: 'Привести 50000 клиентов', mp: 75 }, { clients: 300000, text: 'Привести 300000 клиентов', mp: 150 }];
 
 	      var money = _flux2.default.playerStore.getMoney();
 
@@ -11315,8 +11380,11 @@
 	      var noClientOverflow = function noClientOverflow(a) {
 	        return a.clients < potentialClients;
 	      };
+	      var enoughPoints = function enoughPoints(a) {
+	        return _flux2.default.playerStore.enoughMarketingPoints(a.mp);
+	      };
 
-	      var adList = ads.filter(noClientOverflow).filter(enoughMoney);
+	      var adList = ads.filter(noClientOverflow).filter(enoughMoney).filter(enoughPoints);
 
 	      var list = void 0;
 
@@ -11324,7 +11392,7 @@
 
 	      if (adList.length) {
 	        list = adList.map(function (a) {
-	          return _this2.renderAdCampaignGenerator(id, a.clients, a.text, money);
+	          return _this2.renderAdCampaignGenerator(id, a.clients, a.text, a.mp, money);
 	        }).reverse();
 	      } else {
 	        if (!ads.filter(noClientOverflow).length) {
@@ -11333,6 +11401,10 @@
 
 	        if (!ads.filter(enoughMoney).length) {
 	          list = 'нет доступных рекламных кампаний. Нужно больше золота!';
+	        }
+
+	        if (!ads.filter(enoughPoints).length) {
+	          list = 'Недостаточно Маркетинговых очков (MP). Минимум: 15MP';
 	        }
 	      }
 

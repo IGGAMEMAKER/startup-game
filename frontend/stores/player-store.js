@@ -117,6 +117,14 @@ class PlayerStore extends EventEmitter {
     return _points;
   }
 
+  enoughMarketingPoints(mp) {
+    return _points.marketing >= mp;
+  }
+
+  enoughProgrammingPoints(pp) {
+    return _points.programming >= pp;
+  }
+
   getTeam() {
     return _team;
   }

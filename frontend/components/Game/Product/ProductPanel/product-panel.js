@@ -231,8 +231,8 @@ export default class ProductPanel extends Component {
     if (stageHelper.canShowChurnFeatures()) {
       const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
+        // <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
       churnFeatures = <div className="featureGroupDescriptionWrapper">
-        <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
         <div className="featureGroupBody">{marketing}</div>
       </div>
     }
@@ -248,6 +248,7 @@ export default class ProductPanel extends Component {
         <div className="featureGroupTitle">Работа с клиентами</div>
         <div>Наши клиенты: {market.clients}</div>
         <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
+        {churnFeatures}
       </div>
     }
 
@@ -329,6 +330,25 @@ export default class ProductPanel extends Component {
     )
   }
 
+  renderFeatureSupportCost(support) {
+    let money;
+    let mp;
+    let pp;
+
+    if (support.money) money = `${support.money}$ `;
+    if (support.marketing) mp = `${support.marketing}MP `;
+    if (support.programming) pp = `${support.programming}PP `;
+
+    // if (!money && !mp && !pp) money = JSON.stringify(support);
+
+    return <div>
+      {mp}
+      {pp}
+      {money}
+      {JSON.stringify(support)}
+    </div>
+  };
+
   renderFeature = (featureGroup, id, idea, hideOnComplete, onUpgraded) => (feature, i) => {
     const featureName = feature.name;
 
@@ -381,24 +401,38 @@ export default class ProductPanel extends Component {
     const mpColors = points.marketing < mp ? "noPoints": "enoughPoints";
     const ppColors = points.programming < pp ? "noPoints": "enoughPoints";
 
+    let support;
+    if (feature.support) {
+      support = (
+        <div>
+          <div>Стоимость поддержки</div>
+          <div>{this.renderFeatureSupportCost(feature.support)}</div>
+        </div>
+      )
+    }
+
     return (
       <div key={key}>
         {userOrientedFeatureName}
         <br />
-        <div className="featureDescription">{description}</div>
-        <div>
+        <div className="featureDescription">
+          <div>{description}</div>
+          <br />
           <div>
-            Стоимость улучшения - &nbsp;
-            {mp > 0 ? <span className={mpColors}>MP:{mp}&nbsp;</span> : ''}
-            {pp > 0 ? <span className={ppColors}>PP:{pp}</span> : ''}
+            <div>
+              Стоимость улучшения - &nbsp;
+              {mp > 0 ? <span className={mpColors}>{mp}MP&nbsp;</span> : ''}
+              {pp > 0 ? <span className={ppColors}>{pp}PP</span> : ''}
+            </div>
+            <div>{support}</div>
           </div>
+          <UI.Button
+            text="Улучшить"
+            disabled={!enoughPointsToUpgrade}
+            onClick={upgradeFeature}
+            secondary
+          />
         </div>
-        <UI.Button
-          text="Улучшить"
-          disabled={!enoughPointsToUpgrade}
-          onClick={upgradeFeature}
-          secondary
-        />
         {separator}
       </div>
     )

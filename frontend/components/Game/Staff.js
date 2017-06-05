@@ -35,9 +35,9 @@ export default class Staff extends Component {
   };
 
   componentWillMount() {
-    // this.getStaff();
+    this.getStaff();
     //
-    // store.addChangeListener(this.getStaff);
+    store.addChangeListener(this.getStaff);
   }
 
   setStaff = () => { this.setMode(IS_STAFF); };
@@ -74,7 +74,7 @@ export default class Staff extends Component {
   }
 
 
-  render({ staff, employees }, { switcher, teamToggle, employeeToggle }) {
+  render(props, { staff, employees, switcher, teamToggle, employeeToggle }) {
     if (!stageHelper.canShowTeamTabs()) return <div></div>;
 
     const staffList =        staff.map((p, i) => <Worker p={p} i={i} />);
@@ -151,10 +151,20 @@ export default class Staff extends Component {
         //     </li>
         //   </ul>
         // </nav>
+
+        // {staff.map((s, i) => <Worker p={s} i={i} />)}
+        // {tab}
+        //     <span className="link" onClick={this.setEmployees}>Нанять сотрудника</span>
     return (
       <div className="staff-table">
         <br />
-        {tab}
+        <div>
+          <div>
+            <h4 className="staff-switcher">Команда</h4>
+          </div>
+          <br />
+          {staffTab}
+        </div>
       </div>
     );
   }
