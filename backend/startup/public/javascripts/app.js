@@ -2702,10 +2702,6 @@
 	  value: true
 	});
 
-	var _stringify = __webpack_require__(98);
-
-	var _stringify2 = _interopRequireDefault(_stringify);
-
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -2744,17 +2740,17 @@
 
 	var _skills2 = _interopRequireDefault(_skills);
 
-	var _playerActions = __webpack_require__(117);
+	var _Worker = __webpack_require__(182);
 
-	var _playerActions2 = _interopRequireDefault(_playerActions);
+	var _Worker2 = _interopRequireDefault(_Worker);
+
+	var _Employee = __webpack_require__(184);
+
+	var _Employee2 = _interopRequireDefault(_Employee);
 
 	var _flux = __webpack_require__(133);
 
 	var _flux2 = _interopRequireDefault(_flux);
-
-	var _coloringRange = __webpack_require__(153);
-
-	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
 	var _stages = __webpack_require__(154);
 
@@ -2809,54 +2805,9 @@
 	        _this.setState(obj);
 	      };
 	    }, _this.renderPerson = function (p, i, isEmployee) {
-	      var specialization = _skills2.default.getTranslatedSpecialization(p);
-	      var work = _this.getWorkPhrase(p);
-
 	      var hireButton = '';
 
-	      var hire = function hire() {
-	        if (_stages2.default.isFirstWorkerMission()) {
-	          _stages2.default.onFirstWorkerMissionCompleted();
-	        }
-
-	        _playerActions2.default.hireWorker(p, p.id);
-	      };
-
-	      var reject = function reject() {
-	        _playerActions2.default.rejectEmployee(p.id);
-	      };
-	      var fire = function fire() {
-	        _playerActions2.default.fireWorker(p.id);
-	      };
-
-	      if (isEmployee) {
-	        hireButton = (0, _preact.h)(
-	          'div',
-	          { className: 'worker-button-container' },
-	          (0, _preact.h)(
-	            'span',
-	            { className: 'worker-button' },
-	            (0, _preact.h)(_UI2.default.Button, { onClick: hire, text: '\u041D\u0430\u043D\u044F\u0442\u044C', primary: true })
-	          ),
-	          !_stages2.default.isFirstWorkerMission() ? (0, _preact.h)(
-	            'span',
-	            { className: 'worker-button' },
-	            (0, _preact.h)(_UI2.default.Button, { onClick: reject, text: '\u041E\u0442\u043A\u043B\u043E\u043D\u0438\u0442\u044C' })
-	          ) : ''
-	        );
-	      } else {
-	        if (!p.isPlayer) {
-	          hireButton = (0, _preact.h)(
-	            'div',
-	            { className: 'worker-button-container' },
-	            (0, _preact.h)(
-	              'span',
-	              { className: 'worker-button' },
-	              (0, _preact.h)(_UI2.default.Button, { onClick: fire, text: '\u0423\u0432\u043E\u043B\u0438\u0442\u044C', link: true })
-	            )
-	          );
-	        }
-	      }
+	      if (isEmployee) {} else {}
 
 	      var key = isEmployee ? 'employee' : 'person';
 	      key += i;
@@ -2865,34 +2816,12 @@
 
 	      var name = p.isPlayer ? 'Вы' : p.name;
 
-	      return (0, _preact.h)(
-	        'tr',
-	        { className: 'worker-item', key: key },
-	        (0, _preact.h)(
-	          'td',
-	          null,
-	          name,
-	          ', ',
-	          specialization,
-	          '\xA0',
-	          _this.renderSkills(p)
-	        ),
-	        (0, _preact.h)(
-	          'td',
-	          null,
-	          work
-	        ),
-	        (0, _preact.h)(
-	          'td',
-	          null,
-	          salaryTab
-	        ),
-	        (0, _preact.h)(
-	          'td',
-	          null,
-	          hireButton
-	        )
-	      );
+	      return (0, _preact.h)(Person, {
+	        p: p,
+	        key: key,
+	        name: name,
+	        options: hireButton
+	      });
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
@@ -2939,49 +2868,8 @@
 	      return work;
 	    }
 	  }, {
-	    key: 'renderSkills',
-	    value: function renderSkills(p) {
-	      var renderSkill = function renderSkill(value) {
-	        // const value = Math.floor(skill / 100);
-	        return (0, _preact.h)(
-	          'span',
-	          { style: { color: _coloringRange2.default.standard(value, 10) } },
-	          value
-	        );
-	      };
-
-	      // return `- ${teamHelper.getBestSkill(p)}lvl`;
-	      return (0, _preact.h)(
-	        'span',
-	        null,
-	        '- ',
-	        renderSkill(_skills2.default.getBestSkill(p)),
-	        'lvl'
-	      );
-	      // return <span>({renderSkill(p.skills.programming)}/{renderSkill(p.skills.marketing)})</span>;
-	    }
-	  }, {
-	    key: 'getSalaryTab',
-	    value: function getSalaryTab(p) {
-	      switch (p.salary.pricingType) {
-	        case 0:
-	          return '\u0414\u043E\u043B\u044F \u0432 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0438: ' + p.salary.percent + '%';
-	          break;
-
-	        case 1:
-	          return '\u0417\u0430\u0440\u043F\u043B\u0430\u0442\u0430: ' + p.salary.money + '$';
-	          break;
-
-	        default:
-	          return (0, _stringify2.default)(p.salary);
-	          break;
-	      }
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render(_ref2, _ref3) {
-	      var _this2 = this;
-
 	      var staff = _ref2.staff,
 	          employees = _ref2.employees;
 	      var switcher = _ref3.switcher,
@@ -2991,10 +2879,10 @@
 	      if (!_stages2.default.canShowTeamTabs()) return (0, _preact.h)('div', null);
 
 	      var staffList = staff.map(function (p, i) {
-	        return _this2.renderPerson(p, i, false);
+	        return (0, _preact.h)(_Worker2.default, { p: p, i: i });
 	      });
 	      var employeeList = employees.map(function (p, i) {
-	        return _this2.renderPerson(p, i, true);
+	        return (0, _preact.h)(_Employee2.default, { p: p, i: i });
 	      });
 
 	      var staffVisible = staff.length && !teamToggle;
@@ -3034,21 +2922,6 @@
 	        );
 	      }
 
-	      var employeePhrase = void 0;
-	      // if (!employees.length) {
-	      //   employeePhrase = <h6>Никто не хочет присоединиться к нам :( Перемотайте время и у нас появятся варианты!</h6>
-	      // } else {
-	      //   employeePhrase = <h6>К нашей команде хотят присоединиться {employees.length} человек</h6>
-	      // }
-
-	      var teamPhrase = void 0;
-	      var staffLength = staff.length;
-	      // if (staffLength < 2) {
-	      //   // teamPhrase = 'Наймите маркетолога';
-	      // } else {
-	      //   teamPhrase = ''; // `В нашей команде ${staffLength} человек`;
-	      // }
-
 	      var tab = void 0;
 	      var amount = void 0;
 	      switch (switcher) {
@@ -3077,7 +2950,7 @@
 	          );
 	          break;
 	        case IS_STAFF:
-	          amount = staffLength ? '(' + staffLength + ')' : '';
+	          amount = staff.length ? '(' + staff.length + ')' : '';
 	          // <UI.Button text="Нанять сотрудника" link onClick={this.setEmployees} />
 	          tab = (0, _preact.h)(
 	            'div',
@@ -12914,6 +12787,367 @@
 	exports.default = {
 	  emit: emit
 	};
+
+/***/ },
+/* 182 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _Person = __webpack_require__(183);
+
+	var _Person2 = _interopRequireDefault(_Person);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Worker = function (_Component) {
+	  (0, _inherits3.default)(Worker, _Component);
+
+	  function Worker() {
+	    (0, _classCallCheck3.default)(this, Worker);
+	    return (0, _possibleConstructorReturn3.default)(this, (Worker.__proto__ || (0, _getPrototypeOf2.default)(Worker)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Worker, [{
+	    key: 'render',
+	    value: function render(_ref) {
+	      var p = _ref.p,
+	          i = _ref.i;
+
+	      var hireButton = void 0;
+
+	      if (!p.isPlayer) {
+	        hireButton = (0, _preact.h)(
+	          'div',
+	          { className: 'worker-button-container' },
+	          (0, _preact.h)(
+	            'span',
+	            { className: 'worker-button' },
+	            (0, _preact.h)(_UI2.default.Button, { onClick: function onClick() {
+	                _playerActions2.default.fireWorker(p.id);
+	              }, text: '\u0423\u0432\u043E\u043B\u0438\u0442\u044C', link: true })
+	          )
+	        );
+	      }
+
+	      return (0, _preact.h)(_Person2.default, {
+	        p: p,
+	        key: 'person' + i,
+	        name: p.isPlayer ? 'Вы' : p.name,
+	        options: hireButton
+	      });
+	    }
+	  }]);
+	  return Worker;
+	}(_preact.Component);
+
+	exports.default = Worker;
+
+/***/ },
+/* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _stringify = __webpack_require__(98);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _coloringRange = __webpack_require__(153);
+
+	var _coloringRange2 = _interopRequireDefault(_coloringRange);
+
+	var _skills = __webpack_require__(122);
+
+	var _skills2 = _interopRequireDefault(_skills);
+
+	var _job = __webpack_require__(101);
+
+	var JOB = _interopRequireWildcard(_job);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Person = function (_Component) {
+	  (0, _inherits3.default)(Person, _Component);
+
+	  function Person() {
+	    (0, _classCallCheck3.default)(this, Person);
+	    return (0, _possibleConstructorReturn3.default)(this, (Person.__proto__ || (0, _getPrototypeOf2.default)(Person)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Person, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'render',
+	    value: function render(_ref) {
+	      var p = _ref.p,
+	          key = _ref.key,
+	          name = _ref.name,
+	          options = _ref.options;
+
+
+	      var specialization = _skills2.default.getTranslatedSpecialization(p);
+	      var work = this.getWorkPhrase(p);
+	      var salaryTab = this.getSalaryTab(p);
+
+	      return (0, _preact.h)(
+	        'tr',
+	        { className: 'worker-item', key: key },
+	        (0, _preact.h)(
+	          'td',
+	          null,
+	          name,
+	          ', ',
+	          specialization,
+	          '\xA0',
+	          this.renderSkills(p)
+	        ),
+	        (0, _preact.h)(
+	          'td',
+	          null,
+	          work
+	        ),
+	        (0, _preact.h)(
+	          'td',
+	          null,
+	          salaryTab
+	        ),
+	        (0, _preact.h)(
+	          'td',
+	          null,
+	          options
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'renderSkills',
+	    value: function renderSkills(p) {
+	      var renderSkill = function renderSkill(value) {
+	        // const value = Math.floor(skill / 100);
+	        return (0, _preact.h)(
+	          'span',
+	          { style: { color: _coloringRange2.default.standard(value, 10) } },
+	          value
+	        );
+	      };
+
+	      // return `- ${teamHelper.getBestSkill(p)}lvl`;
+	      return (0, _preact.h)(
+	        'span',
+	        null,
+	        '- ',
+	        renderSkill(_skills2.default.getBestSkill(p)),
+	        'lvl'
+	      );
+	      // return <span>({renderSkill(p.skills.programming)}/{renderSkill(p.skills.marketing)})</span>;
+	    }
+	  }, {
+	    key: 'getSalaryTab',
+	    value: function getSalaryTab(p) {
+	      switch (p.salary.pricingType) {
+	        case 0:
+	          return '\u0414\u043E\u043B\u044F \u0432 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0438: ' + p.salary.percent + '%';
+	          break;
+
+	        case 1:
+	          return '\u0417\u0430\u0440\u043F\u043B\u0430\u0442\u0430: ' + p.salary.money + '$';
+	          break;
+
+	        default:
+	          return (0, _stringify2.default)(p.salary);
+	          break;
+	      }
+	    }
+	  }, {
+	    key: 'getWorkPhrase',
+	    value: function getWorkPhrase(p) {
+	      var work = '';
+	      var value = '';
+
+	      switch (p.task) {
+	        case JOB.JOB_TASK_MARKETING_POINTS:
+	          value = _skills2.default.getMarketingPointsProducedBy(p);
+	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ' + value + 'MP \u0432 \u043C\u0435\u0441\u044F\u0446';
+	          break;
+	        case JOB.JOB_TASK_PROGRAMMER_POINTS:
+	          value = _skills2.default.getProgrammingPointsProducedBy(p);
+	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ' + value + 'PP \u0432 \u043C\u0435\u0441\u044F\u0446';
+	          break;
+	      }
+
+	      return work;
+	    }
+	  }]);
+	  return Person;
+	}(_preact.Component);
+
+	exports.default = Person;
+
+/***/ },
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _Person = __webpack_require__(183);
+
+	var _Person2 = _interopRequireDefault(_Person);
+
+	var _stages = __webpack_require__(154);
+
+	var _stages2 = _interopRequireDefault(_stages);
+
+	var _UI = __webpack_require__(102);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	var _playerActions = __webpack_require__(117);
+
+	var _playerActions2 = _interopRequireDefault(_playerActions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Employee = function (_Component) {
+	  (0, _inherits3.default)(Employee, _Component);
+
+	  function Employee() {
+	    (0, _classCallCheck3.default)(this, Employee);
+	    return (0, _possibleConstructorReturn3.default)(this, (Employee.__proto__ || (0, _getPrototypeOf2.default)(Employee)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Employee, [{
+	    key: 'render',
+	    value: function render(_ref) {
+	      var p = _ref.p,
+	          i = _ref.i;
+
+	      var reject = function reject() {
+	        _playerActions2.default.rejectEmployee(p.id);
+	      };
+	      var hire = function hire() {
+	        if (_stages2.default.isFirstWorkerMission()) {
+	          _stages2.default.onFirstWorkerMissionCompleted();
+	        }
+
+	        _playerActions2.default.hireWorker(p, p.id);
+	      };
+
+	      var hireButton = (0, _preact.h)(
+	        'div',
+	        { className: 'worker-button-container' },
+	        (0, _preact.h)(
+	          'span',
+	          { className: 'worker-button' },
+	          (0, _preact.h)(_UI2.default.Button, { onClick: hire, text: '\u041D\u0430\u043D\u044F\u0442\u044C', primary: true })
+	        ),
+	        !_stages2.default.isFirstWorkerMission() ? (0, _preact.h)(
+	          'span',
+	          { className: 'worker-button' },
+	          (0, _preact.h)(_UI2.default.Button, { onClick: reject, text: '\u041E\u0442\u043A\u043B\u043E\u043D\u0438\u0442\u044C' })
+	        ) : ''
+	      );
+
+	      return (0, _preact.h)(_Person2.default, {
+	        p: p,
+	        key: 'employee' + i,
+	        name: p.name,
+	        options: hireButton
+	      });
+	    }
+	  }]);
+	  return Employee;
+	}(_preact.Component);
+
+	exports.default = Employee;
 
 /***/ }
 /******/ ]);

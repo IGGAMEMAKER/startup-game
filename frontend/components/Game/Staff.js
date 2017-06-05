@@ -7,12 +7,10 @@ import UI from '../UI';
 
 import teamHelper from '../../helpers/team/skills';
 
-import actions from '../../actions/player-actions';
+import Worker from './Team/Worker';
+import Employee from './Team/Employee';
+
 import flux from '../../flux';
-
-import coloringRange from '../../helpers/coloring-range';
-
-import skillHelper from '../../helpers/team/skills';
 
 import stageHelper from '../../helpers/stages';
 
@@ -81,83 +79,24 @@ export default class Staff extends Component {
 
     switch (p.task) {
       case JOB.JOB_TASK_MARKETING_POINTS:
-        value = skillHelper.getMarketingPointsProducedBy(p);
+        value = teamHelper.getMarketingPointsProducedBy(p);
         work = `Производительность: ${value}MP в месяц`;
         break;
       case JOB.JOB_TASK_PROGRAMMER_POINTS:
-        value = skillHelper.getProgrammingPointsProducedBy(p);
+        value = teamHelper.getProgrammingPointsProducedBy(p);
         work = `Производительность: ${value}PP в месяц`;
         break;
     }
     return work;
   };
 
-  renderSkills(p) {
-    const renderSkill = (value) => {
-      // const value = Math.floor(skill / 100);
-      return <span style={{ color: coloringRange.standard(value, 10) }}>{value}</span>
-    };
-
-    // return `- ${teamHelper.getBestSkill(p)}lvl`;
-    return <span>- {renderSkill(teamHelper.getBestSkill(p))}lvl</span>;
-    // return <span>({renderSkill(p.skills.programming)}/{renderSkill(p.skills.marketing)})</span>;
-  }
-
-  getSalaryTab(p) {
-    switch (p.salary.pricingType) {
-      case 0:
-        return `Доля в компании: ${p.salary.percent}%`;
-        break;
-
-      case 1:
-        return `Зарплата: ${p.salary.money}$`;
-        break;
-
-      default:
-        return JSON.stringify(p.salary);
-        break;
-    }
-  }
-
   renderPerson = (p, i, isEmployee) => {
-    const specialization = teamHelper.getTranslatedSpecialization(p);
-    const work = this.getWorkPhrase(p);
-
     let hireButton = '';
 
-    const hire = () => {
-      if (stageHelper.isFirstWorkerMission()) {
-        stageHelper.onFirstWorkerMissionCompleted();
-      }
-
-      actions.hireWorker(p, p.id);
-    };
-
-    const reject = () => { actions.rejectEmployee(p.id); };
-    const fire = () => { actions.fireWorker(p.id); };
-
-
     if (isEmployee) {
-      hireButton = (
-        <div className="worker-button-container">
-          <span className="worker-button"><UI.Button onClick={hire} text="Нанять" primary /></span>
-          {
-            !stageHelper.isFirstWorkerMission()
-            ?
-            <span className="worker-button"><UI.Button onClick={reject} text="Отклонить"/></span>
-            :
-            ''
-          }
-        </div>
-      );
+
     } else {
-      if (!p.isPlayer) {
-        hireButton = (
-          <div className="worker-button-container">
-            <span className="worker-button"><UI.Button onClick={fire} text="Уволить" link /></span>
-          </div>
-        );
-      }
+
     }
 
     let key = isEmployee ? 'employee' : 'person';
@@ -167,22 +106,19 @@ export default class Staff extends Component {
 
     const name = p.isPlayer ? 'Вы' : p.name;
 
-    return <tr className="worker-item" key={key}>
-      <td>
-        {name}, {specialization}&nbsp;
-        {this.renderSkills(p)}
-      </td>
-      <td>{work}</td>
-      <td>{salaryTab}</td>
-      <td>{hireButton}</td>
-    </tr>
+    return <Person
+      p={p}
+      key={key}
+      name={name}
+      options={hireButton}
+    />
   };
 
   render({ staff, employees }, { switcher, teamToggle, employeeToggle }) {
     if (!stageHelper.canShowTeamTabs()) return <div></div>;
 
-    const staffList =        staff.map((p, i) => this.renderPerson(p, i, false));
-    const employeeList = employees.map((p, i) => this.renderPerson(p, i, true));
+    const staffList =        staff.map((p, i) => <Worker p={p} i={i} />);
+    const employeeList = employees.map((p, i) => <Employee p={p} i={i} />);
 
     const staffVisible = staff.length && !teamToggle;
     let staffTab;
@@ -213,21 +149,6 @@ export default class Staff extends Component {
       )
     }
 
-    let employeePhrase;
-    // if (!employees.length) {
-    //   employeePhrase = <h6>Никто не хочет присоединиться к нам :( Перемотайте время и у нас появятся варианты!</h6>
-    // } else {
-    //   employeePhrase = <h6>К нашей команде хотят присоединиться {employees.length} человек</h6>
-    // }
-
-    let teamPhrase;
-    const staffLength = staff.length;
-    // if (staffLength < 2) {
-    //   // teamPhrase = 'Наймите маркетолога';
-    // } else {
-    //   teamPhrase = ''; // `В нашей команде ${staffLength} человек`;
-    // }
-
     let tab;
     let amount;
     switch (switcher) {
@@ -245,7 +166,7 @@ export default class Staff extends Component {
         );
         break;
       case IS_STAFF:
-        amount = staffLength ? `(${staffLength})` : '';
+        amount = staff.length ? `(${staff.length})` : '';
             // <UI.Button text="Нанять сотрудника" link onClick={this.setEmployees} />
         tab = (
           <div>

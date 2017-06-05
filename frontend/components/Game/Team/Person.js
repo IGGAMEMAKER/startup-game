@@ -1,10 +1,23 @@
 import { h, Component } from 'preact';
 
+import coloringRange from '../../../helpers/coloring-range';
+import teamHelper from '../../../helpers/team/skills';
+import * as JOB from '../../../constants/job';
 
 export default class Person extends Component {
   componentWillMount() {}
 
-  render({ }) {
+  render({
+    p,
+    key,
+    name,
+    options
+  }) {
+
+    const specialization = teamHelper.getTranslatedSpecialization(p);
+    const work = this.getWorkPhrase(p);
+    const salaryTab = this.getSalaryTab(p);
+
     return <tr className="worker-item" key={key}>
       <td>
         {name}, {specialization}&nbsp;
@@ -12,7 +25,7 @@ export default class Person extends Component {
       </td>
       <td>{work}</td>
       <td>{salaryTab}</td>
-      <td>{hireButton}</td>
+      <td>{options}</td>
     </tr>
   }
 
@@ -26,4 +39,38 @@ export default class Person extends Component {
     return <span>- {renderSkill(teamHelper.getBestSkill(p))}lvl</span>;
     // return <span>({renderSkill(p.skills.programming)}/{renderSkill(p.skills.marketing)})</span>;
   }
+
+  getSalaryTab(p) {
+    switch (p.salary.pricingType) {
+      case 0:
+        return `Доля в компании: ${p.salary.percent}%`;
+        break;
+
+      case 1:
+        return `Зарплата: ${p.salary.money}$`;
+        break;
+
+      default:
+        return JSON.stringify(p.salary);
+        break;
+    }
+  }
+
+  getWorkPhrase(p) {
+    let work = '';
+    let value = '';
+
+    switch (p.task) {
+      case JOB.JOB_TASK_MARKETING_POINTS:
+        value = teamHelper.getMarketingPointsProducedBy(p);
+        work = `Производительность: ${value}MP в месяц`;
+        break;
+      case JOB.JOB_TASK_PROGRAMMER_POINTS:
+        value = teamHelper.getProgrammingPointsProducedBy(p);
+        work = `Производительность: ${value}PP в месяц`;
+        break;
+    }
+
+    return work;
+  };
 }
