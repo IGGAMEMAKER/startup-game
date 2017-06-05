@@ -91,6 +91,9 @@ export default {
         mp: 0,
         pp: 70
       },
+      support: {
+        pp: 70
+      },
       segments: [
         {
           name: 'solo developer',

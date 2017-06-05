@@ -1,2 +1,3 @@
 export const TECHNICAL_DEBT_MODIFIER = 1.03;
 export const TECHNOLOGY_COST_MODIFIER = 1.045;
+export const SUPPORT_COST_MODIFIER = 0.25;

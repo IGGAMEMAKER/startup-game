@@ -73,46 +73,6 @@ export default class Staff extends Component {
     return motivation;
   }
 
-  getWorkPhrase(p) {
-    let work = '';
-    let value = '';
-
-    switch (p.task) {
-      case JOB.JOB_TASK_MARKETING_POINTS:
-        value = teamHelper.getMarketingPointsProducedBy(p);
-        work = `Производительность: ${value}MP в месяц`;
-        break;
-      case JOB.JOB_TASK_PROGRAMMER_POINTS:
-        value = teamHelper.getProgrammingPointsProducedBy(p);
-        work = `Производительность: ${value}PP в месяц`;
-        break;
-    }
-    return work;
-  };
-
-  renderPerson = (p, i, isEmployee) => {
-    let hireButton = '';
-
-    if (isEmployee) {
-
-    } else {
-
-    }
-
-    let key = isEmployee ? 'employee' : 'person';
-    key += i;
-
-    let salaryTab = this.getSalaryTab(p);
-
-    const name = p.isPlayer ? 'Вы' : p.name;
-
-    return <Person
-      p={p}
-      key={key}
-      name={name}
-      options={hireButton}
-    />
-  };
 
   render({ staff, employees }, { switcher, teamToggle, employeeToggle }) {
     if (!stageHelper.canShowTeamTabs()) return <div></div>;
@@ -141,9 +101,7 @@ export default class Staff extends Component {
       employeeTab = (
         <div>
           <table className="table table-striped">
-            <tbody>
-            {employeeList}
-            </tbody>
+            <tbody>{employeeList}</tbody>
           </table>
         </div>
       )

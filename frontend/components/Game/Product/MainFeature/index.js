@@ -21,6 +21,7 @@ export default class MainFeature extends Component {
     const featureList = defaults.features
       .map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
 
+    const support = flux.productStore.getProgrammingSupportCost(id);
     return (
       <div>
         <div className="featureGroupTitle">Разработка</div>
@@ -33,6 +34,7 @@ export default class MainFeature extends Component {
           <div>Доступно: {product.XP}XP</div>
           <div className="featureGroupBody">{featureList}</div>
         </div>
+        <div>Стоимость поддержки продукта: {support}PP в месяц</div>
         <Programmers />
       </div>
     );

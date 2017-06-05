@@ -548,13 +548,30 @@ class ProductStore extends EventEmitter {
     }
   }
 
+  getSupportCostModifier(i) {
+    return Math.pow(this.getImprovementsAmount(i), balance.SUPPORT_COST_MODIFIER);
+  }
+
+  getProgrammingSupportCost(i) {
+    return Math.floor(this.getDefaults(i).support.pp * this.getSupportCostModifier(i));
+  }
+
+  getMarketingSupportCost(i) {
+    logger.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
+
+    return 15;
+  }
 
   getMarketingFeatureList(idea) {
     return [
       { name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-        points: { marketing: 150, programming: 0 }, time: 2 },
+        points: { marketing: 150, programming: 0 }, time: 2,
+        support: { marketing: 50, programming: 0 }
+      },
       { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
-        points: { marketing: 50, programming: 100 }, time: 4 },
+        points: { marketing: 50, programming: 100 }, time: 4,
+        support: { money: 5000 }
+      },
       { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
         points: { marketing: 50, programming: 100 }, time: 10 },
 
@@ -585,7 +602,7 @@ class ProductStore extends EventEmitter {
       { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II',
         description: '+600XP/мес',
         points: { programming: 500, marketing: 0 }, bonus: 600
-      },
+      }
     ];
   };
 
@@ -857,9 +874,17 @@ class ProductStore extends EventEmitter {
     return betterCompetitors.length ? betterCompetitors[0] : null;
   }
 
+  getTestsAmount(id) {
+    return _products[id].tests || 1;
+  }
+
+  getImprovementsAmount(id) {
+    return _products[id].improvements || 1;
+  }
+
   getTechnologyComplexityModifier(id) {
-    const tests = _products[id].tests || 1;
-    const improvements = _products[id].improvements || 1;
+    const tests = this.getTestsAmount(id);
+    const improvements = this.getImprovementsAmount(id);
 
     logger.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 

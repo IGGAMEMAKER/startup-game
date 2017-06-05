@@ -2804,24 +2804,6 @@
 	        obj[name] = !_this.state[name];
 	        _this.setState(obj);
 	      };
-	    }, _this.renderPerson = function (p, i, isEmployee) {
-	      var hireButton = '';
-
-	      if (isEmployee) {} else {}
-
-	      var key = isEmployee ? 'employee' : 'person';
-	      key += i;
-
-	      var salaryTab = _this.getSalaryTab(p);
-
-	      var name = p.isPlayer ? 'Вы' : p.name;
-
-	      return (0, _preact.h)(Person, {
-	        p: p,
-	        key: key,
-	        name: name,
-	        options: hireButton
-	      });
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
@@ -2848,24 +2830,6 @@
 	      }
 
 	      return motivation;
-	    }
-	  }, {
-	    key: 'getWorkPhrase',
-	    value: function getWorkPhrase(p) {
-	      var work = '';
-	      var value = '';
-
-	      switch (p.task) {
-	        case JOB.JOB_TASK_MARKETING_POINTS:
-	          value = _skills2.default.getMarketingPointsProducedBy(p);
-	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ' + value + 'MP \u0432 \u043C\u0435\u0441\u044F\u0446';
-	          break;
-	        case JOB.JOB_TASK_PROGRAMMER_POINTS:
-	          value = _skills2.default.getProgrammingPointsProducedBy(p);
-	          work = '\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C: ' + value + 'PP \u0432 \u043C\u0435\u0441\u044F\u0446';
-	          break;
-	      }
-	      return work;
 	    }
 	  }, {
 	    key: 'render',
@@ -3021,7 +2985,7 @@
 /* 100 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -3031,7 +2995,9 @@
 	  debug: console.log,
 	  error: console.error,
 	  shit: function shit(text) {
-	    // console.log(`GOVNOKOD ${text}`);
+	    console.log('GOVNOKOD: ' + text);
+	    console.trace();
+	    console.log('-----------');
 	  },
 	  actions: function actions(sessionId, userId, action) {}
 
@@ -6967,11 +6933,32 @@
 	      };
 	    }
 	  }, {
+	    key: 'getSupportCostModifier',
+	    value: function getSupportCostModifier(i) {
+	      return Math.pow(this.getImprovementsAmount(i), balance.SUPPORT_COST_MODIFIER);
+	    }
+	  }, {
+	    key: 'getProgrammingSupportCost',
+	    value: function getProgrammingSupportCost(i) {
+	      return Math.floor(this.getDefaults(i).support.pp * this.getSupportCostModifier(i));
+	    }
+	  }, {
+	    key: 'getMarketingSupportCost',
+	    value: function getMarketingSupportCost(i) {
+	      _logger2.default.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
+
+	      return 15;
+	    }
+	  }, {
 	    key: 'getMarketingFeatureList',
 	    value: function getMarketingFeatureList(idea) {
 	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
-	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
+	        points: { marketing: 150, programming: 0 }, time: 2,
+	        support: { marketing: 50, programming: 0 }
+	      }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 }, time: 4,
+	        support: { money: 5000 }
+	      }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
 	        points: { marketing: 50, programming: 100 }, time: 10 }];
 	      // ].map(computeFeatureCost(cost));
 	    }
@@ -7297,10 +7284,20 @@
 	      return betterCompetitors.length ? betterCompetitors[0] : null;
 	    }
 	  }, {
+	    key: 'getTestsAmount',
+	    value: function getTestsAmount(id) {
+	      return _products[id].tests || 1;
+	    }
+	  }, {
+	    key: 'getImprovementsAmount',
+	    value: function getImprovementsAmount(id) {
+	      return _products[id].improvements || 1;
+	    }
+	  }, {
 	    key: 'getTechnologyComplexityModifier',
 	    value: function getTechnologyComplexityModifier(id) {
-	      var tests = _products[id].tests || 1;
-	      var improvements = _products[id].improvements || 1;
+	      var tests = this.getTestsAmount(id);
+	      var improvements = this.getImprovementsAmount(id);
 
 	      _logger2.default.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
@@ -7713,6 +7710,9 @@
 	        mp: 0,
 	        pp: 70
 	      },
+	      support: {
+	        pp: 70
+	      },
 	      segments: [{
 	        name: 'solo developer',
 	        userOrientedName: 'Программисты',
@@ -7897,6 +7897,7 @@
 	});
 	var TECHNICAL_DEBT_MODIFIER = exports.TECHNICAL_DEBT_MODIFIER = 1.03;
 	var TECHNOLOGY_COST_MODIFIER = exports.TECHNOLOGY_COST_MODIFIER = 1.045;
+	var SUPPORT_COST_MODIFIER = exports.SUPPORT_COST_MODIFIER = 0.25;
 
 /***/ },
 /* 151 */
@@ -10365,6 +10366,14 @@
 
 	var _Staff2 = _interopRequireDefault(_Staff);
 
+	var _Employee = __webpack_require__(184);
+
+	var _Employee2 = _interopRequireDefault(_Employee);
+
+	var _Worker = __webpack_require__(182);
+
+	var _Worker2 = _interopRequireDefault(_Worker);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Marketers = function (_Component) {
@@ -10407,6 +10416,13 @@
 	          employees = _ref2.employees,
 	          points = _ref2.points;
 
+	      var title = void 0;
+	      if (employees.length) {
+	        title = 'Нанять маркетолога';
+	      } else {
+	        title = 'Никто не хочет к нам в команду. Не расстраивайтесь! Со временем появятся новые кандидаты';
+	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -10417,8 +10433,24 @@
 	          points,
 	          ' \u043C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433\u043E\u0432\u044B\u0445 \u043E\u0447\u043A\u043E\u0432 (MP) \u0432 \u043C\u0435\u0441\u044F\u0446'
 	        ),
-	        (0, _preact.h)(_Staff2.default, { staff: staff, employees: employees })
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          title
+	        ),
+	        (0, _preact.h)(
+	          'table',
+	          { className: 'table table-stripped' },
+	          (0, _preact.h)(
+	            'tbody',
+	            null,
+	            employees.map(function (e, i) {
+	              return (0, _preact.h)(_Employee2.default, { p: e, i: i });
+	            })
+	          )
+	        )
 	      );
+	      // <Staff staff={staff} employees={employees} />
 	    }
 	  }]);
 	  return Marketers;
@@ -10466,6 +10498,10 @@
 
 	var _Staff2 = _interopRequireDefault(_Staff);
 
+	var _Employee = __webpack_require__(184);
+
+	var _Employee2 = _interopRequireDefault(_Employee);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Programmers = function (_Component) {
@@ -10508,6 +10544,13 @@
 	          employees = _ref2.employees,
 	          points = _ref2.points;
 
+	      var title = void 0;
+	      if (employees.length) {
+	        title = 'Нанять программиста';
+	      } else {
+	        title = 'Никто не хочет к нам в команду. Не расстраивайтесь! Со временем появятся новые кандидаты';
+	      }
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -10518,7 +10561,22 @@
 	          points,
 	          ' \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u0441\u043A\u0438\u0445 \u043E\u0447\u043A\u043E\u0432 (PP) \u0432 \u043C\u0435\u0441\u044F\u0446'
 	        ),
-	        (0, _preact.h)(_Staff2.default, { staff: staff, employees: employees })
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          title
+	        ),
+	        (0, _preact.h)(
+	          'table',
+	          { className: 'table table-stripped' },
+	          (0, _preact.h)(
+	            'tbody',
+	            null,
+	            employees.map(function (e, i) {
+	              return (0, _preact.h)(_Employee2.default, { p: e, i: i });
+	            })
+	          )
+	        )
 	      );
 	    }
 	  }]);
@@ -11533,6 +11591,7 @@
 
 	      var featureList = defaults.features.map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
 
+	      var support = _flux2.default.productStore.getProgrammingSupportCost(id);
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -11562,6 +11621,13 @@
 	            { className: 'featureGroupBody' },
 	            featureList
 	          )
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
+	          support,
+	          'PP \u0432 \u043C\u0435\u0441\u044F\u0446'
 	        ),
 	        (0, _preact.h)(_Programmers2.default, null)
 	      );
@@ -12624,8 +12690,16 @@
 	      return p + c;
 	    }) : 0;
 
-	    _logger2.default.log('increase points', programmingPoints, marketingPoints);
+	    var programmingSupportPoints = _productStore2.default.getProgrammingSupportCost(0);
+	    var marketingSupportPoints = _productStore2.default.getMarketingSupportCost(0);
+	    _logger2.default.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js');
+
+	    _logger2.default.log('increase points game.js', programmingPoints, marketingPoints);
+	    _logger2.default.log('decrease points game.js', programmingSupportPoints, marketingSupportPoints);
 	    _logger2.default.shit('compute penalties and bonuses for point production');
+
+	    programmingPoints -= programmingSupportPoints;
+	    marketingPoints -= marketingSupportPoints;
 
 	    var points = {
 	      programming: programmingPoints,

@@ -110,8 +110,17 @@ const run = () => {
       :
       0;
 
-    logger.log('increase points', programmingPoints, marketingPoints);
+    const programmingSupportPoints = productStore.getProgrammingSupportCost(0);
+    const marketingSupportPoints = productStore.getMarketingSupportCost(0);
+    logger.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js')
+
+
+    logger.log('increase points game.js', programmingPoints, marketingPoints);
+    logger.log('decrease points game.js', programmingSupportPoints, marketingSupportPoints);
     logger.shit('compute penalties and bonuses for point production');
+
+    programmingPoints -= programmingSupportPoints;
+    marketingPoints -= marketingSupportPoints;
 
     const points = {
       programming: programmingPoints,

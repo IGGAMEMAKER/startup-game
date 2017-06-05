@@ -2,6 +2,8 @@ import { h, Component } from 'preact';
 import store from '../../../stores/player-store';
 
 import Staff from '../Staff';
+import Employee from '../Team/Employee';
+import Worker from '../Team/Worker';
 
 export default class Marketers extends Component {
   state = {
@@ -24,11 +26,23 @@ export default class Marketers extends Component {
   };
 
   render(props: PropsType, { staff, employees, points }) {
+    let title;
+    if (employees.length) {
+      title = 'Нанять маркетолога';
+    } else {
+      title = 'Никто не хочет к нам в команду. Не расстраивайтесь! Со временем появятся новые кандидаты';
+    }
+
     return (
       <div>
         <div>Наши маркетологи производят +{points} маркетинговых очков (MP) в месяц</div>
-        <Staff staff={staff} employees={employees} />
+        <div>{title}</div>
+
+        <table className="table table-stripped">
+          <tbody>{employees.map((e, i) => <Employee p={e} i={i} />)}</tbody>
+        </table>
       </div>
-    )
+    );
+        // <Staff staff={staff} employees={employees} />
   }
 }
