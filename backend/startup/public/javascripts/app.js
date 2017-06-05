@@ -9476,10 +9476,6 @@
 	  value: true
 	});
 
-	var _stringify = __webpack_require__(98);
-
-	var _stringify2 = _interopRequireDefault(_stringify);
-
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -9940,20 +9936,7 @@
 
 	        var support = void 0;
 	        if (feature.support) {
-	          support = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              _this.renderFeatureSupportCost(feature.support)
-	            )
-	          );
+	          support = _this.renderFeatureSupportCost(feature.support);
 	        }
 
 	        return (0, _preact.h)(
@@ -10218,19 +10201,23 @@
 	      var mp = void 0;
 	      var pp = void 0;
 
-	      if (support.money) money = support.money + '$ ';
-	      if (support.marketing) mp = support.marketing + 'MP ';
-	      if (support.programming) pp = support.programming + 'PP ';
+	      if (support.money) money = support.money + '$/\u043C\u0435\u0441 ';
+	      if (support.marketing) mp = support.marketing + 'MP/\u043C\u0435\u0441 ';
+	      if (support.programming) pp = support.programming + 'PP/\u043C\u0435\u0441 ';
 
-	      // if (!money && !mp && !pp) money = JSON.stringify(support);
+	      if (!money && !mp && !pp) {
+	        return (0, _preact.h)('div', null);
+	      }
 
 	      return (0, _preact.h)(
 	        'div',
 	        null,
+	        '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438: ',
 	        mp,
+	        ' ',
 	        pp,
-	        money,
-	        (0, _stringify2.default)(support)
+	        ' ',
+	        money
 	      );
 	    }
 	  }, {

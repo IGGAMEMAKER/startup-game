@@ -335,17 +335,16 @@ export default class ProductPanel extends Component {
     let mp;
     let pp;
 
-    if (support.money) money = `${support.money}$ `;
-    if (support.marketing) mp = `${support.marketing}MP `;
-    if (support.programming) pp = `${support.programming}PP `;
+    if (support.money) money = `${support.money}$/мес `;
+    if (support.marketing) mp = `${support.marketing}MP/мес `;
+    if (support.programming) pp = `${support.programming}PP/мес `;
 
-    // if (!money && !mp && !pp) money = JSON.stringify(support);
+    if (!money && !mp && !pp) {
+      return <div></div>;
+    }
 
     return <div>
-      {mp}
-      {pp}
-      {money}
-      {JSON.stringify(support)}
+        Стоимость поддержки: {mp} {pp} {money}
     </div>
   };
 
@@ -403,12 +402,7 @@ export default class ProductPanel extends Component {
 
     let support;
     if (feature.support) {
-      support = (
-        <div>
-          <div>Стоимость поддержки</div>
-          <div>{this.renderFeatureSupportCost(feature.support)}</div>
-        </div>
-      )
+      support = this.renderFeatureSupportCost(feature.support);
     }
 
     return (
