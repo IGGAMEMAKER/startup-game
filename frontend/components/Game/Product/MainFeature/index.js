@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 
-import ProductDescriptions from '../../../../helpers/products/product-descriptions';
 import flux from '../../../../flux';
 import UI from '../../../UI';
 
@@ -11,42 +10,49 @@ import round from '../../../../helpers/math/round';
 
 import stageHelper from '../../../../helpers/stages';
 
-type PropsType = {};
-
-type StateType = {};
-
-type ResponseType = {};
-
 export default class MainFeature extends Component {
-  getSpecificProductFeatureListByIdea = idea => {
-    return ProductDescriptions(idea).features;
-  };
+  render({ id }, state) {
+    if (!stageHelper.canShowMainFeatureTab()) return '';
+
+    const product = flux.productStore.getProduct(id);
+    const availableSegments = flux.productStore.getAvailableSegments(id);
+    const defaults = flux.productStore.getDefaults(id);
+
+    const featureList = defaults.features
+      .map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
+
+    return (
+      <div>
+        <div className="featureGroupTitle">Разработка</div>
+        <div className="featureGroupDescriptionWrapper">
+          <div className="featureGroupDescription">
+            Улучшая главные характеристики продукта, вы повышаете его рейтинг,
+            что приводит к снижению оттока клиентов и увеличению доходов с продукта
+          </div>
+          <br />
+          <div>Доступно: {product.XP}XP</div>
+          <div className="featureGroupBody">{featureList}</div>
+        </div>
+        <Programmers />
+      </div>
+    );
+  }
 
   renderMainFeature = (featureGroup, product, id, segments, defaults) => (defaultFeature, i) => {
     const featureName = defaultFeature.name;
     const { time, shortDescription } = defaultFeature;
 
-    const feature = product.features[featureGroup][featureName];
+    const feature = product.features[featureGroup][i];
 
     const current = feature || 0;
     const max = defaultFeature.data;
 
 
-    const key = `feature${featureGroup}${featureName}${i}`;
-
-    const hypothesis = [{
-      points: { mp: 100, pp: 200 },
-      data: 4000,
-      baseChance: 0.1
-    }];
-
     const description = defaultFeature.description || '';
     const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
+    const key = `feature${featureGroup}${featureName}${i}`;
 
-    let hypothesisList = '   Улучшено';
-    if (current < max) {
-      hypothesisList = hypothesis.map(this.renderHypothesisItem(id, featureName, time, current, max, product));
-    } else {
+    if (current >= max) {
       return (
         <div key={key}>
           {userOrientedFeatureName} (Улучшено) {UI.symbols.ok}
@@ -56,6 +62,15 @@ export default class MainFeature extends Component {
         </div>
       )
     }
+
+    const hypothesis = [{
+      points: { mp: 100, pp: 200 },
+      data: 4000,
+      baseChance: 0.1
+    }];
+
+    const hypothesisList = hypothesis
+      .map(this.renderHypothesisItem(id, i, time, current, max, product));
 
     let openedInfluence = false;
     const segmentRatingImprovementList = segments
@@ -71,21 +86,12 @@ export default class MainFeature extends Component {
         return <li>Рейтинг у группы "{s.userOrientedName}" повысится на {normalisedRatingDelta}</li>;
       });
 
-    // if (!openedInfluence) return '';
-
-    // display: inline-block;
-    // margin-left: 10px;
-
     const data = [
-      { value: current },
+      { value: current }
     ];
 
     if (product.XP >= 1000) {
       data.push({ value: 1000, style: 'bg-success' })
-    }
-
-    if (product.XP >= 2000) {
-      data.push({ value: 1000, style: 'bg-danger' })
     }
 
     return <div key={key}>
@@ -104,7 +110,7 @@ export default class MainFeature extends Component {
     </div>
   };
 
-  renderHypothesisItem = (id, featureName, time, current, max, product) => (hypothesis, i) => {
+  renderHypothesisItem = (id, featureId, time, current, max, product) => (hypothesis, i) => {
     const necessaryPoints = hypothesis.points;
     const key = `hypothesis${i}`;
 
@@ -112,7 +118,7 @@ export default class MainFeature extends Component {
 
     const action = () => {
       // flux.playerActions.spendPoints(pp, mp);
-      flux.productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
+      flux.productActions.improveFeature(id, 'offer', featureId, hypothesis, max, 1000);
 
       if (stageHelper.isFirstFeatureMission()) {
         stageHelper.onFirstFeatureUpgradeMissionCompleted()
@@ -145,32 +151,4 @@ export default class MainFeature extends Component {
       </div>
     )
   };
-
-  render({ id }, state: StateType) {
-    if (!stageHelper.canShowMainFeatureTab()) return '';
-
-    const product = flux.productStore.getProduct(id);
-    const availableSegments = flux.productStore.getAvailableSegments(id);
-    const defaults = flux.productStore.getDefaults(id);
-
-    const featureList = this
-      .getSpecificProductFeatureListByIdea(product.idea)
-      .map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
-
-    return (
-      <div>
-        <div className="featureGroupTitle">Разработка</div>
-        <div className="featureGroupDescriptionWrapper">
-          <div className="featureGroupDescription">
-            Улучшая главные характеристики продукта, вы повышаете его рейтинг,
-            что приводит к снижению оттока клиентов и увеличению доходов с продукта
-          </div>
-          <br />
-          <div>Доступно: {product.XP}XP</div>
-          <div className="featureGroupBody">{featureList}</div>
-        </div>
-        <Programmers />
-      </div>
-    );
-  }
 }

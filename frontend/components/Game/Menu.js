@@ -145,13 +145,13 @@ export default class Menu extends Component {
       )
     }
 
-        // <div>
-        //   <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
-        //   <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда {employeePhrase}</div>
-        // </div>
     return (
       <div>
         {upperTab}
+        <div>
+          <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
+          <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда {employeePhrase}</div>
+        </div>
       </div>
     );
   }

@@ -20,14 +20,6 @@ import productStore from '../../../../stores/product-store';
 import playerStore from '../../../../stores/player-store';
 import playerActions from '../../../../actions/player-actions';
 
-import computeFeatureCost from '../../../../helpers/products/feature-price';
-
-import scheduleActions from '../../../../actions/schedule-actions';
-
-import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../../../../constants/work-speed';
-
-import c from '../../../../constants';
-
 import logger from '../../../../helpers/logger/logger';
 
 import AdsPanel from '../Ads/advert-planner-panel';
@@ -63,21 +55,6 @@ export default class ProductPanel extends Component {
 
   componentWillMount() {}
 
-  getMarketingFeatureList(idea) {
-    return [
-      { name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-        points: { marketing: 150, programming: 0 }, time: 2 },
-      { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
-        points: { marketing: 50, programming: 100 }, time: 4 },
-      { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
-        points: { marketing: 50, programming: 100 }, time: 10 },
-
-      // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
-      //   points: { marketing: 50, programming: 100 }, time: 7 }
-    ];
-    // ].map(computeFeatureCost(cost));
-  };
-
   getDevelopmentFeatureList(idea) {
     return [
       { name: 'backups', description: ''},
@@ -88,111 +65,10 @@ export default class ProductPanel extends Component {
     // ].map(computeFeatureCost(cost));
   };
 
-  getFeedbackButton(idea, id) {
-    return (
-      <div className="offset-mid">
-        {this.renderFeature('analytics', id, idea, true, stageHelper.onInstallPrimitiveAnalyticsMissionCompleted)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)}
-      </div>
-    );
-  }
-
-  getWebvisorButton(idea, id) {
-    return (
-      <div className="offset-mid">
-        {this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)}
-      </div>
-    );
-  }
-
-  getSegmentingButton(idea, id) {
-    return (
-      <div className="offset-mid">
-        {this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)}
-      </div>
-    );
-  }
-
-  getHypothesisAnalyticsFeatures(idea) {
-    return [
-      { name: 'feedback', shortDescription: 'Форма для комментариев', description: '', // 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез',
-        points: { programming: 50, marketing: 0 }
-      },
-      { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
-        points: { programming: 150, marketing: 0 }
-      },
-      { name: 'AB', shortDescription: 'A/B тестирование', description: 'Позволяет тестировать несколько вариантов проекта. +1000XP/мес', // 'Повышает шансы при проверке гипотез',
-        points: { programming: 175, marketing: 0 }
-      },
-      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
-        points: { programming: 250, marketing: 0 }
-      },
-      { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II', description: '', // 'Повышает шансы при проверке гипотез',
-        points: { programming: 500, marketing: 0 }
-      },
-    ];
+  setMode = (mode) => {
+    this.setState({ mode });
   };
 
-  getAnalyticFeatures(idea) {
-    return [
-      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
-      //   points: { programming: 50, marketing: 0 }
-      // },
-      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
-      //   points: { programming: 50, marketing: 0 }
-      // },
-      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
-      //   points: { programming: 150, marketing: 100 }
-      // },
-
-      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-      //   points: { programming: 50, marketing: 0 }
-      // },
-      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
-        points: { programming: 50, marketing: 0 }
-      }
-    ];
-    // ].map(computeFeatureCost(cost));
-  };
-
-  getPaymentFeatures(id, idea) {
-    const technicalDebtModifier = productStore.getTechnicalDebtModifier(id);
-    const up = Math.ceil;
-
-    return [
-      { name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
-        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
-      },
-      { name: 'basicPricing', shortDescription: 'Единый тарифный план I', description: 'Единая цена для всех клиентов',
-        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
-      },
-      { name: 'basicPricing2', shortDescription: 'Единый тарифный план II', description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
-        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
-      },
-      { name: 'basicPricing3', shortDescription: 'Единый тарифный план III', description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
-        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
-      },
-      { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
-        points: { programming: up(250 * technicalDebtModifier), marketing: 0 }
-      },
-      { name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
-        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
-      },
-      { name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III', description: 'Грести деньги лопатами!',
-        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
-      }
-    ];
-  };
-
-
-  getTechnicalDebtDescription(debt) {
-    if (debt < 10) {
-      return `Всё хорошо`;
-    } else if (debt < 50) {
-      return `Программисты начинают плакать`;
-    } else {
-      return `Ты мразь и п**ор, программисты ненавидят тебя!! Отрефакторь этот шлак!`;
-    }
-  };
 
   haveEnoughPointsToUpgrade = necessaryPoints => {
     const points = playerStore.getPoints();
@@ -205,117 +81,27 @@ export default class ProductPanel extends Component {
   renderHypothesisTab = (id, idea) => {
     if (!stageHelper.canShowHypothesisTab()) return '';
 
-    const done = UI.symbols.ok;
-    const cancel = UI.symbols.dot;
-
     const improvements = productStore.getImprovementChances(id);
-    const webvisorStatus = improvements.hasWebvisor ? done : `${cancel} Не`;
-    const segmentingStatus = improvements.hasSegmenting ? done : `${cancel} Не`;
-    const feedbackStatus = improvements.hasFeedback ? done : `${cancel} Не`;
 
-
-    const clientSizePenalty = (1 - improvements.clientModifier.modifier);
-
-    const exp = (bonus) => Math.ceil(bonus * clientSizePenalty * 2);
-
-
-    // let improveTab;
-    let improveTab = this.plainifySameTypeFeatures(id, idea, 'analytics', 'Блок аналитики полностью улучшен!');
-    // if (!improvements.hasFeedback) {
-    //   improveTab = (
-    //     <div>
-    //       <div>{feedbackStatus} Установлена форма комментариев (+{exp(improvements.feedbackBonus)}XP)</div>
-    //       {this.getFeedbackButton(idea, id)}
-    //     </div>
-    //   )
-    // } else if (!improvements.hasWebvisor) {
-    //   improveTab = (
-    //     <div>
-    //       <div>{webvisorStatus} Установлен вебвизор (+{exp(improvements.webvisorBonus)}XP)</div>
-    //       {this.getWebvisorButton(idea, id)}
-    //     </div>
-    //   )
-    // } else if (!improvements.hasSegmenting) {
-    //   improveTab = (
-    //     <div>
-    //       <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{exp(improvements.segmentingBonus)}XP)</div>
-    //       {this.getSegmentingButton(idea, id)}
-    //     </div>
-    //   )
-    // } else {
-    //   improveTab = (
-    //     <div>Сегмент аналитики полностью улучшен</div>
-    //   )
-    // }
+    const improveTab = this.plainifySameTypeFeatures(id, idea, 'analytics', 'Блок аналитики полностью улучшен!');
 
     const hypothesisPoints = productStore.getHypothesisPoints(id);
 
-    const { pp, mp } = hypothesisPoints;
-
-    const notEnoughPPs = !this.haveEnoughPointsToUpgrade(hypothesisPoints);
-    // const ratingOverflow = current >= max;
-    // const currentXP = productStore.getXP(id);
-
-    const disabled = notEnoughPPs;// || ratingOverflow;
-
-    const testHypothesis = () => {
-      const time = 30;
-      const key = 'Тестирование гипотезы';
-
-      playerActions.spendPoints(pp, mp);
-      scheduleActions.addTask(time, false, WORK_SPEED_NORMAL, key, () => {
-        productActions.testHypothesis(id, {}, 0);
-      });
-    };
-
-    const possibleXPtext = <div>Каждый месяц вы получаете {improvements.middle} XP</div>;
-      // (штраф -{clientSizePenalty}%)</div>;
-
-
-    // <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
-    // {this.getFeedbackButton(idea, id)}
-    // <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
-    // {this.getWebvisorButton(idea, id)}
-    // <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
-    // {this.getSegmentingButton(idea, id)}
-
-
-    // <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
-
-
-    // <br />
-    // <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
-
-            // <UI.Info />
-          // <div className="smallText">
-          //   Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
-          // </div>
 
     let errorDescription = '';
-    if (disabled) {
+    if (!this.haveEnoughPointsToUpgrade(hypothesisPoints)) {
       errorDescription = 'У вас не хватает MP или PP. ' +
         'Возможно вам стоит нанять больше сотрудников или подождать до следующего месяца';
     }
 
-
-    // <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
-    // <div>{errorDescription}</div>
-    // <UI.Button
-    //   text="Запустить исследование"
-    //   onClick={testHypothesis}
-    //   disabled={disabled}
-    //   primary
-    // />
-    // <br />
-    // <Schedule />
-
-          // <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
     return (
       <div>
         <div className="featureGroupTitle">Аналитика</div>
         <div className="featureGroupDescription">
-          <div className="smallText">Тестирование гипотез даёт возможность лучше узнать о потребностях ваших клиентов.</div>
-          <div className="smallText">{possibleXPtext}</div>
+          <div className="smallText">Аналитика даёт возможность лучше узнать о потребностях ваших клиентов.</div>
+          <div className="smallText">
+            <div>Каждый месяц вы получаете {improvements.middle} XP</div>
+          </div>
         </div>
         <br />
         <div>{improveTab}</div>
@@ -330,15 +116,15 @@ export default class ProductPanel extends Component {
 
     switch (groupType) {
       case 'marketing':
-        featureList = this.getMarketingFeatureList(idea);
+        featureList = productStore.getMarketingFeatureList(idea);
         break;
 
       case 'payment':
-        featureList = this.getPaymentFeatures(id, idea);
+        featureList = productStore.getPaymentFeatures(id, idea);
         break;
 
       case 'analytics':
-        featureList = this.getHypothesisAnalyticsFeatures(idea);
+        featureList = productStore.getHypothesisAnalyticsFeatures(idea);
         break;
     }
 
@@ -379,7 +165,7 @@ export default class ProductPanel extends Component {
   };
 
   renderAnalyticsTab = (id, idea) => {
-    const analytics = this
+    const analytics = productStore
       .getAnalyticFeatures(idea)
       .map(this.renderFeature('analytics', id, idea));
 
@@ -500,6 +286,7 @@ export default class ProductPanel extends Component {
           <b>Развитие продукта "{product.name}"</b>
           <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
         </div>
+        <br />
         <b>Основные показатели продукта</b>
         <Metrics
           product={product}
@@ -617,9 +404,6 @@ export default class ProductPanel extends Component {
     )
   };
 
-  setMode = (mode) => {
-    this.setState({ mode });
-  };
 
   renderNavbar = (mode, name) => {
     return (

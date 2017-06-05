@@ -19,6 +19,15 @@ export default {
       max
     })
   },
+  improveMainFeature(id, featureId, max, XP) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE,
+      id,
+      featureId,
+      value: XP || 1000,
+      max
+    })
+  },
   buyCompany(buyerId, sellerId) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_COMPANY_BUY,

@@ -130,8 +130,7 @@ class ProductStore extends EventEmitter {
   }
 
   getMainFeatureQualityByFeatureId(i, featureId) {
-    const feature = this.getDefaults(i).features[featureId];
-    const value = _products[i].features.offer[feature.name] || 0;
+    const value = _products[i].features.offer[featureId];
 
     return value; // round(value / feature.data);
   }
@@ -379,7 +378,7 @@ class ProductStore extends EventEmitter {
     // good 1-5
     const churn = ratingModifier * (1 - k * marketingModifier) / 100;
 
-    logger.log('product-store.js getChurnRate', churn);
+    // logger.debug('product-store.js getChurnRate', churn);
 
     return {
       raw: churn,
@@ -517,22 +516,22 @@ class ProductStore extends EventEmitter {
     let index;
 
     if (clients > CLIENTS_LOT) {
-      factor = 1;
+      factor = 4;
       clientMax = CLIENTS_LOT;
       clientMin = CLIENTS_LOT;
       index = 0;
     } else if (clients > CLIENTS_MID) {
-      factor = 0.9;
+      factor = 3;
       clientMax = CLIENTS_LOT;
       clientMin = CLIENTS_MID;
       index = 1;
     } else if (clients > CLIENTS_LOW) {
-      factor = 0.8;
+      factor = 2.5;
       clientMax = CLIENTS_MID;
       clientMin = CLIENTS_LOW;
       index = 2;
     } else {
-      factor = 0.3;
+      factor = 1;
       clientMax = CLIENTS_LOW;
       clientMin = 0;
       index = 3;
@@ -549,8 +548,113 @@ class ProductStore extends EventEmitter {
     }
   }
 
+
+  getMarketingFeatureList(idea) {
+    return [
+      { name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+        points: { marketing: 150, programming: 0 }, time: 2 },
+      { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
+        points: { marketing: 50, programming: 100 }, time: 4 },
+      { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
+        points: { marketing: 50, programming: 100 }, time: 10 },
+
+      // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
+      //   points: { marketing: 50, programming: 100 }, time: 7 }
+    ];
+    // ].map(computeFeatureCost(cost));
+  };
+
+  getHypothesisAnalyticsFeatures(idea) {
+    return [
+      { name: 'feedback', shortDescription: 'Форма для комментариев',
+        description: 'Общение с вашими клиентами позволяет улучшить ваш продукт. +300XP/мес',
+        points: { programming: 50, marketing: 0 }, bonus: 300
+      },
+      { name: 'webvisor', shortDescription: 'Вебвизор',
+        description: 'Позволяет просматривать действия пользователей. +200XP/мес',
+        points: { programming: 150, marketing: 0 }, bonus: 200
+      },
+      { name: 'AB', shortDescription: 'A/B тестирование',
+        description: 'Позволяет тестировать несколько вариантов проекта. +400XP/мес',
+        points: { programming: 175, marketing: 0 }, bonus: 400
+      },
+      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей',
+        description: '+500XP/мес',
+        points: { programming: 250, marketing: 0 }, bonus: 500
+      },
+      { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II',
+        description: '+600XP/мес',
+        points: { programming: 500, marketing: 0 }, bonus: 600
+      },
+    ];
+  };
+
+  getAnalyticFeatures(idea) {
+    return [
+      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
+      //   points: { programming: 50, marketing: 0 }
+      // },
+      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
+      //   points: { programming: 50, marketing: 0 }
+      // },
+      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+      //   points: { programming: 150, marketing: 100 }
+      // },
+
+      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
+      //   points: { programming: 50, marketing: 0 }
+      // },
+      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
+        points: { programming: 50, marketing: 0 }
+      }
+    ];
+    // ].map(computeFeatureCost(cost));
+  };
+
+  getPaymentFeatures(id, idea) {
+    const technicalDebtModifier = this.getTechnicalDebtModifier(id);
+    const up = points => Math.ceil(points * technicalDebtModifier);
+
+    return [
+      { name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
+        points: { programming: up(50), marketing: 0 }
+      },
+      { name: 'basicPricing', shortDescription: 'Единый тарифный план I', description: 'Единая цена для всех клиентов',
+        points: { programming: up(150), marketing: 0 }
+      },
+      { name: 'basicPricing2', shortDescription: 'Единый тарифный план II', description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
+        points: { programming: up(50), marketing: 0 }
+      },
+      { name: 'basicPricing3', shortDescription: 'Единый тарифный план III', description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
+        points: { programming: up(50), marketing: 0 }
+      },
+      { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
+        points: { programming: up(250), marketing: 0 }
+      },
+      { name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
+        points: { programming: up(150), marketing: 0 }
+      },
+      { name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III', description: 'Грести деньги лопатами!',
+        points: { programming: up(150), marketing: 0 }
+      }
+    ];
+  };
+
+
+  getTechnicalDebtDescription(debt) {
+    if (debt < 10) {
+      return `Всё хорошо`;
+    } else if (debt < 50) {
+      return `Программисты начинают плакать`;
+    } else {
+      return `Ты мразь и п**ор, программисты ненавидят тебя!! Отрефакторь этот шлак!`;
+    }
+  };
+
   getImprovementChances(i) {
     const analytics = _products[i].features.analytics;
+
+    const picked = word => analytics[word];
 
     const feedback = analytics.feedback;
     const webvisor = analytics.webvisor;
@@ -560,36 +664,39 @@ class ProductStore extends EventEmitter {
     const clientModifier = this.getClientAnalyticsModifier(i);
     // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
 
+
+    const basicBonus = 100;
     const feedbackBonus = 1000;
     const webvisorBonus = 1500;
-    const segmentingBonus = 2000;
-    const basicBonus = 500;
+    const segmentingBonus = 500;
+    const segmentingBonus2 = 500;
 
-    let maxXP = basicBonus;
-    if (feedback) {
-      maxXP += feedbackBonus;
-    }
-    if (webvisor) {
-      maxXP += webvisorBonus;
-    }
-    if (segmenting) {
-      maxXP += segmentingBonus;
-    }
+    let bonuses = basicBonus;
+
+    this.getHypothesisAnalyticsFeatures()
+      .forEach((f, i) => {
+        logger.debug('hypo features', f);
+        if (picked(f.name)) bonuses += f.bonus || 0;
+      });
+
+    let maxXP = bonuses;
 
     // maxXP *= clientModifier.modifier;
 
     return {
-      middle: maxXP * clientModifier.modifier / 2,
-      min: 0,
-      max: maxXP * clientModifier.modifier,
+      middle: maxXP, // * clientModifier.modifier / 2,
+      // min: 0,
+      // max: maxXP * clientModifier.modifier,
       maxXPWithoutBonuses: maxXP,
-      webvisorBonus,
-      feedbackBonus,
-      segmentingBonus,
-      basicBonus,
+      // webvisorBonus,
+      // feedbackBonus,
+      // segmentingBonus,
+      // basicBonus,
+
       hasWebvisor: webvisor,
       hasFeedback: feedback,
       hasSegmenting: segmenting,
+
       clientModifier,
     }
   }
@@ -646,13 +753,11 @@ class ProductStore extends EventEmitter {
         const features = p.features.offer;
 
         const offer = this.getDefaults(id).features
-          .map(f => {
-            return {
-              name: f.name,
-              description: f.shortDescription,
-              value: features[f.name]
-            }
-          })
+          .map((f, i) => ({
+            name: f.name,
+            description: f.shortDescription,
+            value: features[i]
+          }))
           .sort((a, b) => b.value - a.value);
 
         return {
@@ -787,7 +892,7 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
       _products[id].KPI = p.KPI;
       _products[id].features = p.features;
-      _products[id].XP = 999;
+      _products[id].XP = 1999;
       break;
 
     case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
@@ -820,6 +925,21 @@ Dispatcher.register((p: PayloadType) => {
       max = p.max;
       // _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
       _products[p.id].features[p.featureGroup][p.featureName] = sum > max ? max: sum;
+      _products[p.id].XP -= p.value;
+      if (_products[p.id].improvements) {
+        _products[p.id].improvements++;
+      } else {
+        _products[p.id].improvements = 1;
+      }
+      break;
+
+    case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
+      const featureId = p.featureId;
+      previous = _products[id].features.offer[featureId];
+      sum = previous + p.value;
+      max = p.max;
+
+      _products[p.id].features.offer[featureId] = sum > max ? max: sum;
       _products[p.id].XP -= p.value;
       if (_products[p.id].improvements) {
         _products[p.id].improvements++;

@@ -11,6 +11,8 @@ const setStage = (stage) => {
   flux.scheduleActions.setGamePhase(stage);
 };
 
+const isTestMode = true;
+
 logger.shit('need to send stats on game phase change');
 
 export default {
@@ -77,39 +79,40 @@ export default {
 
   // can show some tabs region
   canShowHypothesisTab() {
-    return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
+    return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS || isTestMode;
   },
 
   canShowUpperTabInMenu() {
-    return getStage() >= gameStages.GAME_STAGE_IMPROVED_ANALYTICS;
+    return getStage() >= gameStages.GAME_STAGE_IMPROVED_ANALYTICS || isTestMode;
   },
 
   canShowMetricsTab() {
-    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS || isTestMode;
   },
 
   canShowMainFeatureTab() {
-    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS || isTestMode;
   },
 
   canShowPaymentsTab() {
-    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
   },
 
   canShowCompetitorsTab() {
-    // return true;
-    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
   },
 
   canShowClientsTab() {
-    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
   },
 
   canShowBonusesTab() {
-    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
   },
 
   canShowTeamTabs() {
+    if (isTestMode) return true;
+
     const s = getStage();
 
     if (s === gameStages.GAME_STAGE_GAME_STARTED) return true;
@@ -120,7 +123,7 @@ export default {
   },
 
   canShowAdTab() {
-    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER || isTestMode;
   },
 
   canShowSegments() {

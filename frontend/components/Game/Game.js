@@ -9,6 +9,10 @@ import Product from './Product';
 import AdviceTab from './Advice';
 import Tutorial from './Tutorial';
 
+import Programmers from './Team/Programmers';
+import Marketers from './Team/Marketers';
+import Analysts from './Team/Analysts';
+
 import productStore from '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
 import messageStore from '../../stores/message-store';
@@ -133,6 +137,18 @@ export default class Game extends Component {
     return <Product product={product} id={id} />;
   };
 
+  renderStaffMenu = () => {
+    return (
+      <div>
+        <div className="staff-group-title">Программисты</div>
+        <Programmers />
+        <br />
+        <div className="staff-group-title">Маркетологи</div>
+        <Marketers />
+      </div>
+    )
+  };
+
   onRenderProjectMenu = (i) => {
     this.setState({ mode: GAME_MODE_PRODUCT, id: i })
   };
@@ -167,7 +183,7 @@ export default class Game extends Component {
         body = this.renderProducts(state);
         break;
       case GAME_MODE_STAFF:
-        body = ''; // <Staff staff={} emplo/>;
+        body = this.renderStaffMenu(); // ''; // <Staff staff={} emplo/>;
         break;
       case GAME_MODE_PRODUCT:
         body = this.renderProductMenu(state);

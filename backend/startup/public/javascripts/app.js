@@ -614,6 +614,18 @@
 
 	var _Tutorial2 = _interopRequireDefault(_Tutorial);
 
+	var _Programmers = __webpack_require__(168);
+
+	var _Programmers2 = _interopRequireDefault(_Programmers);
+
+	var _Marketers = __webpack_require__(167);
+
+	var _Marketers2 = _interopRequireDefault(_Marketers);
+
+	var _Analysts = __webpack_require__(166);
+
+	var _Analysts2 = _interopRequireDefault(_Analysts);
+
 	var _productStore = __webpack_require__(138);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
@@ -650,9 +662,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	// import React, { Component, PropTypes } from 'react';
 
-	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
 	var GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
 	var GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
 	var GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
@@ -747,6 +759,24 @@
 	      var product = state.products[id];
 
 	      return (0, _preact.h)(_Product2.default, { product: product, id: id });
+	    }, _this.renderStaffMenu = function () {
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'staff-group-title' },
+	          '\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B'
+	        ),
+	        (0, _preact.h)(_Programmers2.default, null),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'staff-group-title' },
+	          '\u041C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0438'
+	        ),
+	        (0, _preact.h)(_Marketers2.default, null)
+	      );
 	    }, _this.onRenderProjectMenu = function (i) {
 	      _this.setState({ mode: GAME_MODE_PRODUCT, id: i });
 	    }, _this.onRenderProjectsMenu = function () {
@@ -775,7 +805,7 @@
 	          body = _this.renderProducts(state);
 	          break;
 	        case GAME_MODE_STAFF:
-	          body = ''; // <Staff staff={} emplo/>;
+	          body = _this.renderStaffMenu(); // ''; // <Staff staff={} emplo/>;
 	          break;
 	        case GAME_MODE_PRODUCT:
 	          body = _this.renderProductMenu(state);
@@ -6615,8 +6645,7 @@
 	  }, {
 	    key: 'getMainFeatureQualityByFeatureId',
 	    value: function getMainFeatureQualityByFeatureId(i, featureId) {
-	      var feature = this.getDefaults(i).features[featureId];
-	      var value = _products[i].features.offer[feature.name] || 0;
+	      var value = _products[i].features.offer[featureId];
 
 	      return value; // round(value / feature.data);
 	    }
@@ -6885,7 +6914,7 @@
 	      // good 1-5
 	      var churn = ratingModifier * (1 - k * marketingModifier) / 100;
 
-	      _logger2.default.log('product-store.js getChurnRate', churn);
+	      // logger.debug('product-store.js getChurnRate', churn);
 
 	      return {
 	        raw: churn,
@@ -7033,22 +7062,22 @@
 	      var index = void 0;
 
 	      if (clients > CLIENTS_LOT) {
-	        factor = 1;
+	        factor = 4;
 	        clientMax = CLIENTS_LOT;
 	        clientMin = CLIENTS_LOT;
 	        index = 0;
 	      } else if (clients > CLIENTS_MID) {
-	        factor = 0.9;
+	        factor = 3;
 	        clientMax = CLIENTS_LOT;
 	        clientMin = CLIENTS_MID;
 	        index = 1;
 	      } else if (clients > CLIENTS_LOW) {
-	        factor = 0.8;
+	        factor = 2.5;
 	        clientMax = CLIENTS_MID;
 	        clientMin = CLIENTS_LOW;
 	        index = 2;
 	      } else {
-	        factor = 0.3;
+	        factor = 1;
 	        clientMax = CLIENTS_LOW;
 	        clientMin = 0;
 	        index = 3;
@@ -7065,9 +7094,99 @@
 	      };
 	    }
 	  }, {
+	    key: 'getMarketingFeatureList',
+	    value: function getMarketingFeatureList(idea) {
+	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
+	        points: { marketing: 50, programming: 100 }, time: 10 }];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getHypothesisAnalyticsFeatures',
+	    value: function getHypothesisAnalyticsFeatures(idea) {
+	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев',
+	        description: 'Общение с вашими клиентами позволяет улучшить ваш продукт. +300XP/мес',
+	        points: { programming: 50, marketing: 0 }, bonus: 300
+	      }, { name: 'webvisor', shortDescription: 'Вебвизор',
+	        description: 'Позволяет просматривать действия пользователей. +200XP/мес',
+	        points: { programming: 150, marketing: 0 }, bonus: 200
+	      }, { name: 'AB', shortDescription: 'A/B тестирование',
+	        description: 'Позволяет тестировать несколько вариантов проекта. +400XP/мес',
+	        points: { programming: 175, marketing: 0 }, bonus: 400
+	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей',
+	        description: '+500XP/мес',
+	        points: { programming: 250, marketing: 0 }, bonus: 500
+	      }, { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II',
+	        description: '+600XP/мес',
+	        points: { programming: 500, marketing: 0 }, bonus: 600
+	      }];
+	    }
+	  }, {
+	    key: 'getAnalyticFeatures',
+	    value: function getAnalyticFeatures(idea) {
+	      return [
+	      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+	      //   points: { programming: 150, marketing: 100 }
+	      // },
+
+	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
+	        points: { programming: 50, marketing: 0 }
+	      }];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getPaymentFeatures',
+	    value: function getPaymentFeatures(id, idea) {
+	      var technicalDebtModifier = this.getTechnicalDebtModifier(id);
+	      var up = function up(points) {
+	        return Math.ceil(points * technicalDebtModifier);
+	      };
+
+	      return [{ name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
+	        points: { programming: up(50), marketing: 0 }
+	      }, { name: 'basicPricing', shortDescription: 'Единый тарифный план I', description: 'Единая цена для всех клиентов',
+	        points: { programming: up(150), marketing: 0 }
+	      }, { name: 'basicPricing2', shortDescription: 'Единый тарифный план II', description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
+	        points: { programming: up(50), marketing: 0 }
+	      }, { name: 'basicPricing3', shortDescription: 'Единый тарифный план III', description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
+	        points: { programming: up(50), marketing: 0 }
+	      }, { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
+	        points: { programming: up(250), marketing: 0 }
+	      }, { name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
+	        points: { programming: up(150), marketing: 0 }
+	      }, { name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III', description: 'Грести деньги лопатами!',
+	        points: { programming: up(150), marketing: 0 }
+	      }];
+	    }
+	  }, {
+	    key: 'getTechnicalDebtDescription',
+	    value: function getTechnicalDebtDescription(debt) {
+	      if (debt < 10) {
+	        return '\u0412\u0441\u0451 \u0445\u043E\u0440\u043E\u0448\u043E';
+	      } else if (debt < 50) {
+	        return '\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0430\u0447\u0438\u043D\u0430\u044E\u0442 \u043F\u043B\u0430\u043A\u0430\u0442\u044C';
+	      } else {
+	        return '\u0422\u044B \u043C\u0440\u0430\u0437\u044C \u0438 \u043F**\u043E\u0440, \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435\u043D\u0430\u0432\u0438\u0434\u044F\u0442 \u0442\u0435\u0431\u044F!! \u041E\u0442\u0440\u0435\u0444\u0430\u043A\u0442\u043E\u0440\u044C \u044D\u0442\u043E\u0442 \u0448\u043B\u0430\u043A!';
+	      }
+	    }
+	  }, {
 	    key: 'getImprovementChances',
 	    value: function getImprovementChances(i) {
 	      var analytics = _products[i].features.analytics;
+
+	      var picked = function picked(word) {
+	        return analytics[word];
+	      };
 
 	      var feedback = analytics.feedback;
 	      var webvisor = analytics.webvisor;
@@ -7077,36 +7196,38 @@
 	      var clientModifier = this.getClientAnalyticsModifier(i);
 	      // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
 
+
+	      var basicBonus = 100;
 	      var feedbackBonus = 1000;
 	      var webvisorBonus = 1500;
-	      var segmentingBonus = 2000;
-	      var basicBonus = 500;
+	      var segmentingBonus = 500;
+	      var segmentingBonus2 = 500;
 
-	      var maxXP = basicBonus;
-	      if (feedback) {
-	        maxXP += feedbackBonus;
-	      }
-	      if (webvisor) {
-	        maxXP += webvisorBonus;
-	      }
-	      if (segmenting) {
-	        maxXP += segmentingBonus;
-	      }
+	      var bonuses = basicBonus;
+
+	      this.getHypothesisAnalyticsFeatures().forEach(function (f, i) {
+	        _logger2.default.debug('hypo features', f);
+	        if (picked(f.name)) bonuses += f.bonus || 0;
+	      });
+
+	      var maxXP = bonuses;
 
 	      // maxXP *= clientModifier.modifier;
 
 	      return {
-	        middle: maxXP * clientModifier.modifier / 2,
-	        min: 0,
-	        max: maxXP * clientModifier.modifier,
+	        middle: maxXP, // * clientModifier.modifier / 2,
+	        // min: 0,
+	        // max: maxXP * clientModifier.modifier,
 	        maxXPWithoutBonuses: maxXP,
-	        webvisorBonus: webvisorBonus,
-	        feedbackBonus: feedbackBonus,
-	        segmentingBonus: segmentingBonus,
-	        basicBonus: basicBonus,
+	        // webvisorBonus,
+	        // feedbackBonus,
+	        // segmentingBonus,
+	        // basicBonus,
+
 	        hasWebvisor: webvisor,
 	        hasFeedback: feedback,
 	        hasSegmenting: segmenting,
+
 	        clientModifier: clientModifier
 	      };
 	    }
@@ -7173,11 +7294,11 @@
 
 	        var features = p.features.offer;
 
-	        var offer = _this4.getDefaults(id).features.map(function (f) {
+	        var offer = _this4.getDefaults(id).features.map(function (f, i) {
 	          return {
 	            name: f.name,
 	            description: f.shortDescription,
-	            value: features[f.name]
+	            value: features[i]
 	          };
 	        }).sort(function (a, b) {
 	          return b.value - a.value;
@@ -7342,7 +7463,7 @@
 	      _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
 	      _products[id].KPI = p.KPI;
 	      _products[id].features = p.features;
-	      _products[id].XP = 999;
+	      _products[id].XP = 1999;
 	      break;
 
 	    case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
@@ -7375,6 +7496,21 @@
 	      max = p.max;
 	      // _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
 	      _products[p.id].features[p.featureGroup][p.featureName] = sum > max ? max : sum;
+	      _products[p.id].XP -= p.value;
+	      if (_products[p.id].improvements) {
+	        _products[p.id].improvements++;
+	      } else {
+	        _products[p.id].improvements = 1;
+	      }
+	      break;
+
+	    case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
+	      var featureId = p.featureId;
+	      previous = _products[id].features.offer[featureId];
+	      sum = previous + p.value;
+	      max = p.max;
+
+	      _products[p.id].features.offer[featureId] = sum > max ? max : sum;
 	      _products[p.id].XP -= p.value;
 	      if (_products[p.id].improvements) {
 	        _products[p.id].improvements++;
@@ -7459,6 +7595,7 @@
 	  value: true
 	});
 	var PRODUCT_ACTIONS_IMPROVE_FEATURE = exports.PRODUCT_ACTIONS_IMPROVE_FEATURE = 'PRODUCT_ACTIONS_IMPROVE_FEATURE';
+	var PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE = exports.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE = 'PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE';
 	var PRODUCT_ACTIONS_CLIENTS_ADD = exports.PRODUCT_ACTIONS_CLIENTS_ADD = 'PRODUCT_ACTIONS_CLIENTS_ADD';
 	var PRODUCT_ACTIONS_CLIENTS_REMOVE = exports.PRODUCT_ACTIONS_CLIENTS_REMOVE = 'PRODUCT_ACTIONS_CLIENTS_REMOVE';
 	var PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD = exports.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD = 'PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD';
@@ -7529,7 +7666,7 @@
 	  var segments = (0, _productDescriptions2.default)(idea).segments;
 
 	  getSpecificProductFeatureListByIdea(idea).forEach(function (f, i) {
-	    var value = (product.features.offer[f.name] || 0) / f.data;
+	    var value = product.features.offer[i] / f.data;
 
 	    // const influence = f.influence;
 	    var influence = segments[segmentId].rating[i];
@@ -7700,7 +7837,7 @@
 	        mp: 100
 	      },
 	      hypothesis: {
-	        mp: 60,
+	        mp: 0,
 	        pp: 70
 	      },
 	      segments: [{
@@ -7841,21 +7978,21 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var merge = function merge(buyer, seller) {
-	  var features = {};
+	  var features = [];
 	  var improvements = [];
 
 	  // logger.debug('buyer is', buyer);
 	  // logger.debug('seller is', seller);
 
 	  (0, _productDescriptions2.default)(buyer.idea).features.map(function (f, i) {
-	    var current = buyer.features.offer[f.name];
-	    var next = seller.features.offer[f.name];
+	    var current = buyer.features.offer[i];
+	    var next = seller.features.offer[i];
 
 	    if (current < next) {
 	      improvements.push({ name: f.name, i: i, value: next, difference: next - current });
-	      features[f.name] = next;
+	      features[i] = next;
 	    } else {
-	      features[f.name] = current;
+	      features[i] = current;
 	    }
 	  });
 
@@ -7868,8 +8005,6 @@
 	    improvements: improvements,
 	    features: features
 	  };
-
-	  _logger2.default.debug('buy result will be', result);
 
 	  return result;
 	};
@@ -8027,6 +8162,15 @@
 	      max: max
 	    });
 	  },
+	  improveMainFeature: function improveMainFeature(id, featureId, max, XP) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE,
+	      id: id,
+	      featureId: featureId,
+	      value: XP || 1000,
+	      max: max
+	    });
+	  },
 	  buyCompany: function buyCompany(buyerId, sellerId) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_COMPANY_BUY,
@@ -8144,6 +8288,8 @@
 	  _flux2.default.scheduleActions.setGamePhase(stage);
 	};
 
+	var isTestMode = true;
+
 	_logger2.default.shit('need to send stats on game phase change');
 
 	exports.default = {
@@ -8198,31 +8344,32 @@
 
 	  // can show some tabs region
 	  canShowHypothesisTab: function canShowHypothesisTab() {
-	    return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
+	    return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS || isTestMode;
 	  },
 	  canShowUpperTabInMenu: function canShowUpperTabInMenu() {
-	    return getStage() >= gameStages.GAME_STAGE_IMPROVED_ANALYTICS;
+	    return getStage() >= gameStages.GAME_STAGE_IMPROVED_ANALYTICS || isTestMode;
 	  },
 	  canShowMetricsTab: function canShowMetricsTab() {
-	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS || isTestMode;
 	  },
 	  canShowMainFeatureTab: function canShowMainFeatureTab() {
-	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
+	    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS || isTestMode;
 	  },
 	  canShowPaymentsTab: function canShowPaymentsTab() {
-	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
 	  },
 	  canShowCompetitorsTab: function canShowCompetitorsTab() {
-	    // return true;
-	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
 	  },
 	  canShowClientsTab: function canShowClientsTab() {
-	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
 	  },
 	  canShowBonusesTab: function canShowBonusesTab() {
-	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
+	    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
 	  },
 	  canShowTeamTabs: function canShowTeamTabs() {
+	    if (isTestMode) return true;
+
 	    var s = getStage();
 
 	    if (s === gameStages.GAME_STAGE_GAME_STARTED) return true;
@@ -8232,7 +8379,7 @@
 	    return true;
 	  },
 	  canShowAdTab: function canShowAdTab() {
-	    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
+	    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER || isTestMode;
 	  },
 	  canShowSegments: function canShowSegments() {
 	    return this.canShowCompetitorsTab();
@@ -8530,14 +8677,25 @@
 	        );
 	      }
 
-	      // <div>
-	      //   <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
-	      //   <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда {employeePhrase}</div>
-	      // </div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        upperTab
+	        upperTab,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation + ' ' + isChosenProjectsMenu, onClick: props.onRenderProjectsMenu },
+	            '\u041F\u0440\u043E\u0435\u043A\u0442\u044B'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: navigation + ' ' + isChosenStaffMenu, onClick: props.onRenderStaffMenu },
+	            '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 ',
+	            employeePhrase
+	          )
+	        )
 	      );
 	    }
 	  }]);
@@ -9367,9 +9525,8 @@
 
 	    var luck = (0, _random2.default)(1, maxRating) / 10; // luck in 0.1-0.6
 
-	    var offer = {};
-	    defaultFeatures.forEach(function (f) {
-	      offer[f.name] = Math.floor(luck * f.data);
+	    var offer = defaultFeatures.map(function (f, i) {
+	      return Math.floor(luck * f.data);
 	    });
 
 	    var features = {
@@ -9480,20 +9637,6 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _featurePrice = __webpack_require__(172);
-
-	var _featurePrice2 = _interopRequireDefault(_featurePrice);
-
-	var _scheduleActions = __webpack_require__(151);
-
-	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
-
-	var _workSpeed = __webpack_require__(137);
-
-	var _constants = __webpack_require__(155);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
 	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
@@ -9560,6 +9703,8 @@
 	      features: true,
 
 	      mode: MODE_MARKETING
+	    }, _this.setMode = function (mode) {
+	      _this.setState({ mode: mode });
 	    }, _this.haveEnoughPointsToUpgrade = function (necessaryPoints) {
 	      var points = _playerStore2.default.getPoints();
 	      var mp = necessaryPoints.mp || 0;
@@ -9569,117 +9714,17 @@
 	    }, _this.renderHypothesisTab = function (id, idea) {
 	      if (!_stages2.default.canShowHypothesisTab()) return '';
 
-	      var done = _UI2.default.symbols.ok;
-	      var cancel = _UI2.default.symbols.dot;
-
 	      var improvements = _productStore2.default.getImprovementChances(id);
-	      var webvisorStatus = improvements.hasWebvisor ? done : cancel + ' \u041D\u0435';
-	      var segmentingStatus = improvements.hasSegmenting ? done : cancel + ' \u041D\u0435';
-	      var feedbackStatus = improvements.hasFeedback ? done : cancel + ' \u041D\u0435';
 
-	      var clientSizePenalty = 1 - improvements.clientModifier.modifier;
-
-	      var exp = function exp(bonus) {
-	        return Math.ceil(bonus * clientSizePenalty * 2);
-	      };
-
-	      // let improveTab;
 	      var improveTab = _this.plainifySameTypeFeatures(id, idea, 'analytics', 'Блок аналитики полностью улучшен!');
-	      // if (!improvements.hasFeedback) {
-	      //   improveTab = (
-	      //     <div>
-	      //       <div>{feedbackStatus} Установлена форма комментариев (+{exp(improvements.feedbackBonus)}XP)</div>
-	      //       {this.getFeedbackButton(idea, id)}
-	      //     </div>
-	      //   )
-	      // } else if (!improvements.hasWebvisor) {
-	      //   improveTab = (
-	      //     <div>
-	      //       <div>{webvisorStatus} Установлен вебвизор (+{exp(improvements.webvisorBonus)}XP)</div>
-	      //       {this.getWebvisorButton(idea, id)}
-	      //     </div>
-	      //   )
-	      // } else if (!improvements.hasSegmenting) {
-	      //   improveTab = (
-	      //     <div>
-	      //       <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{exp(improvements.segmentingBonus)}XP)</div>
-	      //       {this.getSegmentingButton(idea, id)}
-	      //     </div>
-	      //   )
-	      // } else {
-	      //   improveTab = (
-	      //     <div>Сегмент аналитики полностью улучшен</div>
-	      //   )
-	      // }
 
 	      var hypothesisPoints = _productStore2.default.getHypothesisPoints(id);
 
-	      var pp = hypothesisPoints.pp,
-	          mp = hypothesisPoints.mp;
-
-
-	      var notEnoughPPs = !_this.haveEnoughPointsToUpgrade(hypothesisPoints);
-	      // const ratingOverflow = current >= max;
-	      // const currentXP = productStore.getXP(id);
-
-	      var disabled = notEnoughPPs; // || ratingOverflow;
-
-	      var testHypothesis = function testHypothesis() {
-	        var time = 30;
-	        var key = 'Тестирование гипотезы';
-
-	        _playerActions2.default.spendPoints(pp, mp);
-	        _scheduleActions2.default.addTask(time, false, _workSpeed.WORK_SPEED_NORMAL, key, function () {
-	          _productActions2.default.testHypothesis(id, {}, 0);
-	        });
-	      };
-
-	      var possibleXPtext = (0, _preact.h)(
-	        'div',
-	        null,
-	        '\u041A\u0430\u0436\u0434\u044B\u0439 \u043C\u0435\u0441\u044F\u0446 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 ',
-	        improvements.middle,
-	        ' XP'
-	      );
-	      // (штраф -{clientSizePenalty}%)</div>;
-
-
-	      // <div>{feedbackStatus} Установлена форма обратной связи (+{improvements.feedbackBonus}XP)</div>
-	      // {this.getFeedbackButton(idea, id)}
-	      // <div>{webvisorStatus} Установлен вебвизор (+{improvements.webvisorBonus}XP)</div>
-	      // {this.getWebvisorButton(idea, id)}
-	      // <div>{segmentingStatus} Установлен модуль сегментации клиентов (+{improvements.segmentingBonus}XP)</div>
-	      // {this.getSegmentingButton(idea, id)}
-
-
-	      // <div>{done} Базовое значение: {improvements.basicBonus}XP</div>
-
-
-	      // <br />
-	      // <div>Итого: {improvements.maxXPWithoutBonuses}XP - {clientSizePenalty}% = {improvements.max}XP</div>
-
-	      // <UI.Info />
-	      // <div className="smallText">
-	      //   Если клиентов мало, то результаты исследований могут быть недостоверны (вы получаете штраф)&nbsp;&nbsp;
-	      // </div>
-
 	      var errorDescription = '';
-	      if (disabled) {
+	      if (!_this.haveEnoughPointsToUpgrade(hypothesisPoints)) {
 	        errorDescription = 'У вас не хватает MP или PP. ' + 'Возможно вам стоит нанять больше сотрудников или подождать до следующего месяца';
 	      }
 
-	      // <div>Стоимость тестирования гипотезы: {mp}MP и {pp}PP</div>
-	      // <div>{errorDescription}</div>
-	      // <UI.Button
-	      //   text="Запустить исследование"
-	      //   onClick={testHypothesis}
-	      //   disabled={disabled}
-	      //   primary
-	      // />
-	      // <br />
-	      // <Schedule />
-
-	      // <div className="smallText">После каждого цикла тестирования вы получаете очки экспертизы (XP points)</div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -9694,12 +9739,18 @@
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'smallText' },
-	            '\u0422\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0433\u0438\u043F\u043E\u0442\u0435\u0437 \u0434\u0430\u0451\u0442 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u044C \u043B\u0443\u0447\u0448\u0435 \u0443\u0437\u043D\u0430\u0442\u044C \u043E \u043F\u043E\u0442\u0440\u0435\u0431\u043D\u043E\u0441\u0442\u044F\u0445 \u0432\u0430\u0448\u0438\u0445 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432.'
+	            '\u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430 \u0434\u0430\u0451\u0442 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u044C \u043B\u0443\u0447\u0448\u0435 \u0443\u0437\u043D\u0430\u0442\u044C \u043E \u043F\u043E\u0442\u0440\u0435\u0431\u043D\u043E\u0441\u0442\u044F\u0445 \u0432\u0430\u0448\u0438\u0445 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432.'
 	          ),
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'smallText' },
-	            possibleXPtext
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041A\u0430\u0436\u0434\u044B\u0439 \u043C\u0435\u0441\u044F\u0446 \u0432\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442\u0435 ',
+	              improvements.middle,
+	              ' XP'
+	            )
 	          )
 	        ),
 	        (0, _preact.h)('br', null),
@@ -9746,7 +9797,7 @@
 	        )
 	      );
 	    }, _this.renderAnalyticsTab = function (id, idea) {
-	      var analytics = _this.getAnalyticFeatures(idea).map(_this.renderFeature('analytics', id, idea));
+	      var analytics = _productStore2.default.getAnalyticFeatures(idea).map(_this.renderFeature('analytics', id, idea));
 
 	      return (0, _preact.h)(
 	        'div',
@@ -9893,6 +9944,7 @@
 	            _productStore2.default.getDescriptionOfProduct(id)
 	          )
 	        ),
+	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'b',
 	          null,
@@ -10021,8 +10073,6 @@
 	          separator
 	        );
 	      };
-	    }, _this.setMode = function (mode) {
-	      _this.setState({ mode: mode });
 	    }, _this.renderNavbar = function (mode, name) {
 	      return (0, _preact.h)(
 	        'li',
@@ -10089,117 +10139,11 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {}
 	  }, {
-	    key: 'getMarketingFeatureList',
-	    value: function getMarketingFeatureList(idea) {
-	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-	        points: { marketing: 150, programming: 0 }, time: 2 }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
-	        points: { marketing: 50, programming: 100 }, time: 4 }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
-	        points: { marketing: 50, programming: 100 }, time: 10 }];
-	      // ].map(computeFeatureCost(cost));
-	    }
-	  }, {
 	    key: 'getDevelopmentFeatureList',
 	    value: function getDevelopmentFeatureList(idea) {
 	      return [{ name: 'backups', description: '' }, { name: 'clusters', description: '' }, { name: 'tests', description: '' }, { name: 'mobiles', description: '' } // ios android apps
 	      ];
 	      // ].map(computeFeatureCost(cost));
-	    }
-	  }, {
-	    key: 'getFeedbackButton',
-	    value: function getFeedbackButton(idea, id) {
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea, true, _stages2.default.onInstallPrimitiveAnalyticsMissionCompleted)(this.getHypothesisAnalyticsFeatures(idea)[0], 0)
-	      );
-	    }
-	  }, {
-	    key: 'getWebvisorButton',
-	    value: function getWebvisorButton(idea, id) {
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[1], 1)
-	      );
-	    }
-	  }, {
-	    key: 'getSegmentingButton',
-	    value: function getSegmentingButton(idea, id) {
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'offset-mid' },
-	        this.renderFeature('analytics', id, idea, true)(this.getHypothesisAnalyticsFeatures(idea)[2], 2)
-	      );
-	    }
-	  }, {
-	    key: 'getHypothesisAnalyticsFeatures',
-	    value: function getHypothesisAnalyticsFeatures(idea) {
-	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев', description: '', // 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез',
-	        points: { programming: 50, marketing: 0 }
-	      }, { name: 'webvisor', shortDescription: 'Вебвизор', description: '', // 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез',
-	        points: { programming: 150, marketing: 0 }
-	      }, { name: 'AB', shortDescription: 'A/B тестирование', description: 'Позволяет тестировать несколько вариантов проекта. +1000XP/мес', // 'Повышает шансы при проверке гипотез',
-	        points: { programming: 175, marketing: 0 }
-	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: '', // 'Повышает шансы при проверке гипотез',
-	        points: { programming: 250, marketing: 0 }
-	      }, { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II', description: '', // 'Повышает шансы при проверке гипотез',
-	        points: { programming: 500, marketing: 0 }
-	      }];
-	    }
-	  }, {
-	    key: 'getAnalyticFeatures',
-	    value: function getAnalyticFeatures(idea) {
-	      return [
-	      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
-	      //   points: { programming: 150, marketing: 100 }
-	      // },
-
-	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
-	        points: { programming: 50, marketing: 0 }
-	      }];
-	      // ].map(computeFeatureCost(cost));
-	    }
-	  }, {
-	    key: 'getPaymentFeatures',
-	    value: function getPaymentFeatures(id, idea) {
-	      var technicalDebtModifier = _productStore2.default.getTechnicalDebtModifier(id);
-	      var up = Math.ceil;
-
-	      return [{ name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
-	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
-	      }, { name: 'basicPricing', shortDescription: 'Единый тарифный план I', description: 'Единая цена для всех клиентов',
-	        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
-	      }, { name: 'basicPricing2', shortDescription: 'Единый тарифный план II', description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
-	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
-	      }, { name: 'basicPricing3', shortDescription: 'Единый тарифный план III', description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
-	        points: { programming: up(50 * technicalDebtModifier), marketing: 0 }
-	      }, { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
-	        points: { programming: up(250 * technicalDebtModifier), marketing: 0 }
-	      }, { name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
-	        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
-	      }, { name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III', description: 'Грести деньги лопатами!',
-	        points: { programming: up(150 * technicalDebtModifier), marketing: 0 }
-	      }];
-	    }
-	  }, {
-	    key: 'getTechnicalDebtDescription',
-	    value: function getTechnicalDebtDescription(debt) {
-	      if (debt < 10) {
-	        return '\u0412\u0441\u0451 \u0445\u043E\u0440\u043E\u0448\u043E';
-	      } else if (debt < 50) {
-	        return '\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0430\u0447\u0438\u043D\u0430\u044E\u0442 \u043F\u043B\u0430\u043A\u0430\u0442\u044C';
-	      } else {
-	        return '\u0422\u044B \u043C\u0440\u0430\u0437\u044C \u0438 \u043F**\u043E\u0440, \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435\u043D\u0430\u0432\u0438\u0434\u044F\u0442 \u0442\u0435\u0431\u044F!! \u041E\u0442\u0440\u0435\u0444\u0430\u043A\u0442\u043E\u0440\u044C \u044D\u0442\u043E\u0442 \u0448\u043B\u0430\u043A!';
-	      }
 	    }
 	  }, {
 	    key: 'plainifySameTypeFeatures',
@@ -10208,15 +10152,15 @@
 
 	      switch (groupType) {
 	        case 'marketing':
-	          featureList = this.getMarketingFeatureList(idea);
+	          featureList = _productStore2.default.getMarketingFeatureList(idea);
 	          break;
 
 	        case 'payment':
-	          featureList = this.getPaymentFeatures(id, idea);
+	          featureList = _productStore2.default.getPaymentFeatures(id, idea);
 	          break;
 
 	        case 'analytics':
-	          featureList = this.getHypothesisAnalyticsFeatures(idea);
+	          featureList = _productStore2.default.getHypothesisAnalyticsFeatures(idea);
 	          break;
 	      }
 
@@ -11262,29 +11206,7 @@
 	;
 
 /***/ },
-/* 172 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _assign = __webpack_require__(3);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function (cost) {
-	  return function (e) {
-	    return (0, _assign2.default)(e, { cost: e.time * cost });
-	  };
-	};
-	// export default cost => e => e;
-
-/***/ },
+/* 172 */,
 /* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -11533,10 +11455,6 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productDescriptions = __webpack_require__(143);
-
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
 	var _flux = __webpack_require__(133);
 
 	var _flux2 = _interopRequireDefault(_flux);
@@ -11577,35 +11495,23 @@
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.getSpecificProductFeatureListByIdea = function (idea) {
-	      return (0, _productDescriptions2.default)(idea).features;
-	    }, _this.renderMainFeature = function (featureGroup, product, id, segments, defaults) {
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.renderMainFeature = function (featureGroup, product, id, segments, defaults) {
 	      return function (defaultFeature, i) {
 	        var featureName = defaultFeature.name;
 	        var time = defaultFeature.time,
 	            shortDescription = defaultFeature.shortDescription;
 
 
-	        var feature = product.features[featureGroup][featureName];
+	        var feature = product.features[featureGroup][i];
 
 	        var current = feature || 0;
 	        var max = defaultFeature.data;
 
-	        var key = 'feature' + featureGroup + featureName + i;
-
-	        var hypothesis = [{
-	          points: { mp: 100, pp: 200 },
-	          data: 4000,
-	          baseChance: 0.1
-	        }];
-
 	        var description = defaultFeature.description || '';
 	        var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
+	        var key = 'feature' + featureGroup + featureName + i;
 
-	        var hypothesisList = '   Улучшено';
-	        if (current < max) {
-	          hypothesisList = hypothesis.map(_this.renderHypothesisItem(id, featureName, time, current, max, product));
-	        } else {
+	        if (current >= max) {
 	          return (0, _preact.h)(
 	            'div',
 	            { key: key },
@@ -11621,6 +11527,14 @@
 	            (0, _preact.h)('br', null)
 	          );
 	        }
+
+	        var hypothesis = [{
+	          points: { mp: 100, pp: 200 },
+	          data: 4000,
+	          baseChance: 0.1
+	        }];
+
+	        var hypothesisList = hypothesis.map(_this.renderHypothesisItem(id, i, time, current, max, product));
 
 	        var openedInfluence = false;
 	        var segmentRatingImprovementList = segments.map(function (s) {
@@ -11642,19 +11556,10 @@
 	          );
 	        });
 
-	        // if (!openedInfluence) return '';
-
-	        // display: inline-block;
-	        // margin-left: 10px;
-
 	        var data = [{ value: current }];
 
 	        if (product.XP >= 1000) {
 	          data.push({ value: 1000, style: 'bg-success' });
-	        }
-
-	        if (product.XP >= 2000) {
-	          data.push({ value: 1000, style: 'bg-danger' });
 	        }
 
 	        return (0, _preact.h)(
@@ -11695,7 +11600,7 @@
 	          (0, _preact.h)('hr', { color: 'white' })
 	        );
 	      };
-	    }, _this.renderHypothesisItem = function (id, featureName, time, current, max, product) {
+	    }, _this.renderHypothesisItem = function (id, featureId, time, current, max, product) {
 	      return function (hypothesis, i) {
 	        var necessaryPoints = hypothesis.points;
 	        var key = 'hypothesis' + i;
@@ -11706,7 +11611,7 @@
 
 	        var action = function action() {
 	          // flux.playerActions.spendPoints(pp, mp);
-	          _flux2.default.productActions.improveFeature(id, 'offer', featureName, hypothesis, max, 1000);
+	          _flux2.default.productActions.improveFeature(id, 'offer', featureId, hypothesis, max, 1000);
 
 	          if (_stages2.default.isFirstFeatureMission()) {
 	            _stages2.default.onFirstFeatureUpgradeMissionCompleted();
@@ -11753,7 +11658,7 @@
 	      var availableSegments = _flux2.default.productStore.getAvailableSegments(id);
 	      var defaults = _flux2.default.productStore.getDefaults(id);
 
-	      var featureList = this.getSpecificProductFeatureListByIdea(product.idea).map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
+	      var featureList = defaults.features.map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
 
 	      return (0, _preact.h)(
 	        'div',
@@ -12447,7 +12352,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0422\u0430\u043A \u0434\u0435\u0440\u0436\u0430\u0442\u044C! \u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u043B\u0441\u044F! \u0420\u0435\u0439\u0442\u0438\u043D\u0433 - \u043A\u043B\u044E\u0447\u0435\u0432\u043E\u0439 \u043F\u043E\u043A\u0430\u0437\u0430\u0442\u0435\u043B\u044C, \u0432\u043B\u0438\u044F\u044E\u0449\u0438\u0439 \u043D\u0430 \u043D\u0430\u0448\u0438 \u0434\u043E\u0445\u043E\u0434\u044B \u0438 \u043D\u0430 \u043E\u0442\u0442\u043E\u043A \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439'
+	              '\u0422\u0430\u043A \u0434\u0435\u0440\u0436\u0430\u0442\u044C! \u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u043B\u0441\u044F! \u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0432\u043B\u0438\u044F\u0435\u0442 \u043D\u0430 \u043D\u0430\u0448\u0438 \u0434\u043E\u0445\u043E\u0434\u044B \u0438 \u043D\u0430 \u043E\u0442\u0442\u043E\u043A \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439'
 	            ),
 	            (0, _preact.h)(
 	              'div',

@@ -122,10 +122,14 @@ class PlayerStore extends EventEmitter {
   }
 
   getMonthlyMarketerPoints() {
-    return this.getMarketers().map(skillHelper.getMarketingPointsProducedBy).reduce((p, c) => p + c, 0);
+    return this.getMarketers()
+      .map(skillHelper.getMarketingPointsProducedBy)
+      .reduce((p, c) => p + c, 0);
   }
   getMonthlyProgrammerPoints() {
-    return this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy).reduce((p, c) => p + c, 0);
+    return this.getProgrammers()
+      .map(skillHelper.getProgrammingPointsProducedBy)
+      .reduce((p, c) => p + c, 0);
   }
 
   idHelper(e, i) {
@@ -154,7 +158,9 @@ class PlayerStore extends EventEmitter {
 
 
   getTeamExpenses() {
-    return this.getTeam().filter(isMercenary).map(worker => worker.salary.money).reduce((p, c) => p + c, 0);
+    return this.getTeam()
+      .filter(isMercenary).map(worker => worker.salary.money)
+      .reduce((p, c) => p + c, 0);
   }
 
   getMaxPossibleFreelanceMarketingPoints() {

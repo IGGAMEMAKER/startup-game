@@ -14,7 +14,7 @@ export default (product, segmentId) => {
   const segments = ProductDescriptions(idea).segments;
 
   getSpecificProductFeatureListByIdea(idea).forEach((f, i) => {
-    const value = (product.features.offer[f.name] || 0) / f.data;
+    const value = (product.features.offer[i]) / f.data;
 
     // const influence = f.influence;
     const influence = segments[segmentId].rating[i];

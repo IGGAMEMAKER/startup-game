@@ -38,7 +38,9 @@ export default class Segment extends Component {
     } else {
       const unmet = requirementsValidator.unmetRequirements
         .map((u, uId) => {
-          return <li key={`unmet-${productId}-${uId}`}>{u.name}: Нужно {u.need}XP (на данный момент: {u.now})</li>
+          return <li key={`unmet-${productId}-${uId}`}>
+            {u.name}: Нужно {u.need}XP (на данный момент: {u.now})
+          </li>
         });
 
       // <div>{JSON.stringify(requirementsValidator)}</div>

@@ -76,7 +76,7 @@ export default {
           shortDescription: 'Выделенный сервер',
           data: timeModifier(15000),
           time: 30
-        },
+        }
       ],
       utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
       virality: 0.3, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
@@ -88,7 +88,7 @@ export default {
         mp: 100
       },
       hypothesis: {
-        mp: 60,
+        mp: 0,
         pp: 70
       },
       segments: [

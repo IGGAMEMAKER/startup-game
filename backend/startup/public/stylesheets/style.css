@@ -435,6 +435,10 @@ textarea {
   /*min-height: 200px;*/
 }
 
+.staff-group-title {
+  font-size: larger;
+}
+
 .main-feature-item {
   margin-bottom: 15px;
   border: solid thin var(--dark-red-border);

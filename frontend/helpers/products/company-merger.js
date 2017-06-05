@@ -2,7 +2,7 @@ import logger from '../logger/logger';
 import productDescriptions from './product-descriptions';
 
 const merge = (buyer, seller) => {
-  const features = {};
+  const features = [];
   const improvements = [];
 
   // logger.debug('buyer is', buyer);
@@ -10,14 +10,14 @@ const merge = (buyer, seller) => {
 
   productDescriptions(buyer.idea).features
     .map((f, i) => {
-      const current = buyer.features.offer[f.name];
-      const next = seller.features.offer[f.name];
+      const current = buyer.features.offer[i];
+      const next = seller.features.offer[i];
 
       if (current < next) {
         improvements.push({ name: f.name, i, value: next, difference: next - current });
-        features[f.name] = next;
+        features[i] = next;
       } else {
-        features[f.name] = current;
+        features[i] = current;
       }
     });
 
@@ -31,8 +31,6 @@ const merge = (buyer, seller) => {
     improvements,
     features
   };
-
-  logger.debug('buy result will be', result);
 
   return result;
 };

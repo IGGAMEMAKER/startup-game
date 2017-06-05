@@ -24,10 +24,7 @@ export default {
 
     const luck = random(1, maxRating) / 10; // luck in 0.1-0.6
 
-    const offer = {};
-    defaultFeatures.forEach(f => {
-      offer[f.name] = Math.floor(luck * f.data);
-    });
+    const offer = defaultFeatures.map((f, i) => Math.floor(luck * f.data));
 
     const features = {
       offer, // features, that are attached to main idea
