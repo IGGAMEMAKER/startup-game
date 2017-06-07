@@ -105,7 +105,11 @@ export default class AdvertPlannerPanel extends Component {
       list = adList.map(a => this.renderAdCampaignGenerator(id, a.clients, a.text, a.mp, money)).reverse();
     } else {
       if (!ads.filter(noClientOverflow).length) {
-        list = 'Мы привлекли всех клиентов, которых могли. Улучшайте рейтинг, чтобы увеличить потенциальную аудиторию';
+        list = <div>
+          Мы привлекли всех клиентов, которых могли.
+          Улучшайте рейтинг, чтобы увеличить потенциальную аудиторию
+          
+        </div>
       }
 
       if (!ads.filter(enoughMoney).length) {

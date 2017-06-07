@@ -792,7 +792,6 @@
 	    }, _this.onRenderEconomicsMenu = function () {
 	      _this.setState({ mode: GAME_MODE_ECONOMICS });
 	    }, _this.onRenderStaffMenu = function () {
-	      _logger2.default.debug('onRenderStaffMenu');
 	      _this.setState({ mode: GAME_MODE_STAFF });
 	    }, _this.renderGameInNormalMode = function (props, state) {
 	      var gamePhase = state.gamePhase,
@@ -3006,7 +3005,7 @@
 /* 100 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -3016,9 +3015,9 @@
 	  debug: console.log,
 	  error: console.error,
 	  shit: function shit(text) {
-	    console.log('GOVNOKOD: ' + text);
-	    console.trace();
-	    console.log('-----------');
+	    // console.log(`GOVNOKOD: ${text}`);
+	    // console.trace();
+	    // console.log('-----------');
 	  },
 	  actions: function actions(sessionId, userId, action) {}
 
@@ -4885,7 +4884,7 @@
 	  }, {
 	    key: 'getTeam',
 	    value: function getTeam() {
-	      return _team;
+	      return _team.map(this.idHelper);
 	    }
 	  }, {
 	    key: 'getMonthlyMarketerPoints',
@@ -5080,6 +5079,8 @@
 	      break;
 
 	    case c.PLAYER_ACTIONS_FIRE_WORKER:
+	      _logger2.default.debug('PLAYER_ACTIONS_FIRE_WORKER', p);
+
 	      _money -= _team[p.i].salary.money;
 	      _team.splice(p.i, 1);
 	      break;
@@ -6718,7 +6719,7 @@
 	        return _this3.getSegmentIncome(i, segId);
 	      }).reduce(function (p, c) {
 	        return p + c;
-	      });
+	      }, 0);
 	    }
 	  }, {
 	    key: 'getIdea',
@@ -6730,7 +6731,7 @@
 	    value: function getViralityRate(i) {
 	      var rating = this.getRating(i);
 	      var multiplier = this.getDefaults(i).virality;
-	      var marketing = _products[i].features.marketing;
+	      var marketing = this.getMarketingFeatures(i);
 
 	      var base = 0.1;
 
@@ -6749,6 +6750,55 @@
 	      }
 
 	      return (base + referralBonuses) * multiplier;
+	    }
+	  }, {
+	    key: 'getMarketingFeatures',
+	    value: function getMarketingFeatures(id) {
+	      return _products[id].features.marketing;
+	    }
+	  }, {
+	    key: 'getBlogPower',
+	    value: function getBlogPower(id) {
+	      var marketing = this.getMarketingFeatures(id);
+
+	      if (marketing.blogIII) return 1;
+	      if (marketing.blogII) return 0.5;
+	      if (marketing.blog) return 0.25;
+
+	      return 0;
+	    }
+	  }, {
+	    key: 'getSupportPower',
+	    value: function getSupportPower(id) {
+	      var marketing = this.getMarketingFeatures(id);
+
+	      if (marketing.supportIII) return 1;
+	      if (marketing.supportII) return 0.5;
+	      if (marketing.support) return 0.25;
+
+	      return 0;
+	    }
+	  }, {
+	    key: 'getEmailPower',
+	    value: function getEmailPower(id) {
+	      var marketing = this.getMarketingFeatures(id);
+
+	      if (marketing.emailIII) return 1;
+	      if (marketing.emailII) return 0.5;
+	      if (marketing.email) return 0.25;
+
+	      return 0;
+	    }
+	  }, {
+	    key: 'getMarketingSupportCostPerClientForSupportFeature',
+	    value: function getMarketingSupportCostPerClientForSupportFeature(id) {
+	      var marketing = this.getMarketingFeatures(id);
+
+	      if (marketing.supportIII) return 0.25;
+	      if (marketing.supportII) return 0.5;
+	      if (marketing.support) return 1;
+
+	      return 0;
 	    }
 	  }, {
 	    key: 'getChurnRate',
@@ -6770,12 +6820,10 @@
 	      // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
 	      var ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
 
-	      var marketing = _products[i].features.marketing;
-
-	      var blog = marketing.blog || 0;
-	      var emails = marketing.emails || 0;
-	      var support = marketing.support || 0;
-	      var k = 0.3; // поправочный коэффициент
+	      var blog = this.getBlogPower(i);
+	      var emails = this.getEmailPower(i);
+	      var support = this.getSupportPower(i);
+	      var k = 0.6; // поправочный коэффициент
 
 	      var marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
 
@@ -6818,6 +6866,7 @@
 	  }, {
 	    key: 'getProductExpenses',
 	    value: function getProductExpenses(i) {
+	      return 0;
 	      return this.getProductBlogCost(i) + this.getProductSupportCost(i);
 	    }
 	  }, {
@@ -6964,33 +7013,45 @@
 	      };
 	    }
 	  }, {
-	    key: 'getSupportCostModifier',
-	    value: function getSupportCostModifier(i) {
-	      return Math.pow(this.getImprovementsAmount(i), balance.SUPPORT_COST_MODIFIER);
+	    key: 'getProgrammingSupportCostModifier',
+	    value: function getProgrammingSupportCostModifier(id) {
+	      return Math.pow(this.getImprovementsAmount(id), balance.SUPPORT_COST_MODIFIER);
 	    }
 	  }, {
 	    key: 'getProgrammingSupportCost',
-	    value: function getProgrammingSupportCost(i) {
-	      return Math.floor(this.getDefaults(i).support.pp * this.getSupportCostModifier(i));
+	    value: function getProgrammingSupportCost(id) {
+	      return Math.floor(this.getDefaults(id).support.pp * this.getProgrammingSupportCostModifier(id));
 	    }
 	  }, {
 	    key: 'getMarketingSupportCost',
-	    value: function getMarketingSupportCost(i) {
+	    value: function getMarketingSupportCost(id) {
 	      _logger2.default.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
+	      // const blogSupportCost = this.getBlogPower(id);
 
-	      return 15;
+	      var supportSupportCost = Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100);
+	      return supportSupportCost + 15;
 	    }
 	  }, {
 	    key: 'getMarketingFeatureList',
 	    value: function getMarketingFeatureList(idea) {
-	      return [{ name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	      return [{ name: 'blog', shortDescription: 'Блог проекта',
+	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
 	        points: { marketing: 150, programming: 0 }, time: 2,
-	        support: { marketing: 50, programming: 0 }
-	      }, { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
+	        support: { marketing: 50 }
+	      }, { name: 'support', shortDescription: 'Техподдержка',
+	        description: 'Техподдержка снижает отток клиентов на 15%',
 	        points: { marketing: 50, programming: 100 }, time: 4,
 	        support: { money: 5000 }
 	      }, { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
-	        points: { marketing: 50, programming: 100 }, time: 10 }];
+	        points: { marketing: 50, programming: 100 }, time: 10
+	      }, { name: 'blogII', shortDescription: 'Улучшенный блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150, programming: 0 }, time: 2,
+	        support: { marketing: 50 }
+	      }, { name: 'supportII', shortDescription: 'Улучшенная техподдержка',
+	        description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 }, time: 4,
+	        support: { marketing: 50 }
+	      }];
 	      // ].map(computeFeatureCost(cost));
 	    }
 	  }, {
@@ -8835,7 +8896,7 @@
 	        (0, _preact.h)('hr', null)
 	      );
 	    }, _this.takeLoan = function (amount) {
-	      var repay = 1.3;
+	      var repay = 1.2;
 
 	      var monthlyPayment = Math.ceil(amount * repay / 100);
 	      return (0, _preact.h)(
@@ -9088,33 +9149,35 @@
 	          '\u0420\u0430\u0441\u0445\u043E\u0434\u044B'
 	        ),
 	        (0, _preact.h)(
-	          'h5',
-	          null,
-	          '\u0411\u0430\u0437\u043E\u0432\u044B\u0435 \u0440\u0430\u0441\u0445\u043E\u0434\u044B'
-	        ),
-	        basicExpenses.map(renderBasicExpense),
-	        (0, _preact.h)(
-	          'h5',
-	          null,
-	          '\u0420\u0430\u0441\u0445\u043E\u0434\u044B \u043D\u0430 \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u043D\u0438\u0435 \u043A\u043E\u043C\u0430\u043D\u0434\u044B'
-	        ),
-	        (0, _preact.h)(
 	          'div',
-	          null,
-	          teamExpenses,
-	          '$'
-	        ),
-	        (0, _preact.h)(
-	          'h5',
-	          null,
-	          '\u041F\u0440\u043E\u0434\u0443\u043A\u0442\u043E\u0432\u044B\u0435 \u0440\u0430\u0441\u0445\u043E\u0434\u044B'
+	          { className: 'offset-mid' },
+	          (0, _preact.h)(
+	            'h5',
+	            null,
+	            '\u0411\u0430\u0437\u043E\u0432\u044B\u0435 \u0440\u0430\u0441\u0445\u043E\u0434\u044B'
+	          ),
+	          basicExpenses.length ? basicExpenses.map(renderBasicExpense) : '0$'
 	        ),
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'offset-mid' },
-	          productExpenses.map(this.renderProductExpense)
+	          (0, _preact.h)(
+	            'h5',
+	            null,
+	            '\u0420\u0430\u0441\u0445\u043E\u0434\u044B \u043D\u0430 \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u043D\u0438\u0435 \u043A\u043E\u043C\u0430\u043D\u0434\u044B'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            teamExpenses,
+	            '$'
+	          )
 	        )
 	      );
+	      // <h5>Продуктовые расходы</h5>
+	      // <div className="offset-mid">
+	      //   {productExpenses.map(this.renderProductExpense)}
+	      // </div>
 	    }
 	  }]);
 	  return Expenses;
@@ -9735,7 +9798,6 @@
 	      var disloyalClients = _productStore2.default.getDisloyalClients(id);
 
 	      var market = _productStore2.default.getMarketShare(id);
-	      var ourCompanyCost = _productStore2.default.getCompanyCost(id);
 
 	      var nearestCompetitor = _this.renderCompetitors(id, _productStore2.default.getRating(id));
 	      var segmentTab = _this.renderSegmentTab(id);
@@ -9757,17 +9819,6 @@
 	        );
 	      }
 
-	      var companyCostTab = void 0;
-	      if (_stages2.default.canShowCompetitorsTab()) {
-	        companyCostTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430\u0448\u0430 \u0440\u044B\u043D\u043E\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: ',
-	          ourCompanyCost,
-	          '$'
-	        );
-	      }
-
 	      var clientTab = void 0;
 	      if (_stages2.default.canShowAdTab()) {
 	        clientTab = (0, _preact.h)(
@@ -9784,6 +9835,7 @@
 	            '\u041D\u0430\u0448\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u044B: ',
 	            market.clients
 	          ),
+	          (0, _preact.h)('br', null),
 	          (0, _preact.h)(
 	            'div',
 	            null,
@@ -9793,19 +9845,29 @@
 	            churn,
 	            '%)'
 	          ),
-	          churnFeatures
+	          churnFeatures,
+	          (0, _preact.h)('br', null)
 	        );
 	      }
+
+	      var supportCostTab = void 0;
+	      var cost = _productStore2.default.getMarketingSupportCost(id);
+	      supportCostTab = (0, _preact.h)(
+	        'div',
+	        null,
+	        '\u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438: ',
+	        cost,
+	        'MP'
+	      );
 
 	      return (0, _preact.h)(
 	        'div',
 	        null,
+	        supportCostTab,
 	        clientTab,
-	        companyCostTab,
 	        adTab,
 	        nearestCompetitor,
 	        segmentTab,
-	        churnFeatures,
 	        (0, _preact.h)(_Marketers2.default, null)
 	      );
 	    }, _this.renderAdTab = function (id, product) {
@@ -10212,7 +10274,7 @@
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438: ',
+	        '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438 (\u0435\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u043E) - ',
 	        mp,
 	        ' ',
 	        pp,
@@ -10220,6 +10282,9 @@
 	        money
 	      );
 	    }
+	  }, {
+	    key: 'renderCompetitorMode',
+	    value: function renderCompetitorMode() {}
 	  }, {
 	    key: 'render',
 	    value: function render(_ref2, state) {
@@ -10263,7 +10328,25 @@
 	          break;
 
 	        case MODE_COMPETITORS:
-	          body = (0, _preact.h)(_competitors2.default, { id: id });
+	          var companyCostTab = void 0;
+	          var ourCompanyCost = _productStore2.default.getCompanyCost(id);
+
+	          if (_stages2.default.canShowCompetitorsTab()) {
+	            companyCostTab = (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u041D\u0430\u0448\u0430 \u0440\u044B\u043D\u043E\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: ',
+	              ourCompanyCost,
+	              '$'
+	            );
+	          }
+
+	          body = (0, _preact.h)(
+	            'div',
+	            null,
+	            companyCostTab,
+	            (0, _preact.h)(_competitors2.default, { id: id })
+	          );
 	          break;
 
 	        case MODE_BONUSES:
@@ -11383,7 +11466,11 @@
 	        }).reverse();
 	      } else {
 	        if (!ads.filter(noClientOverflow).length) {
-	          list = 'Мы привлекли всех клиентов, которых могли. Улучшайте рейтинг, чтобы увеличить потенциальную аудиторию';
+	          list = (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041C\u044B \u043F\u0440\u0438\u0432\u043B\u0435\u043A\u043B\u0438 \u0432\u0441\u0435\u0445 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043A\u043E\u0442\u043E\u0440\u044B\u0445 \u043C\u043E\u0433\u043B\u0438. \u0423\u043B\u0443\u0447\u0448\u0430\u0439\u0442\u0435 \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E\u0431\u044B \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0442\u044C \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0443\u044E \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044E'
+	          );
 	        }
 
 	        if (!ads.filter(enoughMoney).length) {
@@ -12961,6 +13048,10 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
 	var _UI = __webpack_require__(102);
 
 	var _UI2 = _interopRequireDefault(_UI);
@@ -12984,15 +13075,18 @@
 	      var hireButton = void 0;
 
 	      if (!p.isPlayer) {
+	        var fire = function fire() {
+	          _logger2.default.log('fire worker #', p.id, p);
+	          _playerActions2.default.fireWorker(p.id);
+	        };
+
 	        hireButton = (0, _preact.h)(
 	          'div',
 	          { className: 'worker-button-container' },
 	          (0, _preact.h)(
 	            'span',
 	            { className: 'worker-button' },
-	            (0, _preact.h)(_UI2.default.Button, { onClick: function onClick() {
-	                _playerActions2.default.fireWorker(p.id);
-	              }, text: '\u0423\u0432\u043E\u043B\u0438\u0442\u044C', link: true })
+	            (0, _preact.h)(_UI2.default.Button, { onClick: fire, text: '\u0423\u0432\u043E\u043B\u0438\u0442\u044C', link: true })
 	          )
 	        );
 	      }

@@ -74,7 +74,7 @@ export default class Economics extends Component {
   };
 
   takeLoan = amount => {
-    const repay = 1.3;
+    const repay = 1.2;
 
     const monthlyPayment = Math.ceil(amount * repay / 100);
     return (

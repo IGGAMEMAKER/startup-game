@@ -52,15 +52,19 @@ export default class Expenses extends Component {
     return (
       <div>
         <h4>Расходы</h4>
-        <h5>Базовые расходы</h5>
-        {basicExpenses.map(renderBasicExpense)}
-        <h5>Расходы на содержание команды</h5>
-        <div>{teamExpenses}$</div>
-        <h5>Продуктовые расходы</h5>
         <div className="offset-mid">
-          {productExpenses.map(this.renderProductExpense)}
+          <h5>Базовые расходы</h5>
+          {basicExpenses.length ? basicExpenses.map(renderBasicExpense) : `0$`}
+        </div>
+        <div className="offset-mid">
+          <h5>Расходы на содержание команды</h5>
+          <div>{teamExpenses}$</div>
         </div>
       </div>
     )
+    // <h5>Продуктовые расходы</h5>
+        // <div className="offset-mid">
+        //   {productExpenses.map(this.renderProductExpense)}
+        // </div>
   }
 };

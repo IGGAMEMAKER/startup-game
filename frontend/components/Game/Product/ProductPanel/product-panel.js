@@ -221,7 +221,6 @@ export default class ProductPanel extends Component {
     const disloyalClients = productStore.getDisloyalClients(id);
 
     const market = productStore.getMarketShare(id);
-    const ourCompanyCost = productStore.getCompanyCost(id);
 
     const nearestCompetitor = this.renderCompetitors(id, productStore.getRating(id));
     const segmentTab = this.renderSegmentTab(id);
@@ -237,29 +236,31 @@ export default class ProductPanel extends Component {
       </div>
     }
 
-    let companyCostTab;
-    if (stageHelper.canShowCompetitorsTab()) {
-      companyCostTab = <div>Наша рыночная стоимость: {ourCompanyCost}$</div>
-    }
-
     let clientTab;
     if (stageHelper.canShowAdTab()) {
       clientTab = <div>
         <div className="featureGroupTitle">Работа с клиентами</div>
         <div>Наши клиенты: {market.clients}</div>
+        <br />
         <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
         {churnFeatures}
+        <br />
       </div>
     }
 
+    let supportCostTab;
+    const cost = productStore.getMarketingSupportCost(id);
+    supportCostTab = <div>
+      Ежемесячная стоимость поддержки: {cost}MP
+    </div>;
+
     return (
       <div>
+        {supportCostTab}
         {clientTab}
-        {companyCostTab}
         {adTab}
         {nearestCompetitor}
         {segmentTab}
-        {churnFeatures}
         <Marketers />
       </div>
     );
@@ -344,7 +345,7 @@ export default class ProductPanel extends Component {
     }
 
     return <div>
-        Стоимость поддержки: {mp} {pp} {money}
+      Стоимость поддержки (ежемесячно) - {mp} {pp} {money}
     </div>
   };
 
@@ -432,6 +433,9 @@ export default class ProductPanel extends Component {
     )
   };
 
+  renderCompetitorMode() {
+
+  }
 
   renderNavbar = (mode, name) => {
     return (
@@ -527,7 +531,19 @@ export default class ProductPanel extends Component {
         break;
 
       case MODE_COMPETITORS:
-        body = <Competitors id={id} />;
+        let companyCostTab;
+        const ourCompanyCost = productStore.getCompanyCost(id);
+
+        if (stageHelper.canShowCompetitorsTab()) {
+          companyCostTab = <div>Наша рыночная стоимость: {ourCompanyCost}$</div>
+        }
+
+        body = (
+          <div>
+            {companyCostTab}
+            <Competitors id={id} />
+          </div>
+        );
         break;
 
       case MODE_BONUSES:

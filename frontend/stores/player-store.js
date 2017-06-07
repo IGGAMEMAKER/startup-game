@@ -126,7 +126,7 @@ class PlayerStore extends EventEmitter {
   }
 
   getTeam() {
-    return _team;
+    return _team.map(this.idHelper);
   }
 
   getMonthlyMarketerPoints() {
@@ -287,6 +287,8 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PLAYER_ACTIONS_FIRE_WORKER:
+      logger.debug('PLAYER_ACTIONS_FIRE_WORKER', p);
+
       _money -= _team[p.i].salary.money;
       _team.splice(p.i, 1);
       break;

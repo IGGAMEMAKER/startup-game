@@ -3,9 +3,9 @@ export default {
   debug: console.log,
   error: console.error,
   shit: (text) => {
-    console.log(`GOVNOKOD: ${text}`);
-    console.trace();
-    console.log('-----------');
+    // console.log(`GOVNOKOD: ${text}`);
+    // console.trace();
+    // console.log('-----------');
   },
   actions: (sessionId, userId, action) => {
 

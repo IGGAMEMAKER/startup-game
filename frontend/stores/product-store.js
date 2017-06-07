@@ -312,10 +312,11 @@ class ProductStore extends EventEmitter {
   getProductIncome(i) {
     const segments = this.getSegments(i);
 
-    return segments.map((s, segId) => {
-      return this.getSegmentIncome(i, segId);
-    })
-      .reduce((p, c) => p + c);
+    return segments
+      .map((s, segId) => {
+        return this.getSegmentIncome(i, segId);
+      })
+      .reduce((p, c) => p + c, 0);
   }
 
   getIdea(i) {
@@ -325,7 +326,7 @@ class ProductStore extends EventEmitter {
   getViralityRate(i) {
     const rating = this.getRating(i);
     const multiplier = this.getDefaults(i).virality;
-    const marketing = _products[i].features.marketing;
+    const marketing = this.getMarketingFeatures(i);
 
     let base = 0.1;
 
@@ -346,6 +347,50 @@ class ProductStore extends EventEmitter {
     return (base + referralBonuses) * multiplier;
   }
 
+  getMarketingFeatures(id) {
+    return _products[id].features.marketing
+  }
+
+  getBlogPower(id) {
+    const marketing = this.getMarketingFeatures(id);
+
+    if (marketing.blogIII) return 1;
+    if (marketing.blogII) return 0.5;
+    if (marketing.blog) return 0.25;
+
+    return 0;
+  }
+
+  getSupportPower(id) {
+    const marketing = this.getMarketingFeatures(id);
+
+    if (marketing.supportIII) return 1;
+    if (marketing.supportII) return 0.5;
+    if (marketing.support) return 0.25;
+
+    return 0;
+  }
+
+  getEmailPower(id) {
+    const marketing = this.getMarketingFeatures(id);
+
+    if (marketing.emailIII) return 1;
+    if (marketing.emailII) return 0.5;
+    if (marketing.email) return 0.25;
+
+    return 0;
+  }
+
+  getMarketingSupportCostPerClientForSupportFeature(id) {
+    const marketing = this.getMarketingFeatures(id);
+
+    if (marketing.supportIII) return 0.25;
+    if (marketing.supportII)  return 0.5;
+    if (marketing.support)    return 1;
+
+    return 0;
+  }
+
   getChurnRate(i) {
     // TODO fix constant values in blog, email, support in getChurnRate(i)
     // return answer in partitions 0-1
@@ -364,12 +409,10 @@ class ProductStore extends EventEmitter {
     // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
     const ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
 
-    const marketing = _products[i].features.marketing;
-
-    const blog = marketing.blog || 0;
-    const emails = marketing.emails || 0;
-    const support = marketing.support || 0;
-    const k = 0.3; // поправочный коэффициент
+    const blog = this.getBlogPower(i);
+    const emails = this.getEmailPower(i);
+    const support = this.getSupportPower(i);
+    const k = 0.6; // поправочный коэффициент
 
     const marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
 
@@ -409,6 +452,7 @@ class ProductStore extends EventEmitter {
   }
 
   getProductExpenses(i) {
+    return 0;
     return this.getProductBlogCost(i) + this.getProductSupportCost(i);
   }
 
@@ -548,32 +592,47 @@ class ProductStore extends EventEmitter {
     }
   }
 
-  getSupportCostModifier(i) {
-    return Math.pow(this.getImprovementsAmount(i), balance.SUPPORT_COST_MODIFIER);
+  getProgrammingSupportCostModifier(id) {
+    return Math.pow(this.getImprovementsAmount(id), balance.SUPPORT_COST_MODIFIER);
   }
 
-  getProgrammingSupportCost(i) {
-    return Math.floor(this.getDefaults(i).support.pp * this.getSupportCostModifier(i));
+  getProgrammingSupportCost(id) {
+    return Math.floor(this.getDefaults(id).support.pp * this.getProgrammingSupportCostModifier(id));
   }
 
-  getMarketingSupportCost(i) {
+  getMarketingSupportCost(id) {
     logger.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
+    // const blogSupportCost = this.getBlogPower(id);
 
-    return 15;
+    const supportSupportCost = Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100);
+    return supportSupportCost + 15;
   }
 
   getMarketingFeatureList(idea) {
     return [
-      { name: 'blog', shortDescription: 'Блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+      { name: 'blog', shortDescription: 'Блог проекта',
+        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
         points: { marketing: 150, programming: 0 }, time: 2,
-        support: { marketing: 50, programming: 0 }
+        support: { marketing: 50 }
       },
-      { name: 'support', shortDescription: 'Техподдержка', description: 'Техподдержка снижает отток клиентов на 15%',
+      { name: 'support', shortDescription: 'Техподдержка',
+        description: 'Техподдержка снижает отток клиентов на 15%',
         points: { marketing: 50, programming: 100 }, time: 4,
         support: { money: 5000 }
       },
       { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
-        points: { marketing: 50, programming: 100 }, time: 10 },
+        points: { marketing: 50, programming: 100 }, time: 10
+      },
+
+      { name: 'blogII', shortDescription: 'Улучшенный блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+        points: { marketing: 150, programming: 0 }, time: 2,
+        support: { marketing: 50 }
+      },
+      { name: 'supportII', shortDescription: 'Улучшенная техподдержка',
+        description: 'Техподдержка снижает отток клиентов на 15%',
+        points: { marketing: 50, programming: 100 }, time: 4,
+        support: { marketing: 50 }
+      },
 
       // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
       //   points: { marketing: 50, programming: 100 }, time: 7 }
