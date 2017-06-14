@@ -31,10 +31,13 @@ export default class MainFeature extends Component {
     let hireProgrammerLink;
 
     if (support > ppIncrease) {
-      hireProgrammerLink = <div>
-        <div>Наши программисты не справляются с нагрузкой (мы теряем {support - ppIncrease}PP ежемесячно)
-          Нужно больше программистов!</div>
-        <UI.Button link text="Нанять программиста" onClick={onHireProgrammerClick} />
+      hireProgrammerLink = <div className="alert alert-danger">
+        <div>
+          <strong>Наши программисты не справляются с нагрузкой</strong>
+          <div>(мы теряем {support - ppIncrease}PP ежемесячно)</div>
+        </div>
+        <br />
+        <UI.Button secondary text="Нанять программиста" onClick={onHireProgrammerClick} />
       </div>
     }
 

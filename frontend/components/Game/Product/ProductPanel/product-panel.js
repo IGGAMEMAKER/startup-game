@@ -264,9 +264,12 @@ export default class ProductPanel extends Component {
         </div>
       </div>
       <div className={support.needToHireWorker ? '' : 'hide'}>
-        <div>Наши маркетологи не справляются с нагрузкой (мы теряем {support.diff}MP ежемесячно)
-          Нужно больше маркетологов!</div>
-        <UI.Button link text="Нанять маркетолога" onClick={onHireMarketerClick} />
+        <div className="alert alert-danger">
+          <strong>Наши маркетологи не справляются с нагрузкой</strong>
+          <div>(мы теряем {support.diff}MP ежемесячно)</div>
+          <br />
+          <UI.Button secondary text="Нанять маркетолога" onClick={onHireMarketerClick} />
+        </div>
       </div>
       <br />
     </div>;

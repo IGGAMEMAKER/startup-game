@@ -95,7 +95,12 @@ class ProductStore extends EventEmitter {
   getRating(id, segmentId) {
     if (!segmentId) segmentId = 0;
 
-    return round(computeRating(_products[id], segmentId));
+    const lowProgrammingPointsPenalty = 0;
+    const lowMarketingPointsPenalty = 0;
+
+    const result = round(computeRating(_products[id], segmentId)) - lowMarketingPointsPenalty - lowProgrammingPointsPenalty;
+
+    return Math.max(result, 0);
   }
 
   getClients(id, segmentId) {
@@ -641,7 +646,7 @@ class ProductStore extends EventEmitter {
     // const blogSupportCost = this.getBlogPower(id);
 
     const supportSupportCost = this.getMarketingSupportTechTotalCost(id);
-    return supportSupportCost + this.getBlogStatusStructured(id).supportCost;
+    return 15 + supportSupportCost + this.getBlogStatusStructured(id).supportCost;
   }
 
   getMarketingFeatureList(idea) {

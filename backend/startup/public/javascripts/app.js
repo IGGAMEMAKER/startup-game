@@ -6380,7 +6380,7 @@
 	  _flux2.default.scheduleActions.setGamePhase(stage);
 	};
 
-	var isTestMode = true;
+	var isTestMode = false;
 
 	_logger2.default.shit('need to send stats on game phase change');
 
@@ -7021,7 +7021,12 @@
 	    value: function getRating(id, segmentId) {
 	      if (!segmentId) segmentId = 0;
 
-	      return (0, _round2.default)((0, _computeRating2.default)(_products[id], segmentId));
+	      var lowProgrammingPointsPenalty = 0;
+	      var lowMarketingPointsPenalty = 0;
+
+	      var result = (0, _round2.default)((0, _computeRating2.default)(_products[id], segmentId)) - lowMarketingPointsPenalty - lowProgrammingPointsPenalty;
+
+	      return Math.max(result, 0);
 	    }
 	  }, {
 	    key: 'getClients',
@@ -7623,7 +7628,7 @@
 	      // const blogSupportCost = this.getBlogPower(id);
 
 	      var supportSupportCost = this.getMarketingSupportTechTotalCost(id);
-	      return supportSupportCost + this.getBlogStatusStructured(id).supportCost;
+	      return 15 + supportSupportCost + this.getBlogStatusStructured(id).supportCost;
 	    }
 	  }, {
 	    key: 'getMarketingFeatureList',
@@ -8647,7 +8652,7 @@
 	});
 	var TECHNICAL_DEBT_MODIFIER = exports.TECHNICAL_DEBT_MODIFIER = 1.03;
 	var TECHNOLOGY_COST_MODIFIER = exports.TECHNOLOGY_COST_MODIFIER = 1.045;
-	var SUPPORT_COST_MODIFIER = exports.SUPPORT_COST_MODIFIER = 0.25;
+	var SUPPORT_COST_MODIFIER = exports.SUPPORT_COST_MODIFIER = 0.35;
 
 /***/ },
 /* 159 */
@@ -10409,12 +10414,22 @@
 	          { className: support.needToHireWorker ? '' : 'hide' },
 	          (0, _preact.h)(
 	            'div',
-	            null,
-	            '\u041D\u0430\u0448\u0438 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0438 \u043D\u0435 \u0441\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u0441 \u043D\u0430\u0433\u0440\u0443\u0437\u043A\u043E\u0439 (\u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
-	            support.diff,
-	            'MP \u0435\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u043E) \u041D\u0443\u0436\u043D\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u043E\u0432!'
-	          ),
-	          (0, _preact.h)(_UI2.default.Button, { link: true, text: '\u041D\u0430\u043D\u044F\u0442\u044C \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0430', onClick: onHireMarketerClick })
+	            { className: 'alert alert-danger' },
+	            (0, _preact.h)(
+	              'strong',
+	              null,
+	              '\u041D\u0430\u0448\u0438 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0438 \u043D\u0435 \u0441\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u0441 \u043D\u0430\u0433\u0440\u0443\u0437\u043A\u043E\u0439'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '(\u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
+	              support.diff,
+	              'MP \u0435\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u043E)'
+	            ),
+	            (0, _preact.h)('br', null),
+	            (0, _preact.h)(_UI2.default.Button, { secondary: true, text: '\u041D\u0430\u043D\u044F\u0442\u044C \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0430', onClick: onHireMarketerClick })
+	          )
 	        ),
 	        (0, _preact.h)('br', null)
 	      );
@@ -12319,15 +12334,25 @@
 	      if (support > ppIncrease) {
 	        hireProgrammerLink = (0, _preact.h)(
 	          'div',
-	          null,
+	          { className: 'alert alert-danger' },
 	          (0, _preact.h)(
 	            'div',
 	            null,
-	            '\u041D\u0430\u0448\u0438 \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435 \u0441\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u0441 \u043D\u0430\u0433\u0440\u0443\u0437\u043A\u043E\u0439 (\u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
-	            support - ppIncrease,
-	            'PP \u0435\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u043E) \u041D\u0443\u0436\u043D\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u043E\u0432!'
+	            (0, _preact.h)(
+	              'strong',
+	              null,
+	              '\u041D\u0430\u0448\u0438 \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435 \u0441\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u0441 \u043D\u0430\u0433\u0440\u0443\u0437\u043A\u043E\u0439'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '(\u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
+	              support - ppIncrease,
+	              'PP \u0435\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u043E)'
+	            )
 	          ),
-	          (0, _preact.h)(_UI2.default.Button, { link: true, text: '\u041D\u0430\u043D\u044F\u0442\u044C \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u0430', onClick: onHireProgrammerClick })
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(_UI2.default.Button, { secondary: true, text: '\u041D\u0430\u043D\u044F\u0442\u044C \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u0430', onClick: onHireProgrammerClick })
 	        );
 	      }
 

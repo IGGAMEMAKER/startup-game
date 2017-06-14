@@ -11,7 +11,7 @@ const setStage = (stage) => {
   flux.scheduleActions.setGamePhase(stage);
 };
 
-const isTestMode = true;
+const isTestMode = false;
 
 logger.shit('need to send stats on game phase change');
 
