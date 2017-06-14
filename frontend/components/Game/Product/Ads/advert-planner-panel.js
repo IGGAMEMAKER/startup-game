@@ -108,7 +108,6 @@ export default class AdvertPlannerPanel extends Component {
         list = <div>
           Мы привлекли всех клиентов, которых могли.
           Улучшайте рейтинг, чтобы увеличить потенциальную аудиторию
-          
         </div>
       }
 

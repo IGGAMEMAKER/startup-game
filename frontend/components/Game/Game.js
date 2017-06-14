@@ -134,7 +134,12 @@ export default class Game extends Component {
     const id = state.id;
     const product = state.products[id];
 
-    return <Product product={product} id={id} onHireProgrammerClick={this.onRenderStaffMenu} />;
+    return <Product
+      product={product}
+      id={id}
+      onHireProgrammerClick={this.onRenderStaffMenu}
+      onHireMarketerClick={this.onRenderStaffMenu}
+    />;
   };
 
   renderStaffMenu = (state) => {

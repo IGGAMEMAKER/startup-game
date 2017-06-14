@@ -6,21 +6,32 @@ const monthlyProgrammingPointsDifferenceStructured = () => {
   logger.shit('getProgrammingSupportCost with zero index... ' +
     'we need real ID of our product!! /helpers/points/modification.js');
 
+  const increase = flux.playerStore.getMonthlyProgrammerPoints();
+  const decrease = flux.productStore.getProgrammingSupportCost(id);
+
   return {
-    increase: flux.playerStore.getMonthlyProgrammerPoints(),
-    decrease: flux.productStore.getProgrammingSupportCost(id)
+    increase,
+    decrease,
+    needToHireWorker: decrease > increase,
+    diff: Math.abs(decrease - increase)
   }
 };
 
 const monthlyMarketingPointsDifferenceStructured = () => {
   const id = 0;
 
+  const decrease = flux.productStore.getMarketingSupportCost(id);
+  const increase = flux.playerStore.getMonthlyMarketerPoints();
+
   return {
-    increase: flux.playerStore.getMonthlyMarketerPoints(),
-    decrease: flux.productStore.getMarketingSupportCost(id),
+    increase,
+    decrease,
     detailed: {
-      blog: flux.productStore.getBlogStatusStructured(id)
-    }
+      blog: flux.productStore.getBlogStatusStructured(id).supportCost,
+      support: flux.productStore.getMarketingSupportTechTotalCost(id)
+    },
+    needToHireWorker: decrease > increase,
+    diff: Math.abs(decrease - increase)
   }
 };
 

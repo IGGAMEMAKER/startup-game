@@ -758,7 +758,12 @@
 	      var id = state.id;
 	      var product = state.products[id];
 
-	      return (0, _preact.h)(_Product2.default, { product: product, id: id, onHireProgrammerClick: _this.onRenderStaffMenu });
+	      return (0, _preact.h)(_Product2.default, {
+	        product: product,
+	        id: id,
+	        onHireProgrammerClick: _this.onRenderStaffMenu,
+	        onHireMarketerClick: _this.onRenderStaffMenu
+	      });
 	    }, _this.renderStaffMenu = function (state) {
 	      // <div className="staff-group-title">Наша команда</div>
 	      return (0, _preact.h)(
@@ -7332,17 +7337,17 @@
 	        })[0].support.marketing;
 	      };
 
-	      if (marketing.blogIII) {
-	        power = 1;
-	        support = featureCost('blogIII');
+	      if (marketing.blog) {
+	        power = 0.25;
+	        support = featureCost('blog');
 	      }
 	      if (marketing.blogII) {
 	        power = 0.5;
 	        support = featureCost('blogII');
 	      }
-	      if (marketing.blog) {
-	        power = 0.25;
-	        support = featureCost('blog');
+	      if (marketing.blogIII) {
+	        power = 1;
+	        support = featureCost('blogIII');
 	      }
 
 	      return {
@@ -7607,13 +7612,18 @@
 	      return Math.floor(this.getDefaults(id).support.pp * this.getProgrammingSupportCostModifier(id));
 	    }
 	  }, {
+	    key: 'getMarketingSupportTechTotalCost',
+	    value: function getMarketingSupportTechTotalCost(id) {
+	      return Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100);
+	    }
+	  }, {
 	    key: 'getMarketingSupportCost',
 	    value: function getMarketingSupportCost(id) {
 	      _logger2.default.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
 	      // const blogSupportCost = this.getBlogPower(id);
 
-	      var supportSupportCost = Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100);
-	      return supportSupportCost + 15;
+	      var supportSupportCost = this.getMarketingSupportTechTotalCost(id);
+	      return supportSupportCost + this.getBlogStatusStructured(id).supportCost;
 	    }
 	  }, {
 	    key: 'getMarketingFeatureList',
@@ -9743,7 +9753,8 @@
 	    value: function render(props, state) {
 	      var product = props.product,
 	          id = props.id,
-	          onHireProgrammerClick = props.onHireProgrammerClick;
+	          onHireProgrammerClick = props.onHireProgrammerClick,
+	          onHireMarketerClick = props.onHireMarketerClick;
 
 
 	      var body = void 0;
@@ -9757,7 +9768,12 @@
 	          body = (0, _preact.h)(
 	            'div',
 	            null,
-	            (0, _preact.h)(_productPanel2.default, { product: product, id: id, onHireProgrammerClick: onHireProgrammerClick })
+	            (0, _preact.h)(_productPanel2.default, {
+	              product: product,
+	              id: id,
+	              onHireProgrammerClick: onHireProgrammerClick,
+	              onHireMarketerClick: onHireMarketerClick
+	            })
 	          );
 	          break;
 	      }
@@ -10077,6 +10093,10 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
+	var _modification = __webpack_require__(187);
+
+	var _modification2 = _interopRequireDefault(_modification);
+
 	var _professions = __webpack_require__(162);
 
 	var PROFESSIONS = _interopRequireWildcard(_professions);
@@ -10129,9 +10149,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var MODE_METRICS = 'MODE_METRICS';
 	// import React, { Component, PropTypes } from 'react';
 
-	var MODE_METRICS = 'MODE_METRICS';
 	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
@@ -10282,7 +10302,7 @@
 	          )
 	        )
 	      );
-	    }, _this.renderClientTab = function (id, product) {
+	    }, _this.renderClientTab = function (id, product, onHireMarketerClick) {
 	      var idea = product.idea;
 
 
@@ -10342,18 +10362,61 @@
 	        );
 	      }
 
+	      var support = _modification2.default.marketing();
 	      var supportCostTab = void 0;
-	      var cost = _productStore2.default.getMarketingSupportCost(id);
+
 	      supportCostTab = (0, _preact.h)(
 	        'div',
 	        null,
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438: ',
-	          cost,
-	          'MP'
-	        )
+	          '\u041D\u0430\u0448\u0438 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0438 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u044F\u0442: ',
+	          support.increase,
+	          'MP \u0432 \u043C\u0435\u0441\u044F\u0446'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: support.decrease ? '' : 'hide' },
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438: ',
+	            support.decrease,
+	            'MP'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'offset-mid' },
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0431\u043B\u043E\u0433: ',
+	              support.detailed.blog,
+	              'MP'
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0442\u0435\u0445\u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0443: ',
+	              support.detailed.support,
+	              'MP'
+	            )
+	          )
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: support.needToHireWorker ? '' : 'hide' },
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041D\u0430\u0448\u0438 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0438 \u043D\u0435 \u0441\u043F\u0440\u0430\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u0441 \u043D\u0430\u0433\u0440\u0443\u0437\u043A\u043E\u0439 (\u043C\u044B \u0442\u0435\u0440\u044F\u0435\u043C ',
+	            support.diff,
+	            'MP \u0435\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u043E) \u041D\u0443\u0436\u043D\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u043E\u0432!'
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, { link: true, text: '\u041D\u0430\u043D\u044F\u0442\u044C \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0430', onClick: onHireMarketerClick })
+	        ),
+	        (0, _preact.h)('br', null)
 	      );
 
 	      return (0, _preact.h)(
@@ -10790,7 +10853,8 @@
 	    value: function render(_ref2, state) {
 	      var product = _ref2.product,
 	          gamePhase = _ref2.gamePhase,
-	          onHireProgrammerClick = _ref2.onHireProgrammerClick;
+	          onHireProgrammerClick = _ref2.onHireProgrammerClick,
+	          onHireMarketerClick = _ref2.onHireMarketerClick;
 
 	      // if (stageHelper.isFirstWorkerMission()) return <div></div>;
 	      // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
@@ -10809,7 +10873,7 @@
 	          break;
 
 	        case MODE_MARKETING:
-	          body = this.renderClientTab(id, product);
+	          body = this.renderClientTab(id, product, onHireMarketerClick);
 	          break;
 
 	        case MODE_ADS:
@@ -13547,6 +13611,64 @@
 
 	exports.default = {
 	  emit: emit
+	};
+
+/***/ },
+/* 187 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _flux = __webpack_require__(138);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	var _logger = __webpack_require__(98);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var monthlyProgrammingPointsDifferenceStructured = function monthlyProgrammingPointsDifferenceStructured() {
+	  var id = 0;
+	  _logger2.default.shit('getProgrammingSupportCost with zero index... ' + 'we need real ID of our product!! /helpers/points/modification.js');
+
+	  var increase = _flux2.default.playerStore.getMonthlyProgrammerPoints();
+	  var decrease = _flux2.default.productStore.getProgrammingSupportCost(id);
+
+	  return {
+	    increase: increase,
+	    decrease: decrease,
+	    needToHireWorker: decrease > increase,
+	    diff: Math.abs(decrease - increase)
+	  };
+	};
+
+	var monthlyMarketingPointsDifferenceStructured = function monthlyMarketingPointsDifferenceStructured() {
+	  var id = 0;
+
+	  var decrease = _flux2.default.productStore.getMarketingSupportCost(id);
+	  var increase = _flux2.default.playerStore.getMonthlyMarketerPoints();
+
+	  return {
+	    increase: increase,
+	    decrease: decrease,
+	    detailed: {
+	      blog: _flux2.default.productStore.getBlogStatusStructured(id).supportCost,
+	      support: _flux2.default.productStore.getMarketingSupportTechTotalCost(id)
+	    },
+	    needToHireWorker: decrease > increase,
+	    diff: Math.abs(decrease - increase)
+	  };
+	};
+
+	exports.default = {
+	  programming: monthlyProgrammingPointsDifferenceStructured,
+	  marketing: monthlyMarketingPointsDifferenceStructured
 	};
 
 /***/ }

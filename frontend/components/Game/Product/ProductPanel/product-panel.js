@@ -11,6 +11,9 @@ import Metrics from '../KPI/metrics';
 import Schedule from '../../Schedule';
 import UI from '../../../UI';
 
+import pointSaldoHelper from '../../../../helpers/points/modification';
+
+
 import * as PROFESSIONS from '../../../../constants/professions';
 
 import productActions from '../../../../actions/product-actions';
@@ -214,7 +217,7 @@ export default class ProductPanel extends Component {
     )
   }
 
-  renderClientTab = (id, product) => {
+  renderClientTab = (id, product, onHireMarketerClick) => {
     const { idea } = product;
 
     const churn = productStore.getChurnRate(id).pretty;
@@ -230,7 +233,7 @@ export default class ProductPanel extends Component {
     if (stageHelper.canShowChurnFeatures()) {
       const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
-        // <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
+      // <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
       churnFeatures = <div className="featureGroupDescriptionWrapper">
         <div className="featureGroupBody">{marketing}</div>
       </div>
@@ -248,12 +251,24 @@ export default class ProductPanel extends Component {
       </div>
     }
 
+    const support = pointSaldoHelper.marketing();
     let supportCostTab;
-    const cost = productStore.getMarketingSupportCost(id);
+
     supportCostTab = <div>
-      <div>
-        Ежемесячная стоимость поддержки: {cost}MP
+      <div>Наши маркетологи производят: {support.increase}MP в месяц</div>
+      <div className={support.decrease ? '' : 'hide'}>
+        <div>Ежемесячная стоимость поддержки: {support.decrease}MP</div>
+        <div className="offset-mid">
+          <div>Затраты на блог: {support.detailed.blog}MP</div>
+          <div>Затраты на техподдержку: {support.detailed.support}MP</div>
+        </div>
       </div>
+      <div className={support.needToHireWorker ? '' : 'hide'}>
+        <div>Наши маркетологи не справляются с нагрузкой (мы теряем {support.diff}MP ежемесячно)
+          Нужно больше маркетологов!</div>
+        <UI.Button link text="Нанять маркетолога" onClick={onHireMarketerClick} />
+      </div>
+      <br />
     </div>;
 
     return (
@@ -264,8 +279,8 @@ export default class ProductPanel extends Component {
         {adTab}
       </div>
     );
-        // {nearestCompetitor}
-        // {segmentTab}
+    // {nearestCompetitor}
+    // {segmentTab}
   };
 
   renderAdTab = (id, product) => {
@@ -471,7 +486,7 @@ export default class ProductPanel extends Component {
 
     let clients;
     // if (stageHelper.canShowClientsTab()) {
-      clients = this.renderNavbar(MODE_MARKETING, 'Маркетинг');
+    clients = this.renderNavbar(MODE_MARKETING, 'Маркетинг');
     // }
 
     let competitors;
@@ -496,7 +511,7 @@ export default class ProductPanel extends Component {
     );
   };
 
-  render({ product, gamePhase, onHireProgrammerClick }, state) {
+  render({ product, gamePhase, onHireProgrammerClick, onHireMarketerClick }, state) {
     // if (stageHelper.isFirstWorkerMission()) return <div></div>;
     // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
 
@@ -513,7 +528,7 @@ export default class ProductPanel extends Component {
         break;
 
       case MODE_MARKETING:
-        body = this.renderClientTab(id, product);
+        body = this.renderClientTab(id, product, onHireMarketerClick);
         break;
 
       case MODE_ADS:
@@ -536,7 +551,7 @@ export default class ProductPanel extends Component {
             onHireProgrammerClick={onHireProgrammerClick}
           />
           {this.renderSegmentTab(id)}
-          </div>;
+        </div>;
         break;
 
       case MODE_COMPETITORS:

@@ -373,17 +373,17 @@ class ProductStore extends EventEmitter {
 
     const featureCost = name => this.getMarketingFeatureList().filter(f => f.name === name)[0].support.marketing;
 
-    if (marketing.blogIII) {
-      power = 1;
-      support = featureCost('blogIII')
+    if (marketing.blog) {
+      power = 0.25;
+      support = featureCost('blog')
     }
     if (marketing.blogII) {
       power = 0.5;
       support = featureCost('blogII')
     }
-    if (marketing.blog) {
-      power = 0.25;
-      support = featureCost('blog')
+    if (marketing.blogIII) {
+      power = 1;
+      support = featureCost('blogIII')
     }
 
     return {
@@ -632,12 +632,16 @@ class ProductStore extends EventEmitter {
     return Math.floor(this.getDefaults(id).support.pp * this.getProgrammingSupportCostModifier(id));
   }
 
+  getMarketingSupportTechTotalCost(id) {
+    return Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100);
+  }
+
   getMarketingSupportCost(id) {
     logger.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
     // const blogSupportCost = this.getBlogPower(id);
 
-    const supportSupportCost = Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100);
-    return supportSupportCost + 15;
+    const supportSupportCost = this.getMarketingSupportTechTotalCost(id);
+    return supportSupportCost + this.getBlogStatusStructured(id).supportCost;
   }
 
   getMarketingFeatureList(idea) {
