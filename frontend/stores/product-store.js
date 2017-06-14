@@ -92,22 +92,28 @@ class ProductStore extends EventEmitter {
     return companyCostComputer.compute(_products[id]);
   }
 
-  getRating(i, segmentId) {
+  getRating(id, segmentId) {
     if (!segmentId) segmentId = 0;
 
-    return round(computeRating(_products[i], segmentId));
+    return round(computeRating(_products[id], segmentId));
   }
 
-  getClients(i, segmentId) {
-    const total =  _products[i].KPI.clients;
+  getClients(id, segmentId) {
+    const total =  _products[id].KPI.clients;
     if (segmentId === undefined || segmentId === null) return total;
 
-    return Math.floor(this.getSegments(i)[segmentId].percentage * total / 100);
+    const s = this.getSegmentBySegmentId(id, segmentId);
+
+    return Math.floor(s.percentage * total / 100);
   }
 
-  getSegmentedPriorities(i, segId) {
-    const s = this.getSegments(i)[segId];
-    const features = this.getDefaults(i).features;
+  getSegmentBySegmentId(id, segId) {
+    return this.getSegments(id)[segId];
+  }
+
+  getSegmentedPriorities(id, segId) {
+    const s = this.getSegmentBySegmentId(id, segId);
+    const features = this.getDefaults(id).features;
 
     return s.rating.map((r, index) => {
       return {
@@ -117,8 +123,8 @@ class ProductStore extends EventEmitter {
     }).sort((s1, s2) => s2.rating - s1.rating);
   }
 
-  getNewClients(i) {
-    return _products[i].KPI.newClients;
+  getNewClients(id) {
+    return _products[id].KPI.newClients;
   }
 
   getDisloyalClients(i) {
@@ -129,8 +135,8 @@ class ProductStore extends EventEmitter {
     return Math.floor(this.getNewClients(i) * this.getViralityRate(i));
   }
 
-  getMainFeatureQualityByFeatureId(i, featureId) {
-    const value = _products[i].features.offer[featureId];
+  getMainFeatureQualityByFeatureId(id, featureId) {
+    const value = _products[id].features.offer[featureId];
 
     return value; // round(value / feature.data);
   }
@@ -178,10 +184,10 @@ class ProductStore extends EventEmitter {
     };
   }
 
-  getAnalyticsValueForFeatureCreating(i) {
+  getAnalyticsValueForFeatureCreating(id) {
     // range: 0 - 1
     // range: 0.1 - 0.4
-    const analytics = _products[i].features.analytics;
+    const analytics = _products[id].features.analytics;
 
     let value = 0;
 
@@ -208,13 +214,13 @@ class ProductStore extends EventEmitter {
     return this.getDefaults(i).utility;
   }
 
-  getPaymentModifier(i) {
-    const payments = _products[i].features.payment;
+  getPaymentModifier(id) {
+    const payments = _products[id].features.payment;
     // mockBuying
     // basicPricing
     // segmentedPricing
     if (payments.segmentedPricing3) {
-      return 0.95;
+      return 1;
     }
     if (payments.segmentedPricing2) {
       return 0.85;
@@ -269,23 +275,28 @@ class ProductStore extends EventEmitter {
     }
   }
 
-  getProductPrice(i, segId) {
-    if (!segId) return this.getDefaults(i).price;
+  getProductPrice(id, segId) {
+    const defaults = this.getDefaults(id);
 
-    return this.getDefaults(i).segments[segId].price;
+    if (!segId) return defaults.price;
+
+    return defaults.segments[segId].price;
   }
 
-  isPaymentEnabled(i, segmentId) {
-    const payments = _products[i].features.payment;
+  getFeatures(id, featureGroup) {
+    return _products[id].features[featureGroup];
+  }
+
+  isPaymentEnabled(id, segmentId) {
+    const payments = this.getFeatures(id, 'payment');
     // mockBuying
     // basicPricing
     // segmentedPricing
 
     logger.shit('requirements for segment');
 
-    if (!this.requirementsOKforSegment(i, segmentId).valid) return 0;
+    if (!this.requirementsOKforSegment(id, segmentId).valid) return 0;
 
-    // if (payments.segmentedPricing || payments.basicPricing) {
     if (payments.basicPricing) {
       return 1;
     }
@@ -348,25 +359,46 @@ class ProductStore extends EventEmitter {
   }
 
   getMarketingFeatures(id) {
-    return _products[id].features.marketing
+    return _products[id].features.marketing;
   }
 
   getBlogPower(id) {
+    return this.getBlogStatusStructured(id).power;
+  }
+
+  getBlogStatusStructured(id) {
     const marketing = this.getMarketingFeatures(id);
+    let power = 0;
+    let support = 0;
 
-    if (marketing.blogIII) return 1;
-    if (marketing.blogII) return 0.5;
-    if (marketing.blog) return 0.25;
+    const featureCost = name => this.getMarketingFeatureList().filter(f => f.name === name)[0].support.marketing;
 
-    return 0;
+    if (marketing.blogIII) {
+      power = 1;
+      support = featureCost('blogIII')
+    }
+    if (marketing.blogII) {
+      power = 0.5;
+      support = featureCost('blogII')
+    }
+    if (marketing.blog) {
+      power = 0.25;
+      support = featureCost('blog')
+    }
+
+    return {
+      power,
+      supportCost: support,
+      financed: true // has enough points
+    }
   }
 
   getSupportPower(id) {
     const marketing = this.getMarketingFeatures(id);
 
     if (marketing.supportIII) return 1;
-    if (marketing.supportII) return 0.5;
-    if (marketing.support) return 0.25;
+    if (marketing.supportII)  return 0.5;
+    if (marketing.support)    return 0.25;
 
     return 0;
   }
@@ -375,8 +407,8 @@ class ProductStore extends EventEmitter {
     const marketing = this.getMarketingFeatures(id);
 
     if (marketing.emailIII) return 1;
-    if (marketing.emailII) return 0.5;
-    if (marketing.email) return 0.25;
+    if (marketing.emailII)  return 0.5;
+    if (marketing.email)    return 0.25;
 
     return 0;
   }
@@ -429,14 +461,14 @@ class ProductStore extends EventEmitter {
     };
   }
 
-  getProductBlogCost(i) {
+  getProductBlogCost(id) {
     const BASE_BLOG_COST = 1000;
 
-    return _products[i].features.marketing.blog ? BASE_BLOG_COST : 0;
+    return this.getMarketingFeatures(id).blog ? BASE_BLOG_COST : 0;
   }
 
   getProductSupportCost(i) {
-    const marketing = _products[i].features.marketing;
+    const marketing = this.getMarketingFeatures(i);
 
     const support = marketing.support || 0;
 
@@ -444,8 +476,8 @@ class ProductStore extends EventEmitter {
 
     const clients = this.getClients(i);
 
-    if (clients < 1000) return 300;
-    if (clients < 10000) return 500;
+    if (clients < 1000)   return 300;
+    if (clients < 10000)  return 500;
     if (clients < 100000) return 3000;
 
     return 10000;
@@ -610,30 +642,48 @@ class ProductStore extends EventEmitter {
 
   getMarketingFeatureList(idea) {
     return [
-      { name: 'blog', shortDescription: 'Блог проекта',
+      {
+        name: 'blog', shortDescription: 'Блог проекта',
         description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-        points: { marketing: 150, programming: 0 }, time: 2,
+        points: { marketing: 150 },
         support: { marketing: 50 }
       },
-      { name: 'support', shortDescription: 'Техподдержка',
+      {
+        name: 'support', shortDescription: 'Техподдержка',
         description: 'Техподдержка снижает отток клиентов на 15%',
-        points: { marketing: 50, programming: 100 }, time: 4,
-        support: { money: 5000 }
-      },
-      { name: 'emails', shortDescription: 'Рассылка электронной почты', description: 'Рассылка электронной почти снижает отток клиентов на 5%',
-        points: { marketing: 50, programming: 100 }, time: 10
-      },
-
-      { name: 'blogII', shortDescription: 'Улучшенный блог проекта', description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-        points: { marketing: 150, programming: 0 }, time: 2,
+        points: { marketing: 50, programming: 100 },
         support: { marketing: 50 }
       },
-      { name: 'supportII', shortDescription: 'Улучшенная техподдержка',
+      {
+        name: 'blogII', shortDescription: 'Улучшенный блог проекта',
+        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+        points: { marketing: 150 },
+        support: { marketing: 150 }
+      },
+      {
+        name: 'supportII', shortDescription: 'Улучшенная техподдержка',
         description: 'Техподдержка снижает отток клиентов на 15%',
-        points: { marketing: 50, programming: 100 }, time: 4,
+        points: { marketing: 50, programming: 100 },
         support: { marketing: 50 }
       },
-
+      {
+        name: 'emails', shortDescription: 'Рассылка электронной почты',
+        description: 'Рассылка электронной почти снижает отток клиентов на 5%',
+        points: { marketing: 50, programming: 100 },
+        support: { programming: 20 }
+      },
+      {
+        name: 'blogIII', shortDescription: 'Улучшенный блог проекта II',
+        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+        points: { marketing: 150 },
+        support: { marketing: 150 }
+      },
+      {
+        name: 'supportIII', shortDescription: 'Улучшенная техподдержка II',
+        description: 'Техподдержка снижает отток клиентов на 15%. ',
+        points: { marketing: 50, programming: 100 },
+        support: { marketing: 50 }
+      }
       // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
       //   points: { marketing: 50, programming: 100 }, time: 7 }
     ];
@@ -692,25 +742,39 @@ class ProductStore extends EventEmitter {
     const up = points => Math.ceil(points * technicalDebtModifier);
 
     return [
-      { name: 'mockBuying', shortDescription: 'Тестовая покупка', description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
+      {
+        name: 'mockBuying', shortDescription: 'Тестовая покупка',
+        description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
         points: { programming: up(50), marketing: 0 }
       },
-      { name: 'basicPricing', shortDescription: 'Единый тарифный план I', description: 'Единая цена для всех клиентов',
+      {
+        name: 'basicPricing', shortDescription: 'Единый тарифный план I',
+        description: 'Единая цена для всех клиентов. Мы начинаем извлекать доходы с продукта',
         points: { programming: up(150), marketing: 0 }
       },
-      { name: 'basicPricing2', shortDescription: 'Единый тарифный план II', description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
+      {
+        name: 'basicPricing2', shortDescription: 'Единый тарифный план II',
+        description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
         points: { programming: up(50), marketing: 0 }
       },
-      { name: 'basicPricing3', shortDescription: 'Единый тарифный план III', description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
+      {
+        name: 'basicPricing3', shortDescription: 'Единый тарифный план III',
+        description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
         points: { programming: up(50), marketing: 0 }
       },
-      { name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
+      {
+        name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I',
+        description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
         points: { programming: up(250), marketing: 0 }
       },
-      { name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II', description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
+      {
+        name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II',
+        description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
         points: { programming: up(150), marketing: 0 }
       },
-      { name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III', description: 'Грести деньги лопатами!',
+      {
+        name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III',
+        description: 'Грести деньги лопатами!',
         points: { programming: up(150), marketing: 0 }
       }
     ];
@@ -847,10 +911,10 @@ class ProductStore extends EventEmitter {
         }
       })
       // return [
-    //   // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
-    //   // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
-    //   // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
-    // ]
+      //   // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
+      //   // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
+      //   // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
+      // ]
       .sort((a, b) => a.rating > b.rating);
   }
 
@@ -866,7 +930,7 @@ class ProductStore extends EventEmitter {
     let frozen = ourClients;
     const unbeatableClients = uncompeteableApps.map(c => c.clients).reduce((p, c) => p + c, 0);
     // if (uncompeteableApps.length) {
-      frozen += unbeatableClients;
+    frozen += unbeatableClients;
     // }
 
     const availableForYou = maxMarketSize - frozen;
@@ -951,9 +1015,10 @@ class ProductStore extends EventEmitter {
   }
 
   getTechnicalDebtModifier(id) {
-    const improvements = _products[id].improvements || 1;
+    const improvements = this.getImprovementsAmount(id);
 
-    return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
+    return Math.log10(improvements + 10);
+    // return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
   }
 }
 

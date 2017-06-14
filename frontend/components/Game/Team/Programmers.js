@@ -28,7 +28,7 @@ export default class Programmers extends Component {
   render(props: PropsType, { staff, employees, points }) {
     let title;
     if (employees.length) {
-      title = 'Нанять программиста';
+      // title = 'Нанять программиста';
     } else {
       title = 'Никто не хочет к нам в команду. Не расстраивайтесь! Со временем появятся новые кандидаты';
     }

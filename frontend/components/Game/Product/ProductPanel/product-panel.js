@@ -251,19 +251,21 @@ export default class ProductPanel extends Component {
     let supportCostTab;
     const cost = productStore.getMarketingSupportCost(id);
     supportCostTab = <div>
-      Ежемесячная стоимость поддержки: {cost}MP
+      <div>
+        Ежемесячная стоимость поддержки: {cost}MP
+      </div>
     </div>;
 
     return (
       <div>
+        <div className="featureGroupTitle">Маркетинг</div>
         {supportCostTab}
         {clientTab}
         {adTab}
-        {nearestCompetitor}
-        {segmentTab}
-        <Marketers />
       </div>
     );
+        // {nearestCompetitor}
+        // {segmentTab}
   };
 
   renderAdTab = (id, product) => {
@@ -494,7 +496,7 @@ export default class ProductPanel extends Component {
     );
   };
 
-  render({ product, gamePhase }, state) {
+  render({ product, gamePhase, onHireProgrammerClick }, state) {
     // if (stageHelper.isFirstWorkerMission()) return <div></div>;
     // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
 
@@ -527,7 +529,14 @@ export default class ProductPanel extends Component {
         break;
 
       case MODE_MAIN_FEATURES:
-        body = <MainFeatureTab id={id} product={product} />;
+        body = <div>
+          <MainFeatureTab
+            id={id}
+            product={product}
+            onHireProgrammerClick={onHireProgrammerClick}
+          />
+          {this.renderSegmentTab(id)}
+          </div>;
         break;
 
       case MODE_COMPETITORS:

@@ -4,7 +4,7 @@ const timeModifier = (value) => {
   const day = scheduleStore.getDay();
   const year = Math.floor(day / 30 / 12);
 
-  return Math.floor(Math.pow(1.25, year) * value);
+  return Math.floor(Math.pow(1.2, year) * value);
 };
 
 const marketModifier = () => {
@@ -67,7 +67,8 @@ export default {
           description: '',
           shortDescription: 'Виртуальная машина',
           data: timeModifier(7000),
-          time: 30
+          time: 30,
+          shareable: true
         },
         {
           name: 'VDS',
@@ -75,7 +76,8 @@ export default {
           description: '',
           shortDescription: 'Выделенный сервер',
           data: timeModifier(15000),
-          time: 30
+          time: 30,
+          shareable: true
         }
       ],
       utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
@@ -92,7 +94,7 @@ export default {
         pp: 70
       },
       support: {
-        pp: 70
+        pp: 40
       },
       segments: [
         {

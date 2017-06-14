@@ -28,7 +28,7 @@ export default class Marketers extends Component {
   render(props: PropsType, { staff, employees, points }) {
     let title;
     if (employees.length) {
-      title = 'Нанять маркетолога';
+      // title = 'Нанять маркетолога';
     } else {
       title = 'Никто не хочет к нам в команду. Не расстраивайтесь! Со временем появятся новые кандидаты';
     }

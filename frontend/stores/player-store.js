@@ -44,6 +44,21 @@ let _employees = [
       percent: 0,
       pricingType: 1
     }
+  },
+  {
+    name: 'Xavier',
+    skills: {
+      programming: 600,
+      marketing: 100,
+      analyst: 150
+    },
+    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+    salary: {
+      money: 700,
+      percent: 0,
+      pricingType: 1
+    }
   }
 ];
 
@@ -76,6 +91,8 @@ let _loan = 0; // no loans;
 function isMercenary(worker) {
   return worker.salary.pricingType === 1;
 }
+
+const sum = (arr) => arr.reduce((p, c) => p + c, 0);
 
 class PlayerStore extends EventEmitter {
   addChangeListener(cb:Function) {
@@ -130,14 +147,11 @@ class PlayerStore extends EventEmitter {
   }
 
   getMonthlyMarketerPoints() {
-    return this.getMarketers()
-      .map(skillHelper.getMarketingPointsProducedBy)
-      .reduce((p, c) => p + c, 0);
+    return sum(this.getMarketers().map(skillHelper.getMarketingPointsProducedBy));
   }
+
   getMonthlyProgrammerPoints() {
-    return this.getProgrammers()
-      .map(skillHelper.getProgrammingPointsProducedBy)
-      .reduce((p, c) => p + c, 0);
+    return sum(this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy));
   }
 
   idHelper(e, i) {
@@ -166,9 +180,11 @@ class PlayerStore extends EventEmitter {
 
 
   getTeamExpenses() {
-    return this.getTeam()
-      .filter(isMercenary).map(worker => worker.salary.money)
-      .reduce((p, c) => p + c, 0);
+    return sum(
+      this.getTeam()
+        .filter(isMercenary)
+        .map(worker => worker.salary.money)
+    );
   }
 
   getMaxPossibleFreelanceMarketingPoints() {

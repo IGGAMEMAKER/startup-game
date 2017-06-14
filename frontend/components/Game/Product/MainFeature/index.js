@@ -11,7 +11,11 @@ import round from '../../../../helpers/math/round';
 import stageHelper from '../../../../helpers/stages';
 
 export default class MainFeature extends Component {
-  render({ id }, state) {
+  state = {
+
+  };
+
+  render({ id, onHireProgrammerClick }, state) {
     if (!stageHelper.canShowMainFeatureTab()) return '';
 
     const product = flux.productStore.getProduct(id);
@@ -22,9 +26,25 @@ export default class MainFeature extends Component {
       .map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
 
     const support = flux.productStore.getProgrammingSupportCost(id);
+    const ppIncrease = flux.playerStore.getMonthlyProgrammerPoints();
+
+    let hireProgrammerLink;
+
+    if (support > ppIncrease) {
+      hireProgrammerLink = <div>
+        <div>Наши программисты не справляются с нагрузкой (мы теряем {support - ppIncrease}PP ежемесячно)
+          Нужно больше программистов!</div>
+        <UI.Button link text="Нанять программиста" onClick={onHireProgrammerClick} />
+      </div>
+    }
+
     return (
       <div>
         <div className="featureGroupTitle">Разработка</div>
+        <div>Стоимость поддержки продукта: {support}PP в месяц</div>
+        <div>Наши программисты производят: {ppIncrease}PP в месяц</div>
+        <div>{hireProgrammerLink}</div>
+        <br />
         <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">
             Улучшая главные характеристики продукта, вы повышаете его рейтинг,
@@ -34,8 +54,6 @@ export default class MainFeature extends Component {
           <div>Доступно: {product.XP}XP</div>
           <div className="featureGroupBody">{featureList}</div>
         </div>
-        <div>Стоимость поддержки продукта: {support}PP в месяц</div>
-        <Programmers />
       </div>
     );
   }

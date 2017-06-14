@@ -13,7 +13,7 @@ import logger from '../../../helpers/logger/logger';
 
 export default class Product extends Component {
   render(props: PropsType, state: StateType) {
-    const { product, id } = props;
+    const { product, id, onHireProgrammerClick } = props;
 
     let body;
     logger.debug(product.stage);
@@ -25,7 +25,7 @@ export default class Product extends Component {
       default:
         body = (
           <div>
-            <ProductPanel product={product} id={id} />
+            <ProductPanel product={product} id={id} onHireProgrammerClick={onHireProgrammerClick} />
           </div>
         );
         break;
