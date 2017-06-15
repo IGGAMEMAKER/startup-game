@@ -8604,7 +8604,7 @@
 	            { className: navigation },
 	            (0, _preact.h)(
 	              'div',
-	              { className: moneyIndication, onClick: props.onRenderEconomicsMenu },
+	              { className: moneyIndication },
 	              moneyPhrase
 	            )
 	          ),
@@ -9584,6 +9584,10 @@
 
 	var _Programmers2 = _interopRequireDefault(_Programmers);
 
+	var _Economics = __webpack_require__(165);
+
+	var _Economics2 = _interopRequireDefault(_Economics);
+
 	var _metrics = __webpack_require__(175);
 
 	var _metrics2 = _interopRequireDefault(_metrics);
@@ -9652,9 +9656,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var MODE_METRICS = 'MODE_METRICS';
 	// import React, { Component, PropTypes } from 'react';
 
-	var MODE_METRICS = 'MODE_METRICS';
 	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
@@ -9778,7 +9782,8 @@
 	            { className: 'featureGroupBody' },
 	            payment
 	          )
-	        )
+	        ),
+	        (0, _preact.h)(_Economics2.default, null)
 	      );
 	    }, _this.renderAnalyticsTab = function (id, idea) {
 	      var analytics = _productStore2.default.getAnalyticFeatures(idea).map(_this.renderFeature('analytics', id, idea));

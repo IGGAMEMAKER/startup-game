@@ -10,6 +10,9 @@ import Analysts from '../../Team/Analysts';
 import Marketers from '../../Team/Marketers';
 import Programmers from '../../Team/Programmers';
 
+import Economics from '../../Economics/Economics';
+
+
 import Metrics from '../KPI/metrics';
 import Schedule from '../../Schedule';
 import UI from '../../../UI';
@@ -167,6 +170,7 @@ export default class ProductPanel extends Component {
           <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
           <div className="featureGroupBody">{payment}</div>
         </div>
+        <Economics />
       </div>
     )
   };

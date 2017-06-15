@@ -137,7 +137,7 @@ export default class Menu extends Component {
       upperTab = (
         <div>
           <div className={navigation}>
-            <div className={moneyIndication} onClick={props.onRenderEconomicsMenu}>{moneyPhrase}</div>
+            <div className={moneyIndication}>{moneyPhrase}</div>
           </div>
           <div className={navigation}>
             <div>{date}</div>
