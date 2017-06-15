@@ -461,6 +461,28 @@ class ProductStore extends EventEmitter {
     return _products[id].getTechnicalDebtModifier();
   }
 
+  idHelper(p, i) {
+    return { id: i, p };
+  }
+
+  getLeaderInTech(id, featureId) {
+    const leader = _products.map(this.idHelper)
+      .sort((obj1, obj2) => {
+        const p1: Product = obj1.p;
+        const p2: Product = obj2.p;
+
+        const f1 =  p1.getMainFeatureQualityByFeatureId(featureId);
+        const f2 =  p2.getMainFeatureQualityByFeatureId(featureId);
+
+        return f2 - f1;
+      })[0];
+
+    return {
+      id: leader.id,
+      name: leader.p.name
+    }
+  }
+
   getCompetitorsList(id) {
     const ourCompany = _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))[0];
     // logger.log('getCompetitorsList', _products);

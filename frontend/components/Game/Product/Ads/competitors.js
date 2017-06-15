@@ -44,7 +44,7 @@ export default class Competitors extends Component {
         rating={rating}
         money={money}
         onBuyCompany={() => { buyCompany(0, c.id, c.cost) }}
-        isCompetitor={i != 0}
+        isCompetitor={c.id != 0}
       />
     );
 

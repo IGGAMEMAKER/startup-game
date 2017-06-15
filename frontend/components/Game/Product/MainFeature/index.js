@@ -67,6 +67,8 @@ export default class MainFeature extends Component {
 
     const feature = product.features[featureGroup][i];
 
+    const leaderInTech = flux.productStore.getLeaderInTech(id, i);
+
     const current = feature || 0;
     const max = defaultFeature.data;
 
@@ -78,7 +80,7 @@ export default class MainFeature extends Component {
     if (current >= max) {
       return (
         <div key={key}>
-          {userOrientedFeatureName} (Улучшено) {UI.symbols.ok}
+          {userOrientedFeatureName} Мы лидируем в этой технологии! {UI.symbols.ok}
           <br />
           <div className="featureDescription">{description}</div>
           <br />
@@ -117,8 +119,14 @@ export default class MainFeature extends Component {
       data.push({ value: 1000, style: 'bg-success' })
     }
 
+    let leaderInTechPhrase = `Лидер в этой технологии: Компания "${leaderInTech.name}"`;
+    if (leaderInTech.id === 0) {
+      leaderInTechPhrase = `Мы лидируем в этой технологии!`;
+    }
+
     return <div key={key}>
       <div>
+        <div>{leaderInTechPhrase}</div>
         <span>{userOrientedFeatureName} ({current}/{max}XP)</span>
         <div style="width: 300px;">
           <UI.Bar min={0} max={max} data={data} />
