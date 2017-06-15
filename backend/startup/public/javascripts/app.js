@@ -6345,6 +6345,13 @@
 	        _playerActions2.default.hireWorker(p, p.id);
 	      };
 
+	      // {
+	      //   !stageHelper.isFirstWorkerMission()
+	      //     ?
+	      //     <span className="worker-button"><UI.Button onClick={reject} text="Отклонить"/></span>
+	      //     :
+	      //     ''
+	      // }
 	      var hireButton = (0, _preact.h)(
 	        'div',
 	        { className: 'worker-button-container' },
@@ -6352,12 +6359,7 @@
 	          'span',
 	          { className: 'worker-button' },
 	          (0, _preact.h)(_UI2.default.Button, { onClick: hire, text: '\u041D\u0430\u043D\u044F\u0442\u044C', primary: true })
-	        ),
-	        !_stages2.default.isFirstWorkerMission() ? (0, _preact.h)(
-	          'span',
-	          { className: 'worker-button' },
-	          (0, _preact.h)(_UI2.default.Button, { onClick: reject, text: '\u041E\u0442\u043A\u043B\u043E\u043D\u0438\u0442\u044C' })
-	        ) : ''
+	        )
 	      );
 
 	      return (0, _preact.h)(_Person2.default, {
@@ -6411,7 +6413,7 @@
 	  _flux2.default.scheduleActions.setGamePhase(stage);
 	};
 
-	var isTestMode = !true;
+	var isTestMode = true;
 
 	_logger2.default.shit('need to send stats on game phase change');
 
@@ -7262,7 +7264,7 @@
 	  }, {
 	    key: 'getProgrammingSupportCost',
 	    value: function getProgrammingSupportCost(id) {
-	      return _products[id].getProductSupportCost();
+	      return _products[id].getProgrammingSupportCost();
 	    }
 	  }, {
 	    key: 'getMarketingSupportTechTotalCost',
@@ -7471,6 +7473,7 @@
 	      var ourCompany = _products.filter(function (p) {
 	        return _this2.isOurProduct(p) && p.idea === _this2.getIdea(id);
 	      })[0];
+	      // logger.log('getCompetitorsList', _products);
 
 	      // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
 	      return _products.map(function (p, i) {
@@ -7637,7 +7640,7 @@
 	      var competitor = p.p;
 	      // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
 	      competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
-	      // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+	      _products.push(competitor);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_COMPANY_BUY:
@@ -12016,6 +12019,10 @@
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
+	var _logger = __webpack_require__(98);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Competitors = function (_Component) {
@@ -12063,7 +12070,8 @@
 	          money: money,
 	          onBuyCompany: function onBuyCompany() {
 	            buyCompany(0, c.id, c.cost);
-	          }
+	          },
+	          isCompetitor: i != 0
 	        });
 	      });
 
@@ -12148,13 +12156,14 @@
 	      var canWeCompeteThem = competeable ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + (0, _round2.default)(needToCompeteRating) + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
 
 	      var background = 'competitor ';
-	      if (competeable) {
+	      // if (competeable) {
+	      if (!isCompetitor) {
 	        background += 'competeable';
 	      } else {
 	        background += 'uncompeteable';
 	      }
 
-	      var name = i >= 0 ? '\u041A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442 \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
+	      var name = i >= 0 ? '\u041A\u043E\u043C\u043F\u0430\u043D\u0438\u044F \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
 
 	      var features = c.features.map(function (f, ii) {
 	        // logger.debug('compet improvs', i, c.improvements, f);
@@ -12210,7 +12219,7 @@
 	        );
 	      }
 
-	      var buyingCompanyButtonVisible = i === -1 ? 'hide' : '';
+	      var buyingCompanyButtonVisible = isCompetitor ? '' : 'hide';
 
 	      return (0, _preact.h)(
 	        'div',
@@ -12223,17 +12232,15 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'offset-min' },
-	          '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
-	          c.rating,
-	          ' (',
-	          canWeCompeteThem,
-	          ')'
+	          '\u0418\u0437\u0432\u0435\u0441\u0442\u043D\u043E\u0441\u0442\u044C (HYPE): ',
+	          c.hype
 	        ),
+	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'offset-min' },
-	          '\u0418\u0437\u0432\u0435\u0441\u0442\u043D\u043E\u0441\u0442\u044C (HYPE): ',
-	          c.hype
+	          '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
+	          c.rating
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -14168,7 +14175,6 @@
 	      var bonuses = basicBonus;
 
 	      this.getHypothesisAnalyticsFeatures().forEach(function (f) {
-	        _logger2.default.debug('hypo features', f);
 	        if (picked(f.name)) bonuses += f.bonus || 0;
 	      });
 

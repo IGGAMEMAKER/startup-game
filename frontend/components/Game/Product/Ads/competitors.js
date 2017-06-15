@@ -9,6 +9,8 @@ type ResponseType = {};
 import flux from '../../../../flux';
 import Competitor from './competitor';
 
+import logger from '../../../../helpers/logger/logger';
+
 export default class Competitors extends Component {
   componentWillMount() {}
 
@@ -42,6 +44,7 @@ export default class Competitors extends Component {
         rating={rating}
         money={money}
         onBuyCompany={() => { buyCompany(0, c.id, c.cost) }}
+        isCompetitor={i != 0}
       />
     );
 

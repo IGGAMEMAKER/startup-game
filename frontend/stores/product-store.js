@@ -270,7 +270,7 @@ class ProductStore extends EventEmitter {
   }
 
   getProgrammingSupportCost(id) {
-    return _products[id].getProductSupportCost();
+    return _products[id].getProgrammingSupportCost();
   }
 
   getMarketingSupportTechTotalCost(id) {
@@ -463,6 +463,7 @@ class ProductStore extends EventEmitter {
 
   getCompetitorsList(id) {
     const ourCompany = _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))[0];
+    // logger.log('getCompetitorsList', _products);
 
       // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
     return _products
@@ -609,7 +610,7 @@ Dispatcher.register((p: PayloadType) => {
       const competitor: Product = p.p;
       // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
       competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
-      // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+      _products.push(competitor);
       break;
 
     case c.PRODUCT_ACTIONS_COMPANY_BUY:

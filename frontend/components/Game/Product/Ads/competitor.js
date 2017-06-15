@@ -21,13 +21,14 @@ export default class Competitor extends Component {
       `Добейтесь рейтинга ${round(needToCompeteRating)} и их пользователи выберут наш продукт`;
 
     let background = 'competitor ';
-    if (competeable) {
+    // if (competeable) {
+    if (!isCompetitor) {
       background += 'competeable';
     } else {
       background += 'uncompeteable';
     }
 
-    const name = i >= 0 ? `Конкурент №${i + 1} - "${c.name}"` : `"${c.name}"`;
+    const name = i >= 0 ? `Компания №${i + 1} - "${c.name}"` : `"${c.name}"`;
 
     const features = c.features.map((f, ii) => {
       // logger.debug('compet improvs', i, c.improvements, f);
@@ -65,13 +66,14 @@ export default class Competitor extends Component {
       )
     }
 
-    const buyingCompanyButtonVisible = i === -1 ? 'hide' : '';
+    const buyingCompanyButtonVisible = isCompetitor ? '' : 'hide';
 
     return (
       <div className={background}>
         <div className="offset-min">{name}</div>
-        <div className="offset-min">Рейтинг: {c.rating} ({canWeCompeteThem})</div>
         <div className="offset-min">Известность (HYPE): {c.hype}</div>
+        <br />
+        <div className="offset-min">Рейтинг: {c.rating}</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
         <div className="offset-mid">Технологии</div>
         {theyAreBetterPhrase}

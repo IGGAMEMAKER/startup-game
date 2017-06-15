@@ -19,16 +19,16 @@ export default class Employee extends Component {
       actions.hireWorker(p, p.id);
     };
 
+    // {
+    //   !stageHelper.isFirstWorkerMission()
+    //     ?
+    //     <span className="worker-button"><UI.Button onClick={reject} text="Отклонить"/></span>
+    //     :
+    //     ''
+    // }
     const hireButton = (
       <div className="worker-button-container">
         <span className="worker-button"><UI.Button onClick={hire} text="Нанять" primary /></span>
-        {
-          !stageHelper.isFirstWorkerMission()
-            ?
-            <span className="worker-button"><UI.Button onClick={reject} text="Отклонить"/></span>
-            :
-            ''
-        }
       </div>
     );
 

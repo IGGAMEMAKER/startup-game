@@ -814,7 +814,6 @@ export default class Product {
 
     this.getHypothesisAnalyticsFeatures()
       .forEach((f) => {
-        logger.debug('hypo features', f);
         if (picked(f.name)) bonuses += f.bonus || 0;
       });
 
