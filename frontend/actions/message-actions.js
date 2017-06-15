@@ -5,13 +5,14 @@ import logger from '../helpers/logger/logger';
 import messageStore from '../stores/message-store';
 
 export default {
-  addGameEvent: (eventType, data) => {
+  addGameEvent: (eventType, data, isModal) => {
     const obj = Object.assign({}, data, { type: eventType });
     Dispatcher.dispatch({
       type: ACTIONS.GAME_EVENT_ADD,
       message: {
         type: eventType,
-        data: obj
+        data: obj,
+        isModal
       }
     });
   },

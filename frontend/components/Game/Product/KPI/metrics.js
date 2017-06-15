@@ -42,6 +42,8 @@ export default class Metrics extends Component {
     const virality = round(productStore.getViralityRate(id));
     const viralClients = productStore.getViralClients(id);
 
+    const hype = productStore.getHypeValue(id);
+
     const newbies = productStore.getNewClients(id);
 
     let canShowRatingTab = productStore.getRatingForMetricsTab(id) != 0;
@@ -136,6 +138,10 @@ export default class Metrics extends Component {
       <span className="metric-link" onClick={onExpertisePressed}>Повысить</span>
     </li>;
 
+    let hypeTab = <li>
+        <b>HYPE: {hype}</b>
+      </li>;
+
     return (
       <div>
         <div>
@@ -144,6 +150,8 @@ export default class Metrics extends Component {
             {expertiseTab}
             {clientsTab}
             {churnTab}
+
+            {hypeTab}
 
             {viralityTab}
 

@@ -62,7 +62,11 @@ class ScheduleStore extends EventEmitter {
   }
 
   isDrawable() {
-    return _messages.length;
+    return _messages.filter(m => m.isModal).length;
+  }
+
+  getPlainMessages() {
+    return _messages.filter(m => !m.isModal);
   }
 }
 

@@ -1,15 +1,15 @@
-import productDescriptions from './product-descriptions';
-import random from '../math/random';
+import productDescriptions from '../helpers/products/product-descriptions';
+import random from '../helpers/math/random';
 
-import logger from '../logger/logger';
+import logger from '../helpers/logger/logger';
 
 const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
 
-export default {
-  create(parameters) {
-    let { idea, name, isCompetitor } = parameters;
+export default class Product {
+  constructor({ idea, name, isCompetitor }) {
+    // this.isCompetitor = isCompetitor;
 
-    if (!idea) throw 'no idea in product-generator.js';
+    if (!idea) throw 'no idea in classes/Product.js';
 
     if (!name) {
       const index = Math.floor(random(0, names.length - 1));
@@ -48,7 +48,7 @@ export default {
       newClients: clients,
 
       hype: 1000,
-      
+
       bugs: 10,
 
       currentUXBugs: 100,
@@ -56,6 +56,11 @@ export default {
       fixedUXBugs: 0
     };
 
-    return {features, KPI, idea, name}
+    this.features = features;
+    this.KPI = KPI;
+    this.idea = idea;
+    this.name = name;
+
+    // return {features, KPI, idea, name}
   }
-};
+}

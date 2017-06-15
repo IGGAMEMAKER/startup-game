@@ -197,6 +197,11 @@ export default class Game extends Component {
         break;
     }
 
+    const MessageTab = <div>MessageTab</div>;
+    // <MessageTab />
+    // <AdviceTab gamePhase={gamePhase} />
+
+
     return (
       <div className="body-background">
         <UI.Modal onclose={this.resumeGame} />
@@ -220,11 +225,6 @@ export default class Game extends Component {
             onNextMonth={this.onNextMonth}
           />
           <hr />
-
-          <AdviceTab
-            gamePhase={gamePhase}
-          />
-
           {body}
           <br />
           <hr />

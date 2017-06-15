@@ -159,7 +159,7 @@ export default class ProductPanel extends Component {
       <div>
         <div className="featureGroupTitle" >Монетизация</div>
         <div className="featureGroupDescriptionWrapper">
-          <div>Платёжеспособность: {isOpened ? `${payAbility}%` : 'Установите фичу "Тестовая покупка"'}</div>
+          <div>Платёжеспособность: {isOpened ? `${Math.ceil(payAbility * 10)}%` : 'Установите фичу "Тестовая покупка"'}</div>
           <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
           <div className="featureGroupBody">{payment}</div>
         </div>
@@ -258,10 +258,11 @@ export default class ProductPanel extends Component {
       <div>Наши маркетологи производят: {support.increase}MP в месяц</div>
       <div className={support.decrease ? '' : 'hide'}>
         <div>Ежемесячная стоимость поддержки: {support.decrease}MP</div>
-        <div className="offset-mid">
-          <div>Затраты на блог: {support.detailed.blog}MP</div>
-          <div>Затраты на техподдержку: {support.detailed.support}MP</div>
-        </div>
+        <ul className="offset-mid">
+          <li>Базовые затраты: {support.detailed.base}MP</li>
+          <li>Затраты на блог: {support.detailed.blog}MP</li>
+          <li>Затраты на техподдержку: {support.detailed.support}MP</li>
+        </ul>
       </div>
       <div className={support.needToHireWorker ? '' : 'hide'}>
         <div className="alert alert-danger">

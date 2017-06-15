@@ -5,6 +5,7 @@ import playerStore from '../../../../stores/player-store';
 import logger from '../../../../helpers/logger/logger';
 
 import productGenerator from '../../../../helpers/products/product-generator';
+import Product from '../../../../classes/Product';
 
 const create = (i, basePoints, idea) => {
   const points = playerStore.getPoints();
@@ -26,7 +27,8 @@ const create = (i, basePoints, idea) => {
 
     logger.shit('WRITE proper randomizer in mvp-creator.js');
 
-    const p = productGenerator.create({ idea, name: 'WWWEB HOSTING' });
+    // const p = new ProductproductGenerator.create({ idea, name: 'WWWEB HOSTING' });
+    const p = new Product({ idea, name: 'WWWEB HOSTING' });
 
     playerActions.spendPoints(basePoints[1].amount, basePoints[0].amount);
     productActions.setInitialProductSettings(i, p.features, p.KPI);
@@ -38,7 +40,7 @@ const create = (i, basePoints, idea) => {
 };
 
 const createCompetitorCompany = (idea) => {
-  const p = productGenerator.create({ idea, isCompetitor: true });
+  const p = new Product({ idea, isCompetitor: true });
 
   logger.debug('createCompetitorCompany', p);
   productActions.createCompetitorCompany(p);

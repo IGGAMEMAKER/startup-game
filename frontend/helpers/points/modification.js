@@ -28,7 +28,8 @@ const monthlyMarketingPointsDifferenceStructured = () => {
     decrease,
     detailed: {
       blog: flux.productStore.getBlogStatusStructured(id).supportCost,
-      support: flux.productStore.getMarketingSupportTechTotalCost(id)
+      support: flux.productStore.getMarketingSupportTechTotalCost(id),
+      base: flux.productStore.getBaseSupportCost()
     },
     needToHireWorker: decrease > increase,
     diff: Math.abs(decrease - increase)

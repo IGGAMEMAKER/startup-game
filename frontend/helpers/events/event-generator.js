@@ -8,18 +8,21 @@ import skillHelper from '../../helpers/team/skills';
 
 import mvpCreator from '../../components/Game/Product/InitialPanel/mvp-creator';
 
+import messager from '../messages/messager';
+
 import logger from '../../helpers/logger/logger';
 
 const emit = (day) => {
   if (day === 45) {
     let money = Math.ceil(random(2000, 15000));
-    flux.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_MONEY, { money });
+
+    messager.addModalMessage(GAME_EVENTS.GAME_EVENT_FREE_MONEY, { money });
     return;
   }
 
   if (day === 100) {
     let points = Math.ceil(random(50, 275));
-    flux.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points });
+    messager.addModalMessage(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points });
     return;
   }
 
@@ -36,9 +39,14 @@ const emit = (day) => {
     //   flux.messageActions.addGameEvent(rnd, { points });
     //   break;
     case GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE:
-      if (day > 100 && day % 2 === 0) {
+      if (day % 2 === 0) {
         const p = mvpCreator.createCompetitorCompany(flux.productStore.getIdea(0));
-        flux.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p });
+
+        if (day > 100 && day < 250) {
+          messager.addPlainMessage(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p });
+        } else if (day >= 250) {
+          messager.addPlainMessage(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p });
+        }
       }
       break;
     case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:

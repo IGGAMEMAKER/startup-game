@@ -55,6 +55,8 @@ let _products = [{
     clients: 10,
     newClients: 10,
 
+    hype: 1000,
+
     bugs: 10,
 
     currentUXBugs: 100,
@@ -114,6 +116,10 @@ class ProductStore extends EventEmitter {
 
   getSegmentBySegmentId(id, segId) {
     return this.getSegments(id)[segId];
+  }
+
+  getHypeDamping(id) {
+
   }
 
   getSegmentedPriorities(id, segId) {
@@ -638,7 +644,11 @@ class ProductStore extends EventEmitter {
   }
 
   getMarketingSupportTechTotalCost(id) {
-    return Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100);
+    return Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100 / 5);
+  }
+
+  getBaseSupportCost() {
+    return 15;
   }
 
   getMarketingSupportCost(id) {
@@ -646,7 +656,7 @@ class ProductStore extends EventEmitter {
     // const blogSupportCost = this.getBlogPower(id);
 
     const supportSupportCost = this.getMarketingSupportTechTotalCost(id);
-    return 15 + supportSupportCost + this.getBlogStatusStructured(id).supportCost;
+    return this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured(id).supportCost;
   }
 
   getMarketingFeatureList(idea) {
@@ -1021,6 +1031,10 @@ class ProductStore extends EventEmitter {
     logger.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
     return Math.pow(0.15 * tests + 0.6 * improvements, balance.TECHNOLOGY_COST_MODIFIER);
+  }
+
+  getHypeValue(id) {
+    return this.getProduct(id).KPI.hype;
   }
 
   getTechnicalDebtModifier(id) {

@@ -2,6 +2,8 @@ import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
 import moneyCalculator from '../../helpers/economics/money-difference';
+import pointCalculator from '../../helpers/points/modification';
+
 import scheduleStore from '../../stores/schedule-store';
 import playerStore from '../../stores/player-store';
 
@@ -45,6 +47,9 @@ export default class Menu extends Component {
     const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
     const navigation = s.navigation;
+
+    const mpIndication = pointCalculator.marketing().needToHireWorker ? s.moneyNegative : s.moneyPositive;
+    const ppIndication = pointCalculator.programming().needToHireWorker ? s.moneyNegative : s.moneyPositive;
 
     const isRunning = !pause;
 
@@ -139,8 +144,12 @@ export default class Menu extends Component {
           </div>
           {nextSpeeder}
           <div className={navigation}>{pauseOrContinue}</div>
-          <div className={navigation}>MP: {state.points.marketing}</div>
-          <div className={navigation}>PP: {state.points.programming}</div>
+          <div className={navigation}>
+            <span className={mpIndication}>MP: {state.points.marketing}</span>
+          </div>
+          <div className={navigation}>
+            <span className={ppIndication}>PP: {state.points.programming}</span>
+          </div>
         </div>
       )
     }

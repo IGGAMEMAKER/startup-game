@@ -819,6 +819,15 @@
 	          break;
 	      }
 
+	      var MessageTab = (0, _preact.h)(
+	        'div',
+	        null,
+	        'MessageTab'
+	      );
+	      // <MessageTab />
+	      // <AdviceTab gamePhase={gamePhase} />
+
+
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'body-background' },
@@ -845,9 +854,6 @@
 	            onNextMonth: _this.onNextMonth
 	          }),
 	          (0, _preact.h)('hr', null),
-	          (0, _preact.h)(_Advice2.default, {
-	            gamePhase: gamePhase
-	          }),
 	          body,
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null)
@@ -3405,7 +3411,16 @@
 	  }, {
 	    key: 'isDrawable',
 	    value: function isDrawable() {
-	      return _messages.length;
+	      return _messages.filter(function (m) {
+	        return m.isModal;
+	      }).length;
+	    }
+	  }, {
+	    key: 'getPlainMessages',
+	    value: function getPlainMessages() {
+	      return _messages.filter(function (m) {
+	        return !m.isModal;
+	      });
 	    }
 	  }]);
 	  return ScheduleStore;
@@ -4288,6 +4303,7 @@
 	  value: true
 	});
 	var GAME_EVENT_ADD = exports.GAME_EVENT_ADD = 'GAME_EVENT_ADD';
+	var MODAL_EVENT_ADD = exports.MODAL_EVENT_ADD = 'MODAL_EVENT_ADD';
 	var GAME_EVENT_CHOOSE_ANSWER = exports.GAME_EVENT_CHOOSE_ANSWER = 'GAME_EVENT_CHOOSE_ANSWER';
 	var GAME_EVENT_CLOSE_TAB = exports.GAME_EVENT_CLOSE_TAB = 'GAME_EVENT_CLOSE_TAB';
 
@@ -5303,13 +5319,14 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = {
-	  addGameEvent: function addGameEvent(eventType, data) {
+	  addGameEvent: function addGameEvent(eventType, data, isModal) {
 	    var obj = (0, _assign2.default)({}, data, { type: eventType });
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.GAME_EVENT_ADD,
 	      message: {
 	        type: eventType,
-	        data: obj
+	        data: obj,
+	        isModal: isModal
 	      }
 	    });
 	  },
@@ -6965,6 +6982,8 @@
 	    clients: 10,
 	    newClients: 10,
 
+	    hype: 1000,
+
 	    bugs: 10,
 
 	    currentUXBugs: 100,
@@ -7043,6 +7062,9 @@
 	    value: function getSegmentBySegmentId(id, segId) {
 	      return this.getSegments(id)[segId];
 	    }
+	  }, {
+	    key: 'getHypeDamping',
+	    value: function getHypeDamping(id) {}
 	  }, {
 	    key: 'getSegmentedPriorities',
 	    value: function getSegmentedPriorities(id, segId) {
@@ -7619,7 +7641,12 @@
 	  }, {
 	    key: 'getMarketingSupportTechTotalCost',
 	    value: function getMarketingSupportTechTotalCost(id) {
-	      return Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100);
+	      return Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100 / 5);
+	    }
+	  }, {
+	    key: 'getBaseSupportCost',
+	    value: function getBaseSupportCost() {
+	      return 15;
 	    }
 	  }, {
 	    key: 'getMarketingSupportCost',
@@ -7628,7 +7655,7 @@
 	      // const blogSupportCost = this.getBlogPower(id);
 
 	      var supportSupportCost = this.getMarketingSupportTechTotalCost(id);
-	      return 15 + supportSupportCost + this.getBlogStatusStructured(id).supportCost;
+	      return this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured(id).supportCost;
 	    }
 	  }, {
 	    key: 'getMarketingFeatureList',
@@ -8028,6 +8055,11 @@
 	      _logger2.default.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
 	      return Math.pow(0.15 * tests + 0.6 * improvements, balance.TECHNOLOGY_COST_MODIFIER);
+	    }
+	  }, {
+	    key: 'getHypeValue',
+	    value: function getHypeValue(id) {
+	      return this.getProduct(id).KPI.hype;
 	    }
 	  }, {
 	    key: 'getTechnicalDebtModifier',
@@ -8953,6 +8985,10 @@
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
+	var _modification = __webpack_require__(187);
+
+	var _modification2 = _interopRequireDefault(_modification);
+
 	var _scheduleStore = __webpack_require__(139);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
@@ -8974,8 +9010,6 @@
 	var _UI2 = _interopRequireDefault(_UI);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
 
 	var Menu = function (_Component) {
 	  (0, _inherits3.default)(Menu, _Component);
@@ -9026,6 +9060,9 @@
 	      var moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
 	      var navigation = s.navigation;
+
+	      var mpIndication = _modification2.default.marketing().needToHireWorker ? s.moneyNegative : s.moneyPositive;
+	      var ppIndication = _modification2.default.programming().needToHireWorker ? s.moneyNegative : s.moneyPositive;
 
 	      var isRunning = !pause;
 
@@ -9137,14 +9174,22 @@
 	          (0, _preact.h)(
 	            'div',
 	            { className: navigation },
-	            'MP: ',
-	            state.points.marketing
+	            (0, _preact.h)(
+	              'span',
+	              { className: mpIndication },
+	              'MP: ',
+	              state.points.marketing
+	            )
 	          ),
 	          (0, _preact.h)(
 	            'div',
 	            { className: navigation },
-	            'PP: ',
-	            state.points.programming
+	            (0, _preact.h)(
+	              'span',
+	              { className: ppIndication },
+	              'PP: ',
+	              state.points.programming
+	            )
 	          )
 	        );
 	      }
@@ -9173,6 +9218,7 @@
 	  }]);
 	  return Menu;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = Menu;
 
@@ -9914,6 +9960,10 @@
 
 	var _productGenerator2 = _interopRequireDefault(_productGenerator);
 
+	var _Product = __webpack_require__(189);
+
+	var _Product2 = _interopRequireDefault(_Product);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var create = function create(i, basePoints, idea) {
@@ -9933,7 +9983,8 @@
 
 	    _logger2.default.shit('WRITE proper randomizer in mvp-creator.js');
 
-	    var p = _productGenerator2.default.create({ idea: idea, name: 'WWWEB HOSTING' });
+	    // const p = new ProductproductGenerator.create({ idea, name: 'WWWEB HOSTING' });
+	    var p = new _Product2.default({ idea: idea, name: 'WWWEB HOSTING' });
 
 	    _playerActions2.default.spendPoints(basePoints[1].amount, basePoints[0].amount);
 	    _productActions2.default.setInitialProductSettings(i, p.features, p.KPI);
@@ -9945,7 +9996,7 @@
 	};
 
 	var createCompetitorCompany = function createCompetitorCompany(idea) {
-	  var p = _productGenerator2.default.create({ idea: idea, isCompetitor: true });
+	  var p = new _Product2.default({ idea: idea, isCompetitor: true });
 
 	  _logger2.default.debug('createCompetitorCompany', p);
 	  _productActions2.default.createCompetitorCompany(p);
@@ -10030,6 +10081,8 @@
 	      debt: 0, // technical debt. Shows, how fast can you implement new features
 	      clients: clients,
 	      newClients: clients,
+
+	      hype: 1000,
 
 	      bugs: 10,
 
@@ -10267,7 +10320,7 @@
 	            'div',
 	            null,
 	            '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
-	            isOpened ? payAbility + '%' : 'Установите фичу "Тестовая покупка"'
+	            isOpened ? Math.ceil(payAbility * 10) + '%' : 'Установите фичу "Тестовая покупка"'
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -10391,17 +10444,24 @@
 	            'MP'
 	          ),
 	          (0, _preact.h)(
-	            'div',
+	            'ul',
 	            { className: 'offset-mid' },
 	            (0, _preact.h)(
-	              'div',
+	              'li',
+	              null,
+	              '\u0411\u0430\u0437\u043E\u0432\u044B\u0435 \u0437\u0430\u0442\u0440\u0430\u0442\u044B: ',
+	              support.detailed.base,
+	              'MP'
+	            ),
+	            (0, _preact.h)(
+	              'li',
 	              null,
 	              '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0431\u043B\u043E\u0433: ',
 	              support.detailed.blog,
 	              'MP'
 	            ),
 	            (0, _preact.h)(
-	              'div',
+	              'li',
 	              null,
 	              '\u0417\u0430\u0442\u0440\u0430\u0442\u044B \u043D\u0430 \u0442\u0435\u0445\u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0443: ',
 	              support.detailed.support,
@@ -11421,6 +11481,8 @@
 	      var virality = (0, _round2.default)(_productStore2.default.getViralityRate(id));
 	      var viralClients = _productStore2.default.getViralClients(id);
 
+	      var hype = _productStore2.default.getHypeValue(id);
+
 	      var newbies = _productStore2.default.getNewClients(id);
 
 	      var canShowRatingTab = _productStore2.default.getRatingForMetricsTab(id) != 0;
@@ -11612,6 +11674,17 @@
 	        )
 	      );
 
+	      var hypeTab = (0, _preact.h)(
+	        'li',
+	        null,
+	        (0, _preact.h)(
+	          'b',
+	          null,
+	          'HYPE: ',
+	          hype
+	        )
+	      );
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -11625,6 +11698,7 @@
 	            expertiseTab,
 	            clientsTab,
 	            churnTab,
+	            hypeTab,
 	            viralityTab,
 	            payingPercentageTab,
 	            incomeTab
@@ -13470,8 +13544,8 @@
 	    var marketingSupportPoints = _productStore2.default.getMarketingSupportCost(0);
 	    _logger2.default.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js');
 
-	    _logger2.default.log('increase points game.js', programmingPoints, marketingPoints);
-	    _logger2.default.log('decrease points game.js', programmingSupportPoints, marketingSupportPoints);
+	    // logger.log('increase points game.js', programmingPoints, marketingPoints);
+	    // logger.log('decrease points game.js', programmingSupportPoints, marketingSupportPoints);
 	    _logger2.default.shit('compute penalties and bonuses for point production');
 
 	    programmingPoints -= programmingSupportPoints;
@@ -13526,6 +13600,10 @@
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
+	var _messager = __webpack_require__(188);
+
+	var _messager2 = _interopRequireDefault(_messager);
+
 	var _logger = __webpack_require__(98);
 
 	var _logger2 = _interopRequireDefault(_logger);
@@ -13537,13 +13615,14 @@
 	var emit = function emit(day) {
 	  if (day === 45) {
 	    var money = Math.ceil((0, _random2.default)(2000, 15000));
-	    _flux2.default.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_MONEY, { money: money });
+
+	    _messager2.default.addModalMessage(GAME_EVENTS.GAME_EVENT_FREE_MONEY, { money: money });
 	    return;
 	  }
 
 	  if (day === 100) {
 	    var points = Math.ceil((0, _random2.default)(50, 275));
-	    _flux2.default.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points: points });
+	    _messager2.default.addModalMessage(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points: points });
 	    return;
 	  }
 
@@ -13560,9 +13639,14 @@
 	    //   flux.messageActions.addGameEvent(rnd, { points });
 	    //   break;
 	    case GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE:
-	      if (day > 100 && day % 2 === 0) {
+	      if (day % 2 === 0) {
 	        var p = _mvpCreator2.default.createCompetitorCompany(_flux2.default.productStore.getIdea(0));
-	        _flux2.default.messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p: p });
+
+	        if (day > 100 && day < 250) {
+	          _messager2.default.addPlainMessage(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p: p });
+	        } else if (day >= 250) {
+	          _messager2.default.addPlainMessage(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p: p });
+	        }
 	      }
 	      break;
 	    case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
@@ -13684,7 +13768,8 @@
 	    decrease: decrease,
 	    detailed: {
 	      blog: _flux2.default.productStore.getBlogStatusStructured(id).supportCost,
-	      support: _flux2.default.productStore.getMarketingSupportTechTotalCost(id)
+	      support: _flux2.default.productStore.getMarketingSupportTechTotalCost(id),
+	      base: _flux2.default.productStore.getBaseSupportCost()
 	    },
 	    needToHireWorker: decrease > increase,
 	    diff: Math.abs(decrease - increase)
@@ -13695,6 +13780,132 @@
 	  programming: monthlyProgrammingPointsDifferenceStructured,
 	  marketing: monthlyMarketingPointsDifferenceStructured
 	};
+
+/***/ },
+/* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _flux = __webpack_require__(138);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var addModalMessage = function addModalMessage(eType, obj) {
+	  _flux2.default.messageActions.addGameEvent(eType, obj, true);
+	};
+
+	var addPlainMessage = function addPlainMessage(eType, obj) {
+	  _flux2.default.messageActions.addGameEvent(eType, obj, false);
+	};
+
+	exports.default = {
+	  addModalMessage: addModalMessage,
+	  addPlainMessage: addPlainMessage
+	};
+
+/***/ },
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _productDescriptions = __webpack_require__(151);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	var _random = __webpack_require__(156);
+
+	var _random2 = _interopRequireDefault(_random);
+
+	var _logger = __webpack_require__(98);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
+
+	var Product = function Product(_ref) {
+	  var idea = _ref.idea,
+	      name = _ref.name,
+	      isCompetitor = _ref.isCompetitor;
+	  (0, _classCallCheck3.default)(this, Product);
+
+	  // this.isCompetitor = isCompetitor;
+
+	  if (!idea) throw 'no idea in classes/Product.js';
+
+	  if (!name) {
+	    var index = Math.floor((0, _random2.default)(0, names.length - 1));
+	    name = names[index];
+	  }
+
+	  var defaults = (0, _productDescriptions2.default)(idea);
+	  var defaultFeatures = defaults.features;
+
+	  var maxRating = 6;
+	  if (isCompetitor) maxRating = 8;
+
+	  var luck = (0, _random2.default)(1, maxRating) / 10; // luck in 0.1-0.6
+
+	  var offer = defaultFeatures.map(function (f, i) {
+	    return Math.floor(luck * f.data);
+	  });
+
+	  var features = {
+	    offer: offer, // features, that are attached to main idea
+	    development: {}, // backups, more dev servers, e.t.c.
+
+	    marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
+	    analytics: {}, // simple analytics (main KPIs),
+	    // middle (segments analytics), mid+ (segments + versions),
+
+	    // not only chat with users, but also localisations, content updates
+	    // and all sort of things, that you need doing constantly
+	    support: {},
+	    payment: {}
+	  };
+
+	  var clients = isCompetitor ? Math.ceil((0, _random2.default)(100, defaults.marketSize / 10)) : 10;
+
+	  var KPI = {
+	    debt: 0, // technical debt. Shows, how fast can you implement new features
+	    clients: clients,
+	    newClients: clients,
+
+	    hype: 1000,
+
+	    bugs: 10,
+
+	    currentUXBugs: 100,
+	    foundUXBugs: 0,
+	    fixedUXBugs: 0
+	  };
+
+	  this.features = features;
+	  this.KPI = KPI;
+	  this.idea = idea;
+	  this.name = name;
+
+	  // return {features, KPI, idea, name}
+	};
+
+	exports.default = Product;
 
 /***/ }
 /******/ ]);
