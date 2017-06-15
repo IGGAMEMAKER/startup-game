@@ -6945,52 +6945,63 @@
 
 	var balance = _interopRequireWildcard(_balance);
 
+	var _Product = __webpack_require__(189);
+
+	var _Product2 = _interopRequireDefault(_Product);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var EC = 'PRODUCT_EVENT_CHANGE';
 
-	var _products = [{
-	  rating: 0, // computable value, so... needs to be deleted
+	//
+	// let _products = [{
+	//   // rating: 0, // computable value, so... needs to be deleted
+	//   idea: IDEAS.IDEA_WEB_HOSTING,
+	//   name: 'WWWEB HOSTING',
+	//   stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
+	//
+	//   owner: true,
+	//   features: {
+	//     offer: {
+	//       // 'portfolio': 0.81,
+	//       // 'website': 1
+	//     }, // features, that are attached to main idea
+	//     development: {}, // backups, more dev servers, e.t.c.
+	//
+	//     marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
+	//     analytics: {}, // simple analytics (main KPIs),
+	//     // middle (segments analytics), mid+ (segments + versions),
+	//
+	//     // not only chat with users, but also localisations, content updates
+	//     // and all sort of things, that you need doing constantly
+	//     support: {},
+	//
+	//     payment: {},
+	//   },
+	//   XP: 0,
+	//   KPI: {
+	//     // accumulated values
+	//     debt: 0, // technical debt. Shows, how fast can you implement new features
+	//     clients: 10,
+	//     newClients: 10,
+	//
+	//     hype: 1000,
+	//
+	//     bugs: 10,
+	//
+	//     currentUXBugs: 100,
+	//     foundUXBugs: 50,
+	//     fixedUXBugs: 50
+	//   }
+	// }];
+
+	var _products = [new _Product2.default({
 	  idea: IDEAS.IDEA_WEB_HOSTING,
 	  name: 'WWWEB HOSTING',
-	  stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-
-	  owner: true,
-	  features: {
-	    offer: {
-	      // 'portfolio': 0.81,
-	      // 'website': 1
-	    }, // features, that are attached to main idea
-	    development: {}, // backups, more dev servers, e.t.c.
-
-	    marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-	    analytics: {}, // simple analytics (main KPIs),
-	    // middle (segments analytics), mid+ (segments + versions),
-
-	    // not only chat with users, but also localisations, content updates
-	    // and all sort of things, that you need doing constantly
-	    support: {},
-
-	    payment: {}
-	  },
-	  XP: 0,
-	  KPI: {
-	    // accumulated values
-	    debt: 0, // technical debt. Shows, how fast can you implement new features
-	    clients: 10,
-	    newClients: 10,
-
-	    hype: 1000,
-
-	    bugs: 10,
-
-	    currentUXBugs: 100,
-	    foundUXBugs: 50,
-	    fixedUXBugs: 50
-	  }
-	}];
+	  stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA
+	})];
 
 	var ProductStore = function (_EventEmitter) {
 	  (0, _inherits3.default)(ProductStore, _EventEmitter);
@@ -7033,629 +7044,236 @@
 	  }, {
 	    key: 'getCompanyCost',
 	    value: function getCompanyCost(id) {
-	      return _computeCompanyCost2.default.compute(_products[id]);
+	      return _products[id].getCompanyCost();
 	    }
 	  }, {
 	    key: 'getRating',
 	    value: function getRating(id, segmentId) {
 	      if (!segmentId) segmentId = 0;
 
-	      var lowProgrammingPointsPenalty = 0;
-	      var lowMarketingPointsPenalty = 0;
-
-	      var result = (0, _round2.default)((0, _computeRating2.default)(_products[id], segmentId)) - lowMarketingPointsPenalty - lowProgrammingPointsPenalty;
-
-	      return Math.max(result, 0);
+	      return _products[id].getRating(segmentId);
 	    }
 	  }, {
 	    key: 'getClients',
 	    value: function getClients(id, segmentId) {
-	      var total = _products[id].KPI.clients;
-	      if (segmentId === undefined || segmentId === null) return total;
-
-	      var s = this.getSegmentBySegmentId(id, segmentId);
-
-	      return Math.floor(s.percentage * total / 100);
+	      return _products[id].getClients(segmentId);
 	    }
 	  }, {
 	    key: 'getSegmentBySegmentId',
 	    value: function getSegmentBySegmentId(id, segId) {
-	      return this.getSegments(id)[segId];
+	      return _products[id].getSegmentBySegmentId(segId);
 	    }
 	  }, {
 	    key: 'getHypeDamping',
-	    value: function getHypeDamping(id) {}
+	    value: function getHypeDamping(id) {
+	      return _products[id].getHypeDamping();
+	    }
 	  }, {
 	    key: 'getSegmentedPriorities',
 	    value: function getSegmentedPriorities(id, segId) {
-	      var s = this.getSegmentBySegmentId(id, segId);
-	      var features = this.getDefaults(id).features;
-
-	      return s.rating.map(function (r, index) {
-	        return {
-	          rating: r,
-	          feature: features[index].shortDescription
-	        };
-	      }).sort(function (s1, s2) {
-	        return s2.rating - s1.rating;
-	      });
+	      return _products[id].getSegmentedPriorities(segId);
 	    }
 	  }, {
 	    key: 'getNewClients',
 	    value: function getNewClients(id) {
-	      return _products[id].KPI.newClients;
+	      return _products[id].getNewClients();
 	    }
 	  }, {
 	    key: 'getDisloyalClients',
-	    value: function getDisloyalClients(i) {
-	      return Math.floor(this.getClients(i) * this.getChurnRate(i).raw);
+	    value: function getDisloyalClients(id) {
+	      return _products[id].getDisloyalClients();
 	    }
 	  }, {
 	    key: 'getViralClients',
-	    value: function getViralClients(i) {
-	      return Math.floor(this.getNewClients(i) * this.getViralityRate(i));
+	    value: function getViralClients(id) {
+	      return _products[id].getViralClients();
 	    }
 	  }, {
 	    key: 'getMainFeatureQualityByFeatureId',
 	    value: function getMainFeatureQualityByFeatureId(id, featureId) {
-	      var value = _products[id].features.offer[featureId];
-
-	      return value; // round(value / feature.data);
+	      return _products[id].getMainFeatureQualityByFeatureId(featureId);
 	    }
 	  }, {
 	    key: 'getMainFeatureDefaultQualityByFeatureId',
-	    value: function getMainFeatureDefaultQualityByFeatureId(i, featureId) {
-	      return this.getDefaults(i).features[featureId].data;
+	    value: function getMainFeatureDefaultQualityByFeatureId(id, featureId) {
+	      return _products[id].getMainFeatureDefaultQualityByFeatureId(featureId);
 	    }
 	  }, {
 	    key: 'getPrettyFeatureNameByFeatureId',
 	    value: function getPrettyFeatureNameByFeatureId(id, featureId) {
-	      return this.getDefaults(id).features[featureId].shortDescription;
+	      return _products[id].getPrettyFeatureNameByFeatureId(featureId);
 	    }
 	  }, {
 	    key: 'requirementsOKforSegment',
-	    value: function requirementsOKforSegment(i, segmentId) {
-	      var _this2 = this;
-
-	      var _getDefaults = this.getDefaults(i),
-	          segments = _getDefaults.segments;
-
-	      var segment = segments[segmentId];
-	      var requirements = segment.requirements;
-
-	      var valid = true;
-
-	      var unmetRequirements = [];
-
-	      requirements.forEach(function (r, featureId) {
-	        var max = _this2.getDefaults(i).features[featureId].data;
-
-	        var featureQuality = _this2.getMainFeatureQualityByFeatureId(i, featureId);
-	        var need = max * r / 100;
-
-	        var met = featureQuality >= need;
-
-	        if (!met) {
-	          valid = false;
-
-	          unmetRequirements.push({
-	            name: _this2.getPrettyFeatureNameByFeatureId(i, featureId),
-	            now: featureQuality,
-	            need: need
-	          });
-	        }
-	        // logger.debug(`feature quality #${featureId}: ${featureQuality}. Requirement is ${met}`)
-	      });
-
-	      return {
-	        valid: valid,
-	        unmetRequirements: unmetRequirements
-	      };
+	    value: function requirementsOKforSegment(id, segmentId) {
+	      return _products[id].requirementsOKforSegment(segmentId);
 	    }
 	  }, {
 	    key: 'getAnalyticsValueForFeatureCreating',
 	    value: function getAnalyticsValueForFeatureCreating(id) {
-	      // range: 0 - 1
-	      // range: 0.1 - 0.4
-	      var analytics = _products[id].features.analytics;
-
-	      var value = 0;
-
-	      var feedback = analytics.feedback;
-	      var webvisor = analytics.webvisor;
-	      var segmenting = analytics.segmenting;
-
-	      if (segmenting) {
-	        value = 0.4;
-	      } else if (webvisor) {
-	        value = 0.3;
-	      } else if (feedback) {
-	        value = 0.1;
-	      }
-
-	      return value;
+	      return _products[id].getAnalyticsValueForFeatureCreating();
 	    }
 	  }, {
 	    key: 'getDefaults',
-	    value: function getDefaults(i) {
-	      return (0, _productDescriptions2.default)(this.getIdea(i));
+	    value: function getDefaults(id) {
+	      return _products[id].getDefaults();
 	    }
 	  }, {
 	    key: 'getProductUtility',
-	    value: function getProductUtility(i) {
-	      return this.getDefaults(i).utility;
+	    value: function getProductUtility(id) {
+	      return _products[id].getProductUtility();
 	    }
 	  }, {
 	    key: 'getPaymentModifier',
 	    value: function getPaymentModifier(id) {
-	      var payments = _products[id].features.payment;
-	      // mockBuying
-	      // basicPricing
-	      // segmentedPricing
-	      if (payments.segmentedPricing3) {
-	        return 1;
-	      }
-	      if (payments.segmentedPricing2) {
-	        return 0.85;
-	      }
-	      if (payments.segmentedPricing) {
-	        return 0.7;
-	      }
-
-	      if (payments.basicPricing3) {
-	        return 0.4;
-	      }
-	      if (payments.basicPricing2) {
-	        return 0.30;
-	      }
-	      if (payments.basicPricing) {
-	        return 0.25;
-	      }
-
-	      if (payments.mockBuying) {
-	        return 1;
-	      }
-
-	      return 0;
+	      return _products[id].getPaymentModifier();
 	    }
 	  }, {
 	    key: 'getConversionRate',
-	    value: function getConversionRate(i, segmentId) {
-	      var rating = this.getRating(i, segmentId);
-	      var utility = this.getProductUtility(i);
-
-	      var paymentModifier = this.getPaymentModifier(i);
-
-	      var conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
-
-	      var raw = void 0;
-	      var pretty = void 0;
-	      if (conversion < 0 || conversion > 15) {
-	        _logger2.default.error('invalid conversion value ' + conversion);
-	        // throw 'INVALID_CONVERSION_ERROR';
-	        conversion = 0;
-	      }
-
-	      // if (segmentId > 0) {
-	      //   conversion = rating * paymentModifier / 10;
-	      // }
-
-	      raw = conversion;
-	      pretty = (0, _percentify2.default)(conversion);
-
-	      return {
-	        raw: raw, pretty: pretty
-	      };
+	    value: function getConversionRate(id, segmentId) {
+	      return _products[id].getConversionRate(segmentId);
 	    }
 	  }, {
 	    key: 'getProductPrice',
 	    value: function getProductPrice(id, segId) {
-	      var defaults = this.getDefaults(id);
-
-	      if (!segId) return defaults.price;
-
-	      return defaults.segments[segId].price;
+	      return _products[id].getProductPrice(segId);
 	    }
 	  }, {
 	    key: 'getFeatures',
 	    value: function getFeatures(id, featureGroup) {
-	      return _products[id].features[featureGroup];
+	      return _products[id].getFeatures(featureGroup);
 	    }
 	  }, {
 	    key: 'isPaymentEnabled',
 	    value: function isPaymentEnabled(id, segmentId) {
-	      var payments = this.getFeatures(id, 'payment');
-	      // mockBuying
-	      // basicPricing
-	      // segmentedPricing
-
-	      _logger2.default.shit('requirements for segment');
-
-	      if (!this.requirementsOKforSegment(id, segmentId).valid) return 0;
-
-	      if (payments.basicPricing) {
-	        return 1;
-	      }
-
-	      return 0;
+	      return _products[id].isPaymentEnabled(segmentId);
 	    }
 	  }, {
 	    key: 'getSegmentIncome',
-	    value: function getSegmentIncome(i, segId) {
-	      var conversion = this.getConversionRate(i, segId).raw * this.isPaymentEnabled(i, segId); // rating 10 - 0.05
-
-	      var clients = this.getClients(i, segId);
-	      var price = this.getProductPrice(i, segId);
-
-	      // logger.debug(`getSegmentIncome segment ${segId}, ${conversion}%, ${clients} cli, ${price}$`);
-	      var payments = conversion * clients;
-
-	      // logger.debug('getProductIncome', segId, payments);
-	      // need app
-	      // want to pay
-	      // can pay
-	      return payments * price;
+	    value: function getSegmentIncome(id, segId) {
+	      return _products[id].getSegmentIncome(segId);
 	    }
 	  }, {
 	    key: 'getProductIncome',
-	    value: function getProductIncome(i) {
-	      var _this3 = this;
-
-	      var segments = this.getSegments(i);
-
-	      return segments.map(function (s, segId) {
-	        return _this3.getSegmentIncome(i, segId);
-	      }).reduce(function (p, c) {
-	        return p + c;
-	      }, 0);
+	    value: function getProductIncome(id) {
+	      return _products[id].getProductIncome();
 	    }
 	  }, {
 	    key: 'getIdea',
-	    value: function getIdea(i) {
-	      return _products[i].idea;
+	    value: function getIdea(id) {
+	      return _products[id].getIdea();
 	    }
 	  }, {
 	    key: 'getViralityRate',
-	    value: function getViralityRate(i) {
-	      var rating = this.getRating(i);
-	      var multiplier = this.getDefaults(i).virality;
-	      var marketing = this.getMarketingFeatures(i);
-
-	      var base = 0.1;
-
-	      if (rating >= 7) {
-	        base += (rating - 7) / 10;
-	      }
-
-	      var referralBonuses = 0;
-	      // if (marketing.improvedReferralProgram) {
-	      //   referralBonuses += 0.45;
-	      // }
-
-	      if (marketing.referralProgram) {
-	        // referralBonuses += 0.21;
-	        referralBonuses += 0.65 * marketing.referralProgram;
-	      }
-
-	      return (base + referralBonuses) * multiplier;
+	    value: function getViralityRate(id) {
+	      return _products[id].getViralityRate();
 	    }
 	  }, {
 	    key: 'getMarketingFeatures',
 	    value: function getMarketingFeatures(id) {
-	      return _products[id].features.marketing;
+	      return _products[id].getMarketingFeatures();
 	    }
 	  }, {
 	    key: 'getBlogPower',
 	    value: function getBlogPower(id) {
-	      return this.getBlogStatusStructured(id).power;
+	      return _products[id].getBlogPower();
 	    }
 	  }, {
 	    key: 'getBlogStatusStructured',
 	    value: function getBlogStatusStructured(id) {
-	      var _this4 = this;
-
-	      var marketing = this.getMarketingFeatures(id);
-	      var power = 0;
-	      var support = 0;
-
-	      var featureCost = function featureCost(name) {
-	        return _this4.getMarketingFeatureList().filter(function (f) {
-	          return f.name === name;
-	        })[0].support.marketing;
-	      };
-
-	      if (marketing.blog) {
-	        power = 0.25;
-	        support = featureCost('blog');
-	      }
-	      if (marketing.blogII) {
-	        power = 0.5;
-	        support = featureCost('blogII');
-	      }
-	      if (marketing.blogIII) {
-	        power = 1;
-	        support = featureCost('blogIII');
-	      }
-
-	      return {
-	        power: power,
-	        supportCost: support,
-	        financed: true // has enough points
-	      };
+	      return _products[id].getBlogStatusStructured();
 	    }
 	  }, {
 	    key: 'getSupportPower',
 	    value: function getSupportPower(id) {
-	      var marketing = this.getMarketingFeatures(id);
-
-	      if (marketing.supportIII) return 1;
-	      if (marketing.supportII) return 0.5;
-	      if (marketing.support) return 0.25;
-
-	      return 0;
+	      return _products[id].getSupportPower();
 	    }
 	  }, {
 	    key: 'getEmailPower',
 	    value: function getEmailPower(id) {
-	      var marketing = this.getMarketingFeatures(id);
-
-	      if (marketing.emailIII) return 1;
-	      if (marketing.emailII) return 0.5;
-	      if (marketing.email) return 0.25;
-
-	      return 0;
+	      return _products[id].getEmailPower();
 	    }
 	  }, {
 	    key: 'getMarketingSupportCostPerClientForSupportFeature',
 	    value: function getMarketingSupportCostPerClientForSupportFeature(id) {
-	      var marketing = this.getMarketingFeatures(id);
-
-	      if (marketing.supportIII) return 0.25;
-	      if (marketing.supportII) return 0.5;
-	      if (marketing.support) return 1;
-
-	      return 0;
+	      return _products[id].getMarketingSupportCostPerClientForSupportFeature();
 	    }
 	  }, {
 	    key: 'getChurnRate',
-	    value: function getChurnRate(i) {
-	      // TODO fix constant values in blog, email, support in getChurnRate(i)
-	      // return answer in partitions 0-1
-	      _logger2.default.shit('TODO fix constant values in blog, email, support in getChurnRate(i)');
-
-	      var rating = this.getRating(i);
-
-	      if (rating < 3) {
-	        rating = 3;
-	        // return {
-	        //   raw: 1,
-	        //   pretty: 100
-	        // };
-	      }
-
-	      // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
-	      var ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
-
-	      var blog = this.getBlogPower(i);
-	      var emails = this.getEmailPower(i);
-	      var support = this.getSupportPower(i);
-	      var k = 0.6; // поправочный коэффициент
-
-	      var marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
-
-	      // 15: r7
-	      // bad 10-15+
-	      // good 1-5
-	      var churn = ratingModifier * (1 - k * marketingModifier) / 100;
-
-	      // logger.debug('product-store.js getChurnRate', churn);
-
-	      return {
-	        raw: churn,
-	        pretty: (0, _percentify2.default)(churn)
-	      };
+	    value: function getChurnRate(id) {
+	      return _products[id].getChurnRate();
 	    }
 	  }, {
 	    key: 'getProductBlogCost',
 	    value: function getProductBlogCost(id) {
-	      var BASE_BLOG_COST = 1000;
-
-	      return this.getMarketingFeatures(id).blog ? BASE_BLOG_COST : 0;
+	      return _products[id].getProductBlogCost();
 	    }
 	  }, {
 	    key: 'getProductSupportCost',
-	    value: function getProductSupportCost(i) {
-	      var marketing = this.getMarketingFeatures(i);
-
-	      var support = marketing.support || 0;
-
-	      if (!support) return 0;
-
-	      var clients = this.getClients(i);
-
-	      if (clients < 1000) return 300;
-	      if (clients < 10000) return 500;
-	      if (clients < 100000) return 3000;
-
-	      return 10000;
+	    value: function getProductSupportCost(id) {
+	      return _products[id].getProductSupportCost();
 	    }
 	  }, {
 	    key: 'getProductExpenses',
-	    value: function getProductExpenses(i) {
-	      return 0;
-	      return this.getProductBlogCost(i) + this.getProductSupportCost(i);
+	    value: function getProductExpenses(id) {
+	      return _products[id].getProductExpenses();
 	    }
 	  }, {
 	    key: 'getName',
-	    value: function getName(i) {
-	      return _products[i].name;
+	    value: function getName(id) {
+	      return _products[id].getName();
 	    }
 	  }, {
 	    key: 'getStage',
-	    value: function getStage(i) {
-	      return _products[i].stage;
+	    value: function getStage(id) {
+	      return _products[id].getStage();
 	    }
 	  }, {
 	    key: 'getFeatureStatus',
-	    value: function getFeatureStatus(i, featureGroup, featureName) {
-	      return _products[i].features[featureGroup][featureName] > 0;
+	    value: function getFeatureStatus(id, featureGroup, featureName) {
+	      return _products[id].getFeatureStatus(featureGroup, featureName);
 	    }
 	  }, {
 	    key: 'getCostPerClient',
-	    value: function getCostPerClient(i) {
-	      return this.getDefaults(i).CAC;
-	    }
-	  }, {
-	    key: 'getBugs',
-	    value: function getBugs(i) {
-	      return {
-	        ux: {
-	          max: 100,
-	          found: 50,
-	          fixed: 10
-	        },
-	        programming: {
-	          max: 100,
-	          found: 50,
-	          fixed: 10
-	        }
-	      };
+	    value: function getCostPerClient(id) {
+	      return _products[id].getCostPerClient();
 	    }
 	  }, {
 	    key: 'getRatingForMetricsTab',
-	    value: function getRatingForMetricsTab(i) {
-	      var phrase = void 0;
-	      var features = _products[i].features;
-	      var analytics = features.analytics;
-
-	      // rating depends on
-	      // number of users (stat pogreshnost)
-	      // feedback form
-	      // segmenting
-	      // webvisor
-
-	      // if (!analytics.feedback && !analytics.webvisor && !analytics.segmenting) {
-	      //   return 0;
-	      // }
-	      var analyticsModifier = 1;
-	      if (analytics.feedback) analyticsModifier -= 0.3;
-
-	      if (analytics.webvisor) {
-	        analyticsModifier -= 0.5;
-	      } else if (analytics.segmenting) {
-	        analyticsModifier -= 0.65;
-	      }
-
-	      var clients = this.getClients(i);
-	      var factor = 2;
-	      if (clients > 100000) {
-	        factor = 1;
-	      } else if (clients > 10000) {
-	        factor = 1.1;
-	      } else if (clients > 1000) {
-	        factor = 1.2;
-	      } else if (clients > 100) {
-	        factor = 1.5;
-	      } else {
-	        factor = 2;
-	      }
-
-	      var error = (0, _round2.default)(5 * factor * analyticsModifier);
-	      var offset = Math.random() * error;
-	      var rating = this.getRating(i);
-
-	      var leftValue = (0, _round2.default)(rating - offset);
-	      if (leftValue < 0) {
-	        leftValue = 0;
-	      }
-
-	      var rightValue = (0, _round2.default)(leftValue + error);
-	      if (rightValue < 0) {
-	        rightValue = 0;
-	      } else if (rightValue > 10) {
-	        rightValue = 10;
-	      }
-
-	      phrase = leftValue + ' - ' + rightValue;
-	      phrase = rating;
-
-	      return phrase;
+	    value: function getRatingForMetricsTab(id) {
+	      return _products[id].getRatingForMetricsTab();
 	    }
 	  }, {
 	    key: 'getClientAnalyticsModifier',
-	    value: function getClientAnalyticsModifier(i) {
-	      var factor = void 0;
-	      var clients = this.getClients(i);
-
-	      var CLIENTS_LOT = 10000;
-	      var CLIENTS_MID = 1000;
-	      var CLIENTS_LOW = 100;
-
-	      var clientMin = void 0;
-	      var clientMax = void 0;
-
-	      var index = void 0;
-
-	      if (clients > CLIENTS_LOT) {
-	        factor = 4;
-	        clientMax = CLIENTS_LOT;
-	        clientMin = CLIENTS_LOT;
-	        index = 0;
-	      } else if (clients > CLIENTS_MID) {
-	        factor = 3;
-	        clientMax = CLIENTS_LOT;
-	        clientMin = CLIENTS_MID;
-	        index = 1;
-	      } else if (clients > CLIENTS_LOW) {
-	        factor = 2.5;
-	        clientMax = CLIENTS_MID;
-	        clientMin = CLIENTS_LOW;
-	        index = 2;
-	      } else {
-	        factor = 1;
-	        clientMax = CLIENTS_LOW;
-	        clientMin = 0;
-	        index = 3;
-	      }
-
-	      return {
-	        modifier: factor,
-	        clientsRange: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW, 1],
-	        factors: [1, 0.9, 0.8, 0.3],
-	        index: index,
-	        clientMax: clientMax,
-	        clientMin: clientMin,
-	        clients: clients
-	      };
+	    value: function getClientAnalyticsModifier(id) {
+	      return _products[id].getClientAnalyticsModifier();
 	    }
 	  }, {
 	    key: 'getProgrammingSupportCostModifier',
 	    value: function getProgrammingSupportCostModifier(id) {
-	      return Math.pow(this.getImprovementsAmount(id), balance.SUPPORT_COST_MODIFIER);
+	      return _products[id].getProgrammingSupportCostModifier();
 	    }
 	  }, {
 	    key: 'getProgrammingSupportCost',
 	    value: function getProgrammingSupportCost(id) {
-	      return Math.floor(this.getDefaults(id).support.pp * this.getProgrammingSupportCostModifier(id));
+	      return _products[id].getProductSupportCost();
 	    }
 	  }, {
 	    key: 'getMarketingSupportTechTotalCost',
 	    value: function getMarketingSupportTechTotalCost(id) {
-	      return Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100 / 5);
+	      return _products[id].getMarketingSupportTechTotalCost();
 	    }
 	  }, {
 	    key: 'getBaseSupportCost',
 	    value: function getBaseSupportCost() {
-	      return 15;
+	      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+	      return _products[id].getBaseSupportCost();
 	    }
 	  }, {
 	    key: 'getMarketingSupportCost',
 	    value: function getMarketingSupportCost(id) {
-	      _logger2.default.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
-	      // const blogSupportCost = this.getBlogPower(id);
-
-	      var supportSupportCost = this.getMarketingSupportTechTotalCost(id);
-	      return this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured(id).supportCost;
+	      return _products[id].getMarketingSupportCost();
 	    }
 	  }, {
 	    key: 'getMarketingFeatureList',
@@ -7746,40 +7364,7 @@
 	  }, {
 	    key: 'getPaymentFeatures',
 	    value: function getPaymentFeatures(id, idea) {
-	      var technicalDebtModifier = this.getTechnicalDebtModifier(id);
-	      var up = function up(points) {
-	        return Math.ceil(points * technicalDebtModifier);
-	      };
-
-	      return [{
-	        name: 'mockBuying', shortDescription: 'Тестовая покупка',
-	        description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
-	        points: { programming: up(50), marketing: 0 }
-	      }, {
-	        name: 'basicPricing', shortDescription: 'Единый тарифный план I',
-	        description: 'Единая цена для всех клиентов. Мы начинаем извлекать доходы с продукта',
-	        points: { programming: up(150), marketing: 0 }
-	      }, {
-	        name: 'basicPricing2', shortDescription: 'Единый тарифный план II',
-	        description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
-	        points: { programming: up(50), marketing: 0 }
-	      }, {
-	        name: 'basicPricing3', shortDescription: 'Единый тарифный план III',
-	        description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
-	        points: { programming: up(50), marketing: 0 }
-	      }, {
-	        name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I',
-	        description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
-	        points: { programming: up(250), marketing: 0 }
-	      }, {
-	        name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II',
-	        description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
-	        points: { programming: up(150), marketing: 0 }
-	      }, {
-	        name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III',
-	        description: 'Грести деньги лопатами!',
-	        points: { programming: up(150), marketing: 0 }
-	      }];
+	      return _products[id].getPaymentFeatures(idea);
 	    }
 	  }, {
 	    key: 'getTechnicalDebtDescription',
@@ -7794,112 +7379,52 @@
 	    }
 	  }, {
 	    key: 'getImprovementChances',
-	    value: function getImprovementChances(i) {
-	      var analytics = _products[i].features.analytics;
-
-	      var picked = function picked(word) {
-	        return analytics[word];
-	      };
-
-	      var feedback = analytics.feedback;
-	      var webvisor = analytics.webvisor;
-	      var segmenting = analytics.segmenting;
-
-	      // const analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
-	      var clientModifier = this.getClientAnalyticsModifier(i);
-	      // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
-
-
-	      var basicBonus = 100;
-	      var feedbackBonus = 1000;
-	      var webvisorBonus = 1500;
-	      var segmentingBonus = 500;
-	      var segmentingBonus2 = 500;
-
-	      var bonuses = basicBonus;
-
-	      this.getHypothesisAnalyticsFeatures().forEach(function (f, i) {
-	        _logger2.default.debug('hypo features', f);
-	        if (picked(f.name)) bonuses += f.bonus || 0;
-	      });
-
-	      var maxXP = bonuses;
-
-	      // maxXP *= clientModifier.modifier;
-
-	      return {
-	        middle: maxXP, // * clientModifier.modifier / 2,
-	        // min: 0,
-	        // max: maxXP * clientModifier.modifier,
-	        maxXPWithoutBonuses: maxXP,
-	        // webvisorBonus,
-	        // feedbackBonus,
-	        // segmentingBonus,
-	        // basicBonus,
-
-	        hasWebvisor: webvisor,
-	        hasFeedback: feedback,
-	        hasSegmenting: segmenting,
-
-	        clientModifier: clientModifier
-	      };
+	    value: function getImprovementChances(id) {
+	      return _products[id].getImprovementChances();
 	    }
 	  }, {
 	    key: 'getProductExpensesStructure',
-	    value: function getProductExpensesStructure(i) {
-	      return {
-	        name: this.getName(i),
-	        blog: this.getProductBlogCost(i),
-	        support: this.getProductSupportCost(i)
-	      };
+	    value: function getProductExpensesStructure(id) {
+	      return _products[id].getProductExpensesStructure();
 	    }
 	  }, {
 	    key: 'getXP',
-	    value: function getXP(i) {
-	      return _products[i].XP;
+	    value: function getXP(id) {
+	      return _products[id].getXP();
 	    }
 	  }, {
 	    key: 'getHypothesisPoints',
 	    value: function getHypothesisPoints(id) {
-	      var complexityModifier = this.getTechnologyComplexityModifier(id);
-
-	      // logger.debug('getHypothesisPoints', complexityModifier);
-
-	      var defaults = this.getDefaults(id).hypothesis;
-
-	      return {
-	        mp: Math.ceil(defaults.mp * complexityModifier),
-	        pp: Math.ceil(defaults.pp * complexityModifier)
-	      };
+	      return _products[id].getHypothesisPoints();
 	    }
 	  }, {
 	    key: 'getSegments',
 	    value: function getSegments(id) {
-	      return this.getDefaults(id).segments;
+	      return _products[id].getSegments();
 	    }
 	  }, {
 	    key: 'getSegmentById',
 	    value: function getSegmentById(id, segId) {
-	      return this.getSegments(id)[segId];
+	      return _products[id].getSegmentById(segId);
 	    }
 	  }, {
 	    key: 'getDescriptionOfProduct',
 	    value: function getDescriptionOfProduct(id) {
-	      return this.getDefaults(id).description;
+	      return _products[id].getDescriptionOfProduct();
 	    }
 	  }, {
 	    key: 'getCompetitorsList',
 	    value: function getCompetitorsList(id) {
-	      var _this5 = this;
+	      var _this2 = this;
 
 	      var ourCompany = _products.filter(function (p) {
-	        return _this5.isOurProduct(p) && p.idea === _this5.getIdea(id);
+	        return _this2.isOurProduct(p) && p.idea === _this2.getIdea(id);
 	      })[0];
 
 	      return _products.map(function (p, i) {
 	        return (0, _assign2.default)({ id: i }, p);
 	      }).filter(function (p) {
-	        return !_this5.isOurProduct(p) && p.idea === _this5.getIdea(id);
+	        return !_this2.isOurProduct(p) && p.idea === _this2.getIdea(id);
 	      }).map(function (p) {
 	        var name = p.name;
 	        var rating = (0, _round2.default)((0, _computeRating2.default)(p, 0));
@@ -7907,7 +7432,7 @@
 
 	        var features = p.features.offer;
 
-	        var offer = _this5.getDefaults(id).features.map(function (f, i) {
+	        var offer = _this2.getDefaults(id).features.map(function (f, i) {
 	          return {
 	            name: f.name,
 	            description: f.shortDescription,
@@ -7992,37 +7517,22 @@
 	  }, {
 	    key: 'canShowPayPercentageMetric',
 	    value: function canShowPayPercentageMetric(id) {
-	      return this.getFeatureStatus(id, 'payment', 'mockBuying');
+	      return _products[id].canShowPayPercentageMetric();
 	    }
 	  }, {
 	    key: 'clientsEnoughToFormSegment',
 	    value: function clientsEnoughToFormSegment(id, segId) {
-	      return this.getClients(id, segId) > 100;
+	      return _products[id].clientsEnoughToFormSegment(segId);
 	    }
 	  }, {
 	    key: 'getAvailableSegments',
 	    value: function getAvailableSegments(id) {
-	      var _this6 = this;
-
-	      var value = this.getSegments(id).filter(function (s, segId) {
-	        return _this6.requirementsOKforSegment(id, segId).valid && _this6.clientsEnoughToFormSegment(id, segId);
-	      });
-
-	      // logger.debug('getAvailableSegments', value);
-
-	      return value;
+	      return _products[id].getAvailableSegments();
 	    }
 	  }, {
 	    key: 'getMarketShare',
 	    value: function getMarketShare(id) {
-	      var clients = this.getClients(id);
-	      var marketSize = this.getDefaults(id).marketSize;
-
-	      return {
-	        share: (0, _percentify2.default)(clients / marketSize),
-	        clients: clients,
-	        marketSize: marketSize
-	      };
+	      return _products[id].getMarketShare();
 	    }
 	  }, {
 	    key: 'getNextCompetitorInfo',
@@ -8089,103 +7599,47 @@
 	  var change = true;
 	  switch (p.type) {
 	    case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-	      _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
-	      _products[id].KPI = p.KPI;
-	      _products[id].features = p.features;
-	      _products[id].XP = 1999;
+	      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 1999);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
-	      _products[id].XP += p.value;
-	      var features = (0, _productDescriptions2.default)(_products[id].idea).features;
-
-	      var max = 0;
-	      features.forEach(function (f) {
-	        max += f.data;
-	      });
-
-	      if (_products[id].XP > max) {
-	        _products[id].XP = max;
-	      }
-
-	      if (_products[id].tests) {
-	        _products[id].tests++;
-	      } else {
-	        _products[id].tests = 1;
-	      }
+	      _products[id].testHypothesis(p);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_SWITCH_STAGE:
-	      _products[id].stage = p.stage;
+	      _products[id].switchStage(p.stage);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
-	      var previous = _products[id].features[p.featureGroup][p.featureName] || 0;
-	      var sum = previous + p.value;
-	      max = p.max;
-	      // _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
-	      _products[p.id].features[p.featureGroup][p.featureName] = sum > max ? max : sum;
-	      _products[p.id].XP -= p.value;
-	      if (_products[p.id].improvements) {
-	        _products[p.id].improvements++;
-	      } else {
-	        _products[p.id].improvements = 1;
-	      }
+	      _products[id].improveFeature(p);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
-	      var featureId = p.featureId;
-	      previous = _products[id].features.offer[featureId];
-	      sum = previous + p.value;
-	      max = p.max;
-
-	      _products[p.id].features.offer[featureId] = sum > max ? max : sum;
-	      _products[p.id].XP -= p.value;
-	      if (_products[p.id].improvements) {
-	        _products[p.id].improvements++;
-	      } else {
-	        _products[p.id].improvements = 1;
-	      }
+	      _products[id].improveMainFeature(p);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
-	      // let previous = _products[id].features[p.featureGroup][p.featureName];
-	      _products[id].features[p.featureGroup][p.featureName] = 1;
-	      _logger2.default.log('improved feature by points');
+	      _products[id].improveFeatureByPoints(p);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_CLIENTS_ADD:
-	      // not all users will become our clients. Some of them will vanish
-	      // if you got them from ads, efficiency will be less than 1
-	      var efficiency = p.efficiency || 1;
-	      var clients = Math.floor(efficiency * p.clients);
-
-	      _products[id].KPI.clients += clients;
-	      _products[id].KPI.newClients += clients;
+	      _products[id].addClients(p);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
-	      clients = p.clients;
-	      _products[id].KPI.clients += clients;
-	      _products[id].KPI.newClients = clients;
+	      _products[id].addViralClients(p);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
-	      // churn clients
-	      clients = p.clients;
-
-	      if (_products[id].KPI.clients - clients < 0) {
-	        _products[id].KPI.clients = 0;
-	      } else {
-	        _products[id].KPI.clients -= Math.floor(clients);
-	      }
+	      _products[id].removeClients(p);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
 	      // { features , KPI, idea, name }
 	      var competitor = p.p;
-
-	      _products.push((0, _assign2.default)({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+	      // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+	      competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
+	      // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
 	      break;
 
 	    case c.PRODUCT_ACTIONS_COMPANY_BUY:
@@ -13820,9 +13274,17 @@
 	  value: true
 	});
 
+	var _log = __webpack_require__(144);
+
+	var _log2 = _interopRequireDefault(_log);
+
 	var _classCallCheck2 = __webpack_require__(45);
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
 
 	var _productDescriptions = __webpack_require__(151);
 
@@ -13836,74 +13298,1135 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
+	var _percentify = __webpack_require__(149);
+
+	var _percentify2 = _interopRequireDefault(_percentify);
+
+	var _computeRating = __webpack_require__(150);
+
+	var _computeRating2 = _interopRequireDefault(_computeRating);
+
+	var _productStages = __webpack_require__(154);
+
+	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
+
+	var _computeCompanyCost = __webpack_require__(155);
+
+	var _computeCompanyCost2 = _interopRequireDefault(_computeCompanyCost);
+
+	var _companyMerger = __webpack_require__(157);
+
+	var _companyMerger2 = _interopRequireDefault(_companyMerger);
+
+	var _balance = __webpack_require__(158);
+
+	var balance = _interopRequireWildcard(_balance);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
 
-	var Product = function Product(_ref) {
-	  var idea = _ref.idea,
-	      name = _ref.name,
-	      isCompetitor = _ref.isCompetitor;
-	  (0, _classCallCheck3.default)(this, Product);
+	var Product = function () {
+	  function Product(_ref) {
+	    var idea = _ref.idea,
+	        name = _ref.name,
+	        isCompetitor = _ref.isCompetitor;
+	    (0, _classCallCheck3.default)(this, Product);
 
-	  // this.isCompetitor = isCompetitor;
+	    // this.isCompetitor = isCompetitor;
 
-	  if (!idea) throw 'no idea in classes/Product.js';
+	    if (!idea) throw 'no idea in classes/Product.js';
 
-	  if (!name) {
-	    var index = Math.floor((0, _random2.default)(0, names.length - 1));
-	    name = names[index];
+	    if (!name) {
+	      var index = Math.floor((0, _random2.default)(0, names.length - 1));
+	      name = names[index];
+	    }
+
+	    var defaults = (0, _productDescriptions2.default)(idea);
+	    var defaultFeatures = defaults.features;
+
+	    var maxRating = 6;
+	    if (isCompetitor) maxRating = 8;
+
+	    var luck = (0, _random2.default)(1, maxRating) / 10; // luck in 0.1-0.6
+
+	    var offer = defaultFeatures.map(function (f, i) {
+	      return Math.floor(luck * f.data);
+	    });
+
+	    var features = {
+	      offer: offer, // features, that are attached to main idea
+	      development: {}, // backups, more dev servers, e.t.c.
+
+	      marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
+	      analytics: {}, // simple analytics (main KPIs),
+	      // middle (segments analytics), mid+ (segments + versions),
+
+	      // not only chat with users, but also localisations, content updates
+	      // and all sort of things, that you need doing constantly
+	      support: {},
+	      payment: {}
+	    };
+
+	    var clients = isCompetitor ? Math.ceil((0, _random2.default)(100, defaults.marketSize / 10)) : 10;
+
+	    var KPI = {
+	      debt: 0, // technical debt. Shows, how fast can you implement new features
+	      clients: clients,
+	      newClients: clients,
+
+	      hype: 1000,
+
+	      bugs: 10,
+
+	      currentUXBugs: 100,
+	      foundUXBugs: 0,
+	      fixedUXBugs: 0
+	    };
+
+	    this.features = features;
+	    this.KPI = KPI;
+	    this.idea = idea;
+	    this.name = name;
+
+	    this.XP = 1900;
+
+	    this.tests = 1;
+	    this.improvements = 1;
+
+	    this.owner = !isCompetitor;
 	  }
 
-	  var defaults = (0, _productDescriptions2.default)(idea);
-	  var defaultFeatures = defaults.features;
+	  (0, _createClass3.default)(Product, [{
+	    key: 'isOurProduct',
+	    value: function isOurProduct() {
+	      return this.owner;
+	    }
+	  }, {
+	    key: 'getCompanyCost',
+	    value: function getCompanyCost() {
+	      return _computeCompanyCost2.default.compute(this);
+	    }
+	  }, {
+	    key: 'getRating',
+	    value: function getRating(segmentId) {
+	      if (!segmentId) segmentId = 0;
 
-	  var maxRating = 6;
-	  if (isCompetitor) maxRating = 8;
+	      var result = round((0, _computeRating2.default)(this, segmentId));
 
-	  var luck = (0, _random2.default)(1, maxRating) / 10; // luck in 0.1-0.6
+	      return Math.max(result, 0);
+	    }
+	  }, {
+	    key: 'getClients',
+	    value: function getClients(segmentId) {
+	      var total = this.KPI.clients;
+	      if (segmentId === undefined || segmentId === null) return total;
 
-	  var offer = defaultFeatures.map(function (f, i) {
-	    return Math.floor(luck * f.data);
-	  });
+	      var s = this.getSegmentBySegmentId(segmentId);
 
-	  var features = {
-	    offer: offer, // features, that are attached to main idea
-	    development: {}, // backups, more dev servers, e.t.c.
+	      return Math.floor(s.percentage * total / 100);
+	    }
+	  }, {
+	    key: 'getSegmentBySegmentId',
+	    value: function getSegmentBySegmentId(segId) {
+	      return this.getSegments()[segId];
+	    }
+	  }, {
+	    key: 'getHypeDamping',
+	    value: function getHypeDamping() {
+	      return -2;
+	    }
+	  }, {
+	    key: 'getSegmentedPriorities',
+	    value: function getSegmentedPriorities(segId) {
+	      var s = this.getSegmentBySegmentId(segId);
+	      var features = this.getDefaults().features;
 
-	    marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-	    analytics: {}, // simple analytics (main KPIs),
-	    // middle (segments analytics), mid+ (segments + versions),
+	      return s.rating.map(function (r, index) {
+	        return {
+	          rating: r,
+	          feature: features[index].shortDescription
+	        };
+	      }).sort(function (s1, s2) {
+	        return s2.rating - s1.rating;
+	      });
+	    }
+	  }, {
+	    key: 'getNewClients',
+	    value: function getNewClients() {
+	      return this.KPI.newClients;
+	    }
+	  }, {
+	    key: 'getDisloyalClients',
+	    value: function getDisloyalClients() {
+	      return Math.floor(this.getClients() * this.getChurnRate().raw);
+	    }
+	  }, {
+	    key: 'getViralClients',
+	    value: function getViralClients() {
+	      return Math.floor(this.getNewClients() * this.getViralityRate());
+	    }
+	  }, {
+	    key: 'getMainFeatureQualityByFeatureId',
+	    value: function getMainFeatureQualityByFeatureId(featureId) {
+	      var value = this.features.offer[featureId];
 
-	    // not only chat with users, but also localisations, content updates
-	    // and all sort of things, that you need doing constantly
-	    support: {},
-	    payment: {}
-	  };
+	      return value; // round(value / feature.data);
+	    }
+	  }, {
+	    key: 'getMainFeatureDefaultQualityByFeatureId',
+	    value: function getMainFeatureDefaultQualityByFeatureId(featureId) {
+	      return this.getDefaults().features[featureId].data;
+	    }
+	  }, {
+	    key: 'getPrettyFeatureNameByFeatureId',
+	    value: function getPrettyFeatureNameByFeatureId(featureId) {
+	      return this.getDefaults().features[featureId].shortDescription;
+	    }
+	  }, {
+	    key: 'requirementsOKforSegment',
+	    value: function requirementsOKforSegment(segmentId) {
+	      var _this = this;
 
-	  var clients = isCompetitor ? Math.ceil((0, _random2.default)(100, defaults.marketSize / 10)) : 10;
+	      var _getDefaults = this.getDefaults(),
+	          segments = _getDefaults.segments;
 
-	  var KPI = {
-	    debt: 0, // technical debt. Shows, how fast can you implement new features
-	    clients: clients,
-	    newClients: clients,
+	      var segment = segments[segmentId];
+	      var requirements = segment.requirements;
 
-	    hype: 1000,
+	      var valid = true;
 
-	    bugs: 10,
+	      var unmetRequirements = [];
 
-	    currentUXBugs: 100,
-	    foundUXBugs: 0,
-	    fixedUXBugs: 0
-	  };
+	      requirements.forEach(function (r, featureId) {
+	        var max = _this.getDefaults().features[featureId].data;
 
-	  this.features = features;
-	  this.KPI = KPI;
-	  this.idea = idea;
-	  this.name = name;
+	        var featureQuality = _this.getMainFeatureQualityByFeatureId(featureId);
+	        var need = max * r / 100;
 
-	  // return {features, KPI, idea, name}
-	};
+	        var met = featureQuality >= need;
+
+	        if (!met) {
+	          valid = false;
+
+	          unmetRequirements.push({
+	            name: _this.getPrettyFeatureNameByFeatureId(featureId),
+	            now: featureQuality,
+	            need: need
+	          });
+	        }
+	        // logger.debug(`feature quality #${featureId}: ${featureQuality}. Requirement is ${met}`)
+	      });
+
+	      return {
+	        valid: valid,
+	        unmetRequirements: unmetRequirements
+	      };
+	    }
+	  }, {
+	    key: 'getAnalyticsValueForFeatureCreating',
+	    value: function getAnalyticsValueForFeatureCreating() {
+	      // range: 0 - 1
+	      // range: 0.1 - 0.4
+	      var analytics = this.features.analytics;
+
+	      var value = 0;
+
+	      var feedback = analytics.feedback;
+	      var webvisor = analytics.webvisor;
+	      var segmenting = analytics.segmenting;
+
+	      if (segmenting) {
+	        value = 0.4;
+	      } else if (webvisor) {
+	        value = 0.3;
+	      } else if (feedback) {
+	        value = 0.1;
+	      }
+
+	      return value;
+	    }
+	  }, {
+	    key: 'getDefaults',
+	    value: function getDefaults() {
+	      return (0, _productDescriptions2.default)(this.idea);
+	    }
+	  }, {
+	    key: 'getProductUtility',
+	    value: function getProductUtility() {
+	      return this.getDefaults().utility;
+	    }
+	  }, {
+	    key: 'getPaymentModifier',
+	    value: function getPaymentModifier() {
+	      var payments = this.features.payment;
+	      // mockBuying
+	      // basicPricing
+	      // segmentedPricing
+	      if (payments.segmentedPricing3) {
+	        return 1;
+	      }
+	      if (payments.segmentedPricing2) {
+	        return 0.85;
+	      }
+	      if (payments.segmentedPricing) {
+	        return 0.7;
+	      }
+
+	      if (payments.basicPricing3) {
+	        return 0.4;
+	      }
+	      if (payments.basicPricing2) {
+	        return 0.30;
+	      }
+	      if (payments.basicPricing) {
+	        return 0.25;
+	      }
+
+	      if (payments.mockBuying) {
+	        return 1;
+	      }
+
+	      return 0;
+	    }
+	  }, {
+	    key: 'getConversionRate',
+	    value: function getConversionRate(segmentId) {
+	      var rating = this.getRating(segmentId);
+	      var utility = this.getProductUtility();
+
+	      var paymentModifier = this.getPaymentModifier();
+
+	      var conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
+
+	      var raw = void 0;
+	      var pretty = void 0;
+	      if (conversion < 0 || conversion > 15) {
+	        _logger2.default.error('invalid conversion value ' + conversion);
+	        // throw 'INVALID_CONVERSION_ERROR';
+	        conversion = 0;
+	      }
+
+	      // if (segmentId > 0) {
+	      //   conversion = rating * paymentModifier / 10;
+	      // }
+
+	      raw = conversion;
+	      pretty = (0, _percentify2.default)(conversion);
+
+	      return {
+	        raw: raw, pretty: pretty
+	      };
+	    }
+	  }, {
+	    key: 'getProductPrice',
+	    value: function getProductPrice(segId) {
+	      var defaults = this.getDefaults();
+
+	      if (!segId) return defaults.price;
+
+	      return defaults.segments[segId].price;
+	    }
+	  }, {
+	    key: 'getFeatures',
+	    value: function getFeatures(featureGroup) {
+	      return this.features[featureGroup];
+	    }
+	  }, {
+	    key: 'isPaymentEnabled',
+	    value: function isPaymentEnabled(segmentId) {
+	      var payments = this.getFeatures('payment');
+	      // mockBuying
+	      // basicPricing
+	      // segmentedPricing
+
+	      _logger2.default.shit('requirements for segment');
+
+	      if (!this.requirementsOKforSegment(segmentId).valid) return 0;
+
+	      if (payments.basicPricing) {
+	        return 1;
+	      }
+
+	      return 0;
+	    }
+	  }, {
+	    key: 'getSegmentIncome',
+	    value: function getSegmentIncome(segId) {
+	      var conversion = this.getConversionRate(segId).raw * this.isPaymentEnabled(segId); // rating 10 - 0.05
+
+	      var clients = this.getClients(segId);
+	      var price = this.getProductPrice(segId);
+
+	      // logger.debug(`getSegmentIncome segment ${segId}, ${conversion}%, ${clients} cli, ${price}$`);
+	      var payments = conversion * clients;
+
+	      // logger.debug('getProductIncome', segId, payments);
+	      // need app
+	      // want to pay
+	      // can pay
+	      return payments * price;
+	    }
+	  }, {
+	    key: 'getProductIncome',
+	    value: function getProductIncome() {
+	      var _this2 = this;
+
+	      var segments = this.getSegments();
+
+	      return segments.map(function (s, segId) {
+	        return _this2.getSegmentIncome(segId);
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
+	    }
+	  }, {
+	    key: 'getIdea',
+	    value: function getIdea() {
+	      return this.idea;
+	    }
+	  }, {
+	    key: 'getViralityRate',
+	    value: function getViralityRate() {
+	      var rating = this.getRating();
+	      var multiplier = this.getDefaults().virality;
+	      var marketing = this.getMarketingFeatures();
+
+	      var base = 0.1;
+
+	      if (rating >= 7) {
+	        base += (rating - 7) / 10;
+	      }
+
+	      var referralBonuses = 0;
+	      // if (marketing.improvedReferralProgram) {
+	      //   referralBonuses += 0.45;
+	      // }
+
+	      if (marketing.referralProgram) {
+	        // referralBonuses += 0.21;
+	        referralBonuses += 0.65 * marketing.referralProgram;
+	      }
+
+	      return (base + referralBonuses) * multiplier;
+	    }
+	  }, {
+	    key: 'getMarketingFeatures',
+	    value: function getMarketingFeatures() {
+	      return this.features.marketing;
+	    }
+	  }, {
+	    key: 'getBlogPower',
+	    value: function getBlogPower() {
+	      return this.getBlogStatusStructured().power;
+	    }
+	  }, {
+	    key: 'getBlogStatusStructured',
+	    value: function getBlogStatusStructured() {
+	      var _this3 = this;
+
+	      var marketing = this.getMarketingFeatures();
+	      var power = 0;
+	      var support = 0;
+
+	      var featureCost = function featureCost(name) {
+	        return _this3.getMarketingFeatureList().filter(function (f) {
+	          return f.name === name;
+	        })[0].support.marketing;
+	      };
+
+	      if (marketing.blog) {
+	        power = 0.25;
+	        support = featureCost('blog');
+	      }
+	      if (marketing.blogII) {
+	        power = 0.5;
+	        support = featureCost('blogII');
+	      }
+	      if (marketing.blogIII) {
+	        power = 1;
+	        support = featureCost('blogIII');
+	      }
+
+	      return {
+	        power: power,
+	        supportCost: support,
+	        financed: true // has enough points
+	      };
+	    }
+	  }, {
+	    key: 'getSupportPower',
+	    value: function getSupportPower() {
+	      var marketing = this.getMarketingFeatures();
+
+	      if (marketing.supportIII) return 1;
+	      if (marketing.supportII) return 0.5;
+	      if (marketing.support) return 0.25;
+
+	      return 0;
+	    }
+	  }, {
+	    key: 'getEmailPower',
+	    value: function getEmailPower() {
+	      var marketing = this.getMarketingFeatures();
+
+	      if (marketing.emailIII) return 1;
+	      if (marketing.emailII) return 0.5;
+	      if (marketing.email) return 0.25;
+
+	      return 0;
+	    }
+	  }, {
+	    key: 'getMarketingSupportCostPerClientForSupportFeature',
+	    value: function getMarketingSupportCostPerClientForSupportFeature() {
+	      var marketing = this.getMarketingFeatures();
+
+	      if (marketing.supportIII) return 0.25;
+	      if (marketing.supportII) return 0.5;
+	      if (marketing.support) return 1;
+
+	      return 0;
+	    }
+	  }, {
+	    key: 'getChurnRate',
+	    value: function getChurnRate() {
+	      // TODO fix constant values in blog, email, support in getChurnRate(i)
+	      // return answer in partitions 0-1
+	      _logger2.default.shit('TODO fix constant values in blog, email, support in getChurnRate(i)');
+
+	      var rating = this.getRating();
+
+	      if (rating < 3) {
+	        rating = 3;
+	        // return {
+	        //   raw: 1,
+	        //   pretty: 100
+	        // };
+	      }
+
+	      // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
+	      var ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
+
+	      var blog = this.getBlogPower();
+	      var emails = this.getEmailPower();
+	      var support = this.getSupportPower();
+	      var k = 0.6; // поправочный коэффициент
+
+	      var marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
+
+	      // 15: r7
+	      // bad 10-15+
+	      // good 1-5
+	      var churn = ratingModifier * (1 - k * marketingModifier) / 100;
+
+	      // logger.debug('product-store.js getChurnRate', churn);
+
+	      return {
+	        raw: churn,
+	        pretty: (0, _percentify2.default)(churn)
+	      };
+	    }
+	  }, {
+	    key: 'getProductBlogCost',
+	    value: function getProductBlogCost() {
+	      var BASE_BLOG_COST = 1000;
+
+	      return this.getMarketingFeatures().blog ? BASE_BLOG_COST : 0;
+	    }
+	  }, {
+	    key: 'getProductSupportCost',
+	    value: function getProductSupportCost() {
+	      var marketing = this.getMarketingFeatures();
+
+	      var support = marketing.support || 0;
+
+	      if (!support) return 0;
+
+	      var clients = this.getClients();
+
+	      if (clients < 1000) return 300;
+	      if (clients < 10000) return 500;
+	      if (clients < 100000) return 3000;
+
+	      return 10000;
+	    }
+	  }, {
+	    key: 'getProductExpenses',
+	    value: function getProductExpenses() {
+	      return 0;
+	      return this.getProductBlogCost() + this.getProductSupportCost();
+	    }
+	  }, {
+	    key: 'getName',
+	    value: function getName() {
+	      return this.name;
+	    }
+	  }, {
+	    key: 'getStage',
+	    value: function getStage() {
+	      return this.stage;
+	    }
+	  }, {
+	    key: 'getFeatureStatus',
+	    value: function getFeatureStatus(featureGroup, featureName) {
+	      return this.features[featureGroup][featureName] > 0;
+	    }
+	  }, {
+	    key: 'getCostPerClient',
+	    value: function getCostPerClient() {
+	      return this.getDefaults().CAC;
+	    }
+	  }, {
+	    key: 'getRatingForMetricsTab',
+	    value: function getRatingForMetricsTab() {
+	      var phrase = void 0;
+	      var features = this.features;
+	      var analytics = features.analytics;
+
+	      // rating depends on
+	      // number of users (stat pogreshnost)
+	      // feedback form
+	      // segmenting
+	      // webvisor
+
+	      // if (!analytics.feedback && !analytics.webvisor && !analytics.segmenting) {
+	      //   return 0;
+	      // }
+	      var analyticsModifier = 1;
+	      if (analytics.feedback) analyticsModifier -= 0.3;
+
+	      if (analytics.webvisor) {
+	        analyticsModifier -= 0.5;
+	      } else if (analytics.segmenting) {
+	        analyticsModifier -= 0.65;
+	      }
+
+	      var clients = this.getClients();
+	      var factor = 2;
+	      if (clients > 100000) {
+	        factor = 1;
+	      } else if (clients > 10000) {
+	        factor = 1.1;
+	      } else if (clients > 1000) {
+	        factor = 1.2;
+	      } else if (clients > 100) {
+	        factor = 1.5;
+	      } else {
+	        factor = 2;
+	      }
+
+	      var error = round(5 * factor * analyticsModifier);
+	      var offset = Math.random() * error;
+	      var rating = this.getRating();
+
+	      var leftValue = round(rating - offset);
+	      if (leftValue < 0) {
+	        leftValue = 0;
+	      }
+
+	      var rightValue = round(leftValue + error);
+	      if (rightValue < 0) {
+	        rightValue = 0;
+	      } else if (rightValue > 10) {
+	        rightValue = 10;
+	      }
+
+	      phrase = leftValue + ' - ' + rightValue;
+	      phrase = rating;
+
+	      return phrase;
+	    }
+	  }, {
+	    key: 'getClientAnalyticsModifier',
+	    value: function getClientAnalyticsModifier() {
+	      var factor = void 0;
+	      var clients = this.getClients();
+
+	      var CLIENTS_LOT = 10000;
+	      var CLIENTS_MID = 1000;
+	      var CLIENTS_LOW = 100;
+
+	      var clientMin = void 0;
+	      var clientMax = void 0;
+
+	      var index = void 0;
+
+	      if (clients > CLIENTS_LOT) {
+	        factor = 4;
+	        clientMax = CLIENTS_LOT;
+	        clientMin = CLIENTS_LOT;
+	        index = 0;
+	      } else if (clients > CLIENTS_MID) {
+	        factor = 3;
+	        clientMax = CLIENTS_LOT;
+	        clientMin = CLIENTS_MID;
+	        index = 1;
+	      } else if (clients > CLIENTS_LOW) {
+	        factor = 2.5;
+	        clientMax = CLIENTS_MID;
+	        clientMin = CLIENTS_LOW;
+	        index = 2;
+	      } else {
+	        factor = 1;
+	        clientMax = CLIENTS_LOW;
+	        clientMin = 0;
+	        index = 3;
+	      }
+
+	      return {
+	        modifier: factor,
+	        clientsRange: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW, 1],
+	        factors: [1, 0.9, 0.8, 0.3],
+	        index: index,
+	        clientMax: clientMax,
+	        clientMin: clientMin,
+	        clients: clients
+	      };
+	    }
+	  }, {
+	    key: 'getProgrammingSupportCostModifier',
+	    value: function getProgrammingSupportCostModifier() {
+	      return Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
+	    }
+	  }, {
+	    key: 'getProgrammingSupportCost',
+	    value: function getProgrammingSupportCost() {
+	      return Math.floor(this.getDefaults().support.pp * this.getProgrammingSupportCostModifier());
+	    }
+	  }, {
+	    key: 'getMarketingSupportTechTotalCost',
+	    value: function getMarketingSupportTechTotalCost() {
+	      return Math.floor(this.getClients() * this.getMarketingSupportCostPerClientForSupportFeature() / 100 / 5);
+	    }
+	  }, {
+	    key: 'getBaseSupportCost',
+	    value: function getBaseSupportCost() {
+	      return 15;
+	    }
+	  }, {
+	    key: 'getMarketingSupportCost',
+	    value: function getMarketingSupportCost() {
+	      _logger2.default.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
+	      // const blogSupportCost = this.getBlogPower(id);
+
+	      var supportSupportCost = this.getMarketingSupportTechTotalCost();
+	      return this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured().supportCost;
+	    }
+	  }, {
+	    key: 'getMarketingFeatureList',
+	    value: function getMarketingFeatureList(idea) {
+	      return [{
+	        name: 'blog', shortDescription: 'Блог проекта',
+	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150 },
+	        support: { marketing: 50 }
+	      }, {
+	        name: 'support', shortDescription: 'Техподдержка',
+	        description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 },
+	        support: { marketing: 50 }
+	      }, {
+	        name: 'blogII', shortDescription: 'Улучшенный блог проекта',
+	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150 },
+	        support: { marketing: 150 }
+	      }, {
+	        name: 'supportII', shortDescription: 'Улучшенная техподдержка',
+	        description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 },
+	        support: { marketing: 50 }
+	      }, {
+	        name: 'emails', shortDescription: 'Рассылка электронной почты',
+	        description: 'Рассылка электронной почти снижает отток клиентов на 5%',
+	        points: { marketing: 50, programming: 100 },
+	        support: { programming: 20 }
+	      }, {
+	        name: 'blogIII', shortDescription: 'Улучшенный блог проекта II',
+	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150 },
+	        support: { marketing: 150 }
+	      }, {
+	        name: 'supportIII', shortDescription: 'Улучшенная техподдержка II',
+	        description: 'Техподдержка снижает отток клиентов на 15%. ',
+	        points: { marketing: 50, programming: 100 },
+	        support: { marketing: 50 }
+	      }
+	      // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
+	      //   points: { marketing: 50, programming: 100 }, time: 7 }
+	      ];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getHypothesisAnalyticsFeatures',
+	    value: function getHypothesisAnalyticsFeatures(idea) {
+	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев',
+	        description: 'Общение с вашими клиентами позволяет улучшить ваш продукт. +300XP/мес',
+	        points: { programming: 50, marketing: 0 }, bonus: 300
+	      }, { name: 'webvisor', shortDescription: 'Вебвизор',
+	        description: 'Позволяет просматривать действия пользователей. +200XP/мес',
+	        points: { programming: 150, marketing: 0 }, bonus: 200
+	      }, { name: 'AB', shortDescription: 'A/B тестирование',
+	        description: 'Позволяет тестировать несколько вариантов проекта. +400XP/мес',
+	        points: { programming: 175, marketing: 0 }, bonus: 400
+	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей',
+	        description: '+500XP/мес',
+	        points: { programming: 250, marketing: 0 }, bonus: 500
+	      }, { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II',
+	        description: '+600XP/мес',
+	        points: { programming: 500, marketing: 0 }, bonus: 600
+	      }];
+	    }
+	  }, {
+	    key: 'getAnalyticFeatures',
+	    value: function getAnalyticFeatures(idea) {
+	      return [
+	      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+	      //   points: { programming: 150, marketing: 100 }
+	      // },
+
+	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
+	        points: { programming: 50, marketing: 0 }
+	      }];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getPaymentFeatures',
+	    value: function getPaymentFeatures(idea) {
+	      var technicalDebtModifier = this.getTechnicalDebtModifier();
+	      var up = function up(points) {
+	        return Math.ceil(points * technicalDebtModifier);
+	      };
+
+	      return [{
+	        name: 'mockBuying', shortDescription: 'Тестовая покупка',
+	        description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
+	        points: { programming: up(50), marketing: 0 }
+	      }, {
+	        name: 'basicPricing', shortDescription: 'Единый тарифный план I',
+	        description: 'Единая цена для всех клиентов. Мы начинаем извлекать доходы с продукта',
+	        points: { programming: up(150), marketing: 0 }
+	      }, {
+	        name: 'basicPricing2', shortDescription: 'Единый тарифный план II',
+	        description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
+	        points: { programming: up(50), marketing: 0 }
+	      }, {
+	        name: 'basicPricing3', shortDescription: 'Единый тарифный план III',
+	        description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
+	        points: { programming: up(50), marketing: 0 }
+	      }, {
+	        name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I',
+	        description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
+	        points: { programming: up(250), marketing: 0 }
+	      }, {
+	        name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II',
+	        description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
+	        points: { programming: up(150), marketing: 0 }
+	      }, {
+	        name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III',
+	        description: 'Грести деньги лопатами!',
+	        points: { programming: up(150), marketing: 0 }
+	      }];
+	    }
+	  }, {
+	    key: 'getTechnicalDebtDescription',
+	    value: function getTechnicalDebtDescription(debt) {
+	      if (debt < 10) {
+	        return '\u0412\u0441\u0451 \u0445\u043E\u0440\u043E\u0448\u043E';
+	      } else if (debt < 50) {
+	        return '\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0430\u0447\u0438\u043D\u0430\u044E\u0442 \u043F\u043B\u0430\u043A\u0430\u0442\u044C';
+	      } else {
+	        return '\u0422\u044B \u043C\u0440\u0430\u0437\u044C \u0438 \u043F**\u043E\u0440, \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435\u043D\u0430\u0432\u0438\u0434\u044F\u0442 \u0442\u0435\u0431\u044F!! \u041E\u0442\u0440\u0435\u0444\u0430\u043A\u0442\u043E\u0440\u044C \u044D\u0442\u043E\u0442 \u0448\u043B\u0430\u043A!';
+	      }
+	    }
+	  }, {
+	    key: 'getImprovementChances',
+	    value: function getImprovementChances() {
+	      var analytics = this.features.analytics;
+
+	      var picked = function picked(word) {
+	        return analytics[word];
+	      };
+
+	      var feedback = analytics.feedback;
+	      var webvisor = analytics.webvisor;
+	      var segmenting = analytics.segmenting;
+
+	      // const analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
+	      var clientModifier = this.getClientAnalyticsModifier();
+	      // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
+
+
+	      var basicBonus = 100;
+	      var feedbackBonus = 1000;
+	      var webvisorBonus = 1500;
+	      var segmentingBonus = 500;
+	      var segmentingBonus2 = 500;
+
+	      var bonuses = basicBonus;
+
+	      this.getHypothesisAnalyticsFeatures().forEach(function (f) {
+	        _logger2.default.debug('hypo features', f);
+	        if (picked(f.name)) bonuses += f.bonus || 0;
+	      });
+
+	      var maxXP = bonuses;
+
+	      // maxXP *= clientModifier.modifier;
+
+	      return {
+	        middle: maxXP, // * clientModifier.modifier / 2,
+	        // min: 0,
+	        // max: maxXP * clientModifier.modifier,
+	        maxXPWithoutBonuses: maxXP,
+	        // webvisorBonus,
+	        // feedbackBonus,
+	        // segmentingBonus,
+	        // basicBonus,
+
+	        hasWebvisor: webvisor,
+	        hasFeedback: feedback,
+	        hasSegmenting: segmenting,
+
+	        clientModifier: clientModifier
+	      };
+	    }
+	  }, {
+	    key: 'getProductExpensesStructure',
+	    value: function getProductExpensesStructure() {
+	      return {
+	        name: this.getName(),
+	        blog: this.getProductBlogCost(),
+	        support: this.getProductSupportCost()
+	      };
+	    }
+	  }, {
+	    key: 'getXP',
+	    value: function getXP() {
+	      return this.XP;
+	    }
+	  }, {
+	    key: 'getHypothesisPoints',
+	    value: function getHypothesisPoints() {
+	      var complexityModifier = this.getTechnologyComplexityModifier();
+
+	      // logger.debug('getHypothesisPoints', complexityModifier);
+
+	      var defaults = this.getDefaults().hypothesis;
+
+	      return {
+	        mp: Math.ceil(defaults.mp * complexityModifier),
+	        pp: Math.ceil(defaults.pp * complexityModifier)
+	      };
+	    }
+	  }, {
+	    key: 'getSegments',
+	    value: function getSegments() {
+	      return this.getDefaults().segments;
+	    }
+	  }, {
+	    key: 'getSegmentById',
+	    value: function getSegmentById(segId) {
+	      return this.getSegments()[segId];
+	    }
+	  }, {
+	    key: 'getDescriptionOfProduct',
+	    value: function getDescriptionOfProduct() {
+	      return this.getDefaults().description;
+	    }
+	  }, {
+	    key: 'canShowPayPercentageMetric',
+	    value: function canShowPayPercentageMetric() {
+	      return this.getFeatureStatus('payment', 'mockBuying');
+	    }
+	  }, {
+	    key: 'clientsEnoughToFormSegment',
+	    value: function clientsEnoughToFormSegment(segId) {
+	      return this.getClients(segId) > 100;
+	    }
+	  }, {
+	    key: 'getAvailableSegments',
+	    value: function getAvailableSegments() {
+	      var _this4 = this;
+
+	      var value = this.getSegments().filter(function (s, segId) {
+	        return _this4.requirementsOKforSegment(segId).valid && _this4.clientsEnoughToFormSegment(segId);
+	      });
+
+	      // logger.debug('getAvailableSegments', value);
+
+	      return value;
+	    }
+	  }, {
+	    key: 'getMarketShare',
+	    value: function getMarketShare() {
+	      var clients = this.getClients();
+	      var marketSize = this.getDefaults().marketSize;
+
+	      return {
+	        share: (0, _percentify2.default)(clients / marketSize),
+	        clients: clients,
+	        marketSize: marketSize
+	      };
+	    }
+	  }, {
+	    key: 'getTestsAmount',
+	    value: function getTestsAmount() {
+	      return this.tests;
+	    }
+	  }, {
+	    key: 'getImprovementsAmount',
+	    value: function getImprovementsAmount() {
+	      return this.improvements;
+	    }
+	  }, {
+	    key: 'getTechnologyComplexityModifier',
+	    value: function getTechnologyComplexityModifier() {
+	      var tests = this.getTestsAmount();
+	      var improvements = this.getImprovementsAmount();
+
+	      _logger2.default.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
+
+	      return Math.pow(0.15 * tests + 0.6 * improvements, balance.TECHNOLOGY_COST_MODIFIER);
+	    }
+	  }, {
+	    key: 'getHypeValue',
+	    value: function getHypeValue() {
+	      return this.KPI.hype;
+	    }
+	  }, {
+	    key: 'getTechnicalDebtModifier',
+	    value: function getTechnicalDebtModifier(id) {
+	      var improvements = this.getImprovementsAmount(id);
+
+	      return (0, _log2.default)(improvements + 10);
+	      // return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
+	    }
+	  }, {
+	    key: 'setProductDefaults',
+	    value: function setProductDefaults(stage, KPI, features, XP) {
+	      this.stage = stage;
+	      this.KPI = KPI;
+	      this.features = features;
+	      this.XP = XP;
+	    }
+	  }, {
+	    key: 'setCompetitorProductDefaults',
+	    value: function setCompetitorProductDefaults(stage, XP) {
+	      this.stage = stage;
+	      this.XP = XP;
+	    }
+	  }, {
+	    key: 'testHypothesis',
+	    value: function testHypothesis(p) {
+	      this.XP += p.value;
+	      var features = (0, _productDescriptions2.default)(this.idea).features;
+
+	      var max = 0;
+	      features.forEach(function (f) {
+	        max += f.data;
+	      });
+
+	      if (this.XP > max) {
+	        this.XP = max;
+	      }
+
+	      if (this.tests) {
+	        this.tests++;
+	      } else {
+	        this.tests = 1;
+	      }
+	    }
+	  }, {
+	    key: 'switchStage',
+	    value: function switchStage(stage) {
+	      this.stage = stage;
+	    }
+	  }, {
+	    key: 'improveFeature',
+	    value: function improveFeature(p) {
+	      var previous = this.features[p.featureGroup][p.featureName] || 0;
+	      var sum = previous + p.value;
+
+	      max = p.max;
+
+	      this.features[p.featureGroup][p.featureName] = sum > max ? max : sum;
+	      this.XP -= p.value;
+
+	      if (this.improvements) {
+	        this.improvements++;
+	      } else {
+	        this.improvements = 1;
+	      }
+	    }
+	  }, {
+	    key: 'improveMainFeature',
+	    value: function improveMainFeature(p) {
+	      var featureId = p.featureId;
+	      previous = this.features.offer[featureId];
+
+	      sum = previous + p.value;
+	      max = p.max;
+
+	      this.features.offer[featureId] = sum > max ? max : sum;
+	      this.XP -= p.value;
+
+	      if (this.improvements) {
+	        this.improvements++;
+	      } else {
+	        this.improvements = 1;
+	      }
+	    }
+	  }, {
+	    key: 'improveFeatureByPoints',
+	    value: function improveFeatureByPoints(p) {
+	      this.features[p.featureGroup][p.featureName] = 1;
+	      _logger2.default.log('improved feature by points');
+	    }
+	  }, {
+	    key: 'addClients',
+	    value: function addClients(p) {
+	      // not all users will become our clients. Some of them will vanish
+	      // if you got them from ads, efficiency will be less than 1
+	      var efficiency = p.efficiency || 1;
+	      var clients = Math.floor(efficiency * p.clients);
+
+	      this.KPI.clients += clients;
+	      this.KPI.newClients += clients;
+	    }
+	  }, {
+	    key: 'addViralClients',
+	    value: function addViralClients(p) {
+	      var clients = p.clients;
+
+	      this.KPI.clients += clients;
+	      this.KPI.newClients = clients;
+	    }
+	  }, {
+	    key: 'removeClients',
+	    value: function removeClients(p) {
+	      // churn clients
+	      clients = p.clients;
+
+	      if (this.KPI.clients - clients < 0) {
+	        this.KPI.clients = 0;
+	      } else {
+	        this.KPI.clients -= Math.floor(clients);
+	      }
+	    }
+	  }]);
+	  return Product;
+	}();
 
 	exports.default = Product;
 

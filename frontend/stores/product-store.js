@@ -22,48 +22,57 @@ import companyMerger from '../helpers/products/company-merger';
 
 import * as balance from '../constants/balance';
 
+import Product from '../classes/Product';
 
+//
+// let _products = [{
+//   // rating: 0, // computable value, so... needs to be deleted
+//   idea: IDEAS.IDEA_WEB_HOSTING,
+//   name: 'WWWEB HOSTING',
+//   stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
+//
+//   owner: true,
+//   features: {
+//     offer: {
+//       // 'portfolio': 0.81,
+//       // 'website': 1
+//     }, // features, that are attached to main idea
+//     development: {}, // backups, more dev servers, e.t.c.
+//
+//     marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
+//     analytics: {}, // simple analytics (main KPIs),
+//     // middle (segments analytics), mid+ (segments + versions),
+//
+//     // not only chat with users, but also localisations, content updates
+//     // and all sort of things, that you need doing constantly
+//     support: {},
+//
+//     payment: {},
+//   },
+//   XP: 0,
+//   KPI: {
+//     // accumulated values
+//     debt: 0, // technical debt. Shows, how fast can you implement new features
+//     clients: 10,
+//     newClients: 10,
+//
+//     hype: 1000,
+//
+//     bugs: 10,
+//
+//     currentUXBugs: 100,
+//     foundUXBugs: 50,
+//     fixedUXBugs: 50
+//   }
+// }];
 
-let _products = [{
-  rating: 0, // computable value, so... needs to be deleted
-  idea: IDEAS.IDEA_WEB_HOSTING,
-  name: 'WWWEB HOSTING',
-  stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-
-  owner: true,
-  features: {
-    offer: {
-      // 'portfolio': 0.81,
-      // 'website': 1
-    }, // features, that are attached to main idea
-    development: {}, // backups, more dev servers, e.t.c.
-
-    marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-    analytics: {}, // simple analytics (main KPIs),
-    // middle (segments analytics), mid+ (segments + versions),
-
-    // not only chat with users, but also localisations, content updates
-    // and all sort of things, that you need doing constantly
-    support: {},
-
-    payment: {},
-  },
-  XP: 0,
-  KPI: {
-    // accumulated values
-    debt: 0, // technical debt. Shows, how fast can you implement new features
-    clients: 10,
-    newClients: 10,
-
-    hype: 1000,
-
-    bugs: 10,
-
-    currentUXBugs: 100,
-    foundUXBugs: 50,
-    fixedUXBugs: 50
-  }
-}];
+let _products: Array<Product> = [
+  new Product({
+    idea: IDEAS.IDEA_WEB_HOSTING,
+    name: 'WWWEB HOSTING',
+    stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
+  })
+];
 
 class ProductStore extends EventEmitter {
   addChangeListener(cb:Function) {
@@ -86,577 +95,194 @@ class ProductStore extends EventEmitter {
     return p.owner;
   }
 
-  getProduct(id) {
+  getProduct(id): Product {
     return _products[id];
   }
 
   getCompanyCost(id) {
-    return companyCostComputer.compute(_products[id]);
+    return _products[id].getCompanyCost();
   }
 
   getRating(id, segmentId) {
     if (!segmentId) segmentId = 0;
 
-    const lowProgrammingPointsPenalty = 0;
-    const lowMarketingPointsPenalty = 0;
-
-    const result = round(computeRating(_products[id], segmentId)) - lowMarketingPointsPenalty - lowProgrammingPointsPenalty;
-
-    return Math.max(result, 0);
+    return _products[id].getRating(segmentId);
   }
 
   getClients(id, segmentId) {
-    const total =  _products[id].KPI.clients;
-    if (segmentId === undefined || segmentId === null) return total;
-
-    const s = this.getSegmentBySegmentId(id, segmentId);
-
-    return Math.floor(s.percentage * total / 100);
+    return _products[id].getClients(segmentId);
   }
 
   getSegmentBySegmentId(id, segId) {
-    return this.getSegments(id)[segId];
+    return _products[id].getSegmentBySegmentId(segId);
   }
 
   getHypeDamping(id) {
-
+    return _products[id].getHypeDamping();
   }
 
   getSegmentedPriorities(id, segId) {
-    const s = this.getSegmentBySegmentId(id, segId);
-    const features = this.getDefaults(id).features;
-
-    return s.rating.map((r, index) => {
-      return {
-        rating: r,
-        feature: features[index].shortDescription,
-      }
-    }).sort((s1, s2) => s2.rating - s1.rating);
+    return _products[id].getSegmentedPriorities(segId);
   }
 
   getNewClients(id) {
-    return _products[id].KPI.newClients;
+    return _products[id].getNewClients();
   }
 
-  getDisloyalClients(i) {
-    return Math.floor(this.getClients(i) * this.getChurnRate(i).raw);
+  getDisloyalClients(id) {
+    return _products[id].getDisloyalClients();
   }
 
-  getViralClients(i) {
-    return Math.floor(this.getNewClients(i) * this.getViralityRate(i));
+  getViralClients(id) {
+    return _products[id].getViralClients();
   }
 
   getMainFeatureQualityByFeatureId(id, featureId) {
-    const value = _products[id].features.offer[featureId];
-
-    return value; // round(value / feature.data);
+    return _products[id].getMainFeatureQualityByFeatureId(featureId);
   }
 
-  getMainFeatureDefaultQualityByFeatureId(i, featureId) {
-    return this.getDefaults(i).features[featureId].data;
+  getMainFeatureDefaultQualityByFeatureId(id, featureId) {
+    return _products[id].getMainFeatureDefaultQualityByFeatureId(featureId);
   }
 
   getPrettyFeatureNameByFeatureId(id, featureId){
-    return this.getDefaults(id).features[featureId].shortDescription;
+    return _products[id].getPrettyFeatureNameByFeatureId(featureId);
   }
 
-  requirementsOKforSegment(i, segmentId) {
-    const { segments } = this.getDefaults(i);
-    const segment = segments[segmentId];
-    const requirements = segment.requirements;
-
-    let valid = true;
-
-    let unmetRequirements = [];
-
-    requirements.forEach((r, featureId) => {
-      const max = this.getDefaults(i).features[featureId].data;
-
-      const featureQuality = this.getMainFeatureQualityByFeatureId(i, featureId);
-      const need = max * r / 100;
-
-      const met = featureQuality >= need;
-
-      if (!met) {
-        valid = false;
-
-        unmetRequirements.push({
-          name: this.getPrettyFeatureNameByFeatureId(i, featureId),
-          now: featureQuality,
-          need
-        });
-      }
-      // logger.debug(`feature quality #${featureId}: ${featureQuality}. Requirement is ${met}`)
-    });
-
-    return {
-      valid,
-      unmetRequirements
-    };
+  requirementsOKforSegment(id, segmentId) {
+    return _products[id].requirementsOKforSegment(segmentId);
   }
 
   getAnalyticsValueForFeatureCreating(id) {
-    // range: 0 - 1
-    // range: 0.1 - 0.4
-    const analytics = _products[id].features.analytics;
-
-    let value = 0;
-
-    const feedback = analytics.feedback;
-    const webvisor = analytics.webvisor;
-    const segmenting = analytics.segmenting;
-
-    if (segmenting) {
-      value = 0.4;
-    } else if (webvisor) {
-      value = 0.3;
-    } else if (feedback) {
-      value = 0.1;
-    }
-
-    return value;
+    return _products[id].getAnalyticsValueForFeatureCreating();
   }
 
-  getDefaults(i) {
-    return productDescriptions(this.getIdea(i));
+  getDefaults(id) {
+    return _products[id].getDefaults();
   }
 
-  getProductUtility(i) {
-    return this.getDefaults(i).utility;
+  getProductUtility(id) {
+    return _products[id].getProductUtility();
   }
 
   getPaymentModifier(id) {
-    const payments = _products[id].features.payment;
-    // mockBuying
-    // basicPricing
-    // segmentedPricing
-    if (payments.segmentedPricing3) {
-      return 1;
-    }
-    if (payments.segmentedPricing2) {
-      return 0.85;
-    }
-    if (payments.segmentedPricing) {
-      return 0.7;
-    }
-
-
-    if (payments.basicPricing3) {
-      return 0.4;
-    }
-    if (payments.basicPricing2) {
-      return 0.30;
-    }
-    if (payments.basicPricing) {
-      return 0.25;
-    }
-
-    if (payments.mockBuying) {
-      return 1;
-    }
-
-    return 0;
+    return _products[id].getPaymentModifier();
   }
 
-  getConversionRate(i, segmentId) {
-    const rating = this.getRating(i, segmentId);
-    const utility = this.getProductUtility(i);
-
-    const paymentModifier = this.getPaymentModifier(i);
-
-    let conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
-
-    let raw;
-    let pretty;
-    if (conversion < 0 || conversion > 15) {
-      logger.error(`invalid conversion value ${conversion}`);
-      // throw 'INVALID_CONVERSION_ERROR';
-      conversion = 0;
-    }
-
-    // if (segmentId > 0) {
-    //   conversion = rating * paymentModifier / 10;
-    // }
-
-    raw = conversion;
-    pretty = percentify(conversion);
-
-    return {
-      raw, pretty
-    }
+  getConversionRate(id, segmentId) {
+    return _products[id].getConversionRate(segmentId);
   }
 
   getProductPrice(id, segId) {
-    const defaults = this.getDefaults(id);
-
-    if (!segId) return defaults.price;
-
-    return defaults.segments[segId].price;
+    return _products[id].getProductPrice(segId);
   }
 
   getFeatures(id, featureGroup) {
-    return _products[id].features[featureGroup];
+    return _products[id].getFeatures(featureGroup);
   }
 
   isPaymentEnabled(id, segmentId) {
-    const payments = this.getFeatures(id, 'payment');
-    // mockBuying
-    // basicPricing
-    // segmentedPricing
-
-    logger.shit('requirements for segment');
-
-    if (!this.requirementsOKforSegment(id, segmentId).valid) return 0;
-
-    if (payments.basicPricing) {
-      return 1;
-    }
-
-    return 0;
+    return _products[id].isPaymentEnabled(segmentId);
   }
 
-  getSegmentIncome(i, segId) {
-    const conversion = this.getConversionRate(i, segId).raw * this.isPaymentEnabled(i, segId); // rating 10 - 0.05
-
-    const clients = this.getClients(i, segId);
-    const price = this.getProductPrice(i, segId);
-
-    // logger.debug(`getSegmentIncome segment ${segId}, ${conversion}%, ${clients} cli, ${price}$`);
-    const payments = conversion * clients;
-
-    // logger.debug('getProductIncome', segId, payments);
-    // need app
-    // want to pay
-    // can pay
-    return payments * price;
+  getSegmentIncome(id, segId) {
+    return _products[id].getSegmentIncome(segId);
   }
 
-  getProductIncome(i) {
-    const segments = this.getSegments(i);
-
-    return segments
-      .map((s, segId) => {
-        return this.getSegmentIncome(i, segId);
-      })
-      .reduce((p, c) => p + c, 0);
+  getProductIncome(id) {
+    return _products[id].getProductIncome();
   }
 
-  getIdea(i) {
-    return _products[i].idea;
+  getIdea(id) {
+    return _products[id].getIdea();
   }
 
-  getViralityRate(i) {
-    const rating = this.getRating(i);
-    const multiplier = this.getDefaults(i).virality;
-    const marketing = this.getMarketingFeatures(i);
-
-    let base = 0.1;
-
-    if (rating >= 7) {
-      base += (rating - 7) / 10;
-    }
-
-    let referralBonuses = 0;
-    // if (marketing.improvedReferralProgram) {
-    //   referralBonuses += 0.45;
-    // }
-
-    if (marketing.referralProgram) {
-      // referralBonuses += 0.21;
-      referralBonuses += 0.65 * marketing.referralProgram;
-    }
-
-    return (base + referralBonuses) * multiplier;
+  getViralityRate(id) {
+    return _products[id].getViralityRate();
   }
 
   getMarketingFeatures(id) {
-    return _products[id].features.marketing;
+    return _products[id].getMarketingFeatures();
   }
 
   getBlogPower(id) {
-    return this.getBlogStatusStructured(id).power;
+    return _products[id].getBlogPower();
   }
 
   getBlogStatusStructured(id) {
-    const marketing = this.getMarketingFeatures(id);
-    let power = 0;
-    let support = 0;
-
-    const featureCost = name => this.getMarketingFeatureList().filter(f => f.name === name)[0].support.marketing;
-
-    if (marketing.blog) {
-      power = 0.25;
-      support = featureCost('blog')
-    }
-    if (marketing.blogII) {
-      power = 0.5;
-      support = featureCost('blogII')
-    }
-    if (marketing.blogIII) {
-      power = 1;
-      support = featureCost('blogIII')
-    }
-
-    return {
-      power,
-      supportCost: support,
-      financed: true // has enough points
-    }
+    return _products[id].getBlogStatusStructured();
   }
 
   getSupportPower(id) {
-    const marketing = this.getMarketingFeatures(id);
-
-    if (marketing.supportIII) return 1;
-    if (marketing.supportII)  return 0.5;
-    if (marketing.support)    return 0.25;
-
-    return 0;
+    return _products[id].getSupportPower();
   }
 
   getEmailPower(id) {
-    const marketing = this.getMarketingFeatures(id);
-
-    if (marketing.emailIII) return 1;
-    if (marketing.emailII)  return 0.5;
-    if (marketing.email)    return 0.25;
-
-    return 0;
+    return _products[id].getEmailPower();
   }
 
   getMarketingSupportCostPerClientForSupportFeature(id) {
-    const marketing = this.getMarketingFeatures(id);
-
-    if (marketing.supportIII) return 0.25;
-    if (marketing.supportII)  return 0.5;
-    if (marketing.support)    return 1;
-
-    return 0;
+    return _products[id].getMarketingSupportCostPerClientForSupportFeature();
   }
 
-  getChurnRate(i) {
-    // TODO fix constant values in blog, email, support in getChurnRate(i)
-    // return answer in partitions 0-1
-    logger.shit('TODO fix constant values in blog, email, support in getChurnRate(i)');
-
-    let rating = this.getRating(i);
-
-    if (rating < 3) {
-      rating = 3;
-      // return {
-      //   raw: 1,
-      //   pretty: 100
-      // };
-    }
-
-    // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
-    const ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
-
-    const blog = this.getBlogPower(i);
-    const emails = this.getEmailPower(i);
-    const support = this.getSupportPower(i);
-    const k = 0.6; // поправочный коэффициент
-
-    const marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
-
-    // 15: r7
-    // bad 10-15+
-    // good 1-5
-    const churn = ratingModifier * (1 - k * marketingModifier) / 100;
-
-    // logger.debug('product-store.js getChurnRate', churn);
-
-    return {
-      raw: churn,
-      pretty: percentify(churn)
-    };
+  getChurnRate(id) {
+    return _products[id].getChurnRate();
   }
 
   getProductBlogCost(id) {
-    const BASE_BLOG_COST = 1000;
-
-    return this.getMarketingFeatures(id).blog ? BASE_BLOG_COST : 0;
+    return _products[id].getProductBlogCost();
   }
 
-  getProductSupportCost(i) {
-    const marketing = this.getMarketingFeatures(i);
-
-    const support = marketing.support || 0;
-
-    if (!support) return 0;
-
-    const clients = this.getClients(i);
-
-    if (clients < 1000)   return 300;
-    if (clients < 10000)  return 500;
-    if (clients < 100000) return 3000;
-
-    return 10000;
+  getProductSupportCost(id) {
+    return _products[id].getProductSupportCost();
   }
 
-  getProductExpenses(i) {
-    return 0;
-    return this.getProductBlogCost(i) + this.getProductSupportCost(i);
+  getProductExpenses(id) {
+    return _products[id].getProductExpenses();
   }
 
-  getName(i) {
-    return _products[i].name;
+  getName(id) {
+    return _products[id].getName();
   }
 
-  getStage(i) {
-    return _products[i].stage;
+  getStage(id) {
+    return _products[id].getStage();
   }
 
-  getFeatureStatus(i, featureGroup, featureName) {
-    return _products[i].features[featureGroup][featureName] > 0;
+  getFeatureStatus(id, featureGroup, featureName) {
+    return _products[id].getFeatureStatus(featureGroup, featureName);
   }
 
-  getCostPerClient(i) {
-    return this.getDefaults(i).CAC;
+  getCostPerClient(id) {
+    return _products[id].getCostPerClient();
   }
 
-  getBugs(i) {
-    return {
-      ux: {
-        max: 100,
-        found: 50,
-        fixed: 10
-      },
-      programming: {
-        max: 100,
-        found: 50,
-        fixed: 10
-      }
-    }
+  getRatingForMetricsTab(id) {
+    return _products[id].getRatingForMetricsTab();
   }
 
-  getRatingForMetricsTab(i) {
-    let phrase;
-    const features = _products[i].features;
-    const analytics = features.analytics;
-
-    // rating depends on
-    // number of users (stat pogreshnost)
-    // feedback form
-    // segmenting
-    // webvisor
-
-    // if (!analytics.feedback && !analytics.webvisor && !analytics.segmenting) {
-    //   return 0;
-    // }
-    let analyticsModifier = 1;
-    if (analytics.feedback) analyticsModifier -= 0.3;
-
-    if (analytics.webvisor) {
-      analyticsModifier -= 0.5;
-    } else if (analytics.segmenting) {
-      analyticsModifier -= 0.65;
-    }
-
-    const clients = this.getClients(i);
-    let factor = 2;
-    if (clients > 100000) {
-      factor = 1;
-    } else if (clients > 10000) {
-      factor = 1.1;
-    } else if (clients > 1000) {
-      factor = 1.2;
-    } else if (clients > 100) {
-      factor = 1.5;
-    } else {
-      factor = 2;
-    }
-
-    const error = round(5 * factor * analyticsModifier);
-    const offset = Math.random() * error;
-    const rating = this.getRating(i);
-
-    let leftValue = round(rating - offset);
-    if (leftValue < 0) {
-      leftValue = 0;
-    }
-
-    let rightValue = round(leftValue + error);
-    if (rightValue < 0) {
-      rightValue = 0;
-    } else if (rightValue > 10) {
-      rightValue = 10;
-    }
-
-    phrase = `${leftValue} - ${rightValue}`;
-    phrase = rating;
-
-    return phrase;
-  }
-
-  getClientAnalyticsModifier(i) {
-    let factor;
-    const clients = this.getClients(i);
-
-    const CLIENTS_LOT = 10000;
-    const CLIENTS_MID = 1000;
-    const CLIENTS_LOW = 100;
-
-    let clientMin;
-    let clientMax;
-
-    let index;
-
-    if (clients > CLIENTS_LOT) {
-      factor = 4;
-      clientMax = CLIENTS_LOT;
-      clientMin = CLIENTS_LOT;
-      index = 0;
-    } else if (clients > CLIENTS_MID) {
-      factor = 3;
-      clientMax = CLIENTS_LOT;
-      clientMin = CLIENTS_MID;
-      index = 1;
-    } else if (clients > CLIENTS_LOW) {
-      factor = 2.5;
-      clientMax = CLIENTS_MID;
-      clientMin = CLIENTS_LOW;
-      index = 2;
-    } else {
-      factor = 1;
-      clientMax = CLIENTS_LOW;
-      clientMin = 0;
-      index = 3;
-    }
-
-    return {
-      modifier: factor,
-      clientsRange: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW, 1],
-      factors: [1, 0.9, 0.8, 0.3],
-      index,
-      clientMax,
-      clientMin,
-      clients
-    }
+  getClientAnalyticsModifier(id) {
+    return _products[id].getClientAnalyticsModifier();
   }
 
   getProgrammingSupportCostModifier(id) {
-    return Math.pow(this.getImprovementsAmount(id), balance.SUPPORT_COST_MODIFIER);
+    return _products[id].getProgrammingSupportCostModifier();
   }
 
   getProgrammingSupportCost(id) {
-    return Math.floor(this.getDefaults(id).support.pp * this.getProgrammingSupportCostModifier(id));
+    return _products[id].getProductSupportCost();
   }
 
   getMarketingSupportTechTotalCost(id) {
-    return Math.floor(this.getClients(id) * this.getMarketingSupportCostPerClientForSupportFeature(id) / 100 / 5);
+    return _products[id].getMarketingSupportTechTotalCost();
   }
 
-  getBaseSupportCost() {
-    return 15;
+  getBaseSupportCost(id = 0) {
+    return _products[id].getBaseSupportCost();
   }
 
   getMarketingSupportCost(id) {
-    logger.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
-    // const blogSupportCost = this.getBlogPower(id);
-
-    const supportSupportCost = this.getMarketingSupportTechTotalCost(id);
-    return this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured(id).supportCost;
+    return _products[id].getMarketingSupportCost();
   }
 
   getMarketingFeatureList(idea) {
@@ -757,46 +383,7 @@ class ProductStore extends EventEmitter {
   };
 
   getPaymentFeatures(id, idea) {
-    const technicalDebtModifier = this.getTechnicalDebtModifier(id);
-    const up = points => Math.ceil(points * technicalDebtModifier);
-
-    return [
-      {
-        name: 'mockBuying', shortDescription: 'Тестовая покупка',
-        description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
-        points: { programming: up(50), marketing: 0 }
-      },
-      {
-        name: 'basicPricing', shortDescription: 'Единый тарифный план I',
-        description: 'Единая цена для всех клиентов. Мы начинаем извлекать доходы с продукта',
-        points: { programming: up(150), marketing: 0 }
-      },
-      {
-        name: 'basicPricing2', shortDescription: 'Единый тарифный план II',
-        description: 'Единая цена для всех. Доходы возрастают на 5% от текущего количества',
-        points: { programming: up(50), marketing: 0 }
-      },
-      {
-        name: 'basicPricing3', shortDescription: 'Единый тарифный план III',
-        description: 'Единая цена для всех. Доходы возрастают ещё на 10%',
-        points: { programming: up(50), marketing: 0 }
-      },
-      {
-        name: 'segmentedPricing', shortDescription: 'Несколько тарифных планов I',
-        description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 30%',
-        points: { programming: up(250), marketing: 0 }
-      },
-      {
-        name: 'segmentedPricing2', shortDescription: 'Несколько тарифных планов II',
-        description: 'Несколько ценовых сегментов. Наши доходы возрастают ещё на 15%',
-        points: { programming: up(150), marketing: 0 }
-      },
-      {
-        name: 'segmentedPricing3', shortDescription: 'Несколько тарифных планов III',
-        description: 'Грести деньги лопатами!',
-        points: { programming: up(150), marketing: 0 }
-      }
-    ];
+    return _products[id].getPaymentFeatures(idea);
   };
 
 
@@ -810,96 +397,36 @@ class ProductStore extends EventEmitter {
     }
   };
 
-  getImprovementChances(i) {
-    const analytics = _products[i].features.analytics;
-
-    const picked = word => analytics[word];
-
-    const feedback = analytics.feedback;
-    const webvisor = analytics.webvisor;
-    const segmenting = analytics.segmenting;
-
-    // const analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
-    const clientModifier = this.getClientAnalyticsModifier(i);
-    // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
-
-
-    const basicBonus = 100;
-    const feedbackBonus = 1000;
-    const webvisorBonus = 1500;
-    const segmentingBonus = 500;
-    const segmentingBonus2 = 500;
-
-    let bonuses = basicBonus;
-
-    this.getHypothesisAnalyticsFeatures()
-      .forEach((f, i) => {
-        logger.debug('hypo features', f);
-        if (picked(f.name)) bonuses += f.bonus || 0;
-      });
-
-    let maxXP = bonuses;
-
-    // maxXP *= clientModifier.modifier;
-
-    return {
-      middle: maxXP, // * clientModifier.modifier / 2,
-      // min: 0,
-      // max: maxXP * clientModifier.modifier,
-      maxXPWithoutBonuses: maxXP,
-      // webvisorBonus,
-      // feedbackBonus,
-      // segmentingBonus,
-      // basicBonus,
-
-      hasWebvisor: webvisor,
-      hasFeedback: feedback,
-      hasSegmenting: segmenting,
-
-      clientModifier,
-    }
+  getImprovementChances(id) {
+    return _products[id].getImprovementChances()
   }
 
-  getProductExpensesStructure(i) {
-    return {
-      name: this.getName(i),
-      blog: this.getProductBlogCost(i),
-      support: this.getProductSupportCost(i)
-    };
+  getProductExpensesStructure(id) {
+    return _products[id].getProductExpensesStructure();
   }
 
-  getXP(i) {
-    return _products[i].XP;
+  getXP(id) {
+    return _products[id].getXP();
   }
 
   getHypothesisPoints(id) {
-    const complexityModifier = this.getTechnologyComplexityModifier(id);
-
-    // logger.debug('getHypothesisPoints', complexityModifier);
-
-    const defaults = this.getDefaults(id).hypothesis;
-
-    return {
-      mp: Math.ceil(defaults.mp * complexityModifier),
-      pp: Math.ceil(defaults.pp * complexityModifier)
-    }
+    return _products[id].getHypothesisPoints();
   }
 
   getSegments(id) {
-    return this.getDefaults(id).segments;
+    return _products[id].getSegments();
   }
 
   getSegmentById(id, segId) {
-    return this.getSegments(id)[segId];
+    return _products[id].getSegmentById(segId);
   }
 
   getDescriptionOfProduct(id) {
-    return this.getDefaults(id).description;
+    return _products[id].getDescriptionOfProduct();
   }
 
   getCompetitorsList(id) {
     const ourCompany = _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))[0];
-
 
     return _products
       .map((p, i) => Object.assign({ id: i }, p))
@@ -980,31 +507,19 @@ class ProductStore extends EventEmitter {
   }
 
   canShowPayPercentageMetric(id) {
-    return this.getFeatureStatus(id, 'payment', 'mockBuying')
+    return _products[id].canShowPayPercentageMetric();
   }
 
   clientsEnoughToFormSegment(id, segId) {
-    return this.getClients(id, segId) > 100;
+    return _products[id].clientsEnoughToFormSegment(segId);
   }
 
   getAvailableSegments(id) {
-    const value = this.getSegments(id)
-      .filter((s, segId) => this.requirementsOKforSegment(id, segId).valid && this.clientsEnoughToFormSegment(id, segId));
-
-    // logger.debug('getAvailableSegments', value);
-
-    return value;
+    return _products[id].getAvailableSegments();
   }
 
   getMarketShare(id) {
-    const clients = this.getClients(id);
-    const marketSize = this.getDefaults(id).marketSize;
-
-    return {
-      share: percentify(clients / marketSize),
-      clients,
-      marketSize
-    }
+    return _products[id].getMarketShare();
   }
 
   getNextCompetitorInfo(id) {
@@ -1061,103 +576,47 @@ Dispatcher.register((p: PayloadType) => {
   let change = true;
   switch (p.type) {
     case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-      _products[id].stage = PRODUCT_STAGES.PRODUCT_STAGE_NORMAL;
-      _products[id].KPI = p.KPI;
-      _products[id].features = p.features;
-      _products[id].XP = 1999;
+      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 1999);
       break;
 
     case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
-      _products[id].XP += p.value;
-      const features = productDescriptions(_products[id].idea).features;
-
-      let max = 0;
-      features.forEach(f => {
-        max += f.data;
-      });
-
-      if (_products[id].XP > max) {
-        _products[id].XP = max;
-      }
-
-      if (_products[id].tests) {
-        _products[id].tests++;
-      } else {
-        _products[id].tests = 1;
-      }
+      _products[id].testHypothesis(p);
       break;
 
     case c.PRODUCT_ACTIONS_SWITCH_STAGE:
-      _products[id].stage = p.stage;
+      _products[id].switchStage(p.stage);
       break;
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
-      let previous = _products[id].features[p.featureGroup][p.featureName] || 0;
-      let sum = previous + p.value;
-      max = p.max;
-      // _products[id].features[p.featureGroup][p.featureName] = previous > p.value ? previous : p.value;
-      _products[p.id].features[p.featureGroup][p.featureName] = sum > max ? max: sum;
-      _products[p.id].XP -= p.value;
-      if (_products[p.id].improvements) {
-        _products[p.id].improvements++;
-      } else {
-        _products[p.id].improvements = 1;
-      }
+      _products[id].improveFeature(p);
       break;
 
     case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
-      const featureId = p.featureId;
-      previous = _products[id].features.offer[featureId];
-      sum = previous + p.value;
-      max = p.max;
-
-      _products[p.id].features.offer[featureId] = sum > max ? max: sum;
-      _products[p.id].XP -= p.value;
-      if (_products[p.id].improvements) {
-        _products[p.id].improvements++;
-      } else {
-        _products[p.id].improvements = 1;
-      }
+      _products[id].improveMainFeature(p);
       break;
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
-      // let previous = _products[id].features[p.featureGroup][p.featureName];
-      _products[id].features[p.featureGroup][p.featureName] = 1;
-      logger.log('improved feature by points');
+      _products[id].improveFeatureByPoints(p);
       break;
 
     case c.PRODUCT_ACTIONS_CLIENTS_ADD:
-      // not all users will become our clients. Some of them will vanish
-      // if you got them from ads, efficiency will be less than 1
-      const efficiency = p.efficiency || 1;
-      let clients = Math.floor(efficiency * p.clients);
-
-      _products[id].KPI.clients += clients;
-      _products[id].KPI.newClients += clients;
+      _products[id].addClients(p);
       break;
 
     case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
-      clients = p.clients;
-      _products[id].KPI.clients += clients;
-      _products[id].KPI.newClients = clients;
+      _products[id].addViralClients(p);
       break;
 
     case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
-      // churn clients
-      clients = p.clients;
-
-      if (_products[id].KPI.clients - clients < 0) {
-        _products[id].KPI.clients = 0;
-      } else {
-        _products[id].KPI.clients -= Math.floor(clients);
-      }
+      _products[id].removeClients(p);
       break;
 
     case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
       // { features , KPI, idea, name }
-      const competitor = p.p;
-
-      _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+      const competitor: Product = p.p;
+      // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+      competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
+      // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
       break;
 
     case c.PRODUCT_ACTIONS_COMPANY_BUY:
