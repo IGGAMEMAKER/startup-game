@@ -127,6 +127,9 @@ const run = () => {
       marketing: marketingPoints
     };
     playerActions.increasePoints(points);
+
+
+    playerActions.updateEmployees();
   }
 
   // try to make an event

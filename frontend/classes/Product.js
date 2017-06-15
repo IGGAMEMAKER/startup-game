@@ -17,6 +17,8 @@ import companyMerger from '../helpers/products/company-merger';
 
 import * as balance from '../constants/balance';
 
+import round from '../helpers/math/round';
+
 
 export default class Product {
   constructor({ idea, name, isCompetitor }) {
@@ -924,8 +926,8 @@ export default class Product {
     return this.KPI.hype;
   }
 
-  getTechnicalDebtModifier(id) {
-    const improvements = this.getImprovementsAmount(id);
+  getTechnicalDebtModifier() {
+    const improvements = this.getImprovementsAmount();
 
     return Math.log10(improvements + 10);
     // return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
@@ -971,7 +973,7 @@ export default class Product {
     let previous = this.features[p.featureGroup][p.featureName] || 0;
     let sum = previous + p.value;
 
-    max = p.max;
+    const max = p.max;
 
     this.features[p.featureGroup][p.featureName] = sum > max ? max: sum;
     this.XP -= p.value;
@@ -987,8 +989,8 @@ export default class Product {
     const featureId = p.featureId;
     previous = this.features.offer[featureId];
 
-    sum = previous + p.value;
-    max = p.max;
+    const sum = previous + p.value;
+    const max = p.max;
 
     this.features.offer[featureId] = sum > max ? max: sum;
     this.XP -= p.value;
@@ -1024,7 +1026,7 @@ export default class Product {
 
   removeClients(p) {
     // churn clients
-    clients = p.clients;
+    const clients = p.clients;
 
     if (this.KPI.clients - clients < 0) {
       this.KPI.clients = 0;

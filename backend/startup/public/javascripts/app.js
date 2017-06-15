@@ -590,10 +590,6 @@
 
 	var _ProductMenu2 = _interopRequireDefault(_ProductMenu);
 
-	var _Staff = __webpack_require__(97);
-
-	var _Staff2 = _interopRequireDefault(_Staff);
-
 	var _Menu = __webpack_require__(163);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
@@ -613,6 +609,10 @@
 	var _Tutorial = __webpack_require__(184);
 
 	var _Tutorial2 = _interopRequireDefault(_Tutorial);
+
+	var _Staff = __webpack_require__(97);
+
+	var _Staff2 = _interopRequireDefault(_Staff);
 
 	var _Programmers = __webpack_require__(174);
 
@@ -4618,6 +4618,11 @@
 	      player: player
 	    });
 	  },
+	  updateEmployees: function updateEmployees() {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PLAYER_ACTIONS_UPDATE_EMPLOYEES
+	    });
+	  },
 	  rejectEmployee: function rejectEmployee(i) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_REMOVE,
@@ -4698,6 +4703,7 @@
 	var PLAYER_ACTIONS_FIRE_WORKER = exports.PLAYER_ACTIONS_FIRE_WORKER = 'PLAYER_ACTIONS_FIRE_WORKER';
 	var PLAYER_ACTIONS_EMPLOYEE_ADD = exports.PLAYER_ACTIONS_EMPLOYEE_ADD = 'PLAYER_ACTIONS_EMPLOYEE_ADD';
 	var PLAYER_ACTIONS_EMPLOYEE_REMOVE = exports.PLAYER_ACTIONS_EMPLOYEE_REMOVE = 'PLAYER_ACTIONS_EMPLOYEE_REMOVE';
+	var PLAYER_ACTIONS_UPDATE_EMPLOYEES = exports.PLAYER_ACTIONS_UPDATE_EMPLOYEES = 'PLAYER_ACTIONS_UPDATE_EMPLOYEES';
 
 /***/ },
 /* 119 */
@@ -4766,6 +4772,10 @@
 	var _skills2 = __webpack_require__(122);
 
 	var _skills3 = _interopRequireDefault(_skills2);
+
+	var _createRandomWorker = __webpack_require__(190);
+
+	var _createRandomWorker2 = _interopRequireDefault(_createRandomWorker);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -5124,6 +5134,10 @@
 	      _employees.push(p.player);
 	      // logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
 	      // logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+	      break;
+
+	    case c.PLAYER_ACTIONS_UPDATE_EMPLOYEES:
+	      _employees = [_createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create()];
 	      break;
 
 	    case c.PLAYER_ACTIONS_EMPLOYEE_REMOVE:
@@ -6397,7 +6411,7 @@
 	  _flux2.default.scheduleActions.setGamePhase(stage);
 	};
 
-	var isTestMode = false;
+	var isTestMode = !true;
 
 	_logger2.default.shit('need to send stats on game phase change');
 
@@ -6862,14 +6876,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _log = __webpack_require__(144);
-
-	var _log2 = _interopRequireDefault(_log);
-
-	var _assign = __webpack_require__(3);
-
-	var _assign2 = _interopRequireDefault(_assign);
 
 	var _getPrototypeOf = __webpack_require__(40);
 
@@ -7413,6 +7419,51 @@
 	      return _products[id].getDescriptionOfProduct();
 	    }
 	  }, {
+	    key: 'canShowPayPercentageMetric',
+	    value: function canShowPayPercentageMetric(id) {
+	      return _products[id].canShowPayPercentageMetric();
+	    }
+	  }, {
+	    key: 'clientsEnoughToFormSegment',
+	    value: function clientsEnoughToFormSegment(id, segId) {
+	      return _products[id].clientsEnoughToFormSegment(segId);
+	    }
+	  }, {
+	    key: 'getAvailableSegments',
+	    value: function getAvailableSegments(id) {
+	      return _products[id].getAvailableSegments();
+	    }
+	  }, {
+	    key: 'getMarketShare',
+	    value: function getMarketShare(id) {
+	      return _products[id].getMarketShare();
+	    }
+	  }, {
+	    key: 'getTestsAmount',
+	    value: function getTestsAmount(id) {
+	      return _products[id].getTestsAmount();
+	    }
+	  }, {
+	    key: 'getImprovementsAmount',
+	    value: function getImprovementsAmount(id) {
+	      return _products[id].getImprovementsAmount();
+	    }
+	  }, {
+	    key: 'getTechnologyComplexityModifier',
+	    value: function getTechnologyComplexityModifier(id) {
+	      return _products[id].getTechnologyComplexityModifier();
+	    }
+	  }, {
+	    key: 'getHypeValue',
+	    value: function getHypeValue(id) {
+	      return _products[id].getHypeValue();
+	    }
+	  }, {
+	    key: 'getTechnicalDebtModifier',
+	    value: function getTechnicalDebtModifier(id) {
+	      return _products[id].getTechnicalDebtModifier();
+	    }
+	  }, {
 	    key: 'getCompetitorsList',
 	    value: function getCompetitorsList(id) {
 	      var _this2 = this;
@@ -7421,13 +7472,17 @@
 	        return _this2.isOurProduct(p) && p.idea === _this2.getIdea(id);
 	      })[0];
 
+	      // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
 	      return _products.map(function (p, i) {
-	        return (0, _assign2.default)({ id: i }, p);
-	      }).filter(function (p) {
-	        return !_this2.isOurProduct(p) && p.idea === _this2.getIdea(id);
-	      }).map(function (p) {
+	        return { p: p, id: i };
+	      }) //  Object.assign({ id: i }, p)
+	      .map(function (obj) {
+	        var p = obj.p;
+	        var id = obj.id;
+
 	        var name = p.name;
 	        var rating = (0, _round2.default)((0, _computeRating2.default)(p, 0));
+	        var hype = p.getHypeValue();
 	        var clients = p.KPI.clients;
 
 	        var features = p.features.offer;
@@ -7447,17 +7502,13 @@
 	          clients: clients,
 	          name: name,
 	          features: offer,
-	          cost: _computeCompanyCost2.default.compute(p),
+	          // cost: companyCostComputer.compute(),
+	          cost: p.getCompanyCost(),
 	          improvements: _companyMerger2.default.merge(ourCompany, p).improvements,
-	          id: p.id
+	          id: id,
+	          hype: hype
 	        };
-	      })
-	      // return [
-	      //   // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
-	      //   // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
-	      //   // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
-	      // ]
-	      .sort(function (a, b) {
+	      }).sort(function (a, b) {
 	        return a.rating > b.rating;
 	      });
 	    }
@@ -7515,26 +7566,6 @@
 	      };
 	    }
 	  }, {
-	    key: 'canShowPayPercentageMetric',
-	    value: function canShowPayPercentageMetric(id) {
-	      return _products[id].canShowPayPercentageMetric();
-	    }
-	  }, {
-	    key: 'clientsEnoughToFormSegment',
-	    value: function clientsEnoughToFormSegment(id, segId) {
-	      return _products[id].clientsEnoughToFormSegment(segId);
-	    }
-	  }, {
-	    key: 'getAvailableSegments',
-	    value: function getAvailableSegments(id) {
-	      return _products[id].getAvailableSegments();
-	    }
-	  }, {
-	    key: 'getMarketShare',
-	    value: function getMarketShare(id) {
-	      return _products[id].getMarketShare();
-	    }
-	  }, {
 	    key: 'getNextCompetitorInfo',
 	    value: function getNextCompetitorInfo(id) {
 	      var competitors = this.getCompetitorsList(id);
@@ -7545,39 +7576,6 @@
 	      });
 
 	      return betterCompetitors.length ? betterCompetitors[0] : null;
-	    }
-	  }, {
-	    key: 'getTestsAmount',
-	    value: function getTestsAmount(id) {
-	      return _products[id].tests || 1;
-	    }
-	  }, {
-	    key: 'getImprovementsAmount',
-	    value: function getImprovementsAmount(id) {
-	      return _products[id].improvements || 1;
-	    }
-	  }, {
-	    key: 'getTechnologyComplexityModifier',
-	    value: function getTechnologyComplexityModifier(id) {
-	      var tests = this.getTestsAmount(id);
-	      var improvements = this.getImprovementsAmount(id);
-
-	      _logger2.default.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
-
-	      return Math.pow(0.15 * tests + 0.6 * improvements, balance.TECHNOLOGY_COST_MODIFIER);
-	    }
-	  }, {
-	    key: 'getHypeValue',
-	    value: function getHypeValue(id) {
-	      return this.getProduct(id).KPI.hype;
-	    }
-	  }, {
-	    key: 'getTechnicalDebtModifier',
-	    value: function getTechnicalDebtModifier(id) {
-	      var improvements = this.getImprovementsAmount(id);
-
-	      return (0, _log2.default)(improvements + 10);
-	      // return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
 	    }
 	  }]);
 	  return ProductStore;
@@ -8648,25 +8646,14 @@
 	        );
 	      }
 
+	      // <div>
+	      //   <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
+	      //   <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда {employeePhrase}</div>
+	      // </div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
-	        upperTab,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            { className: navigation + ' ' + isChosenProjectsMenu, onClick: props.onRenderProjectsMenu },
-	            '\u041F\u0440\u043E\u0435\u043A\u0442\u044B'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: navigation + ' ' + isChosenStaffMenu, onClick: props.onRenderStaffMenu },
-	            '\u041A\u043E\u043C\u0430\u043D\u0434\u0430 ',
-	            employeePhrase
-	          )
-	        )
+	        upperTab
 	      );
 	    }
 	  }]);
@@ -9581,6 +9568,10 @@
 
 	var _preact = __webpack_require__(1);
 
+	var _Staff = __webpack_require__(97);
+
+	var _Staff2 = _interopRequireDefault(_Staff);
+
 	var _Analysts = __webpack_require__(172);
 
 	var _Analysts2 = _interopRequireDefault(_Analysts);
@@ -9661,9 +9652,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var MODE_METRICS = 'MODE_METRICS';
 	// import React, { Component, PropTypes } from 'react';
 
+	var MODE_METRICS = 'MODE_METRICS';
 	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
@@ -9673,6 +9664,7 @@
 	var MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 	var MODE_COMPETITORS = 'MODE_COMPETITORS';
 	var MODE_BONUSES = 'MODE_BONUSES';
+	var MODE_STAFF = 'MODE_STAFF';
 
 	var ProductPanel = function (_Component) {
 	  (0, _inherits3.default)(ProductPanel, _Component);
@@ -9942,7 +9934,9 @@
 	              'MP \u0435\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u043E)'
 	            ),
 	            (0, _preact.h)('br', null),
-	            (0, _preact.h)(_UI2.default.Button, { secondary: true, text: '\u041D\u0430\u043D\u044F\u0442\u044C \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0430', onClick: onHireMarketerClick })
+	            (0, _preact.h)(_UI2.default.Button, { secondary: true, text: '\u041D\u0430\u043D\u044F\u0442\u044C \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0430', onClick: function onClick() {
+	                return _this.setMode(MODE_STAFF);
+	              } })
 	          )
 	        ),
 	        (0, _preact.h)('br', null)
@@ -10192,12 +10186,16 @@
 	        bonuses = _this.renderNavbar(MODE_BONUSES, 'Бонусы');
 	      }
 
+	      var staff = void 0;
+	      staff = _this.renderNavbar(MODE_STAFF, 'Команда');
+
 	      return (0, _preact.h)(
 	        'ul',
 	        { className: 'nav nav-tabs' },
 	        hypothesis,
 	        improvements,
 	        clients,
+	        staff,
 	        payments,
 	        competitors,
 	        bonuses
@@ -10310,6 +10308,29 @@
 	      );
 	    }
 	  }, {
+	    key: 'renderStaffPanel',
+	    value: function renderStaffPanel() {
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(_Staff2.default, null),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'staff-group-title' },
+	          '\u041D\u0430\u0439\u043C \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u043E\u0432'
+	        ),
+	        (0, _preact.h)(_Programmers2.default, null),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'staff-group-title' },
+	          '\u041D\u0430\u0439\u043C \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u043E\u0432'
+	        ),
+	        (0, _preact.h)(_Marketers2.default, null)
+	      );
+	    }
+	  }, {
 	    key: 'renderBonusesTab',
 	    value: function renderBonusesTab(id, product) {
 	      var improvements = _productStore2.default.getImprovementChances(id);
@@ -10380,6 +10401,8 @@
 	  }, {
 	    key: 'render',
 	    value: function render(_ref2, state) {
+	      var _this2 = this;
+
 	      var product = _ref2.product,
 	          gamePhase = _ref2.gamePhase,
 	          onHireProgrammerClick = _ref2.onHireProgrammerClick,
@@ -10417,6 +10440,10 @@
 	          body = this.renderMetricsTab(id, product);
 	          break;
 
+	        case MODE_STAFF:
+	          body = this.renderStaffPanel();
+	          break;
+
 	        case MODE_MAIN_FEATURES:
 	          body = (0, _preact.h)(
 	            'div',
@@ -10424,7 +10451,9 @@
 	            (0, _preact.h)(_MainFeature2.default, {
 	              id: id,
 	              product: product,
-	              onHireProgrammerClick: onHireProgrammerClick
+	              onHireProgrammerClick: function onHireProgrammerClick() {
+	                return _this2.setMode(MODE_STAFF);
+	              }
 	            }),
 	            this.renderSegmentTab(id)
 	          );
@@ -12105,6 +12134,7 @@
 	      var rating = _ref.rating,
 	          c = _ref.c,
 	          i = _ref.i,
+	          isCompetitor = _ref.isCompetitor,
 	          onBuyCompany = _ref.onBuyCompany,
 	          money = _ref.money;
 
@@ -12193,6 +12223,12 @@
 	          ' (',
 	          canWeCompeteThem,
 	          ')'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'offset-min' },
+	          '\u0418\u0437\u0432\u0435\u0441\u0442\u043D\u043E\u0441\u0442\u044C (HYPE): ',
+	          c.hype
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -13010,6 +13046,8 @@
 	      marketing: marketingPoints
 	    };
 	    _playerActions2.default.increasePoints(points);
+
+	    _playerActions2.default.updateEmployees();
 	  }
 
 	  // try to make an event
@@ -13062,6 +13100,10 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
+	var _createRandomWorker = __webpack_require__(190);
+
+	var _createRandomWorker2 = _interopRequireDefault(_createRandomWorker);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -13106,66 +13148,7 @@
 	    case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
 	      var teamCount = _flux2.default.playerStore.getTeam().length;
 	      // if (teamCount < 4) {
-	      var names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella', 'Lee', 'Manolo', 'James', 'Luka', 'George'];
-	      var index = Math.floor((0, _random2.default)(0, names.length));
-	      var name = names[index];
-
-	      var programming = Math.floor((0, _random2.default)(2, 1000));
-	      var marketing = Math.floor((0, _random2.default)(2, 1000));
-	      var analyst = 0; // Math.floor(random(0, 1000));
-
-	      var rating = void 0;
-	      var task = void 0;
-
-	      var obj = { skills: { marketing: marketing, programming: programming, analyst: analyst } };
-	      if (_skills2.default.isMarketer(obj)) {
-	        task = JOB.JOB_TASK_MARKETING_POINTS;
-	        rating = marketing;
-	      } else if (_skills2.default.isProgrammer(obj)) {
-	        task = JOB.JOB_TASK_PROGRAMMER_POINTS;
-	        rating = programming;
-	      } else {
-	        // by default - go to marketing
-	        task = JOB.JOB_TASK_MARKETING_POINTS;
-	        rating = marketing;
-	      }
-
-	      var baseSalary = rating * 6;
-
-	      var salary = void 0;
-	      var pricingType = 1; // Math.floor(random(0, 2));
-	      switch (pricingType) {
-	        case 0:
-	          // only percents
-	          salary = {
-	            money: 0,
-	            percent: Math.floor((0, _random2.default)(rating / 100, 50) / teamCount)
-	          };
-	          break;
-	        case 1:
-	          // only money
-	          salary = {
-	            money: Math.floor((0, _random2.default)(baseSalary * 0.75, baseSalary * 1.25)),
-	            percent: 0
-	          };
-	          break;
-	      }
-	      salary.pricingType = pricingType;
-
-	      var player = {
-	        // player: {
-	        name: name,
-	        skills: {
-	          programming: programming,
-	          marketing: marketing,
-	          analyst: analyst
-	        },
-	        jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-	        salary: salary
-	        // }
-	      };
-
-	      player.task = task;
+	      var player = _createRandomWorker2.default.create();
 	      _flux2.default.playerActions.addEmployee(player);
 	      // }
 	      break;
@@ -13322,6 +13305,10 @@
 
 	var balance = _interopRequireWildcard(_balance);
 
+	var _round = __webpack_require__(96);
+
+	var _round2 = _interopRequireDefault(_round);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -13414,7 +13401,7 @@
 	    value: function getRating(segmentId) {
 	      if (!segmentId) segmentId = 0;
 
-	      var result = round((0, _computeRating2.default)(this, segmentId));
+	      var result = (0, _round2.default)((0, _computeRating2.default)(this, segmentId));
 
 	      return Math.max(result, 0);
 	    }
@@ -13917,16 +13904,16 @@
 	        factor = 2;
 	      }
 
-	      var error = round(5 * factor * analyticsModifier);
+	      var error = (0, _round2.default)(5 * factor * analyticsModifier);
 	      var offset = Math.random() * error;
 	      var rating = this.getRating();
 
-	      var leftValue = round(rating - offset);
+	      var leftValue = (0, _round2.default)(rating - offset);
 	      if (leftValue < 0) {
 	        leftValue = 0;
 	      }
 
-	      var rightValue = round(leftValue + error);
+	      var rightValue = (0, _round2.default)(leftValue + error);
 	      if (rightValue < 0) {
 	        rightValue = 0;
 	      } else if (rightValue > 10) {
@@ -14306,8 +14293,8 @@
 	    }
 	  }, {
 	    key: 'getTechnicalDebtModifier',
-	    value: function getTechnicalDebtModifier(id) {
-	      var improvements = this.getImprovementsAmount(id);
+	    value: function getTechnicalDebtModifier() {
+	      var improvements = this.getImprovementsAmount();
 
 	      return (0, _log2.default)(improvements + 10);
 	      // return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
@@ -14358,7 +14345,7 @@
 	      var previous = this.features[p.featureGroup][p.featureName] || 0;
 	      var sum = previous + p.value;
 
-	      max = p.max;
+	      var max = p.max;
 
 	      this.features[p.featureGroup][p.featureName] = sum > max ? max : sum;
 	      this.XP -= p.value;
@@ -14375,8 +14362,8 @@
 	      var featureId = p.featureId;
 	      previous = this.features.offer[featureId];
 
-	      sum = previous + p.value;
-	      max = p.max;
+	      var sum = previous + p.value;
+	      var max = p.max;
 
 	      this.features.offer[featureId] = sum > max ? max : sum;
 	      this.XP -= p.value;
@@ -14416,7 +14403,7 @@
 	    key: 'removeClients',
 	    value: function removeClients(p) {
 	      // churn clients
-	      clients = p.clients;
+	      var clients = p.clients;
 
 	      if (this.KPI.clients - clients < 0) {
 	        this.KPI.clients = 0;
@@ -14429,6 +14416,97 @@
 	}();
 
 	exports.default = Product;
+
+/***/ },
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _job = __webpack_require__(99);
+
+	var JOB = _interopRequireWildcard(_job);
+
+	var _skills = __webpack_require__(122);
+
+	var _skills2 = _interopRequireDefault(_skills);
+
+	var _random = __webpack_require__(156);
+
+	var _random2 = _interopRequireDefault(_random);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	exports.default = {
+	  create: function create() {
+	    var names = ['Jessie', 'John', 'Pedro', 'Martin', 'Rebeca', 'Antonella', 'Lee', 'Manolo', 'James', 'Luka', 'George'];
+	    var index = Math.floor((0, _random2.default)(0, names.length));
+	    var name = names[index];
+
+	    var programming = Math.floor((0, _random2.default)(2, 1000));
+	    var marketing = Math.floor((0, _random2.default)(2, 1000));
+	    var analyst = 0; // Math.floor(random(0, 1000));
+
+	    var rating = void 0;
+	    var task = void 0;
+
+	    var obj = { skills: { marketing: marketing, programming: programming, analyst: analyst } };
+	    if (_skills2.default.isMarketer(obj)) {
+	      task = JOB.JOB_TASK_MARKETING_POINTS;
+	      rating = marketing;
+	    } else if (_skills2.default.isProgrammer(obj)) {
+	      task = JOB.JOB_TASK_PROGRAMMER_POINTS;
+	      rating = programming;
+	    } else {
+	      // by default - go to marketing
+	      task = JOB.JOB_TASK_MARKETING_POINTS;
+	      rating = marketing;
+	    }
+
+	    var baseSalary = rating * 6;
+
+	    var salary = void 0;
+	    var pricingType = 1; // Math.floor(random(0, 2));
+	    switch (pricingType) {
+	      case 0:
+	        // only percents
+	        salary = {
+	          money: 0,
+	          percent: Math.floor((0, _random2.default)(rating / 100, 50) / teamCount)
+	        };
+	        break;
+	      case 1:
+	        // only money
+	        salary = {
+	          money: Math.floor((0, _random2.default)(baseSalary * 0.75, baseSalary * 1.25)),
+	          percent: 0
+	        };
+	        break;
+	    }
+	    salary.pricingType = pricingType;
+
+	    var player = {
+	      name: name,
+	      skills: {
+	        programming: programming,
+	        marketing: marketing,
+	        analyst: analyst
+	      },
+	      jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+	      salary: salary
+	    };
+
+	    player.task = task;
+
+	    return player;
+	  }
+	};
 
 /***/ }
 /******/ ]);

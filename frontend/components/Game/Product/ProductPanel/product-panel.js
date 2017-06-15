@@ -3,6 +3,9 @@ import { h, Component } from 'preact';
 
 type PropsType = {};
 
+
+import Staff from '../../Staff';
+
 import Analysts from '../../Team/Analysts';
 import Marketers from '../../Team/Marketers';
 import Programmers from '../../Team/Programmers';
@@ -45,6 +48,7 @@ const MODE_ANALYTICS = 'MODE_ANALYTICS';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 const MODE_COMPETITORS = 'MODE_COMPETITORS';
 const MODE_BONUSES = 'MODE_BONUSES';
+const MODE_STAFF = 'MODE_STAFF';
 
 export default class ProductPanel extends Component {
   state = {
@@ -269,7 +273,7 @@ export default class ProductPanel extends Component {
           <strong>Наши маркетологи не справляются с нагрузкой</strong>
           <div>(мы теряем {support.diff}MP ежемесячно)</div>
           <br />
-          <UI.Button secondary text="Нанять маркетолога" onClick={onHireMarketerClick} />
+          <UI.Button secondary text="Нанять маркетолога" onClick={() => this.setMode(MODE_STAFF)} />
         </div>
       </div>
       <br />
@@ -325,6 +329,19 @@ export default class ProductPanel extends Component {
     );
   };
 
+  renderStaffPanel() {
+    return (
+      <div>
+        <Staff />
+        <br />
+        <div className="staff-group-title">Найм программистов</div>
+        <Programmers />
+        <br />
+        <div className="staff-group-title">Найм маркетологов</div>
+        <Marketers />
+      </div>
+    )
+  }
   renderBonusesTab(id, product) {
     const improvements = productStore.getImprovementChances(id);
 
@@ -503,11 +520,15 @@ export default class ProductPanel extends Component {
       bonuses = this.renderNavbar(MODE_BONUSES, 'Бонусы');
     }
 
+    let staff;
+      staff = this.renderNavbar(MODE_STAFF, 'Команда');
+
     return (
       <ul className="nav nav-tabs">
         {hypothesis}
         {improvements}
         {clients}
+        {staff}
         {payments}
         {competitors}
         {bonuses}
@@ -547,12 +568,16 @@ export default class ProductPanel extends Component {
         body = this.renderMetricsTab(id, product);
         break;
 
+      case MODE_STAFF:
+        body = this.renderStaffPanel();
+        break;
+
       case MODE_MAIN_FEATURES:
         body = <div>
           <MainFeatureTab
             id={id}
             product={product}
-            onHireProgrammerClick={onHireProgrammerClick}
+            onHireProgrammerClick={() => this.setMode(MODE_STAFF)}
           />
           {this.renderSegmentTab(id)}
         </div>;

@@ -425,15 +425,55 @@ class ProductStore extends EventEmitter {
     return _products[id].getDescriptionOfProduct();
   }
 
+  canShowPayPercentageMetric(id) {
+    return _products[id].canShowPayPercentageMetric();
+  }
+
+  clientsEnoughToFormSegment(id, segId) {
+    return _products[id].clientsEnoughToFormSegment(segId);
+  }
+
+  getAvailableSegments(id) {
+    return _products[id].getAvailableSegments();
+  }
+
+  getMarketShare(id) {
+    return _products[id].getMarketShare();
+  }
+
+  getTestsAmount(id) {
+    return _products[id].getTestsAmount();
+  }
+
+  getImprovementsAmount(id) {
+    return _products[id].getImprovementsAmount();
+  }
+
+  getTechnologyComplexityModifier(id) {
+    return _products[id].getTechnologyComplexityModifier();
+  }
+
+  getHypeValue(id) {
+    return _products[id].getHypeValue();
+  }
+
+  getTechnicalDebtModifier(id) {
+    return _products[id].getTechnicalDebtModifier();
+  }
+
   getCompetitorsList(id) {
     const ourCompany = _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))[0];
 
+      // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
     return _products
-      .map((p, i) => Object.assign({ id: i }, p))
-      .filter(p => !this.isOurProduct(p) && p.idea === this.getIdea(id))
-      .map(p => {
+      .map((p, i) => ({ p, id: i })) //  Object.assign({ id: i }, p)
+      .map(obj => {
+        const p: Product = obj.p;
+        const id = obj.id;
+
         const name = p.name;
         const rating = round(computeRating(p, 0));
+        const hype = p.getHypeValue();
         const clients = p.KPI.clients;
 
         const features = p.features.offer;
@@ -451,16 +491,13 @@ class ProductStore extends EventEmitter {
           clients,
           name,
           features: offer,
-          cost: companyCostComputer.compute(p),
+          // cost: companyCostComputer.compute(),
+          cost: p.getCompanyCost(),
           improvements: companyMerger.merge(ourCompany, p).improvements,
-          id: p.id
+          id,
+          hype
         }
       })
-      // return [
-      //   // { rating: 8.2, clients: 30000, name: 'WEB HOSTING 1' },
-      //   // { rating: 3.5, clients: 15000, name: 'WEB HOSTING 2' },
-      //   // { rating: 6, clients: 4500, name: 'WEB HOSTING 3' }
-      // ]
       .sort((a, b) => a.rating > b.rating);
   }
 
@@ -506,22 +543,6 @@ class ProductStore extends EventEmitter {
     }
   }
 
-  canShowPayPercentageMetric(id) {
-    return _products[id].canShowPayPercentageMetric();
-  }
-
-  clientsEnoughToFormSegment(id, segId) {
-    return _products[id].clientsEnoughToFormSegment(segId);
-  }
-
-  getAvailableSegments(id) {
-    return _products[id].getAvailableSegments();
-  }
-
-  getMarketShare(id) {
-    return _products[id].getMarketShare();
-  }
-
   getNextCompetitorInfo(id) {
     const competitors = this.getCompetitorsList(id);
     const rating = this.getRating(id);
@@ -529,34 +550,6 @@ class ProductStore extends EventEmitter {
     const betterCompetitors = competitors.filter(c => rating < c.rating + 1);
 
     return betterCompetitors.length ? betterCompetitors[0] : null;
-  }
-
-  getTestsAmount(id) {
-    return _products[id].tests || 1;
-  }
-
-  getImprovementsAmount(id) {
-    return _products[id].improvements || 1;
-  }
-
-  getTechnologyComplexityModifier(id) {
-    const tests = this.getTestsAmount(id);
-    const improvements = this.getImprovementsAmount(id);
-
-    logger.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
-
-    return Math.pow(0.15 * tests + 0.6 * improvements, balance.TECHNOLOGY_COST_MODIFIER);
-  }
-
-  getHypeValue(id) {
-    return this.getProduct(id).KPI.hype;
-  }
-
-  getTechnicalDebtModifier(id) {
-    const improvements = this.getImprovementsAmount(id);
-
-    return Math.log10(improvements + 10);
-    // return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
   }
 }
 

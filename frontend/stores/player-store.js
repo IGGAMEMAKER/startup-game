@@ -12,6 +12,9 @@ import skillHelper from '../helpers/team/skills';
 
 const EC = 'PLAYER_EVENT_CHANGE';
 
+import workerGenerator from '../helpers/team/create-random-worker';
+
+
 let _skills = {};
 let _money = 1000;
 let _expenses = [
@@ -313,6 +316,16 @@ Dispatcher.register((p: PayloadType) => {
       _employees.push(p.player);
       // logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
       // logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+      break;
+
+    case c.PLAYER_ACTIONS_UPDATE_EMPLOYEES:
+      _employees = [
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create()
+      ];
       break;
 
     case c.PLAYER_ACTIONS_EMPLOYEE_REMOVE:

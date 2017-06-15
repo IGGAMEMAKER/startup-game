@@ -2,13 +2,13 @@ import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
 import ProductMenu from '../Game/ProductMenu';
-import Staff from '../Game/Staff';
 import Menu from '../Game/Menu';
 import Economics from './Economics/Economics';
 import Product from './Product';
 import AdviceTab from './Advice';
 import Tutorial from './Tutorial';
 
+import Staff from '../Game/Staff';
 import Programmers from './Team/Programmers';
 import Marketers from './Team/Marketers';
 import Analysts from './Team/Analysts';

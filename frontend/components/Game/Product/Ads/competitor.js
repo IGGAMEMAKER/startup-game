@@ -12,7 +12,7 @@ type StateType = {};
 type ResponseType = {};
 
 export default class Competitor extends Component {
-  render({ rating, c, i, onBuyCompany, money }) {
+  render({ rating, c, i, isCompetitor, onBuyCompany, money }) {
     const needToCompeteRating = c.rating + 1;
     const competeable = needToCompeteRating < rating;
     const canWeCompeteThem = competeable ?
@@ -71,6 +71,7 @@ export default class Competitor extends Component {
       <div className={background}>
         <div className="offset-min">{name}</div>
         <div className="offset-min">Рейтинг: {c.rating} ({canWeCompeteThem})</div>
+        <div className="offset-min">Известность (HYPE): {c.hype}</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
         <div className="offset-mid">Технологии</div>
         {theyAreBetterPhrase}

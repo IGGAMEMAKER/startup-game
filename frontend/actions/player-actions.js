@@ -40,6 +40,11 @@ export default {
       player
     })
   },
+  updateEmployees() {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_UPDATE_EMPLOYEES
+    })
+  },
   rejectEmployee(i) {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_REMOVE,
