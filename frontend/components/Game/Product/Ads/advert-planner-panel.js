@@ -8,15 +8,10 @@ import logger from '../../../../helpers/logger/logger';
 
 export default class AdvertPlannerPanel extends Component {
   state = {
-    possibleClients: 0,
     toggle: true
   };
 
   componentWillMount() {}
-
-  onDrag = possibleClients => {
-    this.setState({ possibleClients })
-  };
 
   inviteUsers = (id, amountOfUsers, cost, mp, ourClients) => () => {
     if (flux.playerStore.getMoney() >= cost) {
@@ -24,13 +19,11 @@ export default class AdvertPlannerPanel extends Component {
         stageHelper.onFirstAdCampaignMissionCompleted();
       }
 
-      flux.productActions.addClients(id, amountOfUsers);
+      // flux.productActions.addClients(id, amountOfUsers);
       flux.productActions.addHype(id, amountOfUsers);
 
       flux.playerActions.increaseMoney(-cost);
       flux.playerActions.spendPoints(0, mp);
-
-      this.onDrag(0);
     }
   };
 
@@ -46,21 +39,25 @@ export default class AdvertPlannerPanel extends Component {
       ourClients,
     } = marketStats;
 
-
-
-    if (money < campaignCost || clients > market.marketSize || clients > potentialClients) {
-      return <div></div>;
-      // return <div>Нужно больше золота! На вашем счету: {money}$, а нужно {campaignCost}$</div>
-    }
+    let error;
 
     const disabled = !flux.playerStore.enoughMarketingPoints(mp);
+
+    if (money < campaignCost || clients > market.marketSize || clients > potentialClients) {
+      error = `Нужно больше золота! На вашем счету: ${money}$, а нужно ${campaignCost}$`;
+      // return <div>Нужно больше золота! На вашем счету: {money}$, а нужно {campaignCost}$</div>
+      // return <div></div>;
+    } else if (disabled) {
+      error = 'У вас не хватает маркетинговых очков';
+    }
+
 
     return (
       <li>
         {campaignText}
         <br />
         <div>Стоимость рекламной кампании: {campaignCost}$ и {mp}MP </div>
-        <div>{disabled ? 'У вас не хватает маркетинговых очков' : ''}</div>
+        <div>{error}</div>
         <UI.Button
           item={`start-campaign ${clients}`}
           text="Начать рекламную кампанию"
@@ -73,20 +70,19 @@ export default class AdvertPlannerPanel extends Component {
     )
   }
 
-  render({ id }, { possibleClients }) {
+  render({ id }) {
     const costPerClient = flux.productStore.getCostPerClient(id);
     const marketStats = flux.productStore.getMaxAmountOfPossibleClients(id, flux.playerStore.getMoney());
-    const {
-      potentialClients,
-    } = marketStats;
+
+    const { potentialClients } = marketStats;
 
     const ads = [
-      { clients: 200, text: 'Привести 200 клиентов', mp: 10 },
-      { clients: 1000, text: 'Привести 1000 клиентов', mp: 10 },
-      { clients: 10000, text: 'Привести 10000 клиентов', mp: 50 },
-      { clients: 50000, text: 'Привести 50000 клиентов', mp: 75 },
-      { clients: 300000, text: 'Привести 300000 клиентов', mp: 150 }
-    ];
+      { clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 },
+      { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 },
+      { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 },
+      { clients: 50000, text: 'Повысить HYPE на 50000 очков', mp: 5500 },
+      // { clients: 300000, text: 'Привести 300000 клиентов', mp: 150 }
+    ].map((c, i) => Object.assign({}, c, { cost: c.clients * costPerClient } ));
 
     const money = flux.playerStore.getMoney();
 
@@ -94,10 +90,22 @@ export default class AdvertPlannerPanel extends Component {
     const noClientOverflow = a => a.clients < potentialClients;
     const enoughPoints = a => flux.playerStore.enoughMarketingPoints(a.mp);
 
+    let error;
+    const cheapAd = ads[0];
+
+    if (money < cheapAd.cost) {
+      error = `Для проведения рекламной кампании нужно ${cheapAd.cost}$`;
+    }
+
+    if (!enoughPoints({ mp: cheapAd.mp })) {
+      error = `Для проведения рекламной кампании нужно ${cheapAd.mp}MP`;
+    }
+
+
     let adList = ads
-      .filter(noClientOverflow)
-      .filter(enoughMoney)
-      .filter(enoughPoints);
+      // .filter(noClientOverflow)
+      // .filter(enoughMoney)
+      // .filter(enoughPoints);
 
     let list;
 
@@ -106,20 +114,21 @@ export default class AdvertPlannerPanel extends Component {
     if (adList.length) {
       list = adList.map(a => this.renderAdCampaignGenerator(id, a.clients, a.text, a.mp, money)).reverse();
     } else {
-      if (!ads.filter(noClientOverflow).length) {
-        list = <div>
-          Мы привлекли всех клиентов, которых могли.
-          Улучшайте рейтинг, чтобы увеличить потенциальную аудиторию
-        </div>
-      }
-
-      if (!ads.filter(enoughMoney).length) {
-        list = 'нет доступных рекламных кампаний. Нужно больше золота!';
-      }
-
-      if (!ads.filter(enoughPoints).length) {
-        list = 'Недостаточно Маркетинговых очков (MP). Минимум: 15MP';
-      }
+      list = <div>{error}</div>;
+      // if (!ads.filter(noClientOverflow).length) {
+      //   list = <div>
+      //     Мы привлекли всех клиентов, которых могли.
+      //     Улучшайте рейтинг, чтобы увеличить потенциальную аудиторию
+      //   </div>
+      // }
+      //
+      // if (!ads.filter(enoughMoney).length) {
+      //   list = 'нет доступных рекламных кампаний. Нужно больше золота!';
+      // }
+      //
+      // if (!ads.filter(enoughPoints).length) {
+      //   list = 'Недостаточно Маркетинговых очков (MP). Минимум: 15MP';
+      // }
     }
 
         // <div>Наша потенциальная аудитория: {potentialClients} человек</div>

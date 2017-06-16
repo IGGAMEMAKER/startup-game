@@ -6683,7 +6683,7 @@
 	  }, {
 	    key: 'addHype',
 	    value: function addHype(hype) {
-	      this.KPI.hype = Math.min(10000, this.KPI.hype + hype);
+	      this.KPI.hype = Math.min(100000, this.KPI.hype + hype);
 	    }
 	  }, {
 	    key: 'addViralClients',
@@ -12832,6 +12832,10 @@
 	  value: true
 	});
 
+	var _assign = __webpack_require__(3);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -12888,10 +12892,7 @@
 	    }
 
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = AdvertPlannerPanel.__proto__ || (0, _getPrototypeOf2.default)(AdvertPlannerPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      possibleClients: 0,
 	      toggle: true
-	    }, _this.onDrag = function (possibleClients) {
-	      _this.setState({ possibleClients: possibleClients });
 	    }, _this.inviteUsers = function (id, amountOfUsers, cost, mp, ourClients) {
 	      return function () {
 	        if (_flux2.default.playerStore.getMoney() >= cost) {
@@ -12899,13 +12900,11 @@
 	            _stages2.default.onFirstAdCampaignMissionCompleted();
 	          }
 
-	          _flux2.default.productActions.addClients(id, amountOfUsers);
+	          // flux.productActions.addClients(id, amountOfUsers);
 	          _flux2.default.productActions.addHype(id, amountOfUsers);
 
 	          _flux2.default.playerActions.increaseMoney(-cost);
 	          _flux2.default.playerActions.spendPoints(0, mp);
-
-	          _this.onDrag(0);
 	        }
 	      };
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
@@ -12927,12 +12926,17 @@
 	          ourClients = marketStats.ourClients;
 
 
-	      if (money < campaignCost || clients > market.marketSize || clients > potentialClients) {
-	        return (0, _preact.h)('div', null);
-	        // return <div>Нужно больше золота! На вашем счету: {money}$, а нужно {campaignCost}$</div>
-	      }
+	      var error = void 0;
 
 	      var disabled = !_flux2.default.playerStore.enoughMarketingPoints(mp);
+
+	      if (money < campaignCost || clients > market.marketSize || clients > potentialClients) {
+	        error = '\u041D\u0443\u0436\u043D\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043E\u043B\u043E\u0442\u0430! \u041D\u0430 \u0432\u0430\u0448\u0435\u043C \u0441\u0447\u0435\u0442\u0443: ' + money + '$, \u0430 \u043D\u0443\u0436\u043D\u043E ' + campaignCost + '$';
+	        // return <div>Нужно больше золота! На вашем счету: {money}$, а нужно {campaignCost}$</div>
+	        // return <div></div>;
+	      } else if (disabled) {
+	        error = 'У вас не хватает маркетинговых очков';
+	      }
 
 	      return (0, _preact.h)(
 	        'li',
@@ -12951,7 +12955,7 @@
 	        (0, _preact.h)(
 	          'div',
 	          null,
-	          disabled ? 'У вас не хватает маркетинговых очков' : ''
+	          error
 	        ),
 	        (0, _preact.h)(_UI2.default.Button, {
 	          item: 'start-campaign ' + clients,
@@ -12965,18 +12969,20 @@
 	    }
 	  }, {
 	    key: 'render',
-	    value: function render(_ref2, _ref3) {
+	    value: function render(_ref2) {
 	      var _this2 = this;
 
 	      var id = _ref2.id;
-	      var possibleClients = _ref3.possibleClients;
 
 	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
 	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney());
+
 	      var potentialClients = marketStats.potentialClients;
 
 
-	      var ads = [{ clients: 200, text: 'Привести 200 клиентов', mp: 10 }, { clients: 1000, text: 'Привести 1000 клиентов', mp: 10 }, { clients: 10000, text: 'Привести 10000 клиентов', mp: 50 }, { clients: 50000, text: 'Привести 50000 клиентов', mp: 75 }, { clients: 300000, text: 'Привести 300000 клиентов', mp: 150 }];
+	      var ads = [{ clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 }, { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 }, { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 }, { clients: 50000, text: 'Повысить HYPE на 50000 очков', mp: 5500 }].map(function (c, i) {
+	        return (0, _assign2.default)({}, c, { cost: c.clients * costPerClient });
+	      });
 
 	      var money = _flux2.default.playerStore.getMoney();
 
@@ -12990,7 +12996,21 @@
 	        return _flux2.default.playerStore.enoughMarketingPoints(a.mp);
 	      };
 
-	      var adList = ads.filter(noClientOverflow).filter(enoughMoney).filter(enoughPoints);
+	      var error = void 0;
+	      var cheapAd = ads[0];
+
+	      if (money < cheapAd.cost) {
+	        error = '\u0414\u043B\u044F \u043F\u0440\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u044F \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u043E\u0439 \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u0438 \u043D\u0443\u0436\u043D\u043E ' + cheapAd.cost + '$';
+	      }
+
+	      if (!enoughPoints({ mp: cheapAd.mp })) {
+	        error = '\u0414\u043B\u044F \u043F\u0440\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u044F \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u043E\u0439 \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u0438 \u043D\u0443\u0436\u043D\u043E ' + cheapAd.mp + 'MP';
+	      }
+
+	      var adList = ads;
+	      // .filter(noClientOverflow)
+	      // .filter(enoughMoney)
+	      // .filter(enoughPoints);
 
 	      var list = void 0;
 
@@ -13001,21 +13021,25 @@
 	          return _this2.renderAdCampaignGenerator(id, a.clients, a.text, a.mp, money);
 	        }).reverse();
 	      } else {
-	        if (!ads.filter(noClientOverflow).length) {
-	          list = (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041C\u044B \u043F\u0440\u0438\u0432\u043B\u0435\u043A\u043B\u0438 \u0432\u0441\u0435\u0445 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043A\u043E\u0442\u043E\u0440\u044B\u0445 \u043C\u043E\u0433\u043B\u0438. \u0423\u043B\u0443\u0447\u0448\u0430\u0439\u0442\u0435 \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E\u0431\u044B \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0442\u044C \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u0443\u044E \u0430\u0443\u0434\u0438\u0442\u043E\u0440\u0438\u044E'
-	          );
-	        }
-
-	        if (!ads.filter(enoughMoney).length) {
-	          list = 'нет доступных рекламных кампаний. Нужно больше золота!';
-	        }
-
-	        if (!ads.filter(enoughPoints).length) {
-	          list = 'Недостаточно Маркетинговых очков (MP). Минимум: 15MP';
-	        }
+	        list = (0, _preact.h)(
+	          'div',
+	          null,
+	          error
+	        );
+	        // if (!ads.filter(noClientOverflow).length) {
+	        //   list = <div>
+	        //     Мы привлекли всех клиентов, которых могли.
+	        //     Улучшайте рейтинг, чтобы увеличить потенциальную аудиторию
+	        //   </div>
+	        // }
+	        //
+	        // if (!ads.filter(enoughMoney).length) {
+	        //   list = 'нет доступных рекламных кампаний. Нужно больше золота!';
+	        // }
+	        //
+	        // if (!ads.filter(enoughPoints).length) {
+	        //   list = 'Недостаточно Маркетинговых очков (MP). Минимум: 15MP';
+	        // }
 	      }
 
 	      // <div>Наша потенциальная аудитория: {potentialClients} человек</div>

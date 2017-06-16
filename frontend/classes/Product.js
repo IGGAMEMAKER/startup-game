@@ -1017,7 +1017,7 @@ export default class Product {
   }
 
   addHype(hype) {
-    this.KPI.hype = Math.min(10000, this.KPI.hype + hype);
+    this.KPI.hype = Math.min(100000, this.KPI.hype + hype);
   }
 
   addViralClients(p) {
