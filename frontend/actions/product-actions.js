@@ -67,6 +67,13 @@ export default {
       clients
     })
   },
+  addHype(id, hype) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_HYPE_ADD,
+      id,
+      hype
+    })
+  },
   viralClients(id, clients) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD,

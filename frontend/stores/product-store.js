@@ -635,6 +635,10 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].addClients(p);
       break;
 
+    case c.PRODUCT_ACTIONS_HYPE_ADD:
+      _products[id].addHype(p.hype);
+      break;
+
     case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
       _products[id].addViralClients(p);
       break;

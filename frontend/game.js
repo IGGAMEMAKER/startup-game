@@ -52,9 +52,8 @@ const run = () => {
   const day = scheduleStore.getDay();
   const tasks = scheduleStore.getTasks();
 
-  logger.shit(`frontend/game.js magic id=0`);
-  // const products = productStore.getCompetitorsList(0);
-  const products = productStore.getProducts();
+  // const products = productStore.getCompetitorsList(0); logger.shit(`frontend/game.js magic id=0`);
+  const products: Array<Product> = productStore.getProducts();
 
   // check tasks for finishing
   computeTasks(tasks);
@@ -72,31 +71,48 @@ const run = () => {
     // });
 
     const frees = productStore.getFreeClientsBatch();
-    const sumOfHypes = products.map((p: Product) => p.getHypeValue()).reduce((p, c) => p + c, 0);
+    const sumOfHypes = products
+      .map((p: Product) => p.getHypeValue())
+      .reduce((p, c) => p + c, 0);
 
     const transformations: Array = products
       .map((p: Product) =>
         ({
           increase: 0,
           decrease: p.getDisloyalClients(),
+          hypeValue: p.getHypeValue(),
           hype: p.getHypeValue() / sumOfHypes
         })
       );
 
-    transformations.map(p => Object.assign(p, { hype: p.hype}))
+    products.forEach((p: Product, i) => {
+      const freeHypeShare = transformations[i].hype;
 
-    products.forEach((obj, i) => {
+      // add free clients if possible
+      transformations[i].increase += Math.round(frees * freeHypeShare);
 
+      // we exclude one company from list, so ... sum of hypes decreases by current company
+      const hypeDiscount = transformations[i].hypeValue;
+      transformations.forEach((t, j) => {
+        if (j !== i) {
+          const currentHypeShare = t.hypeValue / (sumOfHypes - hypeDiscount);
+
+          transformations[i].increase += Math.round(t.decrease * currentHypeShare);
+        }
+      })
     });
 
     products
-      .forEach((obj, i) => {
-        const id = obj.id;
+      .forEach((p, i) => {
+        const id = i;
+        const clients = transformations[i].increase;
 
-        const churn = productStore.getDisloyalClients(id);
+        const churn = transformations[i].decrease;
+        // const churn = productStore.getDisloyalClients(id);
 
 
         productActions.testHypothesis(id);
+        productActions.addClients(id, clients);
         productActions.removeClients(id, churn);
         // const viral = productStore.getViralClients(id);
         // productActions.viralClients(id, viral);

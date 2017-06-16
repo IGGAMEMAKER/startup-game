@@ -3855,6 +3855,10 @@
 	      _products[id].addClients(p);
 	      break;
 
+	    case c.PRODUCT_ACTIONS_HYPE_ADD:
+	      _products[id].addHype(p.hype);
+	      break;
+
 	    case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
 	      _products[id].addViralClients(p);
 	      break;
@@ -4739,6 +4743,7 @@
 	var PRODUCT_ACTIONS_TEST_HYPOTHESIS = exports.PRODUCT_ACTIONS_TEST_HYPOTHESIS = 'PRODUCT_ACTIONS_TEST_HYPOTHESIS';
 	var PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = exports.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = 'PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY';
 	var PRODUCT_ACTIONS_COMPANY_BUY = exports.PRODUCT_ACTIONS_COMPANY_BUY = 'PRODUCT_ACTIONS_COMPANY_BUY';
+	var PRODUCT_ACTIONS_HYPE_ADD = exports.PRODUCT_ACTIONS_HYPE_ADD = 'PRODUCT_ACTIONS_HYPE_ADD';
 
 /***/ },
 /* 107 */
@@ -6676,6 +6681,11 @@
 	      this.KPI.newClients += clients;
 	    }
 	  }, {
+	    key: 'addHype',
+	    value: function addHype(hype) {
+	      this.KPI.hype = Math.min(10000, this.KPI.hype + hype);
+	    }
+	  }, {
 	    key: 'addViralClients',
 	    value: function addViralClients(p) {
 	      var clients = p.clients;
@@ -8163,6 +8173,13 @@
 	      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,
 	      id: id,
 	      clients: clients
+	    });
+	  },
+	  addHype: function addHype(id, hype) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_HYPE_ADD,
+	      id: id,
+	      hype: hype
 	    });
 	  },
 	  viralClients: function viralClients(id, clients) {
@@ -12883,6 +12900,8 @@
 	          }
 
 	          _flux2.default.productActions.addClients(id, amountOfUsers);
+	          _flux2.default.productActions.addHype(id, amountOfUsers);
+
 	          _flux2.default.playerActions.increaseMoney(-cost);
 	          _flux2.default.playerActions.spendPoints(0, mp);
 
@@ -14275,10 +14294,6 @@
 	  value: true
 	});
 
-	var _assign = __webpack_require__(3);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
 	var _productStore = __webpack_require__(99);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
@@ -14368,8 +14383,7 @@
 	  var day = _scheduleStore2.default.getDay();
 	  var tasks = _scheduleStore2.default.getTasks();
 
-	  _logger2.default.shit('frontend/game.js magic id=0');
-	  // const products = productStore.getCompetitorsList(0);
+	  // const products = productStore.getCompetitorsList(0); logger.shit(`frontend/game.js magic id=0`);
 	  var products = _productStore2.default.getProducts();
 
 	  // check tasks for finishing
@@ -14399,22 +14413,38 @@
 	        return {
 	          increase: 0,
 	          decrease: p.getDisloyalClients(),
+	          hypeValue: p.getHypeValue(),
 	          hype: p.getHypeValue() / sumOfHypes
 	        };
 	      });
 
-	      transformations.map(function (p) {
-	        return (0, _assign2.default)(p, { hype: p.hype });
+	      products.forEach(function (p, i) {
+	        var freeHypeShare = transformations[i].hype;
+
+	        // add free clients if possible
+	        transformations[i].increase += Math.round(frees * freeHypeShare);
+
+	        // we exclude one company from list, so ... sum of hypes decreases by current company
+	        var hypeDiscount = transformations[i].hypeValue;
+	        transformations.forEach(function (t, j) {
+	          if (j !== i) {
+	            var currentHypeShare = t.hypeValue / (sumOfHypes - hypeDiscount);
+
+	            transformations[i].increase += Math.round(t.decrease * currentHypeShare);
+	          }
+	        });
 	      });
 
-	      products.forEach(function (obj, i) {});
+	      products.forEach(function (p, i) {
+	        var id = i;
+	        var clients = transformations[i].increase;
 
-	      products.forEach(function (obj, i) {
-	        var id = obj.id;
+	        var churn = transformations[i].decrease;
+	        // const churn = productStore.getDisloyalClients(id);
 
-	        var churn = _productStore2.default.getDisloyalClients(id);
 
 	        _productActions2.default.testHypothesis(id);
+	        _productActions2.default.addClients(id, clients);
 	        _productActions2.default.removeClients(id, churn);
 	        // const viral = productStore.getViralClients(id);
 	        // productActions.viralClients(id, viral);

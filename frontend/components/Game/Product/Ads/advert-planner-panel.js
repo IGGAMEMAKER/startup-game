@@ -25,6 +25,8 @@ export default class AdvertPlannerPanel extends Component {
       }
 
       flux.productActions.addClients(id, amountOfUsers);
+      flux.productActions.addHype(id, amountOfUsers);
+
       flux.playerActions.increaseMoney(-cost);
       flux.playerActions.spendPoints(0, mp);
 

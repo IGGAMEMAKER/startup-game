@@ -1016,6 +1016,10 @@ export default class Product {
     this.KPI.newClients += clients;
   }
 
+  addHype(hype) {
+    this.KPI.hype = Math.min(10000, this.KPI.hype + hype);
+  }
+
   addViralClients(p) {
     const clients = p.clients;
 
