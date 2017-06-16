@@ -738,7 +738,7 @@
 	      });
 	    }, _this.getProductsFromStore = function () {
 	      _this.setState({
-	        products: _productStore2.default.getProducts()
+	        products: _productStore2.default.getOurProducts()
 	      });
 	    }, _this.renderProducts = function (state) {
 	      return state.products.map(function (p, i) {
@@ -2994,7 +2994,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var calculate = function calculate() {
-	  var products = _productStore2.default.getProducts();
+	  var products = _productStore2.default.getOurProducts();
 
 	  // check income
 	  var jobIncome = 2000;
@@ -3220,6 +3220,11 @@
 	  }, {
 	    key: 'getProducts',
 	    value: function getProducts() {
+	      return _products;
+	    }
+	  }, {
+	    key: 'getOurProducts',
+	    value: function getOurProducts() {
 	      return _products.filter(this.isOurProduct);
 	    }
 	  }, {
@@ -3654,6 +3659,23 @@
 	      return { id: i, p: p };
 	    }
 	  }, {
+	    key: 'getFreeClientsBatch',
+	    value: function getFreeClientsBatch() {
+	      var marketSize = _products[0].getMarketShare().marketSize;
+
+	      var value = marketSize - _products.map(function (p, i) {
+	        return p.getClients();
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
+
+	      if (value <= 0) return 0;
+
+	      if (value > 2000) return 2000;
+
+	      return value;
+	    }
+	  }, {
 	    key: 'getLeaderInTech',
 	    value: function getLeaderInTech(id, featureId) {
 	      var leader = _products.map(this.idHelper).sort(function (obj1, obj2) {
@@ -3718,7 +3740,7 @@
 	          hype: hype
 	        };
 	      }).sort(function (a, b) {
-	        return a.rating > b.rating;
+	        return b.hype > a.hype;
 	      });
 	    }
 	  }, {
@@ -9494,7 +9516,7 @@
 	      possibleCredit: 0
 	    }, _this.pickProducts = function () {
 	      _this.setState({
-	        products: _productStore2.default.getProducts()
+	        products: _productStore2.default.getOurProducts()
 	      });
 	    }, _this.pickMoney = function () {
 	      _this.setState({
@@ -14253,6 +14275,10 @@
 	  value: true
 	});
 
+	var _assign = __webpack_require__(3);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
 	var _productStore = __webpack_require__(99);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
@@ -14297,6 +14323,10 @@
 
 	var _stages2 = _interopRequireDefault(_stages);
 
+	var _Product = __webpack_require__(124);
+
+	var _Product2 = _interopRequireDefault(_Product);
+
 	var _job = __webpack_require__(131);
 
 	var JOB = _interopRequireWildcard(_job);
@@ -14337,6 +14367,9 @@
 
 	  var day = _scheduleStore2.default.getDay();
 	  var tasks = _scheduleStore2.default.getTasks();
+
+	  _logger2.default.shit('frontend/game.js magic id=0');
+	  // const products = productStore.getCompetitorsList(0);
 	  var products = _productStore2.default.getProducts();
 
 	  // check tasks for finishing
@@ -14344,76 +14377,103 @@
 
 	  // check if it is last day of month (pay day)
 	  if (isLastDayOfMonth(day)) {
-	    if (_stages2.default.isFirstHypothesisMission()) {
-	      _stages2.default.onFirstHypothesisMissionCompleted();
-	    }
+	    (function () {
+	      if (_stages2.default.isFirstHypothesisMission()) {
+	        _stages2.default.onFirstHypothesisMissionCompleted();
+	      }
 
-	    // calculate client amount change
-	    products.forEach(function (p, i) {
-	      var churn = _productStore2.default.getDisloyalClients(i);
-	      var viral = _productStore2.default.getViralClients(i);
+	      // calculate client amount change
+	      // const frees = productStore.getFreeClientsBatch();
+	      // products.forEach((p, i) => {
+	      //   productActions.testHypothesis(i);
+	      // });
 
-	      // gain XP points
-	      // const XP = productStore.getImprovementChances(i).middle;
+	      var frees = _productStore2.default.getFreeClientsBatch();
+	      var sumOfHypes = products.map(function (p) {
+	        return p.getHypeValue();
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
 
-	      _productActions2.default.testHypothesis(i);
-	      _productActions2.default.removeClients(i, churn);
-	      _productActions2.default.viralClients(i, viral);
-	    });
+	      var transformations = products.map(function (p) {
+	        return {
+	          increase: 0,
+	          decrease: p.getDisloyalClients(),
+	          hype: p.getHypeValue() / sumOfHypes
+	        };
+	      });
 
-	    var difference = _moneyDifference2.default.saldo();
+	      transformations.map(function (p) {
+	        return (0, _assign2.default)(p, { hype: p.hype });
+	      });
 
-	    _playerActions2.default.increaseMoney(difference);
+	      products.forEach(function (obj, i) {});
 
-	    var money = _playerStore2.default.getMoney();
+	      products.forEach(function (obj, i) {
+	        var id = obj.id;
 
-	    // take loans if necessary
-	    if (money < 0) {
-	      _logger2.default.log('money below zero');
-	      // playerActions.loans.take(-money);
-	    }
+	        var churn = _productStore2.default.getDisloyalClients(id);
 
-	    // calculate human points
+	        _productActions2.default.testHypothesis(id);
+	        _productActions2.default.removeClients(id, churn);
+	        // const viral = productStore.getViralClients(id);
+	        // productActions.viralClients(id, viral);
+	      });
 
-	    // calculate programmer points
-	    var ppProducers = _playerStore2.default.getTeam().filter(function (p) {
-	      return p.task === JOB.JOB_TASK_PROGRAMMER_POINTS;
-	    });
+	      var difference = _moneyDifference2.default.saldo();
 
-	    var programmingPoints = ppProducers.length ? ppProducers.map(function (p) {
-	      return _skills2.default.getProgrammingPointsProducedBy(p);
-	    }).reduce(function (p, c) {
-	      return p + c;
-	    }) : 0;
+	      _playerActions2.default.increaseMoney(difference);
 
-	    // calculate marketing points
-	    var mpProducers = _playerStore2.default.getTeam().filter(function (p) {
-	      return p.task === JOB.JOB_TASK_MARKETING_POINTS;
-	    });
-	    var marketingPoints = mpProducers.length ? mpProducers.map(function (p) {
-	      return _skills2.default.getMarketingPointsProducedBy(p);
-	    }).reduce(function (p, c) {
-	      return p + c;
-	    }) : 0;
+	      var money = _playerStore2.default.getMoney();
 
-	    var programmingSupportPoints = _productStore2.default.getProgrammingSupportCost(0);
-	    var marketingSupportPoints = _productStore2.default.getMarketingSupportCost(0);
-	    _logger2.default.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js');
+	      // take loans if necessary
+	      if (money < 0) {
+	        _logger2.default.log('money below zero');
+	        // playerActions.loans.take(-money);
+	      }
 
-	    // logger.log('increase points game.js', programmingPoints, marketingPoints);
-	    // logger.log('decrease points game.js', programmingSupportPoints, marketingSupportPoints);
-	    _logger2.default.shit('compute penalties and bonuses for point production');
+	      // calculate human points
 
-	    programmingPoints -= programmingSupportPoints;
-	    marketingPoints -= marketingSupportPoints;
+	      // calculate programmer points
+	      var ppProducers = _playerStore2.default.getTeam().filter(function (p) {
+	        return p.task === JOB.JOB_TASK_PROGRAMMER_POINTS;
+	      });
 
-	    var points = {
-	      programming: programmingPoints,
-	      marketing: marketingPoints
-	    };
-	    _playerActions2.default.increasePoints(points);
+	      var programmingPoints = ppProducers.length ? ppProducers.map(function (p) {
+	        return _skills2.default.getProgrammingPointsProducedBy(p);
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }) : 0;
 
-	    _playerActions2.default.updateEmployees();
+	      // calculate marketing points
+	      var mpProducers = _playerStore2.default.getTeam().filter(function (p) {
+	        return p.task === JOB.JOB_TASK_MARKETING_POINTS;
+	      });
+	      var marketingPoints = mpProducers.length ? mpProducers.map(function (p) {
+	        return _skills2.default.getMarketingPointsProducedBy(p);
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }) : 0;
+
+	      var programmingSupportPoints = _productStore2.default.getProgrammingSupportCost(0);
+	      var marketingSupportPoints = _productStore2.default.getMarketingSupportCost(0);
+	      _logger2.default.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js');
+
+	      // logger.log('increase points game.js', programmingPoints, marketingPoints);
+	      // logger.log('decrease points game.js', programmingSupportPoints, marketingSupportPoints);
+	      _logger2.default.shit('compute penalties and bonuses for point production');
+
+	      programmingPoints -= programmingSupportPoints;
+	      marketingPoints -= marketingSupportPoints;
+
+	      var points = {
+	        programming: programmingPoints,
+	        marketing: marketingPoints
+	      };
+	      _playerActions2.default.increasePoints(points);
+
+	      _playerActions2.default.updateEmployees();
+	    })();
 	  }
 
 	  // try to make an event

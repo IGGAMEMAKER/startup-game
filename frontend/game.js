@@ -14,6 +14,8 @@ import skillHelper from './helpers/team/skills';
 
 import stageHelper from './helpers/stages';
 
+import Product from './classes/Product';
+
 import * as JOB from './constants/job';
 
 const isLastDayOfMonth = (day) => {
@@ -49,6 +51,9 @@ const run = () => {
 
   const day = scheduleStore.getDay();
   const tasks = scheduleStore.getTasks();
+
+  logger.shit(`frontend/game.js magic id=0`);
+  // const products = productStore.getCompetitorsList(0);
   const products = productStore.getProducts();
 
   // check tasks for finishing
@@ -61,17 +66,41 @@ const run = () => {
     }
 
     // calculate client amount change
-    products.forEach((p, i) => {
-      const churn = productStore.getDisloyalClients(i);
-      const viral = productStore.getViralClients(i);
+    // const frees = productStore.getFreeClientsBatch();
+    // products.forEach((p, i) => {
+    //   productActions.testHypothesis(i);
+    // });
 
-      // gain XP points
-      // const XP = productStore.getImprovementChances(i).middle;
+    const frees = productStore.getFreeClientsBatch();
+    const sumOfHypes = products.map((p: Product) => p.getHypeValue()).reduce((p, c) => p + c, 0);
 
-      productActions.testHypothesis(i);
-      productActions.removeClients(i, churn);
-      productActions.viralClients(i, viral);
+    const transformations: Array = products
+      .map((p: Product) =>
+        ({
+          increase: 0,
+          decrease: p.getDisloyalClients(),
+          hype: p.getHypeValue() / sumOfHypes
+        })
+      );
+
+    transformations.map(p => Object.assign(p, { hype: p.hype}))
+
+    products.forEach((obj, i) => {
+
     });
+
+    products
+      .forEach((obj, i) => {
+        const id = obj.id;
+
+        const churn = productStore.getDisloyalClients(id);
+
+
+        productActions.testHypothesis(id);
+        productActions.removeClients(id, churn);
+        // const viral = productStore.getViralClients(id);
+        // productActions.viralClients(id, viral);
+      });
 
     const difference = moneyCalculator.saldo();
 

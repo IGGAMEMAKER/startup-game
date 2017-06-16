@@ -88,6 +88,10 @@ class ProductStore extends EventEmitter {
   }
 
   getProducts() {
+    return _products;
+  }
+
+  getOurProducts() {
     return _products.filter(this.isOurProduct);
   }
 
@@ -465,6 +469,18 @@ class ProductStore extends EventEmitter {
     return { id: i, p };
   }
 
+  getFreeClientsBatch() {
+    const marketSize = _products[0].getMarketShare().marketSize;
+
+    const value = marketSize - _products.map((p, i) => p.getClients()).reduce((p, c) => p + c, 0);
+
+    if (value <= 0) return 0;
+
+    if (value > 2000) return 2000;
+
+    return value;
+  }
+
   getLeaderInTech(id, featureId) {
     const leader = _products.map(this.idHelper)
       .sort((obj1, obj2) => {
@@ -521,7 +537,7 @@ class ProductStore extends EventEmitter {
           hype
         }
       })
-      .sort((a, b) => a.rating > b.rating);
+      .sort((a, b) => b.hype > a.hype);
   }
 
   getMaxAmountOfPossibleClients(id, money) {

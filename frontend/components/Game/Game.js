@@ -114,7 +114,7 @@ export default class Game extends Component {
 
   getProductsFromStore = () => {
     this.setState({
-      products: productStore.getProducts()
+      products: productStore.getOurProducts()
     });
   };
 

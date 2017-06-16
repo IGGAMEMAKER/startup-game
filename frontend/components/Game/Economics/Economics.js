@@ -30,7 +30,7 @@ export default class Economics extends Component {
 
   pickProducts = () => {
     this.setState({
-      products: productStore.getProducts()
+      products: productStore.getOurProducts()
     })
   };
 

@@ -4,7 +4,7 @@ import playerStore from '../../stores/player-store';
 import * as EXPENSES from '../../constants/expenses';
 
 const calculate = () => {
-  const products = productStore.getProducts();
+  const products = productStore.getOurProducts();
 
   // check income
   const jobIncome = 2000;
