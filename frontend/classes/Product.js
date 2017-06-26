@@ -21,7 +21,7 @@ import round from '../helpers/math/round';
 
 
 export default class Product {
-  constructor({ idea, name, isCompetitor }) {
+  constructor({ idea, name, isCompetitor, defaultFeatures }) {
     // this.isCompetitor = isCompetitor;
 
     if (!idea) throw 'no idea in classes/Product.js';
@@ -32,14 +32,19 @@ export default class Product {
     }
 
     const defaults = productDescriptions(idea);
-    const defaultFeatures = defaults.features;
+    if (!defaultFeatures) {
+      logger.error(idea, name, isCompetitor);
+      throw 'no default features!!!';
+    }
+    logger.log('new Product constructor', defaultFeatures);
+    // const defaultFeatures = defaults.features;
 
     let maxRating = 6;
     if (isCompetitor) maxRating = 8;
 
     const luck = random(1, maxRating) / 10; // luck in 0.1-0.6
 
-    const offer = defaultFeatures.map((f, i) => Math.floor(luck * f.data));
+    const offer = defaultFeatures.map((f, i) => Math.floor(luck * f));
 
     const features = {
       offer, // features, that are attached to main idea
@@ -82,6 +87,12 @@ export default class Product {
     this.improvements = 1;
 
     this.owner = !isCompetitor;
+
+    this.defaultFeatures = defaultFeatures;
+  }
+
+  setMainFeatureDefaults(upgradedDefaults) {
+    this.defaultFeatures = upgradedDefaults;
   }
 
   isOurProduct() {
@@ -114,7 +125,13 @@ export default class Product {
   }
 
   getHypeDamping() {
-    return -2;
+    return this.getChurnRate().raw;
+  }
+
+  getHypeDampingValue() {
+    const v = Math.ceil(this.getHypeValue() * this.getHypeDamping()) - this.getBlogHypeModifier();
+
+    return -v;
   }
 
   getSegmentedPriorities(segId) {
@@ -222,9 +239,11 @@ export default class Product {
 
   getPaymentModifier() {
     const payments = this.features.payment;
+
     // mockBuying
     // basicPricing
     // segmentedPricing
+
     if (payments.segmentedPricing3) {
       return 1;
     }
@@ -276,9 +295,7 @@ export default class Product {
     raw = conversion;
     pretty = percentify(conversion);
 
-    return {
-      raw, pretty
-    }
+    return { raw, pretty };
   }
 
   getProductPrice(segId) {
@@ -370,6 +387,10 @@ export default class Product {
 
   getBlogPower() {
     return this.getBlogStatusStructured().power;
+  }
+
+  getBlogHypeModifier() {
+    return Math.ceil(this.getClients() * this.getBlogPower() / 1000);
   }
 
   getBlogStatusStructured() {
@@ -974,7 +995,12 @@ export default class Product {
 
     const max = p.max;
 
-    this.features[p.featureGroup][p.featureName] = sum > max ? max: sum;
+    this.features[p.featureGroup][p.featureName] = sum; // > max ? max : sum;
+
+    if (sum > max) {
+      logger.shit('need game message, that we became tech leaders! classes/product.js');
+    }
+
     this.XP -= p.value;
 
     if (this.improvements) {
@@ -982,6 +1008,14 @@ export default class Product {
     } else {
       this.improvements = 1;
     }
+
+    let hypeIncrease = Math.ceil(this.getClients() * this.getBlogPower() / 1000);
+
+    if (p.isTechnologyLeader) {
+      hypeIncrease *= 10;
+    }
+
+    this.addHype(hypeIncrease);
   }
 
   improveMainFeature(p) {
@@ -1007,8 +1041,8 @@ export default class Product {
   }
 
   addClients(p) {
-// not all users will become our clients. Some of them will vanish
-// if you got them from ads, efficiency will be less than 1
+    // not all users will become our clients. Some of them will vanish
+    // if you got them from ads, efficiency will be less than 1
     const efficiency = p.efficiency || 1;
     let clients = Math.floor(efficiency * p.clients);
 
@@ -1018,6 +1052,10 @@ export default class Product {
 
   addHype(hype) {
     this.KPI.hype = Math.min(100000, this.KPI.hype + hype);
+  }
+
+  loseMonthlyHype() {
+    this.KPI.hype += this.getHypeDampingValue();
   }
 
   addViralClients(p) {

@@ -3146,52 +3146,11 @@
 
 	var EC = 'PRODUCT_EVENT_CHANGE';
 
-	//
-	// let _products = [{
-	//   // rating: 0, // computable value, so... needs to be deleted
-	//   idea: IDEAS.IDEA_WEB_HOSTING,
-	//   name: 'WWWEB HOSTING',
-	//   stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-	//
-	//   owner: true,
-	//   features: {
-	//     offer: {
-	//       // 'portfolio': 0.81,
-	//       // 'website': 1
-	//     }, // features, that are attached to main idea
-	//     development: {}, // backups, more dev servers, e.t.c.
-	//
-	//     marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-	//     analytics: {}, // simple analytics (main KPIs),
-	//     // middle (segments analytics), mid+ (segments + versions),
-	//
-	//     // not only chat with users, but also localisations, content updates
-	//     // and all sort of things, that you need doing constantly
-	//     support: {},
-	//
-	//     payment: {},
-	//   },
-	//   XP: 0,
-	//   KPI: {
-	//     // accumulated values
-	//     debt: 0, // technical debt. Shows, how fast can you implement new features
-	//     clients: 10,
-	//     newClients: 10,
-	//
-	//     hype: 1000,
-	//
-	//     bugs: 10,
-	//
-	//     currentUXBugs: 100,
-	//     foundUXBugs: 50,
-	//     fixedUXBugs: 50
-	//   }
-	// }];
-
 	var _products = [new _Product2.default({
 	  idea: IDEAS.IDEA_WEB_HOSTING,
 	  name: 'WWWEB HOSTING',
-	  stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA
+	  stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
+	  defaultFeatures: (0, _productDescriptions2.default)(IDEAS.IDEA_WEB_HOSTING).features
 	})];
 
 	var ProductStore = function (_EventEmitter) {
@@ -3292,7 +3251,8 @@
 	  }, {
 	    key: 'getMainFeatureDefaultQualityByFeatureId',
 	    value: function getMainFeatureDefaultQualityByFeatureId(id, featureId) {
-	      return _products[id].getMainFeatureDefaultQualityByFeatureId(featureId);
+	      return this.temporaryMaxFeatureValue(id, featureId);
+	      // return _products[id].getMainFeatureDefaultQualityByFeatureId(featureId);
 	    }
 	  }, {
 	    key: 'getPrettyFeatureNameByFeatureId',
@@ -3663,11 +3623,13 @@
 	    value: function getFreeClientsBatch() {
 	      var marketSize = _products[0].getMarketShare().marketSize;
 
-	      var value = marketSize - _products.map(function (p, i) {
+	      var currentSumOfUsers = _products.map(function (p, i) {
 	        return p.getClients();
 	      }).reduce(function (p, c) {
 	        return p + c;
 	      }, 0);
+
+	      var value = marketSize - currentSumOfUsers;
 
 	      if (value <= 0) return 0;
 
@@ -3678,7 +3640,11 @@
 	  }, {
 	    key: 'getLeaderInTech',
 	    value: function getLeaderInTech(id, featureId) {
-	      var leader = _products.map(this.idHelper).sort(function (obj1, obj2) {
+	      var _this2 = this;
+
+	      var leader = _products.map(this.idHelper).filter(function (obj, i) {
+	        return obj.p.idea === _this2.getIdea(id);
+	      }).sort(function (obj1, obj2) {
 	        var p1 = obj1.p;
 	        var p2 = obj2.p;
 
@@ -3690,18 +3656,79 @@
 
 	      return {
 	        id: leader.id,
-	        name: leader.p.name
+	        name: leader.p.name,
+	        value: leader.p.getMainFeatureQualityByFeatureId(featureId)
 	      };
+	    }
+	  }, {
+	    key: 'ceilXPtoThousandValue',
+	    value: function ceilXPtoThousandValue(value) {
+	      return Math.ceil(value / 1000) * 1000;
+	    }
+	  }, {
+	    key: 'getCurrentMainFeatureDefaultsByIdea',
+	    value: function getCurrentMainFeatureDefaultsByIdea(idea) {
+	      var products = this.getProducts();
+	      var productsWithSameIdea = products.filter(function (p, i) {
+	        return p.idea === idea;
+	      });
+
+	      return (0, _productDescriptions2.default)(idea).features.map(function (f, featureId) {
+	        var max = f.data;
+
+	        productsWithSameIdea.forEach(function (p) {
+	          var temp = p.getMainFeatureQualityByFeatureId(featureId);
+
+	          if (temp > max) {
+	            max = temp;
+	          }
+	        });
+
+	        return max;
+	      });
+
+	      // const suitableId = products.findIndex((p, i) => p.idea === idea);
+	      // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
+	      return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
+	    }
+	  }, {
+	    key: 'temporaryMaxFeatureValue',
+	    value: function temporaryMaxFeatureValue(id, featureId) {
+	      return this.ceilXPtoThousandValue(this.getLeaderInTech(id, featureId).value);
+	    }
+	  }, {
+	    key: 'getUpgradedMaxDefaultFeatureValueList',
+	    value: function getUpgradedMaxDefaultFeatureValueList(id) {
+	      var _this3 = this;
+
+	      return this.getDefaults(id).features.map(function (f, featureId) {
+	        var base = _this3.getMainFeatureQualityByFeatureId(id, featureId);
+
+	        var leader = (Math.floor(_this3.getLeaderInTech(id, featureId).value / 1000) + 1) * 1000;
+
+	        return leader > base ? leader : base;
+	      });
+	    }
+	  }, {
+	    key: 'isUpgradingMainFeatureWillResultTechLeadership',
+	    value: function isUpgradingMainFeatureWillResultTechLeadership(id, featureId) {
+	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
+
+	      var max = this.temporaryMaxFeatureValue(id, featureId);
+
+	      return current + 1000 > max;
 	    }
 	  }, {
 	    key: 'getCompetitorsList',
 	    value: function getCompetitorsList(id) {
-	      var _this2 = this;
+	      var _this4 = this;
 
 	      var ourCompany = _products.filter(function (p) {
-	        return _this2.isOurProduct(p) && p.idea === _this2.getIdea(id);
+	        return _this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
 	      })[0];
 	      // logger.log('getCompetitorsList', _products);
+
+	      _logger2.default.log('getCompetitorsList');
 
 	      // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
 	      return _products.map(function (p, i) {
@@ -3712,13 +3739,14 @@
 	        var id = obj.id;
 
 	        var name = p.name;
+	        _logger2.default.log('competitor', id, p);
 	        var rating = (0, _round2.default)((0, _computeRating2.default)(p, 0));
 	        var hype = p.getHypeValue();
 	        var clients = p.KPI.clients;
 
 	        var features = p.features.offer;
 
-	        var offer = _this2.getDefaults(id).features.map(function (f, i) {
+	        var offer = _this4.getDefaults(id).features.map(function (f, i) {
 	          return {
 	            name: f.name,
 	            description: f.shortDescription,
@@ -3737,10 +3765,11 @@
 	          cost: p.getCompanyCost(),
 	          improvements: _companyMerger2.default.merge(ourCompany, p).improvements,
 	          id: id,
-	          hype: hype
+	          hype: hype,
+	          hypeDamping: p.getHypeDampingValue()
 	        };
 	      }).sort(function (a, b) {
-	        return b.hype > a.hype;
+	        return b.hype - a.hype;
 	      });
 	    }
 	  }, {
@@ -3857,6 +3886,10 @@
 
 	    case c.PRODUCT_ACTIONS_HYPE_ADD:
 	      _products[id].addHype(p.hype);
+	      break;
+
+	    case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
+	      _products[id].loseMonthlyHype();
 	      break;
 
 	    case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
@@ -4744,6 +4777,7 @@
 	var PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = exports.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = 'PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY';
 	var PRODUCT_ACTIONS_COMPANY_BUY = exports.PRODUCT_ACTIONS_COMPANY_BUY = 'PRODUCT_ACTIONS_COMPANY_BUY';
 	var PRODUCT_ACTIONS_HYPE_ADD = exports.PRODUCT_ACTIONS_HYPE_ADD = 'PRODUCT_ACTIONS_HYPE_ADD';
+	var PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE = exports.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE = 'PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE';
 
 /***/ },
 /* 107 */
@@ -4872,10 +4906,13 @@
 	  var segments = (0, _productDescriptions2.default)(idea).segments;
 
 	  getSpecificProductFeatureListByIdea(idea).forEach(function (f, i) {
-	    var value = product.features.offer[i] / f.data;
+	    var max = product.defaultFeatures[i]; // upgradedDefaults ? upgradedDefaults[i] : f.data;
+
+	    var value = product.features.offer[i] / max;
 
 	    // const influence = f.influence;
 	    var influence = segments[segmentId].rating[i];
+
 	    rating += value * influence;
 	  });
 
@@ -5609,7 +5646,8 @@
 	  function Product(_ref) {
 	    var idea = _ref.idea,
 	        name = _ref.name,
-	        isCompetitor = _ref.isCompetitor;
+	        isCompetitor = _ref.isCompetitor,
+	        defaultFeatures = _ref.defaultFeatures;
 	    (0, _classCallCheck3.default)(this, Product);
 
 	    // this.isCompetitor = isCompetitor;
@@ -5622,7 +5660,12 @@
 	    }
 
 	    var defaults = (0, _productDescriptions2.default)(idea);
-	    var defaultFeatures = defaults.features;
+	    if (!defaultFeatures) {
+	      _logger2.default.error(idea, name, isCompetitor);
+	      throw 'no default features!!!';
+	    }
+	    _logger2.default.log('new Product constructor', defaultFeatures);
+	    // const defaultFeatures = defaults.features;
 
 	    var maxRating = 6;
 	    if (isCompetitor) maxRating = 8;
@@ -5630,7 +5673,7 @@
 	    var luck = (0, _random2.default)(1, maxRating) / 10; // luck in 0.1-0.6
 
 	    var offer = defaultFeatures.map(function (f, i) {
-	      return Math.floor(luck * f.data);
+	      return Math.floor(luck * f);
 	    });
 
 	    var features = {
@@ -5674,9 +5717,16 @@
 	    this.improvements = 1;
 
 	    this.owner = !isCompetitor;
+
+	    this.defaultFeatures = defaultFeatures;
 	  }
 
 	  (0, _createClass3.default)(Product, [{
+	    key: 'setMainFeatureDefaults',
+	    value: function setMainFeatureDefaults(upgradedDefaults) {
+	      this.defaultFeatures = upgradedDefaults;
+	    }
+	  }, {
 	    key: 'isOurProduct',
 	    value: function isOurProduct() {
 	      return this.owner;
@@ -5713,7 +5763,14 @@
 	  }, {
 	    key: 'getHypeDamping',
 	    value: function getHypeDamping() {
-	      return -2;
+	      return this.getChurnRate().raw;
+	    }
+	  }, {
+	    key: 'getHypeDampingValue',
+	    value: function getHypeDampingValue() {
+	      var v = Math.ceil(this.getHypeValue() * this.getHypeDamping()) - this.getBlogHypeModifier();
+
+	      return -v;
 	    }
 	  }, {
 	    key: 'getSegmentedPriorities',
@@ -5839,9 +5896,11 @@
 	    key: 'getPaymentModifier',
 	    value: function getPaymentModifier() {
 	      var payments = this.features.payment;
+
 	      // mockBuying
 	      // basicPricing
 	      // segmentedPricing
+
 	      if (payments.segmentedPricing3) {
 	        return 1;
 	      }
@@ -5893,9 +5952,7 @@
 	      raw = conversion;
 	      pretty = (0, _percentify2.default)(conversion);
 
-	      return {
-	        raw: raw, pretty: pretty
-	      };
+	      return { raw: raw, pretty: pretty };
 	    }
 	  }, {
 	    key: 'getProductPrice',
@@ -5998,6 +6055,11 @@
 	    key: 'getBlogPower',
 	    value: function getBlogPower() {
 	      return this.getBlogStatusStructured().power;
+	    }
+	  }, {
+	    key: 'getBlogHypeModifier',
+	    value: function getBlogHypeModifier() {
+	      return Math.ceil(this.getClients() * this.getBlogPower() / 1000);
 	    }
 	  }, {
 	    key: 'getBlogStatusStructured',
@@ -6636,7 +6698,12 @@
 
 	      var max = p.max;
 
-	      this.features[p.featureGroup][p.featureName] = sum > max ? max : sum;
+	      this.features[p.featureGroup][p.featureName] = sum; // > max ? max : sum;
+
+	      if (sum > max) {
+	        _logger2.default.shit('need game message, that we became tech leaders! classes/product.js');
+	      }
+
 	      this.XP -= p.value;
 
 	      if (this.improvements) {
@@ -6644,6 +6711,14 @@
 	      } else {
 	        this.improvements = 1;
 	      }
+
+	      var hypeIncrease = Math.ceil(this.getClients() * this.getBlogPower() / 1000);
+
+	      if (p.isTechnologyLeader) {
+	        hypeIncrease *= 10;
+	      }
+
+	      this.addHype(hypeIncrease);
 	    }
 	  }, {
 	    key: 'improveMainFeature',
@@ -6684,6 +6759,11 @@
 	    key: 'addHype',
 	    value: function addHype(hype) {
 	      this.KPI.hype = Math.min(100000, this.KPI.hype + hype);
+	    }
+	  }, {
+	    key: 'loseMonthlyHype',
+	    value: function loseMonthlyHype() {
+	      this.KPI.hype += this.getHypeDampingValue();
 	    }
 	  }, {
 	    key: 'addViralClients',
@@ -6927,7 +7007,7 @@
 	  }, {
 	    key: 'getMoney',
 	    value: function getMoney() {
-	      return _money;
+	      return Math.floor(_money);
 	    }
 	  }, {
 	    key: 'getExpenses',
@@ -7169,7 +7249,7 @@
 	      break;
 
 	    case c.PLAYER_ACTIONS_UPDATE_EMPLOYEES:
-	      _employees = [_createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create()];
+	      _employees = [_createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create(), _createRandomWorker2.default.create()];
 	      break;
 
 	    case c.PLAYER_ACTIONS_EMPLOYEE_REMOVE:
@@ -8194,6 +8274,12 @@
 	      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_REMOVE,
 	      id: id,
 	      clients: clients
+	    });
+	  },
+	  loseMonthlyHype: function loseMonthlyHype(id) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE,
+	      id: id
 	    });
 	  },
 	  createCompetitorCompany: function createCompetitorCompany(p) {
@@ -10098,6 +10184,10 @@
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
+	var _productStore = __webpack_require__(99);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
 	var _logger = __webpack_require__(108);
 
 	var _logger2 = _interopRequireDefault(_logger);
@@ -10111,6 +10201,13 @@
 	var _Product2 = _interopRequireDefault(_Product);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var getCurrentDefaultFeatures = function getCurrentDefaultFeatures(idea) {
+	  var value = _productStore2.default.getCurrentMainFeatureDefaultsByIdea(idea);
+
+	  _logger2.default.debug('getCurrentDefaultFeatures in mvp-creator.js', value);
+	  return value;
+	};
 
 	var create = function create(i, basePoints, idea) {
 	  var points = _playerStore2.default.getPoints();
@@ -10126,11 +10223,9 @@
 
 	  if (hasEnoughPoints) {
 	    // we can make prototype
-
 	    _logger2.default.shit('WRITE proper randomizer in mvp-creator.js');
 
-	    // const p = new ProductproductGenerator.create({ idea, name: 'WWWEB HOSTING' });
-	    var p = new _Product2.default({ idea: idea, name: 'WWWEB HOSTING' });
+	    var p = new _Product2.default({ idea: idea, name: 'WWWEB HOSTING', defaultFeatures: getCurrentDefaultFeatures(idea) });
 
 	    _playerActions2.default.spendPoints(basePoints[1].amount, basePoints[0].amount);
 	    _productActions2.default.setInitialProductSettings(i, p.features, p.KPI);
@@ -10142,7 +10237,7 @@
 	};
 
 	var createCompetitorCompany = function createCompetitorCompany(idea) {
-	  var p = new _Product2.default({ idea: idea, isCompetitor: true });
+	  var p = new _Product2.default({ idea: idea, isCompetitor: true, defaultFeatures: getCurrentDefaultFeatures(idea) });
 
 	  _logger2.default.debug('createCompetitorCompany', p);
 	  _productActions2.default.createCompetitorCompany(p);
@@ -12930,7 +13025,8 @@
 
 	      var disabled = !_flux2.default.playerStore.enoughMarketingPoints(mp);
 
-	      if (money < campaignCost || clients > market.marketSize || clients > potentialClients) {
+	      // || clients > market.marketSize || clients > potentialClients
+	      if (money < campaignCost) {
 	        error = '\u041D\u0443\u0436\u043D\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043E\u043B\u043E\u0442\u0430! \u041D\u0430 \u0432\u0430\u0448\u0435\u043C \u0441\u0447\u0435\u0442\u0443: ' + money + '$, \u0430 \u043D\u0443\u0436\u043D\u043E ' + campaignCost + '$';
 	        // return <div>Нужно больше золота! На вашем счету: {money}$, а нужно {campaignCost}$</div>
 	        // return <div></div>;
@@ -13132,7 +13228,7 @@
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _this.renderMainFeature = function (featureGroup, product, id, segments, defaults) {
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.renderMainFeature = function (featureGroup, product, id, segments, defaults) {
 	      return function (defaultFeature, i) {
 	        var featureName = defaultFeature.name;
 	        var time = defaultFeature.time,
@@ -13150,30 +13246,13 @@
 	        var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
 	        var key = 'feature' + featureGroup + featureName + i;
 
-	        if (current >= max) {
-	          return (0, _preact.h)(
-	            'div',
-	            { key: key },
-	            userOrientedFeatureName,
-	            ' \u041C\u044B \u043B\u0438\u0434\u0438\u0440\u0443\u0435\u043C \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438! ',
-	            _UI2.default.symbols.ok,
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)(
-	              'div',
-	              { className: 'featureDescription' },
-	              description
-	            ),
-	            (0, _preact.h)('br', null)
-	          );
-	        }
-
-	        var hypothesis = [{
+	        var hypothesis = {
 	          points: { mp: 100, pp: 200 },
 	          data: 4000,
 	          baseChance: 0.1
-	        }];
+	        };
 
-	        var hypothesisList = hypothesis.map(_this.renderHypothesisItem(id, i, time, current, max, product));
+	        var hypothesisList = _this.renderImprovementButton(id, i, max, hypothesis);
 
 	        var openedInfluence = false;
 	        var segmentRatingImprovementList = segments.map(function (s) {
@@ -13228,6 +13307,12 @@
 	              'XP)'
 	            ),
 	            (0, _preact.h)(
+	              'span',
+	              null,
+	              'We will be leaders: ',
+	              _flux2.default.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)
+	            ),
+	            (0, _preact.h)(
 	              'div',
 	              { style: 'width: 300px;' },
 	              (0, _preact.h)(_UI2.default.Bar, { min: 0, max: max, data: data })
@@ -13249,56 +13334,37 @@
 	          (0, _preact.h)('hr', { color: 'white' })
 	        );
 	      };
-	    }, _this.renderHypothesisItem = function (id, featureId, time, current, max, product) {
-	      return function (hypothesis, i) {
-	        var necessaryPoints = hypothesis.points;
-	        var key = 'hypothesis' + i;
+	    }, _this.renderImprovementButton = function (id, featureId, max, hypothesis) {
+	      var necessaryPoints = hypothesis.points;
 
-	        var pp = necessaryPoints.pp,
-	            mp = necessaryPoints.mp;
+	      var pp = necessaryPoints.pp,
+	          mp = necessaryPoints.mp;
 
 
-	        var action = function action() {
-	          // flux.playerActions.spendPoints(pp, mp);
-	          _flux2.default.productActions.improveFeature(id, 'offer', featureId, hypothesis, max, 1000);
+	      var notEnoughPPs = false; // !this.haveEnoughPointsToUpgrade(necessaryPoints);
+	      var currentXP = _flux2.default.productStore.getXP(id);
 
-	          if (_stages2.default.isFirstFeatureMission()) {
-	            _stages2.default.onFirstFeatureUpgradeMissionCompleted();
-	          }
+	      var disabled = notEnoughPPs || currentXP < 1000;
+	      // const disabled = currentXP < 1000;
 
-	          if (_stages2.default.isPaymentRatingMission()) {
-	            var rating = _flux2.default.productStore.getRating(id);
-
-	            if (rating >= 7) {
-	              _stages2.default.onPaymentRatingMissionCompleted();
-	            }
-	          }
-	        };
-
-	        // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
-	        var ratingOverflow = current >= max;
-	        var currentXP = _flux2.default.productStore.getXP(id);
-
-	        // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
-	        var disabled = ratingOverflow || currentXP < 1000;
-
-	        return (0, _preact.h)(
-	          'div',
-	          { key: key, className: 'hypothesis-wrapper' },
-	          (0, _preact.h)(_UI2.default.Button, {
-	            disabled: disabled,
-	            onClick: action,
-	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 1000XP',
-	            primary: !ratingOverflow
-	          })
-	        );
-	      };
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'hypothesis-wrapper' },
+	        (0, _preact.h)(_UI2.default.Button, {
+	          disabled: disabled,
+	          onClick: function onClick() {
+	            _this.improveFeature(id, featureId, hypothesis, max);
+	          },
+	          text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 1000XP',
+	          primary: true
+	        })
+	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
 	  (0, _createClass3.default)(MainFeature, [{
 	    key: 'render',
-	    value: function render(_ref2, state) {
+	    value: function render(_ref2) {
 	      var id = _ref2.id,
 	          onHireProgrammerClick = _ref2.onHireProgrammerClick;
 
@@ -13310,6 +13376,43 @@
 
 	      var featureList = defaults.features.map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
 
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupTitle' },
+	          '\u0420\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0430'
+	        ),
+	        this.renderProgrammingSupportTab(id, onHireProgrammerClick),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'featureGroupDescriptionWrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupDescription' },
+	            '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0441\u043D\u0438\u0436\u0435\u043D\u0438\u044E \u043E\u0442\u0442\u043E\u043A\u0430 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0434\u043E\u0445\u043E\u0434\u043E\u0432 \u0441 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
+	          ),
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
+	            product.XP,
+	            'XP'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'featureGroupBody' },
+	            featureList
+	          )
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'renderProgrammingSupportTab',
+	    value: function renderProgrammingSupportTab(id, onHireProgrammerClick) {
 	      var support = _flux2.default.productStore.getProgrammingSupportCost(id);
 	      var ppIncrease = _flux2.default.playerStore.getMonthlyProgrammerPoints();
 
@@ -13345,11 +13448,6 @@
 	        null,
 	        (0, _preact.h)(
 	          'div',
-	          { className: 'featureGroupTitle' },
-	          '\u0420\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0430'
-	        ),
-	        (0, _preact.h)(
-	          'div',
 	          null,
 	          '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430: ',
 	          support,
@@ -13366,31 +13464,26 @@
 	          'div',
 	          null,
 	          hireProgrammerLink
-	        ),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'featureGroupDescriptionWrapper' },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupDescription' },
-	            '\u0423\u043B\u0443\u0447\u0448\u0430\u044F \u0433\u043B\u0430\u0432\u043D\u044B\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u044B \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0435 \u0435\u0433\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433, \u0447\u0442\u043E \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442 \u043A \u0441\u043D\u0438\u0436\u0435\u043D\u0438\u044E \u043E\u0442\u0442\u043E\u043A\u0430 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u0438\u044E \u0434\u043E\u0445\u043E\u0434\u043E\u0432 \u0441 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
-	          ),
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
-	            product.XP,
-	            'XP'
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'featureGroupBody' },
-	            featureList
-	          )
 	        )
 	      );
+	    }
+	  }, {
+	    key: 'improveFeature',
+	    value: function improveFeature(id, featureId, hypothesis, max) {
+	      // flux.playerActions.spendPoints(pp, mp);
+	      _flux2.default.productActions.improveFeature(id, 'offer', featureId, hypothesis, max, 1000);
+
+	      if (_stages2.default.isFirstFeatureMission()) {
+	        _stages2.default.onFirstFeatureUpgradeMissionCompleted();
+	      }
+
+	      if (_stages2.default.isPaymentRatingMission()) {
+	        var rating = _flux2.default.productStore.getRating(id);
+
+	        if (rating >= 7) {
+	          _stages2.default.onPaymentRatingMissionCompleted();
+	        }
+	      }
 	    }
 	  }]);
 	  return MainFeature;
@@ -13640,6 +13733,7 @@
 
 	      var buyingCompanyButtonVisible = isCompetitor ? '' : 'hide';
 
+	      var hypeChangePhrase = c.hypeDamping < 0 ? c.hypeDamping : '+' + c.hypeDamping;
 	      return (0, _preact.h)(
 	        'div',
 	        { className: background },
@@ -13652,7 +13746,10 @@
 	          'div',
 	          { className: 'offset-min' },
 	          '\u0418\u0437\u0432\u0435\u0441\u0442\u043D\u043E\u0441\u0442\u044C (HYPE): ',
-	          c.hype
+	          c.hype,
+	          ' (',
+	          hypeChangePhrase,
+	          ' \u0435\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u043E)'
 	        ),
 	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
@@ -14470,6 +14567,8 @@
 	        _productActions2.default.testHypothesis(id);
 	        _productActions2.default.addClients(id, clients);
 	        _productActions2.default.removeClients(id, churn);
+
+	        _productActions2.default.loseMonthlyHype(id);
 	        // const viral = productStore.getViralClients(id);
 	        // productActions.viralClients(id, viral);
 	      });

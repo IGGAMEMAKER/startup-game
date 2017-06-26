@@ -88,6 +88,12 @@ export default {
       clients
     })
   },
+  loseMonthlyHype(id) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE,
+      id
+    })
+  },
 
   createCompetitorCompany(p) {
     Dispatcher.dispatch({

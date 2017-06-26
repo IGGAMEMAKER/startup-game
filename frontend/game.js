@@ -114,6 +114,8 @@ const run = () => {
         productActions.testHypothesis(id);
         productActions.addClients(id, clients);
         productActions.removeClients(id, churn);
+
+        productActions.loseMonthlyHype(id);
         // const viral = productStore.getViralClients(id);
         // productActions.viralClients(id, viral);
       });

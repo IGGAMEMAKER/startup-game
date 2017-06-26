@@ -115,7 +115,7 @@ class PlayerStore extends EventEmitter {
   }
 
   getMoney() {
-    return _money;
+    return Math.floor(_money);
   }
 
   getExpenses() {
@@ -320,6 +320,10 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PLAYER_ACTIONS_UPDATE_EMPLOYEES:
       _employees = [
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
         workerGenerator.create(),
         workerGenerator.create(),
         workerGenerator.create(),

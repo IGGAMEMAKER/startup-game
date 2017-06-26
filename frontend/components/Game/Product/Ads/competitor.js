@@ -68,10 +68,11 @@ export default class Competitor extends Component {
 
     const buyingCompanyButtonVisible = isCompetitor ? '' : 'hide';
 
+    const hypeChangePhrase = c.hypeDamping < 0 ? c.hypeDamping : `+${c.hypeDamping}`;
     return (
       <div className={background}>
         <div className="offset-min">{name}</div>
-        <div className="offset-min">Известность (HYPE): {c.hype}</div>
+        <div className="offset-min">Известность (HYPE): {c.hype} ({hypeChangePhrase} ежемесячно)</div>
         <br />
         <div className="offset-min">Рейтинг: {c.rating}</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>

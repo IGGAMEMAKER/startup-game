@@ -11,11 +11,7 @@ import round from '../../../../helpers/math/round';
 import stageHelper from '../../../../helpers/stages';
 
 export default class MainFeature extends Component {
-  state = {
-
-  };
-
-  render({ id, onHireProgrammerClick }, state) {
+  render({ id, onHireProgrammerClick }) {
     if (!stageHelper.canShowMainFeatureTab()) return '';
 
     const product = flux.productStore.getProduct(id);
@@ -25,6 +21,25 @@ export default class MainFeature extends Component {
     const featureList = defaults.features
       .map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
 
+    return (
+      <div>
+        <div className="featureGroupTitle">Разработка</div>
+        {this.renderProgrammingSupportTab(id, onHireProgrammerClick)}
+        <br />
+        <div className="featureGroupDescriptionWrapper">
+          <div className="featureGroupDescription">
+            Улучшая главные характеристики продукта, вы повышаете его рейтинг,
+            что приводит к снижению оттока клиентов и увеличению доходов с продукта
+          </div>
+          <br />
+          <div>Доступно: {product.XP}XP</div>
+          <div className="featureGroupBody">{featureList}</div>
+        </div>
+      </div>
+    );
+  }
+
+  renderProgrammingSupportTab(id, onHireProgrammerClick) {
     const support = flux.productStore.getProgrammingSupportCost(id);
     const ppIncrease = flux.playerStore.getMonthlyProgrammerPoints();
 
@@ -41,24 +56,11 @@ export default class MainFeature extends Component {
       </div>
     }
 
-    return (
-      <div>
-        <div className="featureGroupTitle">Разработка</div>
-        <div>Стоимость поддержки продукта: {support}PP в месяц</div>
-        <div>Наши программисты производят: {ppIncrease}PP в месяц</div>
-        <div>{hireProgrammerLink}</div>
-        <br />
-        <div className="featureGroupDescriptionWrapper">
-          <div className="featureGroupDescription">
-            Улучшая главные характеристики продукта, вы повышаете его рейтинг,
-            что приводит к снижению оттока клиентов и увеличению доходов с продукта
-          </div>
-          <br />
-          <div>Доступно: {product.XP}XP</div>
-          <div className="featureGroupBody">{featureList}</div>
-        </div>
-      </div>
-    );
+    return <div>
+      <div>Стоимость поддержки продукта: {support}PP в месяц</div>
+      <div>Наши программисты производят: {ppIncrease}PP в месяц</div>
+      <div>{hireProgrammerLink}</div>
+    </div>
   }
 
   renderMainFeature = (featureGroup, product, id, segments, defaults) => (defaultFeature, i) => {
@@ -77,25 +79,14 @@ export default class MainFeature extends Component {
     const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
     const key = `feature${featureGroup}${featureName}${i}`;
 
-    if (current >= max) {
-      return (
-        <div key={key}>
-          {userOrientedFeatureName} Мы лидируем в этой технологии! {UI.symbols.ok}
-          <br />
-          <div className="featureDescription">{description}</div>
-          <br />
-        </div>
-      )
-    }
-
-    const hypothesis = [{
+    const hypothesis = {
       points: { mp: 100, pp: 200 },
       data: 4000,
       baseChance: 0.1
-    }];
+    };
 
-    const hypothesisList = hypothesis
-      .map(this.renderHypothesisItem(id, i, time, current, max, product));
+    const hypothesisList = this.renderImprovementButton(id, i, max, hypothesis);
+
 
     let openedInfluence = false;
     const segmentRatingImprovementList = segments
@@ -128,6 +119,7 @@ export default class MainFeature extends Component {
       <div>
         <div>{leaderInTechPhrase}</div>
         <span>{userOrientedFeatureName} ({current}/{max}XP)</span>
+        <span>We will be leaders: {flux.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)}</span>
         <div style="width: 300px;">
           <UI.Bar min={0} max={max} data={data} />
         </div>
@@ -141,43 +133,41 @@ export default class MainFeature extends Component {
     </div>
   };
 
-  renderHypothesisItem = (id, featureId, time, current, max, product) => (hypothesis, i) => {
+  improveFeature(id, featureId, hypothesis, max) {
+    // flux.playerActions.spendPoints(pp, mp);
+    flux.productActions.improveFeature(id, 'offer', featureId, hypothesis, max, 1000);
+
+    if (stageHelper.isFirstFeatureMission()) {
+      stageHelper.onFirstFeatureUpgradeMissionCompleted()
+    }
+
+    if (stageHelper.isPaymentRatingMission()) {
+      const rating = flux.productStore.getRating(id);
+
+      if (rating >= 7) {
+        stageHelper.onPaymentRatingMissionCompleted();
+      }
+    }
+  }
+
+  renderImprovementButton = (id, featureId, max, hypothesis) => {
     const necessaryPoints = hypothesis.points;
-    const key = `hypothesis${i}`;
 
     const { pp, mp } = necessaryPoints;
 
-    const action = () => {
-      // flux.playerActions.spendPoints(pp, mp);
-      flux.productActions.improveFeature(id, 'offer', featureId, hypothesis, max, 1000);
-
-      if (stageHelper.isFirstFeatureMission()) {
-        stageHelper.onFirstFeatureUpgradeMissionCompleted()
-      }
-
-      if (stageHelper.isPaymentRatingMission()) {
-        const rating = flux.productStore.getRating(id);
-
-        if (rating >= 7) {
-          stageHelper.onPaymentRatingMissionCompleted();
-        }
-      }
-    };
-
-    // const notEnoughPPs = !this.haveEnoughPointsToUpgrade(necessaryPoints);
-    const ratingOverflow = current >= max;
+    const notEnoughPPs = false; // !this.haveEnoughPointsToUpgrade(necessaryPoints);
     const currentXP = flux.productStore.getXP(id);
 
-    // const disabled = notEnoughPPs || ratingOverflow || currentXP < 1000;
-    const disabled = ratingOverflow || currentXP < 1000;
+    const disabled = notEnoughPPs || currentXP < 1000;
+    // const disabled = currentXP < 1000;
 
     return (
-      <div key={key} className="hypothesis-wrapper">
+      <div className="hypothesis-wrapper">
         <UI.Button
           disabled={disabled}
-          onClick={action}
+          onClick={() => { this.improveFeature(id, featureId, hypothesis, max) }}
           text="Улучшить за 1000XP"
-          primary={!ratingOverflow}
+          primary
         />
       </div>
     )

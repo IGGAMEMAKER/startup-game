@@ -43,7 +43,8 @@ export default class AdvertPlannerPanel extends Component {
 
     const disabled = !flux.playerStore.enoughMarketingPoints(mp);
 
-    if (money < campaignCost || clients > market.marketSize || clients > potentialClients) {
+    // || clients > market.marketSize || clients > potentialClients
+    if (money < campaignCost) {
       error = `Нужно больше золота! На вашем счету: ${money}$, а нужно ${campaignCost}$`;
       // return <div>Нужно больше золота! На вашем счету: {money}$, а нужно {campaignCost}$</div>
       // return <div></div>;

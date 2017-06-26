@@ -24,53 +24,12 @@ import * as balance from '../constants/balance';
 
 import Product from '../classes/Product';
 
-//
-// let _products = [{
-//   // rating: 0, // computable value, so... needs to be deleted
-//   idea: IDEAS.IDEA_WEB_HOSTING,
-//   name: 'WWWEB HOSTING',
-//   stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-//
-//   owner: true,
-//   features: {
-//     offer: {
-//       // 'portfolio': 0.81,
-//       // 'website': 1
-//     }, // features, that are attached to main idea
-//     development: {}, // backups, more dev servers, e.t.c.
-//
-//     marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-//     analytics: {}, // simple analytics (main KPIs),
-//     // middle (segments analytics), mid+ (segments + versions),
-//
-//     // not only chat with users, but also localisations, content updates
-//     // and all sort of things, that you need doing constantly
-//     support: {},
-//
-//     payment: {},
-//   },
-//   XP: 0,
-//   KPI: {
-//     // accumulated values
-//     debt: 0, // technical debt. Shows, how fast can you implement new features
-//     clients: 10,
-//     newClients: 10,
-//
-//     hype: 1000,
-//
-//     bugs: 10,
-//
-//     currentUXBugs: 100,
-//     foundUXBugs: 50,
-//     fixedUXBugs: 50
-//   }
-// }];
-
 let _products: Array<Product> = [
   new Product({
     idea: IDEAS.IDEA_WEB_HOSTING,
     name: 'WWWEB HOSTING',
     stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
+    defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features
   })
 ];
 
@@ -87,7 +46,7 @@ class ProductStore extends EventEmitter {
     this.emit(EC);
   }
 
-  getProducts() {
+  getProducts(): Array<Product> {
     return _products;
   }
 
@@ -146,7 +105,8 @@ class ProductStore extends EventEmitter {
   }
 
   getMainFeatureDefaultQualityByFeatureId(id, featureId) {
-    return _products[id].getMainFeatureDefaultQualityByFeatureId(featureId);
+    return this.temporaryMaxFeatureValue(id, featureId);
+    // return _products[id].getMainFeatureDefaultQualityByFeatureId(featureId);
   }
 
   getPrettyFeatureNameByFeatureId(id, featureId){
@@ -472,7 +432,9 @@ class ProductStore extends EventEmitter {
   getFreeClientsBatch() {
     const marketSize = _products[0].getMarketShare().marketSize;
 
-    const value = marketSize - _products.map((p, i) => p.getClients()).reduce((p, c) => p + c, 0);
+    const currentSumOfUsers = _products.map((p, i) => p.getClients()).reduce((p, c) => p + c, 0);
+
+    const value = marketSize - currentSumOfUsers;
 
     if (value <= 0) return 0;
 
@@ -483,25 +445,78 @@ class ProductStore extends EventEmitter {
 
   getLeaderInTech(id, featureId) {
     const leader = _products.map(this.idHelper)
+      .filter((obj, i) => obj.p.idea === this.getIdea(id))
       .sort((obj1, obj2) => {
         const p1: Product = obj1.p;
         const p2: Product = obj2.p;
 
-        const f1 =  p1.getMainFeatureQualityByFeatureId(featureId);
-        const f2 =  p2.getMainFeatureQualityByFeatureId(featureId);
+        const f1 = p1.getMainFeatureQualityByFeatureId(featureId);
+        const f2 = p2.getMainFeatureQualityByFeatureId(featureId);
 
         return f2 - f1;
       })[0];
 
     return {
       id: leader.id,
-      name: leader.p.name
+      name: leader.p.name,
+      value: leader.p.getMainFeatureQualityByFeatureId(featureId)
     }
+  }
+
+  ceilXPtoThousandValue(value) {
+    return Math.ceil(value / 1000) * 1000;
+  }
+
+  getCurrentMainFeatureDefaultsByIdea(idea) {
+    const products = this.getProducts();
+    const productsWithSameIdea = products.filter((p, i) => p.idea === idea);
+
+    return productDescriptions(idea).features.map((f, featureId) => {
+      let max = f.data;
+
+      productsWithSameIdea.forEach((p) => {
+        let temp = p.getMainFeatureQualityByFeatureId(featureId);
+
+        if (temp > max) {
+          max = temp;
+        }
+      });
+
+      return max;
+    });
+
+    // const suitableId = products.findIndex((p, i) => p.idea === idea);
+    // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
+    return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
+  }
+
+  temporaryMaxFeatureValue(id, featureId) {
+    return this.ceilXPtoThousandValue(this.getLeaderInTech(id, featureId).value);
+  }
+
+  getUpgradedMaxDefaultFeatureValueList(id) {
+    return this.getDefaults(id).features.map((f, featureId) => {
+      const base = this.getMainFeatureQualityByFeatureId(id, featureId);
+
+      const leader = (Math.floor(this.getLeaderInTech(id, featureId).value / 1000) + 1) * 1000;
+
+      return leader > base ? leader : base;
+    });
+  }
+
+  isUpgradingMainFeatureWillResultTechLeadership(id, featureId) {
+    const current = this.getMainFeatureQualityByFeatureId(id, featureId);
+
+    const max = this.temporaryMaxFeatureValue(id, featureId);
+
+    return current + 1000 > max;
   }
 
   getCompetitorsList(id) {
     const ourCompany = _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))[0];
     // logger.log('getCompetitorsList', _products);
+
+    logger.log('getCompetitorsList');
 
       // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
     return _products
@@ -511,6 +526,7 @@ class ProductStore extends EventEmitter {
         const id = obj.id;
 
         const name = p.name;
+        logger.log('competitor', id, p);
         const rating = round(computeRating(p, 0));
         const hype = p.getHypeValue();
         const clients = p.KPI.clients;
@@ -534,10 +550,11 @@ class ProductStore extends EventEmitter {
           cost: p.getCompanyCost(),
           improvements: companyMerger.merge(ourCompany, p).improvements,
           id,
-          hype
+          hype,
+          hypeDamping: p.getHypeDampingValue()
         }
       })
-      .sort((a, b) => b.hype > a.hype);
+      .sort((a, b) => b.hype - a.hype);
   }
 
   getMaxAmountOfPossibleClients(id, money) {
@@ -637,6 +654,10 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PRODUCT_ACTIONS_HYPE_ADD:
       _products[id].addHype(p.hype);
+      break;
+
+    case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
+      _products[id].loseMonthlyHype();
       break;
 
     case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:

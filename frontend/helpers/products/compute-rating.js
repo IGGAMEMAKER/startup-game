@@ -14,10 +14,13 @@ export default (product, segmentId) => {
   const segments = ProductDescriptions(idea).segments;
 
   getSpecificProductFeatureListByIdea(idea).forEach((f, i) => {
-    const value = (product.features.offer[i]) / f.data;
+    const max = product.defaultFeatures[i]; // upgradedDefaults ? upgradedDefaults[i] : f.data;
+
+    const value = (product.features.offer[i]) / max;
 
     // const influence = f.influence;
     const influence = segments[segmentId].rating[i];
+
     rating += value * influence;
   });
 
