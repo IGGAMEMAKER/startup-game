@@ -3150,7 +3150,9 @@
 	  idea: IDEAS.IDEA_WEB_HOSTING,
 	  name: 'WWWEB HOSTING',
 	  stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-	  defaultFeatures: (0, _productDescriptions2.default)(IDEAS.IDEA_WEB_HOSTING).features
+	  defaultFeatures: (0, _productDescriptions2.default)(IDEAS.IDEA_WEB_HOSTING).features.map(function (f) {
+	    return f.data;
+	  })
 	})];
 
 	var ProductStore = function (_EventEmitter) {
@@ -3689,7 +3691,13 @@
 
 	      // const suitableId = products.findIndex((p, i) => p.idea === idea);
 	      // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
-	      return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
+	    }
+	  }, {
+	    key: 'getCurrentMainFeatureDefaultsById',
+	    value: function getCurrentMainFeatureDefaultsById(id) {
+	      var idea = this.getIdea(id);
+
+	      return this.getCurrentMainFeatureDefaultsByIdea(idea);
 	    }
 	  }, {
 	    key: 'temporaryMaxFeatureValue',
@@ -3739,7 +3747,9 @@
 	        var id = obj.id;
 
 	        var name = p.name;
+
 	        _logger2.default.log('competitor', id, p);
+
 	        var rating = (0, _round2.default)((0, _computeRating2.default)(p, 0));
 	        var hype = p.getHypeValue();
 	        var clients = p.KPI.clients;
@@ -5668,7 +5678,9 @@
 	    // const defaultFeatures = defaults.features;
 
 	    var maxRating = 6;
-	    if (isCompetitor) maxRating = 8;
+	    if (isCompetitor) {
+	      maxRating = 8;
+	    } else {}
 
 	    var luck = (0, _random2.default)(1, maxRating) / 10; // luck in 0.1-0.6
 
@@ -8525,12 +8537,18 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var icons = {
+	  rating: 'R',
+	  XP: 'XP'
+	};
+
 	exports.default = {
 	  Button: _Button2.default,
 	  Modal: _Modal2.default,
 	  Select: _Select2.default,
 	  Range: _Range2.default,
 	  symbols: _arrows2.default,
+	  icons: icons,
 	  Info: _Info2.default,
 	  Bar: _Bar2.default
 	};
@@ -10192,10 +10210,6 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productGenerator = __webpack_require__(168);
-
-	var _productGenerator2 = _interopRequireDefault(_productGenerator);
-
 	var _Product = __webpack_require__(124);
 
 	var _Product2 = _interopRequireDefault(_Product);
@@ -10251,92 +10265,7 @@
 	};
 
 /***/ },
-/* 168 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _productDescriptions = __webpack_require__(112);
-
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
-	var _random = __webpack_require__(121);
-
-	var _random2 = _interopRequireDefault(_random);
-
-	var _logger = __webpack_require__(108);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
-
-	exports.default = {
-	  create: function create(parameters) {
-	    var idea = parameters.idea,
-	        name = parameters.name,
-	        isCompetitor = parameters.isCompetitor;
-
-
-	    if (!idea) throw 'no idea in product-generator.js';
-
-	    if (!name) {
-	      var index = Math.floor((0, _random2.default)(0, names.length - 1));
-	      name = names[index];
-	    }
-
-	    var defaults = (0, _productDescriptions2.default)(idea);
-	    var defaultFeatures = defaults.features;
-
-	    var maxRating = 6;
-	    if (isCompetitor) maxRating = 8;
-
-	    var luck = (0, _random2.default)(1, maxRating) / 10; // luck in 0.1-0.6
-
-	    var offer = defaultFeatures.map(function (f, i) {
-	      return Math.floor(luck * f.data);
-	    });
-
-	    var features = {
-	      offer: offer, // features, that are attached to main idea
-	      development: {}, // backups, more dev servers, e.t.c.
-
-	      marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-	      analytics: {}, // simple analytics (main KPIs),
-	      // middle (segments analytics), mid+ (segments + versions),
-
-	      // not only chat with users, but also localisations, content updates
-	      // and all sort of things, that you need doing constantly
-	      support: {},
-	      payment: {}
-	    };
-
-	    var clients = isCompetitor ? Math.ceil((0, _random2.default)(100, defaults.marketSize / 10)) : 10;
-
-	    var KPI = {
-	      debt: 0, // technical debt. Shows, how fast can you implement new features
-	      clients: clients,
-	      newClients: clients,
-
-	      hype: 1000,
-
-	      bugs: 10,
-
-	      currentUXBugs: 100,
-	      foundUXBugs: 0,
-	      fixedUXBugs: 0
-	    };
-
-	    return { features: features, KPI: KPI, idea: idea, name: name };
-	  }
-	};
-
-/***/ },
+/* 168 */,
 /* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -13231,8 +13160,7 @@
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.renderMainFeature = function (featureGroup, product, id, segments, defaults) {
 	      return function (defaultFeature, i) {
 	        var featureName = defaultFeature.name;
-	        var time = defaultFeature.time,
-	            shortDescription = defaultFeature.shortDescription;
+	        var shortDescription = defaultFeature.shortDescription;
 
 
 	        var feature = product.features[featureGroup][i];
@@ -13240,7 +13168,8 @@
 	        var leaderInTech = _flux2.default.productStore.getLeaderInTech(id, i);
 
 	        var current = feature || 0;
-	        var max = defaultFeature.data;
+	        var max = _flux2.default.productStore.getCurrentMainFeatureDefaultsById(id)[i]; // defaultFeature.data;
+
 
 	        var description = defaultFeature.description || '';
 	        var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
@@ -13280,7 +13209,7 @@
 	          data.push({ value: 1000, style: 'bg-success' });
 	        }
 
-	        var leaderInTechPhrase = '\u041B\u0438\u0434\u0435\u0440 \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438: \u041A\u043E\u043C\u043F\u0430\u043D\u0438\u044F "' + leaderInTech.name + '"';
+	        var leaderInTechPhrase = '\u041B\u0438\u0434\u0435\u0440 \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438: \u041A\u043E\u043C\u043F\u0430\u043D\u0438\u044F "' + leaderInTech.name + '" (' + leaderInTech.value + 'XP)';
 	        if (leaderInTech.id === 0) {
 	          leaderInTechPhrase = '\u041C\u044B \u043B\u0438\u0434\u0438\u0440\u0443\u0435\u043C \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438!';
 	        }

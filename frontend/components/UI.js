@@ -6,12 +6,18 @@ import arrows from './Shared/arrows';
 import Info from './Shared/Info';
 import Bar from './Shared/Bar';
 
+const icons = {
+  rating: 'R',
+  XP: 'XP',
+};
+
 export default {
   Button,
   Modal,
   Select,
   Range,
   symbols: arrows,
+  icons,
   Info,
   Bar
 };

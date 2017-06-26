@@ -40,7 +40,11 @@ export default class Product {
     // const defaultFeatures = defaults.features;
 
     let maxRating = 6;
-    if (isCompetitor) maxRating = 8;
+    if (isCompetitor) {
+      maxRating = 8;
+    } else {
+      
+    }
 
     const luck = random(1, maxRating) / 10; // luck in 0.1-0.6
 

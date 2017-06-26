@@ -65,14 +65,14 @@ export default class MainFeature extends Component {
 
   renderMainFeature = (featureGroup, product, id, segments, defaults) => (defaultFeature, i) => {
     const featureName = defaultFeature.name;
-    const { time, shortDescription } = defaultFeature;
+    const { shortDescription } = defaultFeature;
 
     const feature = product.features[featureGroup][i];
 
     const leaderInTech = flux.productStore.getLeaderInTech(id, i);
 
     const current = feature || 0;
-    const max = defaultFeature.data;
+    const max = flux.productStore.getCurrentMainFeatureDefaultsById(id)[i]; // defaultFeature.data;
 
 
     const description = defaultFeature.description || '';
@@ -110,7 +110,7 @@ export default class MainFeature extends Component {
       data.push({ value: 1000, style: 'bg-success' })
     }
 
-    let leaderInTechPhrase = `Лидер в этой технологии: Компания "${leaderInTech.name}"`;
+    let leaderInTechPhrase = `Лидер в этой технологии: Компания "${leaderInTech.name}" (${leaderInTech.value}XP)`;
     if (leaderInTech.id === 0) {
       leaderInTechPhrase = `Мы лидируем в этой технологии!`;
     }

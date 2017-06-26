@@ -5,7 +5,6 @@ import productStore from '../../../../stores/product-store';
 
 import logger from '../../../../helpers/logger/logger';
 
-import productGenerator from '../../../../helpers/products/product-generator';
 import Product from '../../../../classes/Product';
 
 const getCurrentDefaultFeatures = (idea) => {

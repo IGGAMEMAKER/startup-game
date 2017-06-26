@@ -29,7 +29,7 @@ let _products: Array<Product> = [
     idea: IDEAS.IDEA_WEB_HOSTING,
     name: 'WWWEB HOSTING',
     stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-    defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features
+    defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features.map(f => f.data)
   })
 ];
 
@@ -487,7 +487,12 @@ class ProductStore extends EventEmitter {
 
     // const suitableId = products.findIndex((p, i) => p.idea === idea);
     // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
-    return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
+  }
+
+  getCurrentMainFeatureDefaultsById(id) {
+    const idea = this.getIdea(id);
+
+    return this.getCurrentMainFeatureDefaultsByIdea(idea);
   }
 
   temporaryMaxFeatureValue(id, featureId) {
@@ -526,7 +531,9 @@ class ProductStore extends EventEmitter {
         const id = obj.id;
 
         const name = p.name;
+
         logger.log('competitor', id, p);
+
         const rating = round(computeRating(p, 0));
         const hype = p.getHypeValue();
         const clients = p.KPI.clients;
