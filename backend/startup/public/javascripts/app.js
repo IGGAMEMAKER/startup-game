@@ -3671,19 +3671,42 @@
 	      return value;
 	    }
 	  }, {
+	    key: 'isUpgradeWillResultTechBreakthrough',
+	    value: function isUpgradeWillResultTechBreakthrough(id, featureId) {
+	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
+	      var max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
+
+	      _logger2.default.debug('isUpgradeWillResultTechBreakthrough ?', current, max);
+
+	      return current + 1000 > max;
+	    }
+	  }, {
+	    key: 'isWeAreRetards',
+	    value: function isWeAreRetards(id, featureId) {
+	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
+	      var max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
+
+	      _logger2.default.debug('isWeAreRetards ?', current, max);
+
+	      return current < 0.3 * max;
+	    }
+	  }, {
 	    key: 'getMainFeatureUpgradeCost',
 	    value: function getMainFeatureUpgradeCost(id, featureId) {
 	      var modifier = 1;
 
 	      _logger2.default.shit('write isUpgradeWillResultTechBreakthrough function!!');
+
 	      // we are able to make breakthrough
-	      modifier = 4;
+	      if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) {
+	        modifier = 4;
+	      }
 
 	      _logger2.default.shit('write isWeAreRetards function!!');
 	      // we are retards
-	      modifier = 0.25;
-
-	      modifier = 1;
+	      if (this.isWeAreRetards(id, featureId)) {
+	        modifier = 0.25;
+	      }
 
 	      return Math.ceil((0, _productDescriptions2.default)(this.getIdea(id)).features[featureId].development * modifier);
 	    }
@@ -13100,42 +13123,20 @@
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
 	      tick: 1
 	    }, _this.renderMainFeature = function (featureGroup, product, id, segments, defaults) {
-	      return function (defaultFeature, i) {
+	      return function (defaultFeature, featureId) {
 	        var featureName = defaultFeature.name;
 	        var shortDescription = defaultFeature.shortDescription;
 
 
-	        var feature = product.features[featureGroup][i];
-
-	        var leaderInTech = _flux2.default.productStore.getLeaderInTech(id, i);
+	        var feature = product.features[featureGroup][featureId];
 
 	        var current = feature || 0;
-	        var max = _flux2.default.productStore.getCurrentMainFeatureDefaultsById(id)[i]; // defaultFeature.data;
+	        var max = _flux2.default.productStore.getCurrentMainFeatureDefaultsById(id)[featureId]; // defaultFeature.data;
 
 
 	        var description = defaultFeature.description || '';
 	        var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
-	        var key = 'feature' + featureGroup + featureName + i;
-
-	        var openedInfluence = false;
-	        var segmentRatingImprovementList = segments.map(function (s) {
-	          var rating = s.rating[i];
-	          var defaultQuality = _flux2.default.productStore.getMainFeatureDefaultQualityByFeatureId(id, i);
-	          var normalisedRatingDelta = (0, _round2.default)(rating * 1000 / defaultQuality);
-
-	          if (rating === 0) return '';
-
-	          openedInfluence = true;
-
-	          return (0, _preact.h)(
-	            'li',
-	            null,
-	            '\u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0443 \u0433\u0440\u0443\u043F\u043F\u044B "',
-	            s.userOrientedName,
-	            '" \u043F\u043E\u0432\u044B\u0441\u0438\u0442\u0441\u044F \u043D\u0430 ',
-	            normalisedRatingDelta
-	          );
-	        });
+	        var key = 'feature' + featureGroup + featureName + featureId;
 
 	        var data = [{ value: current }];
 
@@ -13143,19 +13144,20 @@
 	          data.push({ value: 1000, style: 'bg-success' });
 	        }
 
+	        var leaderInTech = _flux2.default.productStore.getLeaderInTech(id, featureId);
+
 	        var leaderInTechPhrase = '\u041B\u0438\u0434\u0435\u0440 \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438: \u041A\u043E\u043C\u043F\u0430\u043D\u0438\u044F "' + leaderInTech.name + '" (' + leaderInTech.value + 'XP)';
 	        if (leaderInTech.id === 0) {
 	          leaderInTechPhrase = '\u041C\u044B \u043B\u0438\u0434\u0438\u0440\u0443\u0435\u043C \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438!';
 	        }
 
-	        var pp = _flux2.default.productStore.getMainFeatureUpgradeCost(id, i);
+	        var pp = _flux2.default.productStore.getMainFeatureUpgradeCost(id, featureId);
 
 	        var notEnoughPPs = !_flux2.default.playerStore.enoughProgrammingPoints(pp);
 	        var currentXP = _flux2.default.productStore.getXP(id);
 
 	        var disabled = notEnoughPPs || currentXP < 1000;
 
-	        // <span>We will be leaders: {flux.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)}</span>
 	        return (0, _preact.h)(
 	          'div',
 	          { key: key },
@@ -13192,7 +13194,7 @@
 	          (0, _preact.h)(
 	            'div',
 	            null,
-	            segmentRatingImprovementList
+	            _this.renderSegmentRatingImprovementList(segments, id, featureId)
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -13200,16 +13202,14 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              'Need ',
-	              pp,
-	              ' points to upgrade'
+	              _this.renderUpgradeCostModifierBonus(id, featureId)
 	            ),
 	            (0, _preact.h)(_UI2.default.Button, {
 	              disabled: disabled,
 	              onClick: function onClick() {
-	                _this.improveFeature(id, i, max, pp);
+	                _this.improveFeature(id, featureId, max, pp);
 	              },
-	              text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 1000XP',
+	              text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 ' + pp + 'PP',
 	              primary: true
 	            })
 	          ),
@@ -13324,6 +13324,46 @@
 	          hireProgrammerLink
 	        )
 	      );
+	    }
+	  }, {
+	    key: 'renderSegmentRatingImprovementList',
+	    value: function renderSegmentRatingImprovementList(segments, id, featureId) {
+	      var openedInfluence = false;
+
+	      var segmentRatingImprovementList = segments.map(function (s) {
+	        var rating = s.rating[featureId];
+
+	        if (rating === 0) return '';
+
+	        var defaultQuality = _flux2.default.productStore.getMainFeatureDefaultQualityByFeatureId(id, featureId);
+	        var normalisedRatingDelta = (0, _round2.default)(rating * 1000 / defaultQuality);
+
+	        openedInfluence = true;
+
+	        return (0, _preact.h)(
+	          'li',
+	          null,
+	          '\u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0443 \u0433\u0440\u0443\u043F\u043F\u044B "',
+	          s.userOrientedName,
+	          '" \u043F\u043E\u0432\u044B\u0441\u0438\u0442\u0441\u044F \u043D\u0430 ',
+	          normalisedRatingDelta
+	        );
+	      });
+
+	      return segmentRatingImprovementList;
+	    }
+	  }, {
+	    key: 'renderUpgradeCostModifierBonus',
+	    value: function renderUpgradeCostModifierBonus(id, featureId) {
+	      if (_flux2.default.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
+	        return '\u041C\u044B \u0437\u0430\u0434\u0430\u0451\u043C \u043D\u043E\u0432\u044B\u0435 \u0442\u0440\u0435\u043D\u0434\u044B! \u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: 400%';
+	      }
+
+	      if (_flux2.default.productStore.isWeAreRetards(id, featureId)) {
+	        return '\u041C\u044B \u043E\u0442\u0441\u0442\u0430\u0451\u043C \u0432 \u0440\u0430\u0437\u0432\u0438\u0442\u0438\u0438, \u043F\u043E\u044D\u0442\u043E\u043C\u0443 \u043A\u043E\u043F\u0438\u0440\u0443\u0435\u043C \u0432\u0441\u0451 \u0443 \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442\u043E\u0432. \u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: -75%';
+	      }
+
+	      return '';
 	    }
 	  }, {
 	    key: 'improveFeature',

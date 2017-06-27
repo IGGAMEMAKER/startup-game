@@ -471,19 +471,40 @@ class ProductStore extends EventEmitter {
     return value;
   }
 
+  isUpgradeWillResultTechBreakthrough(id, featureId) {
+    const current = this.getMainFeatureQualityByFeatureId(id, featureId);
+    const max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
+
+    logger.debug('isUpgradeWillResultTechBreakthrough ?', current, max);
+
+    return current + 1000 > max;
+  }
+
+  isWeAreRetards(id, featureId) {
+    const current = this.getMainFeatureQualityByFeatureId(id, featureId);
+    const max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
+
+    logger.debug('isWeAreRetards ?', current, max);
+
+    return current < 0.3 * max;
+  }
+
   getMainFeatureUpgradeCost(id, featureId) {
     let modifier = 1;
 
     logger.shit('write isUpgradeWillResultTechBreakthrough function!!');
+
     // we are able to make breakthrough
-    modifier = 4;
+    if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) {
+      modifier = 4;
+    }
 
 
     logger.shit('write isWeAreRetards function!!');
     // we are retards
-    modifier = 0.25;
-
-    modifier = 1;
+    if (this.isWeAreRetards(id, featureId)) {
+      modifier = 0.25;
+    }
 
     return Math.ceil(productDescriptions(this.getIdea(id)).features[featureId].development * modifier);
   }

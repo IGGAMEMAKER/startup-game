@@ -65,35 +65,53 @@ export default class MainFeature extends Component {
     </div>
   }
 
-  renderMainFeature = (featureGroup, product, id, segments, defaults) => (defaultFeature, i) => {
-    const featureName = defaultFeature.name;
-    const { shortDescription } = defaultFeature;
-
-    const feature = product.features[featureGroup][i];
-
-    const leaderInTech = flux.productStore.getLeaderInTech(id, i);
-
-    const current = feature || 0;
-    const max = flux.productStore.getCurrentMainFeatureDefaultsById(id)[i]; // defaultFeature.data;
-
-
-    const description = defaultFeature.description || '';
-    const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
-    const key = `feature${featureGroup}${featureName}${i}`;
-
+  renderSegmentRatingImprovementList(segments, id, featureId) {
     let openedInfluence = false;
+
     const segmentRatingImprovementList = segments
       .map((s) => {
-        const rating = s.rating[i];
-        const defaultQuality = flux.productStore.getMainFeatureDefaultQualityByFeatureId(id, i);
-        const normalisedRatingDelta = round(rating * 1000 / defaultQuality);
+        const rating = s.rating[featureId];
 
         if (rating === 0) return '';
+
+        const defaultQuality = flux.productStore.getMainFeatureDefaultQualityByFeatureId(id, featureId);
+        const normalisedRatingDelta = round(rating * 1000 / defaultQuality);
 
         openedInfluence = true;
 
         return <li>Рейтинг у группы "{s.userOrientedName}" повысится на {normalisedRatingDelta}</li>;
       });
+
+    return segmentRatingImprovementList;
+  }
+
+  renderUpgradeCostModifierBonus(id, featureId) {
+    if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
+      return `Мы задаём новые тренды! Стоимость улучшения: 400%`;
+    }
+
+    if (flux.productStore.isWeAreRetards(id, featureId)) {
+      return `Мы отстаём в развитии, поэтому копируем всё у конкурентов. Стоимость улучшения: -75%`;
+    }
+
+    return '';
+  }
+
+  renderMainFeature = (featureGroup, product, id, segments, defaults) => (defaultFeature, featureId) => {
+    const featureName = defaultFeature.name;
+    const { shortDescription } = defaultFeature;
+
+    const feature = product.features[featureGroup][featureId];
+
+
+    const current = feature || 0;
+    const max = flux.productStore.getCurrentMainFeatureDefaultsById(id)[featureId]; // defaultFeature.data;
+
+
+    const description = defaultFeature.description || '';
+    const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
+    const key = `feature${featureGroup}${featureName}${featureId}`;
+
 
     const data = [
       { value: current }
@@ -103,19 +121,20 @@ export default class MainFeature extends Component {
       data.push({ value: 1000, style: 'bg-success' })
     }
 
+    const leaderInTech = flux.productStore.getLeaderInTech(id, featureId);
+
     let leaderInTechPhrase = `Лидер в этой технологии: Компания "${leaderInTech.name}" (${leaderInTech.value}XP)`;
     if (leaderInTech.id === 0) {
       leaderInTechPhrase = `Мы лидируем в этой технологии!`;
     }
 
-    const pp = flux.productStore.getMainFeatureUpgradeCost(id, i);
+    const pp = flux.productStore.getMainFeatureUpgradeCost(id, featureId);
 
     const notEnoughPPs = !flux.playerStore.enoughProgrammingPoints(pp);
     const currentXP = flux.productStore.getXP(id);
 
     const disabled = notEnoughPPs || currentXP < 1000;
 
-        // <span>We will be leaders: {flux.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)}</span>
     return <div key={key}>
       <div>
         <div>{leaderInTechPhrase}</div>
@@ -126,13 +145,13 @@ export default class MainFeature extends Component {
       </div>
       <br />
       <div className="featureDescription">{description}</div>
-      <div>{segmentRatingImprovementList}</div>
+      <div>{this.renderSegmentRatingImprovementList(segments, id, featureId)}</div>
       <div className="hypothesis-wrapper">
-        <div>Need {pp} points to upgrade</div>
+        <div>{this.renderUpgradeCostModifierBonus(id, featureId)}</div>
         <UI.Button
           disabled={disabled}
-          onClick={() => { this.improveFeature(id, i, max, pp) }}
-          text="Улучшить за 1000XP"
+          onClick={() => { this.improveFeature(id, featureId, max, pp) }}
+          text={`Улучшить за ${pp}PP`}
           primary
         />
       </div>
