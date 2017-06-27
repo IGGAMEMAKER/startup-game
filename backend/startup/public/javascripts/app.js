@@ -3671,6 +3671,23 @@
 	      return value;
 	    }
 	  }, {
+	    key: 'getMainFeatureUpgradeCost',
+	    value: function getMainFeatureUpgradeCost(id, featureId) {
+	      var modifier = 1;
+
+	      _logger2.default.shit('write isUpgradeWillResultTechBreakthrough function!!');
+	      // we are able to make breakthrough
+	      modifier = 4;
+
+	      _logger2.default.shit('write isWeAreRetards function!!');
+	      // we are retards
+	      modifier = 0.25;
+
+	      modifier = 1;
+
+	      return Math.ceil((0, _productDescriptions2.default)(this.getIdea(id)).features[featureId].development * modifier);
+	    }
+	  }, {
 	    key: 'getLeaderInTech',
 	    value: function getLeaderInTech(id, featureId) {
 	      var _this2 = this;
@@ -3908,8 +3925,8 @@
 
 	        _products.filter(function (p) {
 	          return p.idea === idea;
-	        }).forEach(function (p, i, arr) {
-	          _logger2.default.debug('upgrading for product', p.name);
+	        }).forEach(function (p) {
+	          // logger.debug('upgrading for product', p.name);
 	          p.setMainFeatureDefaults(upgradedDefaults);
 	          // arr[i].setMainFeatureDefaults(upgradedDefaults);
 	        });
@@ -4879,14 +4896,8 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var _arguments = arguments;
 	exports.default = {
-	  log: function log() {
-	    var _console;
-
-	    (_console = console).log.apply(_console, _arguments);
-	    // console.trace();
-	  },
+	  log: console.log,
 	  debug: console.log,
 	  error: console.error,
 	  shit: function shit(text) {
@@ -5091,14 +5102,16 @@
 	        description: '',
 	        shortDescription: 'Масштабируемость',
 	        data: timeModifier(5000),
-	        time: 20
+	        time: 20,
+	        development: 70
 	      }, {
 	        name: 'website',
 	        influence: 1.5,
 	        description: '',
 	        shortDescription: 'Веб-сайт',
 	        data: timeModifier(15000),
-	        time: 30
+	        time: 30,
+	        development: 30
 	      },
 	      // { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 },
 	      // { name: 'reliability', influence: 3, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 },
@@ -5108,7 +5121,8 @@
 	        description: '',
 	        shortDescription: 'Техподдержка',
 	        data: timeModifier(5000),
-	        time: 30
+	        time: 30,
+	        development: 100
 	      }, {
 	        name: 'VPS',
 	        influence: 3,
@@ -5116,7 +5130,8 @@
 	        shortDescription: 'Виртуальная машина',
 	        data: timeModifier(7000),
 	        time: 30,
-	        shareable: true
+	        shareable: true,
+	        development: 75
 	      }, {
 	        name: 'VDS',
 	        influence: 0,
@@ -5124,7 +5139,8 @@
 	        shortDescription: 'Выделенный сервер',
 	        data: timeModifier(15000),
 	        time: 30,
-	        shareable: true
+	        shareable: true,
+	        development: 135
 	      }],
 	      utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
 	      virality: 0.3, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
@@ -10464,6 +10480,7 @@
 	      _this.setState({ mode: mode });
 	    }, _this.haveEnoughPointsToUpgrade = function (necessaryPoints) {
 	      var points = _playerStore2.default.getPoints();
+
 	      var mp = necessaryPoints.mp || 0;
 	      var pp = necessaryPoints.pp || 0;
 
@@ -11072,6 +11089,12 @@
 	  }, {
 	    key: 'renderBonusesTab',
 	    value: function renderBonusesTab(id, product) {
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        'No Bonuses'
+	      );
+
 	      var improvements = _productStore2.default.getImprovementChances(id);
 
 	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i, arr) {
@@ -13046,10 +13069,6 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _Programmers = __webpack_require__(177);
-
-	var _Programmers2 = _interopRequireDefault(_Programmers);
-
 	var _logger = __webpack_require__(108);
 
 	var _logger2 = _interopRequireDefault(_logger);
@@ -13098,14 +13117,6 @@
 	        var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
 	        var key = 'feature' + featureGroup + featureName + i;
 
-	        var hypothesis = {
-	          points: { mp: 100, pp: 200 },
-	          data: 4000,
-	          baseChance: 0.1
-	        };
-
-	        var hypothesisList = _this.renderImprovementButton(id, i, max, hypothesis);
-
 	        var openedInfluence = false;
 	        var segmentRatingImprovementList = segments.map(function (s) {
 	          var rating = s.rating[i];
@@ -13136,6 +13147,13 @@
 	        if (leaderInTech.id === 0) {
 	          leaderInTechPhrase = '\u041C\u044B \u043B\u0438\u0434\u0438\u0440\u0443\u0435\u043C \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438!';
 	        }
+
+	        var pp = _flux2.default.productStore.getMainFeatureUpgradeCost(id, i);
+
+	        var notEnoughPPs = !_flux2.default.playerStore.enoughProgrammingPoints(pp);
+	        var currentXP = _flux2.default.productStore.getXP(id);
+
+	        var disabled = notEnoughPPs || currentXP < 1000;
 
 	        // <span>We will be leaders: {flux.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)}</span>
 	        return (0, _preact.h)(
@@ -13176,36 +13194,29 @@
 	            null,
 	            segmentRatingImprovementList
 	          ),
-	          hypothesisList,
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'hypothesis-wrapper' },
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              'Need ',
+	              pp,
+	              ' points to upgrade'
+	            ),
+	            (0, _preact.h)(_UI2.default.Button, {
+	              disabled: disabled,
+	              onClick: function onClick() {
+	                _this.improveFeature(id, i, max, pp);
+	              },
+	              text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 1000XP',
+	              primary: true
+	            })
+	          ),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', { color: 'white' })
 	        );
 	      };
-	    }, _this.renderImprovementButton = function (id, featureId, max, hypothesis) {
-	      var necessaryPoints = hypothesis.points;
-
-	      var pp = necessaryPoints.pp,
-	          mp = necessaryPoints.mp;
-
-
-	      var notEnoughPPs = false; // !this.haveEnoughPointsToUpgrade(necessaryPoints);
-	      var currentXP = _flux2.default.productStore.getXP(id);
-
-	      var disabled = notEnoughPPs || currentXP < 1000;
-	      // const disabled = currentXP < 1000;
-
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'hypothesis-wrapper' },
-	        (0, _preact.h)(_UI2.default.Button, {
-	          disabled: disabled,
-	          onClick: function onClick() {
-	            _this.improveFeature(id, featureId, max);
-	          },
-	          text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 1000XP',
-	          primary: true
-	        })
-	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
@@ -13316,8 +13327,8 @@
 	    }
 	  }, {
 	    key: 'improveFeature',
-	    value: function improveFeature(id, featureId, max) {
-	      // flux.playerActions.spendPoints(pp, mp);
+	    value: function improveFeature(id, featureId, max, pp) {
+	      _flux2.default.playerActions.spendPoints(pp, 0);
 	      _flux2.default.productActions.improveFeature(id, 'offer', featureId, max, 1000);
 
 	      if (_stages2.default.isFirstFeatureMission()) {

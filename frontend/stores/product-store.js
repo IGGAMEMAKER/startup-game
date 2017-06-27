@@ -471,6 +471,23 @@ class ProductStore extends EventEmitter {
     return value;
   }
 
+  getMainFeatureUpgradeCost(id, featureId) {
+    let modifier = 1;
+
+    logger.shit('write isUpgradeWillResultTechBreakthrough function!!');
+    // we are able to make breakthrough
+    modifier = 4;
+
+
+    logger.shit('write isWeAreRetards function!!');
+    // we are retards
+    modifier = 0.25;
+
+    modifier = 1;
+
+    return Math.ceil(productDescriptions(this.getIdea(id)).features[featureId].development * modifier);
+  }
+
   getLeaderInTech(id, featureId) {
     const leader = _products.map(this.idHelper)
       .filter((obj, i) => obj.p.idea === this.getIdea(id))
@@ -671,8 +688,8 @@ Dispatcher.register((p: PayloadType) => {
 
       _products
         .filter(p => p.idea === idea)
-        .forEach((p, i, arr) => {
-          logger.debug('upgrading for product', p.name);
+        .forEach((p) => {
+          // logger.debug('upgrading for product', p.name);
           p.setMainFeatureDefaults(upgradedDefaults);
           // arr[i].setMainFeatureDefaults(upgradedDefaults);
         });

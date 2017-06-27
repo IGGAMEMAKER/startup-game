@@ -78,9 +78,9 @@ export default class ProductPanel extends Component {
     this.setState({ mode });
   };
 
-
   haveEnoughPointsToUpgrade = necessaryPoints => {
     const points = playerStore.getPoints();
+
     const mp = necessaryPoints.mp || 0;
     const pp = necessaryPoints.pp || 0;
 
@@ -325,7 +325,10 @@ export default class ProductPanel extends Component {
       </div>
     )
   }
+
   renderBonusesTab(id, product) {
+    return <div>No Bonuses</div>;
+
     const improvements = productStore.getImprovementChances(id);
 
     const cliTabDescription = improvements.clientModifier.clientsRange

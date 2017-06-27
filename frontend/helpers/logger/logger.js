@@ -1,8 +1,5 @@
 export default {
-  log: () => {
-    console.log(...arguments);
-    // console.trace();
-  },
+  log: console.log,
   debug: console.log,
   error: console.error,
   shit: (text) => {

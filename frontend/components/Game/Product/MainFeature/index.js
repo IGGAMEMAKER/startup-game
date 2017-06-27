@@ -3,8 +3,6 @@ import { h, Component } from 'preact';
 import flux from '../../../../flux';
 import UI from '../../../UI';
 
-import Programmers from '../../Team/Programmers';
-
 import logger from '../../../../helpers/logger/logger';
 import round from '../../../../helpers/math/round';
 
@@ -83,15 +81,6 @@ export default class MainFeature extends Component {
     const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
     const key = `feature${featureGroup}${featureName}${i}`;
 
-    const hypothesis = {
-      points: { mp: 100, pp: 200 },
-      data: 4000,
-      baseChance: 0.1
-    };
-
-    const hypothesisList = this.renderImprovementButton(id, i, max, hypothesis);
-
-
     let openedInfluence = false;
     const segmentRatingImprovementList = segments
       .map((s) => {
@@ -119,6 +108,13 @@ export default class MainFeature extends Component {
       leaderInTechPhrase = `Мы лидируем в этой технологии!`;
     }
 
+    const pp = flux.productStore.getMainFeatureUpgradeCost(id, i);
+
+    const notEnoughPPs = !flux.playerStore.enoughProgrammingPoints(pp);
+    const currentXP = flux.productStore.getXP(id);
+
+    const disabled = notEnoughPPs || currentXP < 1000;
+
         // <span>We will be leaders: {flux.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)}</span>
     return <div key={key}>
       <div>
@@ -131,14 +127,22 @@ export default class MainFeature extends Component {
       <br />
       <div className="featureDescription">{description}</div>
       <div>{segmentRatingImprovementList}</div>
-      {hypothesisList}
+      <div className="hypothesis-wrapper">
+        <div>Need {pp} points to upgrade</div>
+        <UI.Button
+          disabled={disabled}
+          onClick={() => { this.improveFeature(id, i, max, pp) }}
+          text="Улучшить за 1000XP"
+          primary
+        />
+      </div>
       <br />
       <hr color="white" />
     </div>
   };
 
-  improveFeature(id, featureId, max) {
-    // flux.playerActions.spendPoints(pp, mp);
+  improveFeature(id, featureId, max, pp) {
+    flux.playerActions.spendPoints(pp, 0);
     flux.productActions.improveFeature(id, 'offer', featureId, max, 1000);
 
     if (stageHelper.isFirstFeatureMission()) {
@@ -155,27 +159,4 @@ export default class MainFeature extends Component {
 
     // this.setState({ tick: this.state.tick + 1 });
   }
-
-  renderImprovementButton = (id, featureId, max, hypothesis) => {
-    const necessaryPoints = hypothesis.points;
-
-    const { pp, mp } = necessaryPoints;
-
-    const notEnoughPPs = false; // !this.haveEnoughPointsToUpgrade(necessaryPoints);
-    const currentXP = flux.productStore.getXP(id);
-
-    const disabled = notEnoughPPs || currentXP < 1000;
-    // const disabled = currentXP < 1000;
-
-    return (
-      <div className="hypothesis-wrapper">
-        <UI.Button
-          disabled={disabled}
-          onClick={() => { this.improveFeature(id, featureId, max) }}
-          text="Улучшить за 1000XP"
-          primary
-        />
-      </div>
-    )
-  };
 }
