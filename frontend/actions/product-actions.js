@@ -9,7 +9,7 @@ function getRandomRange(min, max) {
 }
 
 export default {
-  improveFeature(id, featureGroup, featureName, h, max, XP) {
+  improveFeature(id, featureGroup, featureName, max, XP) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
       id,

@@ -3155,6 +3155,37 @@
 	  })
 	})];
 
+	var _getCurrentMainFeatureDefaultsByIdea = function _getCurrentMainFeatureDefaultsByIdea(idea) {
+	  var productsWithSameIdea = _products.filter(function (p, i) {
+	    return p.idea === idea;
+	  });
+
+	  return (0, _productDescriptions2.default)(idea).features.map(function (f, featureId) {
+	    var max = f.data;
+
+	    productsWithSameIdea.forEach(function (p) {
+	      var temp = p.getMainFeatureQualityByFeatureId(featureId);
+
+	      if (temp > max) {
+	        max = temp;
+	      }
+	    });
+
+	    return max;
+	  });
+
+	  // const suitableId = products.findIndex((p, i) => p.idea === idea);
+	  // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
+	};
+
+	var _getCurrentMainFeatureDefaultsById = function _getCurrentMainFeatureDefaultsById(id) {
+	  var p = _products[id];
+	  // logger.debug('getCurrentMainFeatureDefaultsById', p, _products, id);
+	  var idea = p.getIdea();
+
+	  return _getCurrentMainFeatureDefaultsByIdea(idea);
+	};
+
 	var ProductStore = function (_EventEmitter) {
 	  (0, _inherits3.default)(ProductStore, _EventEmitter);
 
@@ -3668,36 +3699,13 @@
 	      return Math.ceil(value / 1000) * 1000;
 	    }
 	  }, {
-	    key: 'getCurrentMainFeatureDefaultsByIdea',
-	    value: function getCurrentMainFeatureDefaultsByIdea(idea) {
-	      var products = this.getProducts();
-	      var productsWithSameIdea = products.filter(function (p, i) {
-	        return p.idea === idea;
-	      });
-
-	      return (0, _productDescriptions2.default)(idea).features.map(function (f, featureId) {
-	        var max = f.data;
-
-	        productsWithSameIdea.forEach(function (p) {
-	          var temp = p.getMainFeatureQualityByFeatureId(featureId);
-
-	          if (temp > max) {
-	            max = temp;
-	          }
-	        });
-
-	        return max;
-	      });
-
-	      // const suitableId = products.findIndex((p, i) => p.idea === idea);
-	      // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
-	    }
-	  }, {
 	    key: 'getCurrentMainFeatureDefaultsById',
 	    value: function getCurrentMainFeatureDefaultsById(id) {
-	      var idea = this.getIdea(id);
+	      _logger2.default.debug('getCurrentMainFeatureDefaultsById in class', id);
+	      // const idea = this.getIdea(id);
 
-	      return this.getCurrentMainFeatureDefaultsByIdea(idea);
+	      // return getCurrentMainFeatureDefaultsByIdea(idea);
+	      return _getCurrentMainFeatureDefaultsById(id);
 	    }
 	  }, {
 	    key: 'temporaryMaxFeatureValue',
@@ -3725,6 +3733,11 @@
 	      var max = this.temporaryMaxFeatureValue(id, featureId);
 
 	      return current + 1000 > max;
+	    }
+	  }, {
+	    key: 'getCurrentMainFeatureDefaultsByIdea',
+	    value: function getCurrentMainFeatureDefaultsByIdea(idea) {
+	      return _getCurrentMainFeatureDefaultsByIdea(idea);
 	    }
 	  }, {
 	    key: 'getCompetitorsList',
@@ -3790,6 +3803,7 @@
 	      var maxMarketSize = this.getDefaults(id).marketSize;
 	      var rating = this.getRating(id);
 	      var ourClients = this.getClients(id);
+
 	      var uncompeteableApps = competitors.filter(function (c) {
 	        return c.rating > rating - 1;
 	      });
@@ -3865,81 +3879,103 @@
 	  var id = p.id;
 
 	  var change = true;
-	  switch (p.type) {
-	    case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-	      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 1999);
-	      break;
 
-	    case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
-	      _products[id].testHypothesis(p);
-	      break;
+	  (function () {
+	    switch (p.type) {
+	      case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
+	        _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 6999);
+	        break;
 
-	    case c.PRODUCT_ACTIONS_SWITCH_STAGE:
-	      _products[id].switchStage(p.stage);
-	      break;
+	      case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
+	        _products[id].testHypothesis(p);
+	        break;
 
-	    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
-	      _products[id].improveFeature(p);
-	      break;
+	      case c.PRODUCT_ACTIONS_SWITCH_STAGE:
+	        _products[id].switchStage(p.stage);
+	        break;
 
-	    case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
-	      _products[id].improveMainFeature(p);
-	      break;
+	      case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
+	        _products[id].improveFeature(p);
 
-	    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
-	      _products[id].improveFeatureByPoints(p);
-	      break;
+	        // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
 
-	    case c.PRODUCT_ACTIONS_CLIENTS_ADD:
-	      _products[id].addClients(p);
-	      break;
+	        _logger2.default.shit('rewrite upgradedDefaults updating in Product.js class. ' + 'You need updating it only on improve Main Feature actions');
 
-	    case c.PRODUCT_ACTIONS_HYPE_ADD:
-	      _products[id].addHype(p.hype);
-	      break;
+	        var upgradedDefaults = _getCurrentMainFeatureDefaultsById(id);
+	        var idea = _products[id].getIdea();
 
-	    case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
-	      _products[id].loseMonthlyHype();
-	      break;
+	        // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
 
-	    case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
-	      _products[id].addViralClients(p);
-	      break;
+	        _products.filter(function (p) {
+	          return p.idea === idea;
+	        }).forEach(function (p, i, arr) {
+	          _logger2.default.debug('upgrading for product', p.name);
+	          p.setMainFeatureDefaults(upgradedDefaults);
+	          // arr[i].setMainFeatureDefaults(upgradedDefaults);
+	        });
+	        break;
 
-	    case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
-	      _products[id].removeClients(p);
-	      break;
+	      case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
+	        _products[id].improveMainFeature(p);
+	        break;
 
-	    case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
-	      // { features , KPI, idea, name }
-	      var competitor = p.p;
-	      // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
-	      competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
-	      _products.push(competitor);
-	      break;
+	      case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
+	        _products[id].improveFeatureByPoints(p);
+	        break;
 
-	    case c.PRODUCT_ACTIONS_COMPANY_BUY:
-	      _logger2.default.debug('buy company store');
-	      var buyerId = p.buyerId,
-	          sellerId = p.sellerId;
+	      case c.PRODUCT_ACTIONS_CLIENTS_ADD:
+	        _products[id].addClients(p);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_HYPE_ADD:
+	        _products[id].addHype(p.hype);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
+	        _products[id].loseMonthlyHype();
+	        break;
+
+	      case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
+	        _products[id].addViralClients(p);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
+	        _products[id].removeClients(p);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
+	        // { features , KPI, idea, name }
+	        var competitor = p.p;
+	        // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+	        competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
+	        _products.push(competitor);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_COMPANY_BUY:
+	        _logger2.default.debug('buy company store');
+	        var buyerId = p.buyerId,
+	            sellerId = p.sellerId;
 
 
-	      var buyer = _products[buyerId];
-	      var seller = _products[sellerId];
+	        var buyer = _products[buyerId];
+	        var seller = _products[sellerId];
 
-	      var difference = _companyMerger2.default.merge(buyer, seller);
+	        var difference = _companyMerger2.default.merge(buyer, seller);
 
-	      _products[buyerId].KPI.clients = difference.clients;
-	      _products[buyerId].features.offer = difference.features;
+	        _products[buyerId].KPI.clients = difference.clients;
+	        _products[buyerId].features.offer = difference.features;
 
-	      _products.splice(sellerId, 1);
-	      break;
+	        _products.splice(sellerId, 1);
+	        break;
 
-	    default:
-	      break;
+	      default:
+	        break;
+	    }
+	  })();
+
+	  if (change) {
+	    store.emitChange();
 	  }
-
-	  if (change) store.emitChange();
 	});
 
 	exports.default = store;
@@ -4843,8 +4879,14 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	var _arguments = arguments;
 	exports.default = {
-	  log: console.log,
+	  log: function log() {
+	    var _console;
+
+	    (_console = console).log.apply(_console, _arguments);
+	    console.trace();
+	  },
 	  debug: console.log,
 	  error: console.error,
 	  shit: function shit(text) {
@@ -4914,6 +4956,8 @@
 
 
 	  var segments = (0, _productDescriptions2.default)(idea).segments;
+
+	  // logger.debug('computeRating', product.name, product.defaultFeatures);
 
 	  getSpecificProductFeatureListByIdea(idea).forEach(function (f, i) {
 	    var max = product.defaultFeatures[i]; // upgradedDefaults ? upgradedDefaults[i] : f.data;
@@ -8209,7 +8253,7 @@
 	}
 
 	exports.default = {
-	  improveFeature: function improveFeature(id, featureGroup, featureName, h, max, XP) {
+	  improveFeature: function improveFeature(id, featureGroup, featureName, max, XP) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
 	      id: id,
@@ -12321,10 +12365,6 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _percentify = __webpack_require__(110);
-
-	var _percentify2 = _interopRequireDefault(_percentify);
-
 	var _round = __webpack_require__(96);
 
 	var _round2 = _interopRequireDefault(_round);
@@ -12332,6 +12372,10 @@
 	var _coloredRating = __webpack_require__(179);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
+
+	var _UI = __webpack_require__(147);
+
+	var _UI2 = _interopRequireDefault(_UI);
 
 	var _stages = __webpack_require__(144);
 
@@ -12556,6 +12600,7 @@
 	      var expertiseTab = (0, _preact.h)(
 	        'li',
 	        null,
+	        _UI2.default.icons.XP,
 	        (0, _preact.h)(
 	          'b',
 	          null,
@@ -13157,7 +13202,9 @@
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.renderMainFeature = function (featureGroup, product, id, segments, defaults) {
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = MainFeature.__proto__ || (0, _getPrototypeOf2.default)(MainFeature)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      tick: 1
+	    }, _this.renderMainFeature = function (featureGroup, product, id, segments, defaults) {
 	      return function (defaultFeature, i) {
 	        var featureName = defaultFeature.name;
 	        var shortDescription = defaultFeature.shortDescription;
@@ -13214,6 +13261,7 @@
 	          leaderInTechPhrase = '\u041C\u044B \u043B\u0438\u0434\u0438\u0440\u0443\u0435\u043C \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438!';
 	        }
 
+	        // <span>We will be leaders: {flux.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)}</span>
 	        return (0, _preact.h)(
 	          'div',
 	          { key: key },
@@ -13234,12 +13282,6 @@
 	              '/',
 	              max,
 	              'XP)'
-	            ),
-	            (0, _preact.h)(
-	              'span',
-	              null,
-	              'We will be leaders: ',
-	              _flux2.default.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -13282,7 +13324,7 @@
 	        (0, _preact.h)(_UI2.default.Button, {
 	          disabled: disabled,
 	          onClick: function onClick() {
-	            _this.improveFeature(id, featureId, hypothesis, max);
+	            _this.improveFeature(id, featureId, max);
 	          },
 	          text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0437\u0430 1000XP',
 	          primary: true
@@ -13398,9 +13440,9 @@
 	    }
 	  }, {
 	    key: 'improveFeature',
-	    value: function improveFeature(id, featureId, hypothesis, max) {
+	    value: function improveFeature(id, featureId, max) {
 	      // flux.playerActions.spendPoints(pp, mp);
-	      _flux2.default.productActions.improveFeature(id, 'offer', featureId, hypothesis, max, 1000);
+	      _flux2.default.productActions.improveFeature(id, 'offer', featureId, max, 1000);
 
 	      if (_stages2.default.isFirstFeatureMission()) {
 	        _stages2.default.onFirstFeatureUpgradeMissionCompleted();
@@ -13413,6 +13455,8 @@
 	          _stages2.default.onPaymentRatingMissionCompleted();
 	        }
 	      }
+
+	      // this.setState({ tick: this.state.tick + 1 });
 	    }
 	  }]);
 	  return MainFeature;
@@ -13712,7 +13756,7 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'offset-mid' },
-	          '\u0420\u044B\u043D\u043E\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: $',
+	          '\u0420\u044B\u043D\u043E\u0447\u043D\u0430\u044F \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: ',
 	          c.cost,
 	          '$'
 	        ),

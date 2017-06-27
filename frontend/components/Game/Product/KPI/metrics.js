@@ -3,10 +3,11 @@ import { h, Component } from 'preact';
 
 import productStore from '../../../../stores/product-store';
 
-import percentify from '../../../../helpers/math/percentify';
 import round from '../../../../helpers/math/round';
 
 import ColoredRating from '../KPI/colored-rating';
+
+import UI from '../../../UI';
 
 type PropsType = {};
 
@@ -134,6 +135,7 @@ export default class Metrics extends Component {
     }
 
     let expertiseTab = <li>
+      {UI.icons.XP}
       <b>Экспертиза: {expertise}XP</b>
       <span className="metric-link" onClick={onExpertisePressed}>Повысить</span>
     </li>;

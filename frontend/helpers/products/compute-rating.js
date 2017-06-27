@@ -13,6 +13,8 @@ export default (product, segmentId) => {
 
   const segments = ProductDescriptions(idea).segments;
 
+  // logger.debug('computeRating', product.name, product.defaultFeatures);
+
   getSpecificProductFeatureListByIdea(idea).forEach((f, i) => {
     const max = product.defaultFeatures[i]; // upgradedDefaults ? upgradedDefaults[i] : f.data;
 

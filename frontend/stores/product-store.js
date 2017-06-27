@@ -33,6 +33,35 @@ let _products: Array<Product> = [
   })
 ];
 
+const getCurrentMainFeatureDefaultsByIdea = (idea) => {
+  const productsWithSameIdea = _products.filter((p, i) => p.idea === idea);
+
+  return productDescriptions(idea).features.map((f, featureId) => {
+    let max = f.data;
+
+    productsWithSameIdea.forEach((p) => {
+      let temp = p.getMainFeatureQualityByFeatureId(featureId);
+
+      if (temp > max) {
+        max = temp;
+      }
+    });
+
+    return max;
+  });
+
+  // const suitableId = products.findIndex((p, i) => p.idea === idea);
+  // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
+};
+
+const getCurrentMainFeatureDefaultsById = (id) => {
+  const p = _products[id];
+  // logger.debug('getCurrentMainFeatureDefaultsById', p, _products, id);
+  const idea = p.getIdea();
+
+  return getCurrentMainFeatureDefaultsByIdea(idea);
+}
+
 class ProductStore extends EventEmitter {
   addChangeListener(cb:Function) {
     this.addListener(EC, cb);
@@ -350,7 +379,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getPaymentFeatures(idea);
   };
 
-
   getTechnicalDebtDescription(debt) {
     if (debt < 10) {
       return `Всё хорошо`;
@@ -467,32 +495,12 @@ class ProductStore extends EventEmitter {
     return Math.ceil(value / 1000) * 1000;
   }
 
-  getCurrentMainFeatureDefaultsByIdea(idea) {
-    const products = this.getProducts();
-    const productsWithSameIdea = products.filter((p, i) => p.idea === idea);
-
-    return productDescriptions(idea).features.map((f, featureId) => {
-      let max = f.data;
-
-      productsWithSameIdea.forEach((p) => {
-        let temp = p.getMainFeatureQualityByFeatureId(featureId);
-
-        if (temp > max) {
-          max = temp;
-        }
-      });
-
-      return max;
-    });
-
-    // const suitableId = products.findIndex((p, i) => p.idea === idea);
-    // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
-  }
-
   getCurrentMainFeatureDefaultsById(id) {
-    const idea = this.getIdea(id);
+    logger.debug('getCurrentMainFeatureDefaultsById in class', id);
+    // const idea = this.getIdea(id);
 
-    return this.getCurrentMainFeatureDefaultsByIdea(idea);
+    // return getCurrentMainFeatureDefaultsByIdea(idea);
+    return getCurrentMainFeatureDefaultsById(id);
   }
 
   temporaryMaxFeatureValue(id, featureId) {
@@ -515,6 +523,10 @@ class ProductStore extends EventEmitter {
     const max = this.temporaryMaxFeatureValue(id, featureId);
 
     return current + 1000 > max;
+  }
+
+  getCurrentMainFeatureDefaultsByIdea(idea) {
+    return getCurrentMainFeatureDefaultsByIdea(idea);
   }
 
   getCompetitorsList(id) {
@@ -570,6 +582,7 @@ class ProductStore extends EventEmitter {
     const maxMarketSize = this.getDefaults(id).marketSize;
     const rating = this.getRating(id);
     const ourClients = this.getClients(id);
+
     const uncompeteableApps = competitors.filter(c => c.rating > rating - 1);
     const totalClients = ourClients + competitors.map(c => c.clients).reduce((p, c) => p + c, 0);
 
@@ -632,7 +645,7 @@ Dispatcher.register((p: PayloadType) => {
   let change = true;
   switch (p.type) {
     case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 1999);
+      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 6999);
       break;
 
     case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
@@ -645,6 +658,24 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
       _products[id].improveFeature(p);
+
+      // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
+
+      logger.shit('rewrite upgradedDefaults updating in Product.js class. ' +
+        'You need updating it only on improve Main Feature actions');
+
+      const upgradedDefaults = getCurrentMainFeatureDefaultsById(id);
+      const idea = _products[id].getIdea();
+
+      // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
+
+      _products
+        .filter(p => p.idea === idea)
+        .forEach((p, i, arr) => {
+          logger.debug('upgrading for product', p.name);
+          p.setMainFeatureDefaults(upgradedDefaults);
+          // arr[i].setMainFeatureDefaults(upgradedDefaults);
+        });
       break;
 
     case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
@@ -702,7 +733,9 @@ Dispatcher.register((p: PayloadType) => {
       break;
   }
 
-  if (change) store.emitChange();
+  if (change) {
+    store.emitChange();
+  }
 });
 
 export default store;

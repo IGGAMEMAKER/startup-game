@@ -11,6 +11,10 @@ import round from '../../../../helpers/math/round';
 import stageHelper from '../../../../helpers/stages';
 
 export default class MainFeature extends Component {
+  state = {
+    tick: 1,
+  };
+
   render({ id, onHireProgrammerClick }) {
     if (!stageHelper.canShowMainFeatureTab()) return '';
 
@@ -115,11 +119,11 @@ export default class MainFeature extends Component {
       leaderInTechPhrase = `Мы лидируем в этой технологии!`;
     }
 
+        // <span>We will be leaders: {flux.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)}</span>
     return <div key={key}>
       <div>
         <div>{leaderInTechPhrase}</div>
         <span>{userOrientedFeatureName} ({current}/{max}XP)</span>
-        <span>We will be leaders: {flux.productStore.isUpgradingMainFeatureWillResultTechLeadership(id, i)}</span>
         <div style="width: 300px;">
           <UI.Bar min={0} max={max} data={data} />
         </div>
@@ -133,9 +137,9 @@ export default class MainFeature extends Component {
     </div>
   };
 
-  improveFeature(id, featureId, hypothesis, max) {
+  improveFeature(id, featureId, max) {
     // flux.playerActions.spendPoints(pp, mp);
-    flux.productActions.improveFeature(id, 'offer', featureId, hypothesis, max, 1000);
+    flux.productActions.improveFeature(id, 'offer', featureId, max, 1000);
 
     if (stageHelper.isFirstFeatureMission()) {
       stageHelper.onFirstFeatureUpgradeMissionCompleted()
@@ -148,6 +152,8 @@ export default class MainFeature extends Component {
         stageHelper.onPaymentRatingMissionCompleted();
       }
     }
+
+    // this.setState({ tick: this.state.tick + 1 });
   }
 
   renderImprovementButton = (id, featureId, max, hypothesis) => {
@@ -165,7 +171,7 @@ export default class MainFeature extends Component {
       <div className="hypothesis-wrapper">
         <UI.Button
           disabled={disabled}
-          onClick={() => { this.improveFeature(id, featureId, hypothesis, max) }}
+          onClick={() => { this.improveFeature(id, featureId, max) }}
           text="Улучшить за 1000XP"
           primary
         />
