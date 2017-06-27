@@ -30,27 +30,21 @@ export default class Staff extends Component {
     staff: [],
     employees: [],
     teamToggle: false,
-    employeeToggle: false,
-    switcher: IS_EMPLOYEES
   };
 
   componentWillMount() {
     this.getStaff();
-    //
+
     store.addChangeListener(this.getStaff);
   }
-
-  setStaff = () => { this.setMode(IS_STAFF); };
-  setEmployees = () => { this.setMode(IS_EMPLOYEES); };
-
-  setMode = switcher => {
-    this.setState({ switcher })
-  };
 
   getStaff = () => {
     this.setState({
       staff: store.getTeam(),
       employees: store.getEmployees(),
+
+      pps: store.getMonthlyProgrammerPoints(),
+      mps: store.getMonthlyMarketerPoints(),
     })
   };
 
@@ -74,11 +68,10 @@ export default class Staff extends Component {
   }
 
 
-  render(props, { staff, employees, switcher, teamToggle, employeeToggle }) {
+  render(props, { staff, teamToggle, pps, mps }) {
     if (!stageHelper.canShowTeamTabs()) return <div></div>;
 
-    const staffList =        staff.map((p, i) => <Worker p={p} i={i} />);
-    const employeeList = employees.map((p, i) => <Employee p={p} i={i} />);
+    const staffList = staff.map((p, i) => <Worker p={p} i={i} />);
 
     const staffVisible = staff.length && !teamToggle;
     let staffTab;
@@ -96,72 +89,13 @@ export default class Staff extends Component {
       )
     }
 
-    let employeeTab;
-    if (employees.length && !employeeToggle) {
-      employeeTab = (
-        <div>
-          <table className="table table-striped">
-            <tbody>{employeeList}</tbody>
-          </table>
-        </div>
-      )
-    }
-
-    let tab;
-    let amount;
-    switch (switcher) {
-      case IS_EMPLOYEES:
-        amount = employees.length ? `(${employees.length})` : '';
-        tab = (
-          <div>
-            <div>
-              <h4 className="staff-switcher">Найм сотрудников {amount}</h4>
-              <span className="link" onClick={this.setStaff}>Команда</span>
-            </div>
-            <br />
-            {employeeTab}
-          </div>
-        );
-        break;
-      case IS_STAFF:
-        amount = staff.length ? `(${staff.length})` : '';
-            // <UI.Button text="Нанять сотрудника" link onClick={this.setEmployees} />
-        tab = (
-          <div>
-            <div>
-              <h4 className="staff-switcher">Команда</h4>
-              <span className="link" onClick={this.setEmployees}>Нанять сотрудника</span>
-            </div>
-            <br />
-            {staffTab}
-          </div>
-        );
-        break;
-    }
-
-        // <div>Месячная производительность команды: +{mp}MP +{pp}PP </div>
-
-        // <nav aria-label="Page navigation example">
-        //   <ul className="pagination justify-content-center">
-        //     <li className={`page-item ${switcher === IS_STAFF ? 'active' : ''}`}>
-        //       <span onClick={this.setStaff} className="page-link" tabindex="-1">Команда ({staffLength})</span>
-        //     </li>
-        //     <li className={`page-item ${switcher === IS_EMPLOYEES ? 'active' : ''}`}>
-        //       <span onClick={this.setEmployees} className="page-link">Нанять ({employees.length})</span>
-        //     </li>
-        //   </ul>
-        // </nav>
-
-        // {staff.map((s, i) => <Worker p={s} i={i} />)}
-        // {tab}
-        //     <span className="link" onClick={this.setEmployees}>Нанять сотрудника</span>
     return (
       <div className="staff-table">
         <br />
         <div>
-          <div>
-            <h4 className="staff-switcher">Команда</h4>
-          </div>
+          <h4 className="staff-switcher">Команда</h4>
+          <div>Наши программисты производят +{pps} программистских очков (PP) в месяц</div>
+          <div>Наши маркетологи производят +{mps} программистских очков (MP) в месяц</div>
           <br />
           {staffTab}
         </div>

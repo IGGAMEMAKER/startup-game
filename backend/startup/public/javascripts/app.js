@@ -4885,7 +4885,7 @@
 	    var _console;
 
 	    (_console = console).log.apply(_console, _arguments);
-	    console.trace();
+	    // console.trace();
 	  },
 	  debug: console.log,
 	  error: console.error,
@@ -10349,13 +10349,9 @@
 
 	var _Analysts2 = _interopRequireDefault(_Analysts);
 
-	var _Marketers = __webpack_require__(176);
+	var _Employees = __webpack_require__(191);
 
-	var _Marketers2 = _interopRequireDefault(_Marketers);
-
-	var _Programmers = __webpack_require__(177);
-
-	var _Programmers2 = _interopRequireDefault(_Programmers);
+	var _Employees2 = _interopRequireDefault(_Employees);
 
 	var _Economics = __webpack_require__(163);
 
@@ -10429,9 +10425,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var MODE_METRICS = 'MODE_METRICS';
 	// import React, { Component, PropTypes } from 'react';
 
+	var MODE_METRICS = 'MODE_METRICS';
 	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
@@ -10593,7 +10589,6 @@
 
 	      var market = _productStore2.default.getMarketShare(id);
 
-	      var nearestCompetitor = _this.renderCompetitors(id, _productStore2.default.getRating(id));
 	      var segmentTab = _this.renderSegmentTab(id);
 	      var adTab = _this.renderAdTab(id, product);
 
@@ -11030,33 +11025,6 @@
 	      }
 	    }
 	  }, {
-	    key: 'renderCompetitors',
-	    value: function renderCompetitors(id, rating) {
-	      if (!_stages2.default.canShowCompetitorsTab()) return '';
-
-	      var competitor = _productStore2.default.getNextCompetitorInfo(id);
-
-	      if (competitor) {
-	        return (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            null,
-	            '\u041D\u0430\u0448 \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u0439 \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442'
-	          ),
-	          (0, _preact.h)(_competitor2.default, { rating: rating, c: competitor, i: -1 }),
-	          (0, _preact.h)('br', null)
-	        );
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        '\u0412\u044B - \u21161 \u043D\u0430 \u0440\u044B\u043D\u043A\u0435!'
-	      );
-	    }
-	  }, {
 	    key: 'renderSegmentTab',
 	    value: function renderSegmentTab(id) {
 	      var segments = _productStore2.default.getSegments(id);
@@ -11096,16 +11064,9 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'staff-group-title' },
-	          '\u041D\u0430\u0439\u043C \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u043E\u0432'
+	          '\u041D\u0430\u0439\u043C \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u043A\u043E\u0432'
 	        ),
-	        (0, _preact.h)(_Programmers2.default, null),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'staff-group-title' },
-	          '\u041D\u0430\u0439\u043C \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u043E\u0432'
-	        ),
-	        (0, _preact.h)(_Marketers2.default, null)
+	        (0, _preact.h)(_Employees2.default, null)
 	      );
 	    }
 	  }, {
@@ -11391,19 +11352,14 @@
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Staff.__proto__ || (0, _getPrototypeOf2.default)(Staff)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
 	      staff: [],
 	      employees: [],
-	      teamToggle: false,
-	      employeeToggle: false,
-	      switcher: IS_EMPLOYEES
-	    }, _this.setStaff = function () {
-	      _this.setMode(IS_STAFF);
-	    }, _this.setEmployees = function () {
-	      _this.setMode(IS_EMPLOYEES);
-	    }, _this.setMode = function (switcher) {
-	      _this.setState({ switcher: switcher });
+	      teamToggle: false
 	    }, _this.getStaff = function () {
 	      _this.setState({
 	        staff: _playerStore2.default.getTeam(),
-	        employees: _playerStore2.default.getEmployees()
+	        employees: _playerStore2.default.getEmployees(),
+
+	        pps: _playerStore2.default.getMonthlyProgrammerPoints(),
+	        mps: _playerStore2.default.getMonthlyMarketerPoints()
 	      });
 	    }, _this.toggle = function (name) {
 	      return function () {
@@ -11418,7 +11374,7 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.getStaff();
-	      //
+
 	      _playerStore2.default.addChangeListener(this.getStaff);
 	    }
 	  }, {
@@ -11442,18 +11398,14 @@
 	    key: 'render',
 	    value: function render(props, _ref2) {
 	      var staff = _ref2.staff,
-	          employees = _ref2.employees,
-	          switcher = _ref2.switcher,
 	          teamToggle = _ref2.teamToggle,
-	          employeeToggle = _ref2.employeeToggle;
+	          pps = _ref2.pps,
+	          mps = _ref2.mps;
 
 	      if (!_stages2.default.canShowTeamTabs()) return (0, _preact.h)('div', null);
 
 	      var staffList = staff.map(function (p, i) {
 	        return (0, _preact.h)(_Worker2.default, { p: p, i: i });
-	      });
-	      var employeeList = employees.map(function (p, i) {
-	        return (0, _preact.h)(_Employee2.default, { p: p, i: i });
 	      });
 
 	      var staffVisible = staff.length && !teamToggle;
@@ -11476,92 +11428,6 @@
 	        );
 	      }
 
-	      var employeeTab = void 0;
-	      if (employees.length && !employeeToggle) {
-	        employeeTab = (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'table',
-	            { className: 'table table-striped' },
-	            (0, _preact.h)(
-	              'tbody',
-	              null,
-	              employeeList
-	            )
-	          )
-	        );
-	      }
-
-	      var tab = void 0;
-	      var amount = void 0;
-	      switch (switcher) {
-	        case IS_EMPLOYEES:
-	          amount = employees.length ? '(' + employees.length + ')' : '';
-	          tab = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              (0, _preact.h)(
-	                'h4',
-	                { className: 'staff-switcher' },
-	                '\u041D\u0430\u0439\u043C \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u043A\u043E\u0432 ',
-	                amount
-	              ),
-	              (0, _preact.h)(
-	                'span',
-	                { className: 'link', onClick: this.setStaff },
-	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
-	              )
-	            ),
-	            (0, _preact.h)('br', null),
-	            employeeTab
-	          );
-	          break;
-	        case IS_STAFF:
-	          amount = staff.length ? '(' + staff.length + ')' : '';
-	          // <UI.Button text="Нанять сотрудника" link onClick={this.setEmployees} />
-	          tab = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              (0, _preact.h)(
-	                'h4',
-	                { className: 'staff-switcher' },
-	                '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
-	              ),
-	              (0, _preact.h)(
-	                'span',
-	                { className: 'link', onClick: this.setEmployees },
-	                '\u041D\u0430\u043D\u044F\u0442\u044C \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u043A\u0430'
-	              )
-	            ),
-	            (0, _preact.h)('br', null),
-	            staffTab
-	          );
-	          break;
-	      }
-
-	      // <div>Месячная производительность команды: +{mp}MP +{pp}PP </div>
-
-	      // <nav aria-label="Page navigation example">
-	      //   <ul className="pagination justify-content-center">
-	      //     <li className={`page-item ${switcher === IS_STAFF ? 'active' : ''}`}>
-	      //       <span onClick={this.setStaff} className="page-link" tabindex="-1">Команда ({staffLength})</span>
-	      //     </li>
-	      //     <li className={`page-item ${switcher === IS_EMPLOYEES ? 'active' : ''}`}>
-	      //       <span onClick={this.setEmployees} className="page-link">Нанять ({employees.length})</span>
-	      //     </li>
-	      //   </ul>
-	      // </nav>
-
-	      // {staff.map((s, i) => <Worker p={s} i={i} />)}
-	      // {tab}
-	      //     <span className="link" onClick={this.setEmployees}>Нанять сотрудника</span>
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'staff-table' },
@@ -11570,13 +11436,23 @@
 	          'div',
 	          null,
 	          (0, _preact.h)(
+	            'h4',
+	            { className: 'staff-switcher' },
+	            '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
+	          ),
+	          (0, _preact.h)(
 	            'div',
 	            null,
-	            (0, _preact.h)(
-	              'h4',
-	              { className: 'staff-switcher' },
-	              '\u041A\u043E\u043C\u0430\u043D\u0434\u0430'
-	            )
+	            '\u041D\u0430\u0448\u0438 \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u044F\u0442 +',
+	            pps,
+	            ' \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u0441\u043A\u0438\u0445 \u043E\u0447\u043A\u043E\u0432 (PP) \u0432 \u043C\u0435\u0441\u044F\u0446'
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u041D\u0430\u0448\u0438 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0438 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u044F\u0442 +',
+	            mps,
+	            ' \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u0441\u043A\u0438\u0445 \u043E\u0447\u043A\u043E\u0432 (MP) \u0432 \u043C\u0435\u0441\u044F\u0446'
 	          ),
 	          (0, _preact.h)('br', null),
 	          staffTab
@@ -14739,6 +14615,126 @@
 	  addModalMessage: addModalMessage,
 	  addPlainMessage: addPlainMessage
 	};
+
+/***/ },
+/* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(40);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(45);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(46);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(50);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(85);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _playerStore = __webpack_require__(128);
+
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _Staff = __webpack_require__(170);
+
+	var _Staff2 = _interopRequireDefault(_Staff);
+
+	var _Employee = __webpack_require__(174);
+
+	var _Employee2 = _interopRequireDefault(_Employee);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Employees = function (_Component) {
+	  (0, _inherits3.default)(Employees, _Component);
+
+	  function Employees() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Employees);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Employees.__proto__ || (0, _getPrototypeOf2.default)(Employees)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      staff: [],
+	      employees: []
+	    }, _this.getStaff = function () {
+	      _this.setState({
+	        employees: _playerStore2.default.getEmployees(),
+	        pps: _playerStore2.default.getMonthlyProgrammerPoints(),
+	        mps: _playerStore2.default.getMonthlyMarketerPoints()
+	      });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Employees, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.getStaff();
+
+	      _playerStore2.default.addChangeListener(this.getStaff);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(props, _ref2) {
+	      var staff = _ref2.staff,
+	          employees = _ref2.employees,
+	          pps = _ref2.pps,
+	          mps = _ref2.mps;
+
+	      var title = void 0;
+
+	      if (!employees.length) {
+	        title = 'Никто не хочет к нам в команду. Не расстраивайтесь! В следующем месяце появятся новые кандидаты';
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          title
+	        ),
+	        (0, _preact.h)(
+	          'table',
+	          { className: 'table table-stripped' },
+	          (0, _preact.h)(
+	            'tbody',
+	            null,
+	            employees.map(function (e, i) {
+	              return (0, _preact.h)(_Employee2.default, { p: e, i: i });
+	            })
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return Employees;
+	}(_preact.Component);
+
+	exports.default = Employees;
 
 /***/ }
 /******/ ]);

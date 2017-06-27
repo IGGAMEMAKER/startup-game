@@ -7,8 +7,7 @@ type PropsType = {};
 import Staff from '../../Staff';
 
 import Analysts from '../../Team/Analysts';
-import Marketers from '../../Team/Marketers';
-import Programmers from '../../Team/Programmers';
+import Employees from '../../Team/Employees';
 
 import Economics from '../../Economics/Economics';
 
@@ -191,22 +190,6 @@ export default class ProductPanel extends Component {
     );
   };
 
-  renderCompetitors(id, rating) {
-    if (!stageHelper.canShowCompetitorsTab()) return '';
-
-    const competitor = productStore.getNextCompetitorInfo(id);
-
-    if (competitor) {
-      return <div>
-        <div>Наш ближайший конкурент</div>
-        <Competitor rating={rating} c={competitor} i={-1} />
-        <br />
-      </div>
-    }
-
-    return <div>Вы - №1 на рынке!</div>
-  }
-
   renderSegmentTab(id) {
     let segments = productStore.getSegments(id);
 
@@ -233,7 +216,6 @@ export default class ProductPanel extends Component {
 
     const market = productStore.getMarketShare(id);
 
-    const nearestCompetitor = this.renderCompetitors(id, productStore.getRating(id));
     const segmentTab = this.renderSegmentTab(id);
     const adTab = this.renderAdTab(id, product);
 
@@ -338,11 +320,8 @@ export default class ProductPanel extends Component {
       <div>
         <Staff />
         <br />
-        <div className="staff-group-title">Найм программистов</div>
-        <Programmers />
-        <br />
-        <div className="staff-group-title">Найм маркетологов</div>
-        <Marketers />
+        <div className="staff-group-title">Найм сотрудников</div>
+        <Employees />
       </div>
     )
   }

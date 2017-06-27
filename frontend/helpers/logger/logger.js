@@ -1,7 +1,7 @@
 export default {
-  log: ()=> {
+  log: () => {
     console.log(...arguments);
-    console.trace();
+    // console.trace();
   },
   debug: console.log,
   error: console.error,
