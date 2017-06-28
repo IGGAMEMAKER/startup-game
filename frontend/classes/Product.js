@@ -134,18 +134,27 @@ export default class Product {
   }
 
   getHypeDampingStructured() {
+    const blogPower = this.getBlogHypeModifier();
+    const churnModifier = this.getChurnRate().pretty;
+
+    const blog = Math.floor(mapper(blogPower, 0, 1, 0, 40));
+    const churn = Math.ceil(mapper(this.getRating(), 0, 10, 10, 50));
+
+    // logger.debug(`getHypeDampingStructured,
+    // blogPower: ${blogPower}, churnModifier: ${churnModifier},
+    // blog: ${blog}, churn: ${churn},
+    // `);
+
     return {
-      base: 90,
-      blog: -30,
+      base: 70,
+      blog: -blog,
       tech: -50,
-      churn: 10,
+      churn: churn,
       clientModifier: this.getClients() / 1000
     }
   }
 
   getHypeDampingValue() {
-    mapper(1, 0, 10, 100, 200);
-
     const current = this.getHypeValue();
 
     const data = this.getHypeDampingStructured();
@@ -412,6 +421,8 @@ export default class Product {
   }
 
   getBlogHypeModifier() {
+    return this.getBlogPower();
+
     return Math.ceil(this.getClients() * this.getBlogPower() / 1000);
   }
 
@@ -505,7 +516,7 @@ export default class Product {
     // logger.debug('product-store.js getChurnRate', churn);
 
     return {
-      raw: churn,
+      raw: churn, // 0 - 1
       pretty: percentify(churn)
     };
   }

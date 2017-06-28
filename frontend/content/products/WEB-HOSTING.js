@@ -1,6 +1,8 @@
 import scheduleStore from '../../stores/schedule-store';
 
 const timeModifier = (value) => {
+  return value;
+
   const day = scheduleStore.getDay();
   const year = Math.floor(day / 30 / 12);
 

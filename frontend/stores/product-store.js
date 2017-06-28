@@ -571,8 +571,6 @@ class ProductStore extends EventEmitter {
     const ourCompany = _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))[0];
     // logger.log('getCompetitorsList', _products);
 
-    logger.log('getCompetitorsList');
-
       // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
     return _products
       .map((p, i) => ({ p, id: i })) //  Object.assign({ id: i }, p)
@@ -582,7 +580,7 @@ class ProductStore extends EventEmitter {
 
         const name = p.name;
 
-        logger.log('competitor', id, p);
+        // logger.log('competitor', id, p);
 
         const rating = round(computeRating(p, 0));
         const hype = p.getHypeValue();

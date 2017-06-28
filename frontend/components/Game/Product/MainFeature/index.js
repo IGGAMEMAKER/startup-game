@@ -74,7 +74,7 @@ export default class MainFeature extends Component {
 
         if (rating === 0) return '';
 
-        const defaultQuality = flux.productStore.getMainFeatureDefaultQualityByFeatureId(id, featureId);
+        const defaultQuality = flux.productStore.getCurrentMainFeatureDefaultsById(id)[featureId];
         const normalisedRatingDelta = round(rating * 1000 / defaultQuality);
 
         openedInfluence = true;

@@ -3789,8 +3789,6 @@
 	      })[0];
 	      // logger.log('getCompetitorsList', _products);
 
-	      _logger2.default.log('getCompetitorsList');
-
 	      // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
 	      return _products.map(function (p, i) {
 	        return { p: p, id: i };
@@ -3801,7 +3799,7 @@
 
 	        var name = p.name;
 
-	        _logger2.default.log('competitor', id, p);
+	        // logger.log('competitor', id, p);
 
 	        var rating = (0, _round2.default)((0, _computeRating2.default)(p, 0));
 	        var hype = p.getHypeValue();
@@ -5086,6 +5084,8 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var timeModifier = function timeModifier(value) {
+	  return value;
+
 	  var day = _scheduleStore2.default.getDay();
 	  var year = Math.floor(day / 30 / 12);
 
@@ -5867,19 +5867,28 @@
 	  }, {
 	    key: 'getHypeDampingStructured',
 	    value: function getHypeDampingStructured() {
+	      var blogPower = this.getBlogHypeModifier();
+	      var churnModifier = this.getChurnRate().pretty;
+
+	      var blog = Math.floor((0, _mapper2.default)(blogPower, 0, 1, 0, 40));
+	      var churn = Math.ceil((0, _mapper2.default)(this.getRating(), 0, 10, 10, 50));
+
+	      // logger.debug(`getHypeDampingStructured,
+	      // blogPower: ${blogPower}, churnModifier: ${churnModifier},
+	      // blog: ${blog}, churn: ${churn},
+	      // `);
+
 	      return {
-	        base: 90,
-	        blog: -30,
+	        base: 70,
+	        blog: -blog,
 	        tech: -50,
-	        churn: 10,
+	        churn: churn,
 	        clientModifier: this.getClients() / 1000
 	      };
 	    }
 	  }, {
 	    key: 'getHypeDampingValue',
 	    value: function getHypeDampingValue() {
-	      (0, _mapper2.default)(1, 0, 10, 100, 200);
-
 	      var current = this.getHypeValue();
 
 	      var data = this.getHypeDampingStructured();
@@ -6176,6 +6185,8 @@
 	  }, {
 	    key: 'getBlogHypeModifier',
 	    value: function getBlogHypeModifier() {
+	      return this.getBlogPower();
+
 	      return Math.ceil(this.getClients() * this.getBlogPower() / 1000);
 	    }
 	  }, {
@@ -6280,7 +6291,7 @@
 	      // logger.debug('product-store.js getChurnRate', churn);
 
 	      return {
-	        raw: churn,
+	        raw: churn, // 0 - 1
 	        pretty: (0, _percentify2.default)(churn)
 	      };
 	    }
@@ -13357,7 +13368,7 @@
 
 	        if (rating === 0) return '';
 
-	        var defaultQuality = _flux2.default.productStore.getMainFeatureDefaultQualityByFeatureId(id, featureId);
+	        var defaultQuality = _flux2.default.productStore.getCurrentMainFeatureDefaultsById(id)[featureId];
 	        var normalisedRatingDelta = (0, _round2.default)(rating * 1000 / defaultQuality);
 
 	        openedInfluence = true;
@@ -14822,12 +14833,10 @@
 	exports.default = function (value, inputMin, inputMax, outputMin, outputMax) {
 	  var percent = (value - inputMin) / (inputMax - inputMin);
 
-	  _logger2.default.debug('mapper.js', value, inputMin, inputMax, outputMin, outputMax);
-	  _logger2.default.debug('percent is', percent);
-
 	  var result = outputMin + percent * (outputMax - outputMin);
 
-	  _logger2.default.debug('result is ', result);
+	  // logger.debug('mapper.js', `${percent * 100}%`, value, inputMin,
+	  //   inputMax, outputMin, outputMax, 'result is ', result);
 
 	  return result;
 	};
