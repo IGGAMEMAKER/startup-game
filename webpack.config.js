@@ -62,57 +62,56 @@ module.exports = [
 //     })
 //   ]
 // },
-
   {
-  name: 'react',
-  entry: {
-    app: `${sourceDir}/app.js`,
-  },
-  output: {
-    // filename: 'app.js',
-    // path: __dirname
-    filename: '[name].js',
-    path: JS_DIST_DIR
-  },
-  module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        loader: 'babel',
-        query: {
-          presets: ['es2015', 'stage-0'],
-          plugins: [
-            ['transform-react-jsx', {
-              pragma: 'h'
-            }],
-            // ['typecheck', {
-            //   disable: {
-            //     production: true
-            //   }
-            // }],
-            'syntax-flow',
-            'transform-flow-strip-types',
-            'transform-runtime'
-          ],
-          cacheDirectory: true
+    name: 'react',
+    entry: {
+      app: `${sourceDir}/app.js`,
+    },
+    output: {
+      // filename: 'app.js',
+      // path: __dirname
+      filename: '[name].js',
+      path: JS_DIST_DIR
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.js$/,
+          loader: 'babel',
+          query: {
+            presets: ['es2015', 'stage-0'],
+            plugins: [
+              ['transform-react-jsx', {
+                pragma: 'h'
+              }],
+              // ['typecheck', {
+              //   disable: {
+              //     production: true
+              //   }
+              // }],
+              'syntax-flow',
+              'transform-flow-strip-types',
+              'transform-runtime'
+            ],
+            cacheDirectory: true
+          },
+          exclude: /(node_modules|bower_components)/
         },
-        exclude: /(node_modules|bower_components)/
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
-      },
-      {
-        test: /\.css/,
-        loader: 'style!css?minimize'
-      }
-    ]
-  },
-  plugins: [
-    new LiveReloadPlugin({
-      port: 35739
-    }),
-    // new webpack.optimize.UglifyJsPlugin({minimize: true})
-  ],
-}
+        {
+          test: /\.json$/,
+          loader: 'json-loader'
+        },
+        {
+          test: /\.css/,
+          loader: 'style!css?minimize'
+        }
+      ]
+    },
+    plugins: [
+      new LiveReloadPlugin({
+        port: 35739
+      }),
+      // new webpack.optimize.UglifyJsPlugin({minimize: true})
+    ],
+  }
 ];

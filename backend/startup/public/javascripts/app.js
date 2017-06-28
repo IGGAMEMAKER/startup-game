@@ -5729,6 +5729,10 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
+	var _mapper = __webpack_require__(192);
+
+	var _mapper2 = _interopRequireDefault(_mapper);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -5861,9 +5865,27 @@
 	      return this.getChurnRate().raw;
 	    }
 	  }, {
+	    key: 'getHypeDampingStructured',
+	    value: function getHypeDampingStructured() {
+	      return {
+	        base: 90,
+	        blog: -30,
+	        tech: -50,
+	        churn: 10,
+	        clientModifier: this.getClients() / 1000
+	      };
+	    }
+	  }, {
 	    key: 'getHypeDampingValue',
 	    value: function getHypeDampingValue() {
-	      var v = Math.ceil(this.getHypeValue() * this.getHypeDamping()) - this.getBlogHypeModifier();
+	      (0, _mapper2.default)(1, 0, 10, 100, 200);
+
+	      var current = this.getHypeValue();
+
+	      var data = this.getHypeDampingStructured();
+	      var percent = Math.min(data.base + data.blog + data.tech + data.churn, 100);
+
+	      var v = Math.floor(current * percent / 100);
 
 	      return -v;
 	    }
@@ -11498,7 +11520,7 @@
 	            null,
 	            '\u041D\u0430\u0448\u0438 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0438 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u044F\u0442 +',
 	            mps,
-	            ' \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u0441\u043A\u0438\u0445 \u043E\u0447\u043A\u043E\u0432 (MP) \u0432 \u043C\u0435\u0441\u044F\u0446'
+	            ' \u043C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433\u043E\u0432\u044B\u0445 \u043E\u0447\u043A\u043E\u0432 (MP) \u0432 \u043C\u0435\u0441\u044F\u0446'
 	          ),
 	          (0, _preact.h)('br', null),
 	          staffTab
@@ -13356,7 +13378,7 @@
 	    key: 'renderUpgradeCostModifierBonus',
 	    value: function renderUpgradeCostModifierBonus(id, featureId) {
 	      if (_flux2.default.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
-	        return '\u041C\u044B \u0437\u0430\u0434\u0430\u0451\u043C \u043D\u043E\u0432\u044B\u0435 \u0442\u0440\u0435\u043D\u0434\u044B! \u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: 400%';
+	        return '\u041C\u044B \u0437\u0430\u0434\u0430\u0451\u043C \u043D\u043E\u0432\u044B\u0435 \u0442\u0440\u0435\u043D\u0434\u044B! \u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F: +400%';
 	      }
 
 	      if (_flux2.default.productStore.isWeAreRetards(id, featureId)) {
@@ -14786,6 +14808,35 @@
 	}(_preact.Component);
 
 	exports.default = Employees;
+
+/***/ },
+/* 192 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (value, inputMin, inputMax, outputMin, outputMax) {
+	  var percent = (value - inputMin) / (inputMax - inputMin);
+
+	  _logger2.default.debug('mapper.js', value, inputMin, inputMax, outputMin, outputMax);
+	  _logger2.default.debug('percent is', percent);
+
+	  var result = outputMin + percent * (outputMax - outputMin);
+
+	  _logger2.default.debug('result is ', result);
+
+	  return result;
+	};
+
+	var _logger = __webpack_require__(108);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }
 /******/ ]);

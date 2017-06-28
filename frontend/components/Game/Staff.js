@@ -95,7 +95,7 @@ export default class Staff extends Component {
         <div>
           <h4 className="staff-switcher">Команда</h4>
           <div>Наши программисты производят +{pps} программистских очков (PP) в месяц</div>
-          <div>Наши маркетологи производят +{mps} программистских очков (MP) в месяц</div>
+          <div>Наши маркетологи производят +{mps} маркетинговых очков (MP) в месяц</div>
           <br />
           {staffTab}
         </div>

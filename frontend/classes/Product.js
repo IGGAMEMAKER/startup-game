@@ -18,6 +18,7 @@ import companyMerger from '../helpers/products/company-merger';
 import * as balance from '../constants/balance';
 
 import round from '../helpers/math/round';
+import mapper from '../helpers/math/mapper';
 
 
 export default class Product {
@@ -43,7 +44,7 @@ export default class Product {
     if (isCompetitor) {
       maxRating = 8;
     } else {
-      
+
     }
 
     const luck = random(1, maxRating) / 10; // luck in 0.1-0.6
@@ -132,8 +133,25 @@ export default class Product {
     return this.getChurnRate().raw;
   }
 
+  getHypeDampingStructured() {
+    return {
+      base: 90,
+      blog: -30,
+      tech: -50,
+      churn: 10,
+      clientModifier: this.getClients() / 1000
+    }
+  }
+
   getHypeDampingValue() {
-    const v = Math.ceil(this.getHypeValue() * this.getHypeDamping()) - this.getBlogHypeModifier();
+    mapper(1, 0, 10, 100, 200);
+
+    const current = this.getHypeValue();
+
+    const data = this.getHypeDampingStructured();
+    const percent = Math.min(data.base + data.blog + data.tech + data.churn, 100);
+
+    const v = Math.floor(current * percent / 100);
 
     return -v;
   }
