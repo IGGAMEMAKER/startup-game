@@ -5913,8 +5913,12 @@
 	      var blogPower = this.getBlogHypeModifier();
 	      var rating = this.getRating();
 
-	      var blog = Math.floor((0, _mapper2.default)(blogPower, 0, 1, 0, 40));
-	      var churn = Math.ceil((0, _mapper2.default)(10 - rating, 0, 10, 10, 50));
+	      var blogRange = [0, 40];
+	      var churnRange = [10, 50];
+	      var techRange = [0, 25];
+
+	      var blog = Math.floor((0, _mapper2.default)(blogPower, 0, 1, blogRange[0], blogRange[1]));
+	      var churn = Math.ceil((0, _mapper2.default)(10 - rating, 0, 10, churnRange[0], churnRange[1]));
 
 	      // logger.debug(`getHypeDampingStructured,
 	      // blogPower: ${blogPower}, churnModifier: ${churnModifier},
@@ -5922,13 +5926,13 @@
 	      // `);
 
 	      var maxNumberOfTechnologies = (0, _productDescriptions2.default)(this.idea).features.length;
-	      var tech = Math.floor((0, _mapper2.default)(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, 0, 50));
+	      var tech = Math.floor((0, _mapper2.default)(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, techRange[0], techRange[1]));
 
 	      var base = 90;
 	      return {
-	        blogRange: [0, 40],
-	        churnRange: [10, 50],
-	        techRange: [0, 50],
+	        blogRange: blogRange,
+	        churnRange: churnRange,
+	        techRange: techRange,
 	        base: base,
 	        blog: -blog,
 	        tech: -tech,

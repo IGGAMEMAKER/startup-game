@@ -136,8 +136,12 @@ export default class Product {
     const blogPower = this.getBlogHypeModifier();
     const rating = this.getRating();
 
-    const blog = Math.floor(mapper(blogPower, 0, 1, 0, 40));
-    const churn = Math.ceil(mapper(10 - rating, 0, 10, 10, 50));
+    const blogRange = [0, 40];
+    const churnRange = [10, 50];
+    const techRange = [0, 25];
+
+    const blog = Math.floor(mapper(blogPower, 0, 1, blogRange[0], blogRange[1]));
+    const churn = Math.ceil(mapper(10 - rating, 0, 10, churnRange[0], churnRange[1]));
 
     // logger.debug(`getHypeDampingStructured,
     // blogPower: ${blogPower}, churnModifier: ${churnModifier},
@@ -145,13 +149,13 @@ export default class Product {
     // `);
 
     const maxNumberOfTechnologies = productDescriptions(this.idea).features.length;
-    const tech = Math.floor(mapper(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, 0, 50));
+    const tech = Math.floor(mapper(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, techRange[0], techRange[1]));
 
     const base = 90;
     return {
-      blogRange: [0, 40],
-      churnRange: [10, 50],
-      techRange: [0, 50],
+      blogRange,
+      churnRange,
+      techRange,
       base,
       blog: -blog,
       tech: -tech,
