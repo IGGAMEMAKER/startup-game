@@ -147,11 +147,16 @@ export default class Product {
     const maxNumberOfTechnologies = productDescriptions(this.idea).features.length;
     const tech = Math.floor(mapper(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, 0, 50));
 
+    const base = 90;
     return {
-      base: 70,
+      blogRange: [0, 40],
+      churnRange: [10, 50],
+      techRange: [0, 50],
+      base,
       blog: -blog,
       tech: -tech,
       churn: churn,
+      percent: Math.min(base - blog - tech + churn, 100),
       clientModifier: this.getClients() / 1000
     }
   }
@@ -160,9 +165,8 @@ export default class Product {
     const current = this.getHypeValue();
 
     const data = this.getHypeDampingStructured(numberOfTechnologiesWhereWeMadeBreakthrough);
-    const percent = Math.min(data.base + data.blog + data.tech + data.churn, 100);
 
-    const v = Math.floor(current * percent / 100);
+    const v = Math.floor(current * data.percent / 100);
 
     return -v;
   }

@@ -3928,7 +3928,7 @@
 	  (function () {
 	    switch (p.type) {
 	      case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-	        _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 6999);
+	        _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 69999);
 	        break;
 
 	      case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
@@ -5924,11 +5924,16 @@
 	      var maxNumberOfTechnologies = (0, _productDescriptions2.default)(this.idea).features.length;
 	      var tech = Math.floor((0, _mapper2.default)(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, 0, 50));
 
+	      var base = 90;
 	      return {
-	        base: 70,
+	        blogRange: [0, 40],
+	        churnRange: [10, 50],
+	        techRange: [0, 50],
+	        base: base,
 	        blog: -blog,
 	        tech: -tech,
 	        churn: churn,
+	        percent: Math.min(base - blog - tech + churn, 100),
 	        clientModifier: this.getClients() / 1000
 	      };
 	    }
@@ -5938,9 +5943,8 @@
 	      var current = this.getHypeValue();
 
 	      var data = this.getHypeDampingStructured(numberOfTechnologiesWhereWeMadeBreakthrough);
-	      var percent = Math.min(data.base + data.blog + data.tech + data.churn, 100);
 
-	      var v = Math.floor(current * percent / 100);
+	      var v = Math.floor(current * data.percent / 100);
 
 	      return -v;
 	    }
@@ -7091,8 +7095,8 @@
 	];
 
 	var _points = {
-	  programming: 300,
-	  marketing: 200,
+	  programming: 5300,
+	  marketing: 5200,
 	  analyst: 300
 	};
 
@@ -10597,6 +10601,14 @@
 
 	var _stats2 = _interopRequireDefault(_stats);
 
+	var _Product = __webpack_require__(124);
+
+	var _Product2 = _interopRequireDefault(_Product);
+
+	var _coloringRange = __webpack_require__(173);
+
+	var _coloringRange2 = _interopRequireDefault(_coloringRange);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -10903,8 +10915,8 @@
 	          '\u041C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433'
 	        ),
 	        supportCostTab,
-	        clientTab,
-	        adTab
+	        adTab,
+	        clientTab
 	      );
 	      // {nearestCompetitor}
 	      // {segmentTab}
@@ -11251,6 +11263,66 @@
 	  }, {
 	    key: 'renderBonusesTab',
 	    value: function renderBonusesTab(id, product) {
+	      var hypeDampingStructured = product.getHypeDampingStructured(product.getNumberOfTechnologiesWhereWeMadeBreakthrough());
+	      var blogRange = hypeDampingStructured.blogRange,
+	          churnRange = hypeDampingStructured.churnRange,
+	          techRange = hypeDampingStructured.techRange,
+	          base = hypeDampingStructured.base,
+	          blog = hypeDampingStructured.blog,
+	          tech = hypeDampingStructured.tech,
+	          churn = hypeDampingStructured.churn,
+	          percent = hypeDampingStructured.percent;
+
+
+	      var blogStyleColor = _coloringRange2.default.ranged(-blog, blogRange[0], blogRange[1]);
+	      var techStyleColor = _coloringRange2.default.ranged(-tech, techRange[0], techRange[1]);
+
+	      var churnStyleColor = _coloringRange2.default.ranged(churn, churnRange[1], churnRange[0]);
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0415\u0436\u0435\u043C\u0435\u0441\u044F\u0447\u043D\u043E\u0435 \u0441\u043D\u0438\u0436\u0435\u043D\u0438\u0435 \u0438\u0437\u0432\u0435\u0441\u0442\u043D\u043E\u0441\u0442\u0438 (HYPE): ',
+	          percent,
+	          '%'
+	        ),
+	        (0, _preact.h)(
+	          'ul',
+	          null,
+	          (0, _preact.h)(
+	            'li',
+	            null,
+	            '\u0411\u0430\u0437\u043E\u0432\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435: ',
+	            base,
+	            '%'
+	          ),
+	          (0, _preact.h)(
+	            'li',
+	            { style: 'color: ' + blogStyleColor },
+	            '\u041E\u0442 \u0431\u043B\u043E\u0433\u0430: ',
+	            blog,
+	            '%'
+	          ),
+	          (0, _preact.h)(
+	            'li',
+	            { style: 'color: ' + churnStyleColor },
+	            '\u041E\u0442 \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430: ',
+	            churn,
+	            '%'
+	          ),
+	          (0, _preact.h)(
+	            'li',
+	            { style: 'color: ' + techStyleColor },
+	            '\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u043B\u0438\u0434\u0435\u0440\u0441\u0442\u0432\u043E: ',
+	            tech,
+	            '%'
+	          )
+	        )
+	      );
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -11922,13 +11994,20 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = {
-	  standard: function standard(value, range) {
-	    var green = Math.floor(value * 160 / range);
-	    var red = 255 - Math.floor(value * 255 / range);
+	var standard = function standard(value, range) {
+	  var green = Math.floor(value * 160 / range);
+	  var red = 255 - Math.floor(value * 255 / range);
 
-	    return "rgba(" + red + ", " + green + ", 0, 1)"; //`rgba(${red}, ${green}, 0, 1)`;
-	  }
+	  return "rgba(" + red + ", " + green + ", 0, 1)"; //`rgba(${red}, ${green}, 0, 1)`;
+	};
+
+	var ranged = function ranged(value, min, max) {
+	  return standard(value - min, max - min);
+	};
+
+	exports.default = {
+	  standard: standard,
+	  ranged: ranged
 	};
 
 /***/ },

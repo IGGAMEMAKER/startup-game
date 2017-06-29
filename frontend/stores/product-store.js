@@ -688,7 +688,7 @@ Dispatcher.register((p: PayloadType) => {
   let change = true;
   switch (p.type) {
     case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 6999);
+      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 69999);
       break;
 
     case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:

@@ -36,6 +36,10 @@ import Segment from '../ClientPanel/segment';
 
 import stats from '../../../../stats';
 
+import Product from '../../../../classes/Product';
+
+import coloringRange from '../../../../helpers/coloring-range';
+
 
 const MODE_METRICS = 'MODE_METRICS';
 const MODE_RATING = 'MODE_RATING';
@@ -268,8 +272,8 @@ export default class ProductPanel extends Component {
       <div>
         <div className="featureGroupTitle">Маркетинг</div>
         {supportCostTab}
-        {clientTab}
         {adTab}
+        {clientTab}
       </div>
     );
     // {nearestCompetitor}
@@ -325,7 +329,33 @@ export default class ProductPanel extends Component {
     )
   }
 
-  renderBonusesTab(id, product) {
+  renderBonusesTab(id, product: Product) {
+    const hypeDampingStructured = product.getHypeDampingStructured(product.getNumberOfTechnologiesWhereWeMadeBreakthrough());
+    const { blogRange,
+      churnRange,
+      techRange,
+      base,
+      blog,
+      tech,
+      churn,
+      percent
+    } = hypeDampingStructured;
+
+    const blogStyleColor = coloringRange.ranged(-blog, blogRange[0], blogRange[1]);
+    const techStyleColor = coloringRange.ranged(-tech, techRange[0], techRange[1]);
+
+    const churnStyleColor = coloringRange.ranged(churn, churnRange[1], churnRange[0]);
+
+    return <div>
+      <div>Ежемесячное снижение известности (HYPE): {percent}%</div>
+      <ul>
+        <li>Базовое значение: {base}%</li>
+        <li style={`color: ${blogStyleColor}`}>От блога: {blog}%</li>
+        <li style={`color: ${churnStyleColor}`}>От рейтинга: {churn}%</li>
+        <li style={`color: ${techStyleColor}`}>Технологическое лидерство: {tech}%</li>
+      </ul>
+    </div>;
+
     return <div>No Bonuses</div>;
 
     const improvements = productStore.getImprovementChances(id);

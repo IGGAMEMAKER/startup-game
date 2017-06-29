@@ -27,8 +27,8 @@ let _expenses = [
 ];
 
 let _points = {
-  programming: 300,
-  marketing: 200,
+  programming: 5300,
+  marketing: 5200,
   analyst: 300
 };
 
