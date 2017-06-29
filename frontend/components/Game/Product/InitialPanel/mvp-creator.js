@@ -10,7 +10,7 @@ import Product from '../../../../classes/Product';
 const getCurrentDefaultFeatures = (idea) => {
   const value = productStore.getCurrentMainFeatureDefaultsByIdea(idea);
 
-  logger.debug('getCurrentDefaultFeatures in mvp-creator.js', value);
+  // logger.debug('getCurrentDefaultFeatures in mvp-creator.js', value);
   return value;
 };
 

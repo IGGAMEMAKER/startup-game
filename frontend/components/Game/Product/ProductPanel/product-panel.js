@@ -1,14 +1,9 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-type PropsType = {};
-
-
 import Staff from '../../Staff';
 
-import Analysts from '../../Team/Analysts';
 import Employees from '../../Team/Employees';
-
 import Economics from '../../Economics/Economics';
 
 
@@ -38,6 +33,8 @@ import stageHelper from '../../../../helpers/stages';
 import Competitors from '../Ads/competitors';
 import Competitor from '../Ads/competitor';
 import Segment from '../ClientPanel/segment';
+
+import stats from '../../../../stats';
 
 
 const MODE_METRICS = 'MODE_METRICS';
@@ -75,6 +72,8 @@ export default class ProductPanel extends Component {
   };
 
   setMode = (mode) => {
+    stats.saveAction('navigation', { mode });
+
     this.setState({ mode });
   };
 
@@ -456,10 +455,6 @@ export default class ProductPanel extends Component {
       </div>
     )
   };
-
-  renderCompetitorMode() {
-
-  }
 
   renderNavbar = (mode, name) => {
     return (

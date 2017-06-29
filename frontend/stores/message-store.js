@@ -68,6 +68,16 @@ class ScheduleStore extends EventEmitter {
   getPlainMessages() {
     return _messages.filter(m => !m.isModal);
   }
+
+  initialize(messages) {
+    _messages = messages;
+  }
+
+  getStoreData() {
+    return {
+      messages: _messages
+    }
+  }
 }
 
 const add = message => {

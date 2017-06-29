@@ -10,8 +10,6 @@ import * as IDEAS from '../constants/products/ideas';
 
 const EC = 'PRODUCT_EVENT_CHANGE';
 
-import percentify from '../helpers/math/percentify';
-
 import computeRating from '../helpers/products/compute-rating';
 import productDescriptions from '../helpers/products/product-descriptions';
 
@@ -20,9 +18,9 @@ import * as PRODUCT_STAGES from '../constants/products/product-stages';
 import companyCostComputer from '../helpers/products/compute-company-cost';
 import companyMerger from '../helpers/products/company-merger';
 
-import * as balance from '../constants/balance';
-
 import Product from '../classes/Product';
+
+import stats from '../stats';
 
 let _products: Array<Product> = [
   new Product({
@@ -471,11 +469,21 @@ class ProductStore extends EventEmitter {
     return value;
   }
 
+  initialize(products) {
+    _products = products;
+  }
+
+  getStoreData() {
+    return {
+      products: _products
+    }
+  }
+
   isUpgradeWillResultTechBreakthrough(id, featureId) {
     const current = this.getMainFeatureQualityByFeatureId(id, featureId);
     const max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
 
-    logger.debug('isUpgradeWillResultTechBreakthrough ?', current, max);
+    // logger.debug('isUpgradeWillResultTechBreakthrough ?', current, max);
 
     return current + 1000 > max;
   }
@@ -484,7 +492,7 @@ class ProductStore extends EventEmitter {
     const current = this.getMainFeatureQualityByFeatureId(id, featureId);
     const max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
 
-    logger.debug('isWeAreRetards ?', current, max);
+    // logger.debug('isWeAreRetards ?', current, max);
 
     return current < 0.3 * max;
   }
@@ -500,7 +508,6 @@ class ProductStore extends EventEmitter {
     }
 
 
-    logger.shit('write isWeAreRetards function!!');
     // we are retards
     if (this.isWeAreRetards(id, featureId)) {
       modifier = 0.25;
@@ -534,7 +541,7 @@ class ProductStore extends EventEmitter {
   }
 
   getCurrentMainFeatureDefaultsById(id) {
-    logger.debug('getCurrentMainFeatureDefaultsById in class', id);
+    // logger.debug('getCurrentMainFeatureDefaultsById in class', id);
     // const idea = this.getIdea(id);
 
     // return getCurrentMainFeatureDefaultsByIdea(idea);
@@ -606,7 +613,7 @@ class ProductStore extends EventEmitter {
           improvements: companyMerger.merge(ourCompany, p).improvements,
           id,
           hype,
-          hypeDamping: p.getHypeDampingValue()
+          hypeDamping: p.getHypeDampingValue(p.getNumberOfTechnologiesWhereWeMadeBreakthrough())
         }
       })
       .sort((a, b) => b.hype - a.hype);
@@ -770,6 +777,8 @@ Dispatcher.register((p: PayloadType) => {
   }
 
   if (change) {
+    stats.saveAction(p.type, p);
+
     store.emitChange();
   }
 });

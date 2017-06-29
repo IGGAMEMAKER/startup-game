@@ -37,14 +37,12 @@ export default class Product {
       logger.error(idea, name, isCompetitor);
       throw 'no default features!!!';
     }
-    logger.log('new Product constructor', defaultFeatures);
+    // logger.log('new Product constructor', defaultFeatures);
     // const defaultFeatures = defaults.features;
 
     let maxRating = 6;
     if (isCompetitor) {
       maxRating = 8;
-    } else {
-
     }
 
     const luck = random(1, maxRating) / 10; // luck in 0.1-0.6
@@ -82,6 +80,7 @@ export default class Product {
     };
 
     this.features = features;
+    this.featuresOnCreate = Object.assign({}, features);
     this.KPI = KPI;
     this.idea = idea;
     this.name = name;
@@ -133,31 +132,34 @@ export default class Product {
     return this.getChurnRate().raw;
   }
 
-  getHypeDampingStructured() {
+  getHypeDampingStructured(numberOfTechnologiesWhereWeMadeBreakthrough) {
     const blogPower = this.getBlogHypeModifier();
-    const churnModifier = this.getChurnRate().pretty;
+    const rating = this.getRating();
 
     const blog = Math.floor(mapper(blogPower, 0, 1, 0, 40));
-    const churn = Math.ceil(mapper(this.getRating(), 0, 10, 10, 50));
+    const churn = Math.ceil(mapper(10 - rating, 0, 10, 10, 50));
 
     // logger.debug(`getHypeDampingStructured,
     // blogPower: ${blogPower}, churnModifier: ${churnModifier},
     // blog: ${blog}, churn: ${churn},
     // `);
 
+    const maxNumberOfTechnologies = productDescriptions(this.idea).features.length;
+    const tech = Math.floor(mapper(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, 0, 50));
+
     return {
       base: 70,
       blog: -blog,
-      tech: -50,
+      tech: -tech,
       churn: churn,
       clientModifier: this.getClients() / 1000
     }
   }
 
-  getHypeDampingValue() {
+  getHypeDampingValue(numberOfTechnologiesWhereWeMadeBreakthrough) {
     const current = this.getHypeValue();
 
-    const data = this.getHypeDampingStructured();
+    const data = this.getHypeDampingStructured(numberOfTechnologiesWhereWeMadeBreakthrough);
     const percent = Math.min(data.base + data.blog + data.tech + data.churn, 100);
 
     const v = Math.floor(current * percent / 100);
@@ -986,6 +988,11 @@ export default class Product {
     // return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
   }
 
+  getNumberOfTechnologiesWhereWeMadeBreakthrough() {
+    return this.defaultFeatures
+      .filter((f, i) => this.getMainFeatureQualityByFeatureId(i) === f).length;
+  }
+
   setProductDefaults(stage, KPI, features, XP) {
     this.stage = stage;
     this.KPI = KPI;
@@ -1045,7 +1052,7 @@ export default class Product {
     let hypeIncrease = Math.ceil(this.getClients() * this.getBlogPower() / 1000);
 
     if (p.isTechnologyLeader) {
-      hypeIncrease *= 10;
+      hypeIncrease *= 100;
     }
 
     this.addHype(hypeIncrease);
@@ -1070,7 +1077,6 @@ export default class Product {
 
   improveFeatureByPoints(p) {
     this.features[p.featureGroup][p.featureName] = 1;
-    logger.log('improved feature by points');
   }
 
   addClients(p) {
@@ -1084,11 +1090,13 @@ export default class Product {
   }
 
   addHype(hype) {
-    this.KPI.hype = Math.min(100000, this.KPI.hype + hype);
+    this.KPI.hype = Math.min(productDescriptions(this.idea).marketSize * 10, this.KPI.hype + hype);
   }
 
   loseMonthlyHype() {
-    this.KPI.hype += this.getHypeDampingValue();
+    let numberOfTechnologiesWhereWeMadeBreakthrough = this.getNumberOfTechnologiesWhereWeMadeBreakthrough();
+
+    this.KPI.hype += this.getHypeDampingValue(numberOfTechnologiesWhereWeMadeBreakthrough);
   }
 
   addViralClients(p) {

@@ -8,6 +8,8 @@ import * as GAME_STAGES from '../constants/game-stages';
 
 import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../constants/work-speed';
 
+import stats from '../stats';
+
 const EC = 'MAIN_EVENT_CHANGE';
 
 let _tasks = [];
@@ -33,6 +35,7 @@ let _tasks = [];
 //   timecost: 2 * WORK_SPEED_NORMAL,
 //   speed: WORK_SPEED_NORMAL
 // }];
+
 let _day = 1;
 let _workHours = 4;
 
@@ -61,6 +64,20 @@ class ScheduleStore extends EventEmitter {
 
   getGamePhase() {
     return _gamePhase;
+  }
+
+  initialize({ tasks, day, gamePhase }) {
+    _tasks = tasks;
+    _day = day;
+    _gamePhase = gamePhase;
+  }
+
+  getStoreData() {
+    return {
+      tasks: _tasks,
+      day: _day,
+      gamePhase: _gamePhase
+    }
   }
 }
 
@@ -163,7 +180,11 @@ Dispatcher.register((p: PayloadType) => {
       break;
   }
 
-  if (change) store.emitChange();
+  if (change) {
+    stats.saveAction(p.type, p);
+
+    store.emitChange();
+  }
 });
 
 export default store;

@@ -3108,10 +3108,6 @@
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
-	var _percentify = __webpack_require__(110);
-
-	var _percentify2 = _interopRequireDefault(_percentify);
-
 	var _computeRating = __webpack_require__(111);
 
 	var _computeRating2 = _interopRequireDefault(_computeRating);
@@ -3132,13 +3128,13 @@
 
 	var _companyMerger2 = _interopRequireDefault(_companyMerger);
 
-	var _balance = __webpack_require__(123);
-
-	var balance = _interopRequireWildcard(_balance);
-
 	var _Product = __webpack_require__(124);
 
 	var _Product2 = _interopRequireDefault(_Product);
+
+	var _stats = __webpack_require__(195);
+
+	var _stats2 = _interopRequireDefault(_stats);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -3671,12 +3667,24 @@
 	      return value;
 	    }
 	  }, {
+	    key: 'initialize',
+	    value: function initialize(products) {
+	      _products = products;
+	    }
+	  }, {
+	    key: 'getStoreData',
+	    value: function getStoreData() {
+	      return {
+	        products: _products
+	      };
+	    }
+	  }, {
 	    key: 'isUpgradeWillResultTechBreakthrough',
 	    value: function isUpgradeWillResultTechBreakthrough(id, featureId) {
 	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
 	      var max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
 
-	      _logger2.default.debug('isUpgradeWillResultTechBreakthrough ?', current, max);
+	      // logger.debug('isUpgradeWillResultTechBreakthrough ?', current, max);
 
 	      return current + 1000 > max;
 	    }
@@ -3686,7 +3694,7 @@
 	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
 	      var max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
 
-	      _logger2.default.debug('isWeAreRetards ?', current, max);
+	      // logger.debug('isWeAreRetards ?', current, max);
 
 	      return current < 0.3 * max;
 	    }
@@ -3702,7 +3710,6 @@
 	        modifier = 4;
 	      }
 
-	      _logger2.default.shit('write isWeAreRetards function!!');
 	      // we are retards
 	      if (this.isWeAreRetards(id, featureId)) {
 	        modifier = 0.25;
@@ -3741,7 +3748,7 @@
 	  }, {
 	    key: 'getCurrentMainFeatureDefaultsById',
 	    value: function getCurrentMainFeatureDefaultsById(id) {
-	      _logger2.default.debug('getCurrentMainFeatureDefaultsById in class', id);
+	      // logger.debug('getCurrentMainFeatureDefaultsById in class', id);
 	      // const idea = this.getIdea(id);
 
 	      // return getCurrentMainFeatureDefaultsByIdea(idea);
@@ -3827,7 +3834,7 @@
 	          improvements: _companyMerger2.default.merge(ourCompany, p).improvements,
 	          id: id,
 	          hype: hype,
-	          hypeDamping: p.getHypeDampingValue()
+	          hypeDamping: p.getHypeDampingValue(p.getNumberOfTechnologiesWhereWeMadeBreakthrough())
 	        };
 	      }).sort(function (a, b) {
 	        return b.hype - a.hype;
@@ -4012,6 +4019,8 @@
 	  })();
 
 	  if (change) {
+	    _stats2.default.saveAction(p.type, p);
+
 	    store.emitChange();
 	  }
 	});
@@ -5265,6 +5274,10 @@
 
 	var _workSpeed = __webpack_require__(118);
 
+	var _stats = __webpack_require__(195);
+
+	var _stats2 = _interopRequireDefault(_stats);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -5294,6 +5307,7 @@
 	//   timecost: 2 * WORK_SPEED_NORMAL,
 	//   speed: WORK_SPEED_NORMAL
 	// }];
+
 	var _day = 1;
 	var _workHours = 4;
 
@@ -5336,6 +5350,26 @@
 	    key: 'getGamePhase',
 	    value: function getGamePhase() {
 	      return _gamePhase;
+	    }
+	  }, {
+	    key: 'initialize',
+	    value: function initialize(_ref) {
+	      var tasks = _ref.tasks,
+	          day = _ref.day,
+	          gamePhase = _ref.gamePhase;
+
+	      _tasks = tasks;
+	      _day = day;
+	      _gamePhase = gamePhase;
+	    }
+	  }, {
+	    key: 'getStoreData',
+	    value: function getStoreData() {
+	      return {
+	        tasks: _tasks,
+	        day: _day,
+	        gamePhase: _gamePhase
+	      };
 	    }
 	  }]);
 	  return ScheduleStore;
@@ -5452,7 +5486,11 @@
 	      break;
 	  }
 
-	  if (change) store.emitChange();
+	  if (change) {
+	    _stats2.default.saveAction(p.type, p);
+
+	    store.emitChange();
+	  }
 	});
 
 	exports.default = store;
@@ -5681,6 +5719,10 @@
 
 	var _log2 = _interopRequireDefault(_log);
 
+	var _assign = __webpack_require__(3);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
 	var _classCallCheck2 = __webpack_require__(45);
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
@@ -5761,13 +5803,13 @@
 	      _logger2.default.error(idea, name, isCompetitor);
 	      throw 'no default features!!!';
 	    }
-	    _logger2.default.log('new Product constructor', defaultFeatures);
+	    // logger.log('new Product constructor', defaultFeatures);
 	    // const defaultFeatures = defaults.features;
 
 	    var maxRating = 6;
 	    if (isCompetitor) {
 	      maxRating = 8;
-	    } else {}
+	    }
 
 	    var luck = (0, _random2.default)(1, maxRating) / 10; // luck in 0.1-0.6
 
@@ -5806,6 +5848,7 @@
 	    };
 
 	    this.features = features;
+	    this.featuresOnCreate = (0, _assign2.default)({}, features);
 	    this.KPI = KPI;
 	    this.idea = idea;
 	    this.name = name;
@@ -5866,32 +5909,35 @@
 	    }
 	  }, {
 	    key: 'getHypeDampingStructured',
-	    value: function getHypeDampingStructured() {
+	    value: function getHypeDampingStructured(numberOfTechnologiesWhereWeMadeBreakthrough) {
 	      var blogPower = this.getBlogHypeModifier();
-	      var churnModifier = this.getChurnRate().pretty;
+	      var rating = this.getRating();
 
 	      var blog = Math.floor((0, _mapper2.default)(blogPower, 0, 1, 0, 40));
-	      var churn = Math.ceil((0, _mapper2.default)(this.getRating(), 0, 10, 10, 50));
+	      var churn = Math.ceil((0, _mapper2.default)(10 - rating, 0, 10, 10, 50));
 
 	      // logger.debug(`getHypeDampingStructured,
 	      // blogPower: ${blogPower}, churnModifier: ${churnModifier},
 	      // blog: ${blog}, churn: ${churn},
 	      // `);
 
+	      var maxNumberOfTechnologies = (0, _productDescriptions2.default)(this.idea).features.length;
+	      var tech = Math.floor((0, _mapper2.default)(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, 0, 50));
+
 	      return {
 	        base: 70,
 	        blog: -blog,
-	        tech: -50,
+	        tech: -tech,
 	        churn: churn,
 	        clientModifier: this.getClients() / 1000
 	      };
 	    }
 	  }, {
 	    key: 'getHypeDampingValue',
-	    value: function getHypeDampingValue() {
+	    value: function getHypeDampingValue(numberOfTechnologiesWhereWeMadeBreakthrough) {
 	      var current = this.getHypeValue();
 
-	      var data = this.getHypeDampingStructured();
+	      var data = this.getHypeDampingStructured(numberOfTechnologiesWhereWeMadeBreakthrough);
 	      var percent = Math.min(data.base + data.blog + data.tech + data.churn, 100);
 
 	      var v = Math.floor(current * percent / 100);
@@ -6779,6 +6825,15 @@
 	      // return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
 	    }
 	  }, {
+	    key: 'getNumberOfTechnologiesWhereWeMadeBreakthrough',
+	    value: function getNumberOfTechnologiesWhereWeMadeBreakthrough() {
+	      var _this5 = this;
+
+	      return this.defaultFeatures.filter(function (f, i) {
+	        return _this5.getMainFeatureQualityByFeatureId(i) === f;
+	      }).length;
+	    }
+	  }, {
 	    key: 'setProductDefaults',
 	    value: function setProductDefaults(stage, KPI, features, XP) {
 	      this.stage = stage;
@@ -6843,7 +6898,7 @@
 	      var hypeIncrease = Math.ceil(this.getClients() * this.getBlogPower() / 1000);
 
 	      if (p.isTechnologyLeader) {
-	        hypeIncrease *= 10;
+	        hypeIncrease *= 100;
 	      }
 
 	      this.addHype(hypeIncrease);
@@ -6870,7 +6925,6 @@
 	    key: 'improveFeatureByPoints',
 	    value: function improveFeatureByPoints(p) {
 	      this.features[p.featureGroup][p.featureName] = 1;
-	      _logger2.default.log('improved feature by points');
 	    }
 	  }, {
 	    key: 'addClients',
@@ -6886,12 +6940,14 @@
 	  }, {
 	    key: 'addHype',
 	    value: function addHype(hype) {
-	      this.KPI.hype = Math.min(100000, this.KPI.hype + hype);
+	      this.KPI.hype = Math.min((0, _productDescriptions2.default)(this.idea).marketSize * 10, this.KPI.hype + hype);
 	    }
 	  }, {
 	    key: 'loseMonthlyHype',
 	    value: function loseMonthlyHype() {
-	      this.KPI.hype += this.getHypeDampingValue();
+	      var numberOfTechnologiesWhereWeMadeBreakthrough = this.getNumberOfTechnologiesWhereWeMadeBreakthrough();
+
+	      this.KPI.hype += this.getHypeDampingValue(numberOfTechnologiesWhereWeMadeBreakthrough);
 	    }
 	  }, {
 	    key: 'addViralClients',
@@ -7221,6 +7277,44 @@
 	    key: 'getEmployeesAnalysts',
 	    value: function getEmployeesAnalysts() {
 	      return _employees.map(this.idHelper).filter(_skills3.default.isAnalyst);
+	    }
+	  }, {
+	    key: 'getStoreData',
+	    value: function getStoreData() {
+	      return {
+	        skills: _skills,
+	        money: _money,
+	        expenses: _expenses,
+	        points: _points,
+	        employees: _employees,
+	        team: _team,
+	        reputation: _reputation,
+	        fame: _fame,
+	        loan: _loan
+	      };
+	    }
+	  }, {
+	    key: 'initialize',
+	    value: function initialize(_ref) {
+	      var skills = _ref.skills,
+	          money = _ref.money,
+	          expenses = _ref.expenses,
+	          points = _ref.points,
+	          employees = _ref.employees,
+	          team = _ref.team,
+	          reputation = _ref.reputation,
+	          fame = _ref.fame,
+	          loan = _ref.loan;
+
+	      _skills = skills;
+	      _money = money;
+	      _expenses = expenses;
+	      _points = points;
+	      _employees = employees;
+	      _team = team;
+	      _reputation = reputation;
+	      _fame = fame;
+	      _loan = loan;
 	    }
 	  }, {
 	    key: 'getTeamExpenses',
@@ -7933,6 +8027,18 @@
 	        return !m.isModal;
 	      });
 	    }
+	  }, {
+	    key: 'initialize',
+	    value: function initialize(messages) {
+	      _messages = messages;
+	    }
+	  }, {
+	    key: 'getStoreData',
+	    value: function getStoreData() {
+	      return {
+	        messages: _messages
+	      };
+	    }
 	  }]);
 	  return ScheduleStore;
 	}(_events.EventEmitter);
@@ -8362,7 +8468,6 @@
 	    });
 	  },
 	  improveFeatureByPoints: function improveFeatureByPoints(id, featureGroup, featureName) {
-	    _logger2.default.debug('improveFeatureByPoints', arguments);
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
 	      id: id,
@@ -10175,7 +10280,6 @@
 
 
 	      var body = void 0;
-	      _logger2.default.debug(product.stage);
 
 	      switch (product.stage) {
 	        case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
@@ -10335,7 +10439,7 @@
 	var getCurrentDefaultFeatures = function getCurrentDefaultFeatures(idea) {
 	  var value = _productStore2.default.getCurrentMainFeatureDefaultsByIdea(idea);
 
-	  _logger2.default.debug('getCurrentDefaultFeatures in mvp-creator.js', value);
+	  // logger.debug('getCurrentDefaultFeatures in mvp-creator.js', value);
 	  return value;
 	};
 
@@ -10417,10 +10521,6 @@
 
 	var _Staff2 = _interopRequireDefault(_Staff);
 
-	var _Analysts = __webpack_require__(175);
-
-	var _Analysts2 = _interopRequireDefault(_Analysts);
-
 	var _Employees = __webpack_require__(191);
 
 	var _Employees2 = _interopRequireDefault(_Employees);
@@ -10493,6 +10593,10 @@
 
 	var _segment2 = _interopRequireDefault(_segment);
 
+	var _stats = __webpack_require__(195);
+
+	var _stats2 = _interopRequireDefault(_stats);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -10533,6 +10637,8 @@
 
 	      mode: MODE_MARKETING
 	    }, _this.setMode = function (mode) {
+	      _stats2.default.saveAction('navigation', { mode: mode });
+
 	      _this.setState({ mode: mode });
 	    }, _this.haveEnoughPointsToUpgrade = function (necessaryPoints) {
 	      var points = _playerStore2.default.getPoints();
@@ -11214,9 +11320,6 @@
 	      );
 	    }
 	  }, {
-	    key: 'renderCompetitorMode',
-	    value: function renderCompetitorMode() {}
-	  }, {
 	    key: 'render',
 	    value: function render(_ref2, state) {
 	      var _this2 = this;
@@ -11892,15 +11995,17 @@
 	      var p = _ref.p,
 	          i = _ref.i;
 
+	      var id = i; // p.id
+
 	      var reject = function reject() {
-	        _playerActions2.default.rejectEmployee(p.id);
+	        _playerActions2.default.rejectEmployee(id);
 	      };
 	      var hire = function hire() {
 	        if (_stages2.default.isFirstWorkerMission()) {
 	          _stages2.default.onFirstWorkerMissionCompleted();
 	        }
 
-	        _playerActions2.default.hireWorker(p, p.id);
+	        _playerActions2.default.hireWorker(p, id);
 	      };
 
 	      // {
@@ -14846,6 +14951,159 @@
 	var _logger2 = _interopRequireDefault(_logger);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 193 */,
+/* 194 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _stringify = __webpack_require__(151);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
+
+	var _typeof2 = __webpack_require__(51);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function saveInStorage(field, data) {
+	  var item = data;
+	  if ((typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)) == 'object') {
+	    //console.log('object');
+	    item = (0, _stringify2.default)(data);
+	  }
+	  localStorage.setItem(field, item);
+	  //storage[field] = item;
+	}
+	function getFromStorage(field) {
+	  //return storage[field];
+	  return localStorage.getItem(field);
+	}
+
+	function getObject(arrName) {
+	  return JSON.parse(getFromStorage(arrName));
+	}
+
+	function setInObject(arrName, id, value) {
+	  var array = getObject(arrName);
+	  //prt(arrName, id, value);
+	  array[id] = value;
+	  saveInStorage(arrName, array);
+	}
+
+	function unsetFromObject(arrName, id) {
+	  var array = getObject(arrName);
+
+	  // console.log('was', array);
+
+	  delete array[id];
+
+	  // console.log('became', array);
+	  saveInStorage(arrName, array);
+	}
+
+	function clearStorage() {
+	  localStorage.clear();
+
+	  saveInStorage('tournaments', []);
+	  saveInStorage('addresses', {});
+	  saveInStorage('money', 0);
+	}
+
+	//clearStorage();
+
+	// cookies
+	// возвращает cookie если есть или undefined
+	function getCookie(name) {
+	  var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+	  return matches ? decodeURIComponent(matches[1]) : undefined;
+	}
+
+	// уcтанавливает cookie
+	function setCookie(name, value, props) {
+	  props = props || {};
+	  var exp = props.expires;
+	  if (typeof exp == "number" && exp) {
+	    var d = new Date();
+	    d.setTime(d.getTime() + exp * 1000);
+	    exp = props.expires = d;
+	  }
+	  if (exp && exp.toUTCString) {
+	    props.expires = exp.toUTCString();
+	  }
+
+	  value = encodeURIComponent(value);
+	  var updatedCookie = name + "=" + value;
+	  for (var propName in props) {
+	    updatedCookie += "; " + propName;
+	    var propValue = props[propName];
+	    if (propValue !== true) {
+	      updatedCookie += "=" + propValue;
+	    }
+	  }
+	  document.cookie = updatedCookie;
+	}
+
+	// удаляет cookie
+	function deleteCookie(name) {
+	  setCookie(name, null, { expires: -1 });
+	}
+
+	exports.default = {
+	  deleteCookie: deleteCookie,
+	  saveInStorage: saveInStorage,
+	  getFromStorage: getFromStorage,
+	  getObject: getObject,
+	  setInObject: setInObject,
+	  unsetFromObject: unsetFromObject,
+	  clearStorage: clearStorage,
+	  getCookie: getCookie,
+	  setCookie: setCookie
+	};
+
+/***/ },
+/* 195 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.saveAction = saveAction;
+	exports.achievement = achievement;
+
+	var _sessionStorage = __webpack_require__(194);
+
+	var _sessionStorage2 = _interopRequireDefault(_sessionStorage);
+
+	var _logger = __webpack_require__(108);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function saveAction(actionType, data) {
+	  _logger2.default.debug('saveAction', actionType, data);
+	}
+
+	function achievement(name) {}
+
+	exports.default = {
+	  saveAction: saveAction,
+	  achievement: achievement
+	};
+
+	// export default function () {
+	//
+	// }
 
 /***/ }
 /******/ ]);

@@ -46,7 +46,6 @@ export default {
     })
   },
   improveFeatureByPoints(id, featureGroup, featureName) {
-    logger.debug('improveFeatureByPoints', arguments);
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
       id,

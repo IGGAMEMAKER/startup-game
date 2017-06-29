@@ -181,6 +181,31 @@ class PlayerStore extends EventEmitter {
     return _employees.map(this.idHelper).filter(skillHelper.isAnalyst);
   }
 
+  getStoreData() {
+    return {
+      skills: _skills,
+      money: _money,
+      expenses: _expenses,
+      points: _points,
+      employees: _employees,
+      team: _team,
+      reputation: _reputation,
+      fame: _fame,
+      loan: _loan
+    }
+  }
+
+  initialize({ skills, money, expenses, points, employees, team, reputation, fame, loan }) {
+    _skills = skills;
+    _money = money;
+    _expenses = expenses;
+    _points = points;
+    _employees = employees;
+    _team = team;
+    _reputation = reputation;
+    _fame = fame;
+    _loan = loan;
+  }
 
   getTeamExpenses() {
     return sum(

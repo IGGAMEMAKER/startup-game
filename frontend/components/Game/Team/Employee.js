@@ -10,13 +10,15 @@ import actions from '../../../actions/player-actions';
 
 export default class Employee extends Component {
   render({ p, i }) {
-    const reject = () => { actions.rejectEmployee(p.id); };
+    const id = i; // p.id
+
+    const reject = () => { actions.rejectEmployee(id); };
     const hire = () => {
       if (stageHelper.isFirstWorkerMission()) {
         stageHelper.onFirstWorkerMissionCompleted();
       }
 
-      actions.hireWorker(p, p.id);
+      actions.hireWorker(p, id);
     };
 
     // {

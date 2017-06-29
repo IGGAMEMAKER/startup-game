@@ -16,7 +16,6 @@ export default class Product extends Component {
     const { product, id, onHireProgrammerClick, onHireMarketerClick } = props;
 
     let body;
-    logger.debug(product.stage);
 
     switch (product.stage) {
       case PRODUCT_STAGES.PRODUCT_STAGE_IDEA:
