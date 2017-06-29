@@ -560,10 +560,6 @@
 	  value: true
 	});
 
-	var _assign = __webpack_require__(3);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
 	var _getPrototypeOf = __webpack_require__(40);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -740,18 +736,6 @@
 	      _this.setState({
 	        products: _productStore2.default.getOurProducts()
 	      });
-	    }, _this.renderProducts = function (state) {
-	      return state.products.map(function (p, i) {
-	        return (0, _assign2.default)(p, { rating: _productStore2.default.getRating(i) });
-	      }).map(function (p, i) {
-	        return (0, _preact.h)(
-	          'div',
-	          { key: 'product' + i },
-	          (0, _preact.h)(_ProductMenu2.default, { product: p, i: i, onChooseProject: function onChooseProject(event) {
-	              return _this.onRenderProjectMenu(i);
-	            } })
-	        );
-	      });
 	    }, _this.renderProductMenu = function (state) {
 	      if (!state.products.length) return (0, _preact.h)('div', null);
 
@@ -764,69 +748,19 @@
 	        onHireProgrammerClick: _this.onRenderStaffMenu,
 	        onHireMarketerClick: _this.onRenderStaffMenu
 	      });
-	    }, _this.renderStaffMenu = function (state) {
-	      // <div className="staff-group-title">Наша команда</div>
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(_Staff2.default, null),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'staff-group-title' },
-	          '\u041D\u0430\u0439\u043C \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u043E\u0432'
-	        ),
-	        (0, _preact.h)(_Programmers2.default, null),
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'staff-group-title' },
-	          '\u041D\u0430\u0439\u043C \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u043E\u0432'
-	        ),
-	        (0, _preact.h)(_Marketers2.default, null)
-	      );
-	    }, _this.onRenderProjectMenu = function (i) {
-	      _this.setState({ mode: GAME_MODE_PRODUCT, id: i });
-	    }, _this.onRenderProjectsMenu = function () {
-	      if (_this.state.products.length === 1) {
-	        _this.onRenderProjectMenu(0);
-	        return;
-	      }
-
-	      _this.setState({ mode: GAME_MODE_PRODUCTS });
-	    }, _this.onRenderEconomicsMenu = function () {
-	      _this.setState({ mode: GAME_MODE_ECONOMICS });
 	    }, _this.onRenderStaffMenu = function () {
 	      _this.setState({ mode: GAME_MODE_STAFF });
 	    }, _this.renderGameInNormalMode = function (props, state) {
-	      var gamePhase = state.gamePhase,
-	          mode = state.mode;
+	      var gamePhase = state.gamePhase;
 
-	      var body = '';
 
-	      switch (mode) {
-	        case GAME_MODE_ECONOMICS:
-	          body = (0, _preact.h)(_Economics2.default, null);
-	          break;
-	        case GAME_MODE_PRODUCTS:
-	          body = _this.renderProducts(state);
-	          break;
-	        case GAME_MODE_STAFF:
-	          body = _this.renderStaffMenu(state); // ''; // <Staff staff={} emplo/>;
-	          break;
-	        case GAME_MODE_PRODUCT:
-	          body = _this.renderProductMenu(state);
-	          break;
-	      }
+	      var body = _this.renderProductMenu(state);
 
 	      var MessageTab = (0, _preact.h)(
 	        'div',
 	        null,
 	        'MessageTab'
 	      );
-	      // <MessageTab />
-	      // <AdviceTab gamePhase={gamePhase} />
-
 
 	      return (0, _preact.h)(
 	        'div',
@@ -839,19 +773,11 @@
 	            pauseGame: _this.pauseGame,
 	            resumeGame: _this.resumeGame,
 	            setGameSpeed: _this.setGameSpeed,
-	            onRenderProjectsMenu: _this.onRenderProjectsMenu,
-	            onRenderEconomicsMenu: _this.onRenderEconomicsMenu,
-	            onRenderStaffMenu: _this.onRenderStaffMenu,
 	            pause: state.pause,
 	            gameSpeed: state.gameSpeed,
 	            day: state.day,
 
-	            isChosenProjectsMenu: state.mode === GAME_MODE_PRODUCTS || state.mode === GAME_MODE_PRODUCT ? 'active' : '',
-	            isChosenEconomicsMenu: state.mode === GAME_MODE_ECONOMICS ? 'active' : '',
-	            isChosenStaffMenu: state.mode === GAME_MODE_STAFF ? 'active' : '',
-
-	            gamePhase: gamePhase,
-	            onNextMonth: _this.onNextMonth
+	            gamePhase: gamePhase
 	          }),
 	          (0, _preact.h)('hr', null),
 	          body,
@@ -2799,14 +2725,10 @@
 	  }, {
 	    key: 'render',
 	    value: function render(props, state) {
-	      var isChosenProjectsMenu = props.isChosenProjectsMenu,
-	          isChosenEconomicsMenu = props.isChosenEconomicsMenu,
-	          isChosenStaffMenu = props.isChosenStaffMenu,
-	          gameSpeed = props.gameSpeed,
+	      var gameSpeed = props.gameSpeed,
 	          pause = props.pause,
 	          gamePhase = props.gamePhase,
-	          pauseGame = props.pauseGame,
-	          onNextMonth = props.onNextMonth;
+	          pauseGame = props.pauseGame;
 
 
 	      var saldoValue = Math.floor(_moneyDifference2.default.saldo());
@@ -2885,11 +2807,6 @@
 	        return speeder(s.s, s.icon);
 	      });
 
-	      var onMPPP = function onMPPP() {
-	        _logger2.default.debug('onMPPP');
-	        props.onRenderStaffMenu();
-	      };
-
 	      var upperTab = void 0;
 	      // <div>Месяц: {(props.day % 30) + 1}</div>
 	      // <div className={navigation} onClick={onNextMonth}>Следующий месяц</div>
@@ -2950,10 +2867,6 @@
 	        );
 	      }
 
-	      // <div>
-	      //   <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
-	      //   <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда {employeePhrase}</div>
-	      // </div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -10541,10 +10454,6 @@
 
 	var _metrics2 = _interopRequireDefault(_metrics);
 
-	var _Schedule = __webpack_require__(180);
-
-	var _Schedule2 = _interopRequireDefault(_Schedule);
-
 	var _UI = __webpack_require__(147);
 
 	var _UI2 = _interopRequireDefault(_UI);
@@ -10552,10 +10461,6 @@
 	var _modification = __webpack_require__(135);
 
 	var _modification2 = _interopRequireDefault(_modification);
-
-	var _professions = __webpack_require__(146);
-
-	var PROFESSIONS = _interopRequireWildcard(_professions);
 
 	var _productActions = __webpack_require__(143);
 
@@ -10593,10 +10498,6 @@
 
 	var _competitors2 = _interopRequireDefault(_competitors);
 
-	var _competitor = __webpack_require__(184);
-
-	var _competitor2 = _interopRequireDefault(_competitor);
-
 	var _segment = __webpack_require__(185);
 
 	var _segment2 = _interopRequireDefault(_segment);
@@ -10613,13 +10514,11 @@
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var MODE_METRICS = 'MODE_METRICS';
 	// import React, { Component, PropTypes } from 'react';
 
-	var MODE_METRICS = 'MODE_METRICS';
 	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
@@ -10717,7 +10616,12 @@
 	      var payment = _this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
 
 	      var isOpened = _productStore2.default.canShowPayPercentageMetric(id);
-	      var payAbility = _productStore2.default.getConversionRate(id).pretty;
+	      var conversion = _productStore2.default.getConversionRate(id).pretty;
+
+	      var payAbility = Math.ceil(conversion * 10);
+
+	      var makeImprovementPhrase = 'Установите фичу "Тестовая покупка"';
+	      var payAbilityPhrase = '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ' + (isOpened ? payAbility + '%' : makeImprovementPhrase);
 
 	      return (0, _preact.h)(
 	        'div',
@@ -10733,8 +10637,7 @@
 	          (0, _preact.h)(
 	            'div',
 	            null,
-	            '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C: ',
-	            isOpened ? Math.ceil(payAbility * 10) + '%' : 'Установите фичу "Тестовая покупка"'
+	            payAbilityPhrase
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -10775,7 +10678,7 @@
 	          )
 	        )
 	      );
-	    }, _this.renderClientTab = function (id, product, onHireMarketerClick) {
+	    }, _this.renderClientTab = function (id, product) {
 	      var idea = product.idea;
 
 
@@ -10784,14 +10687,12 @@
 
 	      var market = _productStore2.default.getMarketShare(id);
 
-	      var segmentTab = _this.renderSegmentTab(id);
 	      var adTab = _this.renderAdTab(id, product);
 
 	      var churnFeatures = '';
 	      if (_stages2.default.canShowChurnFeatures()) {
 	        var marketing = _this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
-	        // <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
 	        churnFeatures = (0, _preact.h)(
 	          'div',
 	          { className: 'featureGroupDescriptionWrapper' },
@@ -10922,8 +10823,6 @@
 	        adTab,
 	        clientTab
 	      );
-	      // {nearestCompetitor}
-	      // {segmentTab}
 	    }, _this.renderAdTab = function (id, product) {
 	      if (!_stages2.default.canShowAdTab()) return '';
 
@@ -11267,7 +11166,9 @@
 	  }, {
 	    key: 'renderBonusesTab',
 	    value: function renderBonusesTab(id, product) {
-	      var hypeDampingStructured = product.getHypeDampingStructured(product.getNumberOfTechnologiesWhereWeMadeBreakthrough());
+	      var breakthroughAmount = product.getNumberOfTechnologiesWhereWeMadeBreakthrough();
+	      var hypeDampingStructured = product.getHypeDampingStructured(breakthroughAmount);
+
 	      var blogRange = hypeDampingStructured.blogRange,
 	          churnRange = hypeDampingStructured.churnRange,
 	          techRange = hypeDampingStructured.techRange,
@@ -11280,7 +11181,6 @@
 
 	      var blogStyleColor = _coloringRange2.default.ranged(-blog, blogRange[0], blogRange[1]);
 	      var techStyleColor = _coloringRange2.default.ranged(-tech, techRange[0], techRange[1]);
-
 	      var churnStyleColor = _coloringRange2.default.ranged(churn, churnRange[1], churnRange[0]);
 
 	      return (0, _preact.h)(
@@ -11326,48 +11226,6 @@
 	          )
 	        )
 	      );
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        'No Bonuses'
-	      );
-
-	      var improvements = _productStore2.default.getImprovementChances(id);
-
-	      var cliTabDescription = improvements.clientModifier.clientsRange.map(function (c, i, arr) {
-	        var penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
-	        var isActivated = i === improvements.clientModifier.index ? _UI2.default.symbols.ok : _UI2.default.symbols.dot;
-
-	        var phrase = void 0;
-	        if (i === 0) {
-	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0431\u043E\u043B\u044C\u0448\u0435, \u0447\u0435\u043C ' + c;
-	        } else {
-	          phrase = '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u043C\u0435\u043D\u044C\u0448\u0435, \u0447\u0435\u043C ' + arr[i - 1] + ' - \u0448\u0442\u0440\u0430\u0444 ' + penalty + '%';
-	        }
-	        return (0, _preact.h)(
-	          'div',
-	          { className: 'smallText' },
-	          isActivated,
-	          ' ',
-	          phrase
-	        );
-	      });
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0428\u0442\u0440\u0430\u0444 \u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u043D\u043E\u0441\u0442\u0438 (\u043F\u0440\u0438 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0438 \u0433\u0438\u043F\u043E\u0442\u0435\u0437)'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          cliTabDescription
-	        )
-	      );
 	    }
 	  }, {
 	    key: 'renderFeatureSupportCost',
@@ -11401,13 +11259,7 @@
 	      var _this2 = this;
 
 	      var product = _ref2.product,
-	          gamePhase = _ref2.gamePhase,
-	          onHireProgrammerClick = _ref2.onHireProgrammerClick,
-	          onHireMarketerClick = _ref2.onHireMarketerClick;
-
-	      // if (stageHelper.isFirstWorkerMission()) return <div></div>;
-	      // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
-
+	          gamePhase = _ref2.gamePhase;
 	      var mode = state.mode;
 	      var idea = product.idea;
 
@@ -11422,7 +11274,7 @@
 	          break;
 
 	        case MODE_MARKETING:
-	          body = this.renderClientTab(id, product, onHireMarketerClick);
+	          body = this.renderClientTab(id, product);
 	          break;
 
 	        case MODE_ADS:
@@ -12872,169 +12724,7 @@
 	exports.default = ColoredRating;
 
 /***/ },
-/* 180 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _logger = __webpack_require__(108);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _workSpeed = __webpack_require__(118);
-
-	var _percentify = __webpack_require__(110);
-
-	var _percentify2 = _interopRequireDefault(_percentify);
-
-	var _round = __webpack_require__(96);
-
-	var _round2 = _interopRequireDefault(_round);
-
-	var _scheduleStore = __webpack_require__(115);
-
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Schedule = function (_Component) {
-	  (0, _inherits3.default)(Schedule, _Component);
-
-	  function Schedule() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Schedule);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Schedule.__proto__ || (0, _getPrototypeOf2.default)(Schedule)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      tasks: [],
-	      collapse: false
-	    }, _this.getTasks = function () {
-	      _this.setState({
-	        tasks: _scheduleStore2.default.getTasks()
-	      });
-	    }, _this.toggleTasks = function () {
-	      _this.setState({ collapse: !_this.state.collapse });
-	    }, _this.renderTask = function (task, i) {
-	      var description = task.description;
-	      var progress = task.progress + '/' + task.timecost;
-
-	      var percentage = Math.floor(task.progress * 100 / task.timecost) + ' %';
-
-	      var days = Math.ceil((task.timecost - task.progress) / task.speed);
-
-	      var result = void 0;
-	      if (task.inProgress) {
-	        result = (0, _preact.h)(
-	          'b',
-	          null,
-	          description,
-	          ' (\u0415\u0449\u0451 ',
-	          days,
-	          ' \u0434\u043D\u0435\u0439, ',
-	          percentage,
-	          ')'
-	        );
-	      } else {
-	        result = (0, _preact.h)(
-	          'div',
-	          null,
-	          description,
-	          ' (\u041E\u0436\u0438\u0434\u0430\u0435\u0442 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F: ',
-	          progress,
-	          ', ',
-	          percentage,
-	          ')'
-	        );
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        { key: 'task' + i },
-	        result
-	      );
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Schedule, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      var _this2 = this;
-
-	      this.getTasks();
-
-	      _scheduleStore2.default.addChangeListener(function () {
-	        _this2.getTasks();
-	      });
-	    }
-	  }, {
-	    key: 'render',
-
-
-	    // render(props: PropsType, state: StateType) {
-	    value: function render() {
-	      var tasks = this.state.tasks;
-
-	      var collapse = this.state.collapse;
-
-	      if (!tasks.length) return (0, _preact.h)('div', null);
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'h4',
-	          { onClick: this.toggleTasks },
-	          '\u0422\u0435\u043A\u0443\u0449\u0438\u0435 \u0437\u0430\u0434\u0430\u0447\u0438 (',
-	          collapse ? tasks.length : '-',
-	          ')'
-	        ),
-	        tasks.length && !collapse ? tasks.map(this.renderTask) : '',
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)('hr', null)
-	      );
-	    }
-	  }]);
-	  return Schedule;
-	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
-
-	exports.default = Schedule;
-	;
-
-/***/ },
+/* 180 */,
 /* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -13193,7 +12883,7 @@
 	      var potentialClients = marketStats.potentialClients;
 
 
-	      var ads = [{ clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 }, { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 }, { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 }, { clients: 50000, text: 'Повысить HYPE на 50000 очков', mp: 5500 }].map(function (c, i) {
+	      var ads = [{ clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 }, { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 }, { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 }].map(function (c, i) {
 	        return (0, _assign2.default)({}, c, { cost: c.clients * costPerClient });
 	      });
 

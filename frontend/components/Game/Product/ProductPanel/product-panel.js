@@ -8,13 +8,9 @@ import Economics from '../../Economics/Economics';
 
 
 import Metrics from '../KPI/metrics';
-import Schedule from '../../Schedule';
 import UI from '../../../UI';
 
 import pointSaldoHelper from '../../../../helpers/points/modification';
-
-
-import * as PROFESSIONS from '../../../../constants/professions';
 
 import productActions from '../../../../actions/product-actions';
 
@@ -31,7 +27,6 @@ import MainFeatureTab from '../MainFeature';
 import stageHelper from '../../../../helpers/stages';
 
 import Competitors from '../Ads/competitors';
-import Competitor from '../Ads/competitor';
 import Segment from '../ClientPanel/segment';
 
 import stats from '../../../../stats';
@@ -162,13 +157,18 @@ export default class ProductPanel extends Component {
     const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
 
     const isOpened = productStore.canShowPayPercentageMetric(id);
-    const payAbility = productStore.getConversionRate(id).pretty;
+    const conversion = productStore.getConversionRate(id).pretty;
+
+    const payAbility = Math.ceil(conversion * 10);
+
+    const makeImprovementPhrase = 'Установите фичу "Тестовая покупка"';
+    const payAbilityPhrase = `Платёжеспособность: ${isOpened ? `${payAbility}%` : makeImprovementPhrase}`;
 
     return (
       <div>
         <div className="featureGroupTitle" >Монетизация</div>
         <div className="featureGroupDescriptionWrapper">
-          <div>Платёжеспособность: {isOpened ? `${Math.ceil(payAbility * 10)}%` : 'Установите фичу "Тестовая покупка"'}</div>
+          <div>{payAbilityPhrase}</div>
           <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
           <div className="featureGroupBody">{payment}</div>
         </div>
@@ -211,7 +211,7 @@ export default class ProductPanel extends Component {
     )
   }
 
-  renderClientTab = (id, product, onHireMarketerClick) => {
+  renderClientTab = (id, product) => {
     const { idea } = product;
 
     const churn = productStore.getChurnRate(id).pretty;
@@ -219,14 +219,12 @@ export default class ProductPanel extends Component {
 
     const market = productStore.getMarketShare(id);
 
-    const segmentTab = this.renderSegmentTab(id);
     const adTab = this.renderAdTab(id, product);
 
     let churnFeatures = '';
     if (stageHelper.canShowChurnFeatures()) {
       const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
 
-      // <div className="featureGroupDescription">Позволяет снизить отток клиентов, повышая их лояльность</div>
       churnFeatures = <div className="featureGroupDescriptionWrapper">
         <div className="featureGroupBody">{marketing}</div>
       </div>
@@ -257,6 +255,7 @@ export default class ProductPanel extends Component {
           <li>Затраты на техподдержку: {support.detailed.support}MP</li>
         </ul>
       </div>
+
       <div className={support.needToHireWorker ? '' : 'hide'}>
         <div className="alert alert-danger">
           <strong>Наши маркетологи не справляются с нагрузкой</strong>
@@ -276,8 +275,6 @@ export default class ProductPanel extends Component {
         {clientTab}
       </div>
     );
-    // {nearestCompetitor}
-    // {segmentTab}
   };
 
   renderAdTab = (id, product) => {
@@ -330,8 +327,11 @@ export default class ProductPanel extends Component {
   }
 
   renderBonusesTab(id, product: Product) {
-    const hypeDampingStructured = product.getHypeDampingStructured(product.getNumberOfTechnologiesWhereWeMadeBreakthrough());
-    const { blogRange,
+    const breakthroughAmount = product.getNumberOfTechnologiesWhereWeMadeBreakthrough();
+    const hypeDampingStructured = product.getHypeDampingStructured(breakthroughAmount);
+
+    const {
+      blogRange,
       churnRange,
       techRange,
       base,
@@ -343,7 +343,6 @@ export default class ProductPanel extends Component {
 
     const blogStyleColor = coloringRange.ranged(-blog, blogRange[0], blogRange[1]);
     const techStyleColor = coloringRange.ranged(-tech, techRange[0], techRange[1]);
-
     const churnStyleColor = coloringRange.ranged(churn, churnRange[1], churnRange[0]);
 
     return <div>
@@ -355,33 +354,6 @@ export default class ProductPanel extends Component {
         <li style={`color: ${techStyleColor}`}>Технологическое лидерство: {tech}%</li>
       </ul>
     </div>;
-
-    return <div>No Bonuses</div>;
-
-    const improvements = productStore.getImprovementChances(id);
-
-    const cliTabDescription = improvements.clientModifier.clientsRange
-      .map((c, i, arr) => {
-        const penalty = Math.ceil((1 - improvements.clientModifier.factors[i]) * 100);
-        const isActivated = i === improvements.clientModifier.index ? UI.symbols.ok : UI.symbols.dot;
-
-        let phrase;
-        if (i === 0) {
-          phrase = `Клиентов больше, чем ${c}`;
-        } else {
-          phrase = `Клиентов меньше, чем ${arr[i - 1]} - штраф ${penalty}%`;
-        }
-        return <div className="smallText">
-          {isActivated} {phrase}
-        </div>
-      });
-
-    return (
-      <div>
-        <div>Штраф достоверности (при тестировании гипотез)</div>
-        <div className="offset-mid">{cliTabDescription}</div>
-      </div>
-    )
   }
 
   renderFeatureSupportCost(support) {
@@ -397,9 +369,7 @@ export default class ProductPanel extends Component {
       return <div></div>;
     }
 
-    return <div>
-      Стоимость поддержки (ежемесячно) - {mp} {pp} {money}
-    </div>
+    return <div>Стоимость поддержки (ежемесячно) - {mp} {pp} {money}</div>;
   };
 
   renderFeature = (featureGroup, id, idea, hideOnComplete, onUpgraded) => (feature, i) => {
@@ -547,10 +517,7 @@ export default class ProductPanel extends Component {
     );
   };
 
-  render({ product, gamePhase, onHireProgrammerClick, onHireMarketerClick }, state) {
-    // if (stageHelper.isFirstWorkerMission()) return <div></div>;
-    // return <div>Выполняйте миссии и вы откроете все возможности игры!</div>
-
+  render({ product, gamePhase }, state) {
     const { mode } = state;
     const { idea } = product;
 
@@ -564,7 +531,7 @@ export default class ProductPanel extends Component {
         break;
 
       case MODE_MARKETING:
-        body = this.renderClientTab(id, product, onHireMarketerClick);
+        body = this.renderClientTab(id, product);
         break;
 
       case MODE_ADS:

@@ -81,7 +81,7 @@ export default class AdvertPlannerPanel extends Component {
       { clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 },
       { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 },
       { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 },
-      { clients: 50000, text: 'Повысить HYPE на 50000 очков', mp: 5500 },
+      // { clients: 50000, text: 'Повысить HYPE на 50000 очков', mp: 5500 },
       // { clients: 300000, text: 'Привести 300000 клиентов', mp: 150 }
     ].map((c, i) => Object.assign({}, c, { cost: c.clients * costPerClient } ));
 

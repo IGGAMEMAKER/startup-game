@@ -118,16 +118,6 @@ export default class Game extends Component {
     });
   };
 
-  renderProducts = state => {
-    return state.products
-      .map((p, i) => Object.assign(p, { rating: productStore.getRating(i) }))
-      .map((p, i) => (
-        <div key={`product${i}`}>
-          <ProductMenu product={p} i={i} onChooseProject={event => this.onRenderProjectMenu(i)} />
-        </div>
-      ));
-  };
-
   renderProductMenu = state => {
     if (!state.products.length) return <div></div>;
 
@@ -142,65 +132,16 @@ export default class Game extends Component {
     />;
   };
 
-  renderStaffMenu = (state) => {
-        // <div className="staff-group-title">Наша команда</div>
-    return (
-      <div>
-        <Staff />
-        <br />
-        <div className="staff-group-title">Найм программистов</div>
-        <Programmers />
-        <br />
-        <div className="staff-group-title">Найм маркетологов</div>
-        <Marketers />
-      </div>
-    )
-  };
-
-  onRenderProjectMenu = (i) => {
-    this.setState({ mode: GAME_MODE_PRODUCT, id: i })
-  };
-
-  onRenderProjectsMenu = () => {
-    if (this.state.products.length === 1) {
-      this.onRenderProjectMenu(0);
-      return;
-    }
-
-    this.setState({ mode: GAME_MODE_PRODUCTS })
-  };
-
-  onRenderEconomicsMenu = () => {
-    this.setState({ mode: GAME_MODE_ECONOMICS })
-  };
-
   onRenderStaffMenu = () => {
     this.setState({ mode: GAME_MODE_STAFF })
   };
 
   renderGameInNormalMode = (props, state) => {
-    const { gamePhase, mode } = state;
-    let body = '';
+    const { gamePhase } = state;
 
-    switch (mode) {
-      case GAME_MODE_ECONOMICS:
-        body = <Economics />;
-        break;
-      case GAME_MODE_PRODUCTS:
-        body = this.renderProducts(state);
-        break;
-      case GAME_MODE_STAFF:
-        body = this.renderStaffMenu(state); // ''; // <Staff staff={} emplo/>;
-        break;
-      case GAME_MODE_PRODUCT:
-        body = this.renderProductMenu(state);
-        break;
-    }
+    const body = this.renderProductMenu(state);
 
     const MessageTab = <div>MessageTab</div>;
-    // <MessageTab />
-    // <AdviceTab gamePhase={gamePhase} />
-
 
     return (
       <div className="body-background">
@@ -210,19 +151,11 @@ export default class Game extends Component {
             pauseGame={this.pauseGame}
             resumeGame={this.resumeGame}
             setGameSpeed={this.setGameSpeed}
-            onRenderProjectsMenu={this.onRenderProjectsMenu}
-            onRenderEconomicsMenu={this.onRenderEconomicsMenu}
-            onRenderStaffMenu={this.onRenderStaffMenu}
             pause={state.pause}
             gameSpeed={state.gameSpeed}
             day={state.day}
 
-            isChosenProjectsMenu={state.mode === GAME_MODE_PRODUCTS || state.mode === GAME_MODE_PRODUCT ? 'active' : ''}
-            isChosenEconomicsMenu={state.mode === GAME_MODE_ECONOMICS ? 'active' : ''}
-            isChosenStaffMenu={state.mode === GAME_MODE_STAFF ? 'active' : ''}
-
             gamePhase={gamePhase}
-            onNextMonth={this.onNextMonth}
           />
           <hr />
           {body}

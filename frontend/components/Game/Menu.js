@@ -29,15 +29,11 @@ export default class Menu extends Component {
 
   render(props, state) {
     const {
-      isChosenProjectsMenu,
-      isChosenEconomicsMenu,
-      isChosenStaffMenu,
       gameSpeed,
       pause,
       gamePhase,
 
-      pauseGame,
-      onNextMonth
+      pauseGame
     } = props;
 
     const saldoValue = Math.floor(moneyCalculator.saldo());
@@ -119,11 +115,6 @@ export default class Menu extends Component {
 
     nextSpeeder = speedVariants.map(s => speeder(s.s, s.icon));
 
-    const onMPPP = () => {
-      logger.debug('onMPPP');
-      props.onRenderStaffMenu()
-    };
-
     let upperTab;
             // <div>Месяц: {(props.day % 30) + 1}</div>
           // <div className={navigation} onClick={onNextMonth}>Следующий месяц</div>
@@ -154,10 +145,6 @@ export default class Menu extends Component {
       )
     }
 
-        // <div>
-        //   <div className={`${navigation} ${isChosenProjectsMenu}`} onClick={props.onRenderProjectsMenu}>Проекты</div>
-        //   <div className={`${navigation} ${isChosenStaffMenu}`} onClick={props.onRenderStaffMenu}>Команда {employeePhrase}</div>
-        // </div>
     return (
       <div>
         {upperTab}
