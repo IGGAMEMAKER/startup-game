@@ -29,8 +29,7 @@ export default class Menu extends Component {
   renderSpeedIcons() {
     return [
       { speed: 1, icon: '>' },
-      { speed: 4, icon: '>>' },
-      { speed: 10, icon: '>>>>' }
+      { speed: 10, icon: '>>>' }
     ].map(s => (
       <div className="navigation">
         <UI.Button
@@ -47,6 +46,7 @@ export default class Menu extends Component {
     const {
       pause,
       pauseGame,
+      setGameSpeed
     } = props;
 
     const speedIcons = this.renderSpeedIcons();

@@ -1,21 +1,13 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-import ProductMenu from '../Game/ProductMenu';
 import Menu from '../Game/Menu';
-import Economics from './Economics/Economics';
 import Product from './Product';
-import AdviceTab from './Advice';
 import Tutorial from './Tutorial';
 
-import Staff from '../Game/Staff';
-import Programmers from './Team/Programmers';
-import Marketers from './Team/Marketers';
-import Analysts from './Team/Analysts';
-
-import productStore from '../../stores/product-store';
+import productStore from  '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
-import messageStore from '../../stores/message-store';
+import messageStore from  '../../stores/message-store';
 
 import flux from '../../flux';
 
@@ -24,13 +16,6 @@ import gameRunner from '../../game';
 import logger from '../../helpers/logger/logger';
 
 import UI from '../UI';
-
-const GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
-const GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
-const GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
-const GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
-const GAME_MODE_ADS = 'GAME_MODE_ADS';
-const GAME_MODE_STAFF = 'GAME_MODE_STAFF';
 
 import * as GAME_STAGES from '../../constants/game-stages';
 
@@ -47,7 +32,6 @@ export default class Game extends Component {
     counter: 0,
 
     id: 0, // productID
-    mode: GAME_MODE_PRODUCT,
     gamePhase: GAME_STAGES.GAME_STAGE_INIT
   };
 
@@ -83,22 +67,7 @@ export default class Game extends Component {
     this.setState({ pause: false })
   };
 
-  onNextMonth = () => {
-    flux.scheduleActions.nextMonth();
-  };
-
-  componentWillMount() {
-    this.initialize();
-
-    productStore.addChangeListener(this.getProductsFromStore);
-
-    scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
-
-    messageStore.addChangeListener(this.getMessages);
-  }
-
   getMessages = () => {
-    // logger.debug('MessageStore callback pausing');
     if (messageStore.isDrawable()) {
       this.pauseGame();
     }
@@ -108,7 +77,7 @@ export default class Game extends Component {
     this.setState({
       day: scheduleStore.getDay(),
       tasks: scheduleStore.getTasks(),
-      gamePhase: scheduleStore.getGamePhase(),
+      gamePhase: scheduleStore.getGamePhase()
     })
   };
 
@@ -117,6 +86,17 @@ export default class Game extends Component {
       products: productStore.getOurProducts()
     });
   };
+
+
+  componentWillMount() {
+    this.initialize();
+
+    flux.productStore.addChangeListener(this.getProductsFromStore);
+
+    flux.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
+
+    flux.messageStore.addChangeListener(this.getMessages);
+  }
 
   renderProductMenu = state => {
     if (!state.products.length) return <div></div>;
@@ -128,50 +108,39 @@ export default class Game extends Component {
   };
 
   renderGameInNormalMode = (props, state) => {
-    const { gamePhase } = state;
-
     const body = this.renderProductMenu(state);
 
-    const MessageTab = <div>MessageTab</div>;
+    const MessageTab = <div className="bottom-fixed">MessageTab</div>;
 
     return (
       <div className="body-background">
         <UI.Modal onclose={this.resumeGame} />
         <div className="body-wrapper">
+          <div className="menu-fixed">
           <Menu
-            pauseGame={this.pauseGame}
-            resumeGame={this.resumeGame}
-            setGameSpeed={this.setGameSpeed}
             pause={state.pause}
-            gameSpeed={state.gameSpeed}
+            pauseGame={this.pauseGame}
+            setGameSpeed={this.setGameSpeed}
             day={state.day}
-
-            gamePhase={gamePhase}
           />
+          </div>
           <hr />
           {body}
           <br />
           <hr />
+          {MessageTab}
         </div>
       </div>
     );
   };
 
   render(props: PropsType, state) {
-    let body = '';
-
-    switch (state.gamePhase) {
-      case GAME_STAGES.GAME_STAGE_INIT:
-        // render hero description tab
-        body = <Tutorial />;
-        break;
-      default:
-        // run game in normal mode
-        body = this.renderGameInNormalMode(props, state);
-        break;
+    if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) {
+      return <Tutorial />;
     }
 
-    return body;
+    return this.renderGameInNormalMode(props, state);
+
     //   <h3>Два вопроса бизнеса</h3>
     //   <div>Готовы ли люди этим пользоваться</div>
     //   <div>Сколько они готовы заплатить за это</div>

@@ -318,6 +318,26 @@ textarea {
   overflow: hidden;
 }
 
+.fixed,
+.menu-fixed,
+.bottom-fixed {
+  position: fixed;
+  width: 100%;
+  z-index: 10;
+
+  left: 0;
+  height: 50px;
+  background-color: var(--main-background-color);
+}
+
+.menu-fixed {
+  top: 0;
+}
+
+.bottom-fixed {
+  bottom: 0;
+}
+
 .worker-button {
   float: left;
   margin-right: 15px;

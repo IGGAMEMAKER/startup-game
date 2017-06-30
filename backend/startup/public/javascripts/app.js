@@ -582,45 +582,17 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _ProductMenu = __webpack_require__(93);
-
-	var _ProductMenu2 = _interopRequireDefault(_ProductMenu);
-
 	var _Menu = __webpack_require__(97);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
-
-	var _Economics = __webpack_require__(163);
-
-	var _Economics2 = _interopRequireDefault(_Economics);
 
 	var _Product = __webpack_require__(165);
 
 	var _Product2 = _interopRequireDefault(_Product);
 
-	var _Advice = __webpack_require__(186);
-
-	var _Advice2 = _interopRequireDefault(_Advice);
-
 	var _Tutorial = __webpack_require__(187);
 
 	var _Tutorial2 = _interopRequireDefault(_Tutorial);
-
-	var _Staff = __webpack_require__(170);
-
-	var _Staff2 = _interopRequireDefault(_Staff);
-
-	var _Programmers = __webpack_require__(177);
-
-	var _Programmers2 = _interopRequireDefault(_Programmers);
-
-	var _Marketers = __webpack_require__(176);
-
-	var _Marketers2 = _interopRequireDefault(_Marketers);
-
-	var _Analysts = __webpack_require__(175);
-
-	var _Analysts2 = _interopRequireDefault(_Analysts);
 
 	var _productStore = __webpack_require__(99);
 
@@ -658,15 +630,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var GAME_MODE_PRODUCTS = 'GAME_MODE_PRODUCTS';
-	// import React, { Component, PropTypes } from 'react';
-
-	var GAME_MODE_PRODUCT = 'GAME_MODE_PRODUCT';
-	var GAME_MODE_ECONOMICS = 'GAME_MODE_ECONOMICS';
-	var GAME_MODE_PLAYER = 'GAME_MODE_PLAYER';
-	var GAME_MODE_ADS = 'GAME_MODE_ADS';
-	var GAME_MODE_STAFF = 'GAME_MODE_STAFF';
-
 	var Game = function (_Component) {
 	  (0, _inherits3.default)(Game, _Component);
 
@@ -693,7 +656,6 @@
 	      counter: 0,
 
 	      id: 0, // productID
-	      mode: GAME_MODE_PRODUCT,
 	      gamePhase: GAME_STAGES.GAME_STAGE_INIT
 	    }, _this.initialize = function () {
 	      _this.getProductsFromStore();
@@ -719,10 +681,7 @@
 	      _this.setState({ pause: true, timerId: null });
 	    }, _this.resumeGame = function () {
 	      _this.setState({ pause: false });
-	    }, _this.onNextMonth = function () {
-	      _flux2.default.scheduleActions.nextMonth();
 	    }, _this.getMessages = function () {
-	      // logger.debug('MessageStore callback pausing');
 	      if (_messageStore2.default.isDrawable()) {
 	        _this.pauseGame();
 	      }
@@ -744,14 +703,11 @@
 
 	      return (0, _preact.h)(_Product2.default, { product: product, id: id });
 	    }, _this.renderGameInNormalMode = function (props, state) {
-	      var gamePhase = state.gamePhase;
-
-
 	      var body = _this.renderProductMenu(state);
 
 	      var MessageTab = (0, _preact.h)(
 	        'div',
-	        null,
+	        { className: 'bottom-fixed' },
 	        'MessageTab'
 	      );
 
@@ -762,20 +718,21 @@
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'body-wrapper' },
-	          (0, _preact.h)(_Menu2.default, {
-	            pauseGame: _this.pauseGame,
-	            resumeGame: _this.resumeGame,
-	            setGameSpeed: _this.setGameSpeed,
-	            pause: state.pause,
-	            gameSpeed: state.gameSpeed,
-	            day: state.day,
-
-	            gamePhase: gamePhase
-	          }),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'menu-fixed' },
+	            (0, _preact.h)(_Menu2.default, {
+	              pause: state.pause,
+	              pauseGame: _this.pauseGame,
+	              setGameSpeed: _this.setGameSpeed,
+	              day: state.day
+	            })
+	          ),
 	          (0, _preact.h)('hr', null),
 	          body,
 	          (0, _preact.h)('br', null),
-	          (0, _preact.h)('hr', null)
+	          (0, _preact.h)('hr', null),
+	          MessageTab
 	        )
 	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
@@ -786,29 +743,21 @@
 	    value: function componentWillMount() {
 	      this.initialize();
 
-	      _productStore2.default.addChangeListener(this.getProductsFromStore);
+	      _flux2.default.productStore.addChangeListener(this.getProductsFromStore);
 
-	      _scheduleStore2.default.addChangeListener(this.pickDataFromScheduleStore);
+	      _flux2.default.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
 
-	      _messageStore2.default.addChangeListener(this.getMessages);
+	      _flux2.default.messageStore.addChangeListener(this.getMessages);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render(props, state) {
-	      var body = '';
-
-	      switch (state.gamePhase) {
-	        case GAME_STAGES.GAME_STAGE_INIT:
-	          // render hero description tab
-	          body = (0, _preact.h)(_Tutorial2.default, null);
-	          break;
-	        default:
-	          // run game in normal mode
-	          body = this.renderGameInNormalMode(props, state);
-	          break;
+	      if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) {
+	        return (0, _preact.h)(_Tutorial2.default, null);
 	      }
 
-	      return body;
+	      return this.renderGameInNormalMode(props, state);
+
 	      //   <h3>Два вопроса бизнеса</h3>
 	      //   <div>Готовы ли люди этим пользоваться</div>
 	      //   <div>Сколько они готовы заплатить за это</div>
@@ -816,6 +765,7 @@
 	  }]);
 	  return Game;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = Game;
 
@@ -2410,76 +2360,7 @@
 	$export($export.S, 'Object', {create: __webpack_require__(61)});
 
 /***/ },
-/* 93 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends2 = __webpack_require__(94);
-
-	var _extends3 = _interopRequireDefault(_extends2);
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _ProductShortTab = __webpack_require__(95);
-
-	var _ProductShortTab2 = _interopRequireDefault(_ProductShortTab);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var ProductMenu = function (_Component) {
-	  (0, _inherits3.default)(ProductMenu, _Component);
-
-	  function ProductMenu() {
-	    (0, _classCallCheck3.default)(this, ProductMenu);
-	    return (0, _possibleConstructorReturn3.default)(this, (ProductMenu.__proto__ || (0, _getPrototypeOf2.default)(ProductMenu)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(ProductMenu, [{
-	    key: 'render',
-	    value: function render() {
-	      var props = this.props,
-	          state = this.state;
-	      // console.log('ProductMenu', props, state);
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(_ProductShortTab2.default, (0, _extends3.default)({}, props, { onChooseProject: props.onChooseProject }))
-	      );
-	    }
-	  }]);
-	  return ProductMenu;
-	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
-	exports.default = ProductMenu;
-
-/***/ },
+/* 93 */,
 /* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2508,109 +2389,7 @@
 	};
 
 /***/ },
-/* 95 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _round = __webpack_require__(96);
-
-	var _round2 = _interopRequireDefault(_round);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	//
-	var ProductShortTab = function (_Component) {
-	  (0, _inherits3.default)(ProductShortTab, _Component);
-
-	  function ProductShortTab() {
-	    (0, _classCallCheck3.default)(this, ProductShortTab);
-	    return (0, _possibleConstructorReturn3.default)(this, (ProductShortTab.__proto__ || (0, _getPrototypeOf2.default)(ProductShortTab)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(ProductShortTab, [{
-	    key: 'render',
-	    value: function render() {
-	      var props = this.props;
-
-
-	      var p = props.product;
-	      var i = props.i;
-
-	      var text = (0, _preact.h)(
-	        'div',
-	        { style: { padding: 15 }, onClick: props.onChooseProject },
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u2116 ',
-	          i + 1
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          p.name
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0422\u0438\u043F: ',
-	          p.idea
-	        ),
-	        (0, _preact.h)(
-	          'i',
-	          null,
-	          '\u0420\u0435\u0439\u0442\u0438\u043D\u0433 ',
-	          (0, _round2.default)(p.rating),
-	          '/10'
-	        ),
-	        (0, _preact.h)('br', null)
-	      );
-	      // <a href="#" style={{cursor: 'pointer'}}>Улучшения</a>
-	      // <div>Технический долг: {p.KPI.debt}</div>
-	      // {JSON.stringify(p)}
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        text
-	      );
-	    }
-	  }]);
-	  return ProductShortTab;
-	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
-
-
-	exports.default = ProductShortTab;
-
-/***/ },
+/* 95 */,
 /* 96 */
 /***/ function(module, exports) {
 
@@ -2718,7 +2497,7 @@
 	    value: function renderSpeedIcons() {
 	      var _this2 = this;
 
-	      return [{ speed: 1, icon: '>' }, { speed: 4, icon: '>>' }, { speed: 10, icon: '>>>>' }].map(function (s) {
+	      return [{ speed: 1, icon: '>' }, { speed: 10, icon: '>>>' }].map(function (s) {
 	        return (0, _preact.h)(
 	          'div',
 	          { className: 'navigation' },
@@ -2735,7 +2514,8 @@
 	      if (!_stages2.default.canShowUpperTabInMenu()) return (0, _preact.h)('div', null);
 
 	      var pause = props.pause,
-	          pauseGame = props.pauseGame;
+	          pauseGame = props.pauseGame,
+	          setGameSpeed = props.setGameSpeed;
 
 
 	      var speedIcons = this.renderSpeedIcons();
@@ -5817,10 +5597,10 @@
 	  }, {
 	    key: 'getSegmentedPriorities',
 	    value: function getSegmentedPriorities(segId) {
-	      var s = this.getSegmentBySegmentId(segId);
+	      var segment = this.getSegmentBySegmentId(segId);
 	      var features = this.getDefaults().features;
 
-	      return s.rating.map(function (r, index) {
+	      return segment.rating.map(function (r, index) {
 	        return {
 	          rating: r,
 	          feature: features[index].shortDescription
@@ -6077,12 +5857,8 @@
 	      }
 
 	      var referralBonuses = 0;
-	      // if (marketing.improvedReferralProgram) {
-	      //   referralBonuses += 0.45;
-	      // }
 
 	      if (marketing.referralProgram) {
-	        // referralBonuses += 0.21;
 	        referralBonuses += 0.65 * marketing.referralProgram;
 	      }
 
@@ -11901,353 +11677,9 @@
 	exports.default = Employee;
 
 /***/ },
-/* 175 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _playerStore = __webpack_require__(128);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _Staff = __webpack_require__(170);
-
-	var _Staff2 = _interopRequireDefault(_Staff);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Analysts = function (_Component) {
-	  (0, _inherits3.default)(Analysts, _Component);
-
-	  function Analysts() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Analysts);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Analysts.__proto__ || (0, _getPrototypeOf2.default)(Analysts)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      staff: [],
-	      employees: []
-	    }, _this.getStaff = function () {
-	      _this.setState({
-	        staff: _playerStore2.default.getTeamAnalysts(),
-	        employees: _playerStore2.default.getEmployeesAnalysts()
-	      });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Analysts, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.getStaff();
-
-	      _playerStore2.default.addChangeListener(this.getStaff);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render(props, _ref2) {
-	      var staff = _ref2.staff,
-	          employees = _ref2.employees;
-
-	      return (0, _preact.h)(_Staff2.default, { staff: staff, employees: employees });
-	    }
-	  }]);
-	  return Analysts;
-	}(_preact.Component);
-
-	exports.default = Analysts;
-
-/***/ },
-/* 176 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _playerStore = __webpack_require__(128);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _Staff = __webpack_require__(170);
-
-	var _Staff2 = _interopRequireDefault(_Staff);
-
-	var _Employee = __webpack_require__(174);
-
-	var _Employee2 = _interopRequireDefault(_Employee);
-
-	var _Worker = __webpack_require__(171);
-
-	var _Worker2 = _interopRequireDefault(_Worker);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Marketers = function (_Component) {
-	  (0, _inherits3.default)(Marketers, _Component);
-
-	  function Marketers() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Marketers);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Marketers.__proto__ || (0, _getPrototypeOf2.default)(Marketers)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      staff: [],
-	      employees: []
-	    }, _this.getStaff = function () {
-	      _this.setState({
-	        staff: _playerStore2.default.getTeamMarketers(),
-	        employees: _playerStore2.default.getEmployeesMarketers(),
-	        points: _playerStore2.default.getMonthlyMarketerPoints()
-	      });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Marketers, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.getStaff();
-
-	      _playerStore2.default.addChangeListener(this.getStaff);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render(props, _ref2) {
-	      var staff = _ref2.staff,
-	          employees = _ref2.employees,
-	          points = _ref2.points;
-
-	      var title = void 0;
-	      if (employees.length) {
-	        // title = 'Нанять маркетолога';
-	      } else {
-	        title = 'Никто не хочет к нам в команду. Не расстраивайтесь! Со временем появятся новые кандидаты';
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430\u0448\u0438 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0438 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u044F\u0442 +',
-	          points,
-	          ' \u043C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433\u043E\u0432\u044B\u0445 \u043E\u0447\u043A\u043E\u0432 (MP) \u0432 \u043C\u0435\u0441\u044F\u0446'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          title
-	        ),
-	        (0, _preact.h)(
-	          'table',
-	          { className: 'table table-stripped' },
-	          (0, _preact.h)(
-	            'tbody',
-	            null,
-	            employees.map(function (e, i) {
-	              return (0, _preact.h)(_Employee2.default, { p: e, i: i });
-	            })
-	          )
-	        )
-	      );
-	      // <Staff staff={staff} employees={employees} />
-	    }
-	  }]);
-	  return Marketers;
-	}(_preact.Component);
-
-	exports.default = Marketers;
-
-/***/ },
-/* 177 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _playerStore = __webpack_require__(128);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _Staff = __webpack_require__(170);
-
-	var _Staff2 = _interopRequireDefault(_Staff);
-
-	var _Employee = __webpack_require__(174);
-
-	var _Employee2 = _interopRequireDefault(_Employee);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Programmers = function (_Component) {
-	  (0, _inherits3.default)(Programmers, _Component);
-
-	  function Programmers() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Programmers);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Programmers.__proto__ || (0, _getPrototypeOf2.default)(Programmers)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      staff: [],
-	      employees: []
-	    }, _this.getStaff = function () {
-	      _this.setState({
-	        staff: _playerStore2.default.getTeamProgrammers(),
-	        employees: _playerStore2.default.getEmployeesProgrammers(),
-	        points: _playerStore2.default.getMonthlyProgrammerPoints()
-	      });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Programmers, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.getStaff();
-
-	      _playerStore2.default.addChangeListener(this.getStaff);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render(props, _ref2) {
-	      var staff = _ref2.staff,
-	          employees = _ref2.employees,
-	          points = _ref2.points;
-
-	      var title = void 0;
-	      if (employees.length) {
-	        // title = 'Нанять программиста';
-	      } else {
-	        title = 'Никто не хочет к нам в команду. Не расстраивайтесь! Со временем появятся новые кандидаты';
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0430\u0448\u0438 \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u044F\u0442 +',
-	          points,
-	          ' \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u0441\u043A\u0438\u0445 \u043E\u0447\u043A\u043E\u0432 (PP) \u0432 \u043C\u0435\u0441\u044F\u0446'
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          title
-	        ),
-	        (0, _preact.h)(
-	          'table',
-	          { className: 'table table-stripped' },
-	          (0, _preact.h)(
-	            'tbody',
-	            null,
-	            employees.map(function (e, i) {
-	              return (0, _preact.h)(_Employee2.default, { p: e, i: i });
-	            })
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	  return Programmers;
-	}(_preact.Component);
-
-	exports.default = Programmers;
-
-/***/ },
+/* 175 */,
+/* 176 */,
+/* 177 */,
 /* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -13655,240 +13087,7 @@
 	exports.default = Segment;
 
 /***/ },
-/* 186 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _objectDestructuringEmpty2 = __webpack_require__(161);
-
-	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
-
-	var _getPrototypeOf = __webpack_require__(40);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(45);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(46);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(50);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(85);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _constants = __webpack_require__(145);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
-	var _flux = __webpack_require__(136);
-
-	var _flux2 = _interopRequireDefault(_flux);
-
-	var _coloredRating = __webpack_require__(179);
-
-	var _coloredRating2 = _interopRequireDefault(_coloredRating);
-
-	var _UI = __webpack_require__(147);
-
-	var _UI2 = _interopRequireDefault(_UI);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var AdviceTab = function (_Component) {
-	  (0, _inherits3.default)(AdviceTab, _Component);
-
-	  function AdviceTab() {
-	    (0, _classCallCheck3.default)(this, AdviceTab);
-	    return (0, _possibleConstructorReturn3.default)(this, (AdviceTab.__proto__ || (0, _getPrototypeOf2.default)(AdviceTab)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(AdviceTab, [{
-	    key: 'render',
-	    value: function render(_ref, _ref2) {
-	      var gamePhase = _ref.gamePhase;
-	      (0, _objectDestructuringEmpty3.default)(_ref2);
-
-	      var target = void 0;
-
-	      switch (gamePhase) {
-	        case _constants2.default.gameStages.GAME_STAGE_GAME_STARTED:
-	          target = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041D\u0430\u0439\u043C\u0438\u0442\u0435 \u043C\u0430\u0440\u043A\u0435\u0442\u043E\u043B\u043E\u0433\u0430 Lynda'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041C\u0430\u0440\u043A\u0435\u0442\u0438\u043D\u0433\u043E\u0432\u044B\u0435 (MP) \u0438 \u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u0441\u043A\u0438\u0435 (\u0420\u0420) \u043E\u0447\u043A\u0438 \u043D\u0443\u0436\u043D\u044B \u0434\u043B\u044F \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F \u0432\u0430\u0448\u0435\u0433\u043E \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430'
-	            )
-	          );
-	          break;
-
-	        case _constants2.default.gameStages.GAME_STAGE_HIRED_FIRST_WORKER:
-	          // <div>Приведите более 200 клиентов на ваш сайт в разделе "Проекты->Клиенты"</div>
-	          target = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041E\u0442\u043B\u0438\u0447\u043D\u043E! \u041D\u0430\u043C \u043D\u0443\u0436\u043D\u044B \u043F\u0435\u0440\u0432\u044B\u0435 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438. \u041F\u0440\u043E\u0432\u0435\u0434\u0438\u0442\u0435 \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E'
-	            )
-	          );
-	          break;
-
-	        case _constants2.default.gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS:
-	          target = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041F\u0440\u0435\u0432\u043E\u0441\u0445\u043E\u0434\u043D\u043E! \u0427\u0435\u043C \u0431\u043E\u043B\u044C\u0448\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432 \u0432\u044B \u043F\u0440\u0438\u0432\u043E\u0434\u0438\u0442\u0435 \u043D\u0430 \u0441\u0430\u0439\u0442, \u0442\u0435\u043C \u0442\u043E\u0447\u043D\u0435\u0435 \u043D\u0430\u0448\u0430 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430 ... \u043A\u043E\u0442\u043E\u0440\u043E\u0439 \u0443 \u043D\u0430\u0441 \u043D\u0435\u0442'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0443 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432 \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u0410\u043D\u0430\u043B\u0438\u0442\u0438\u043A\u0430", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043D\u0430\u043D\u0438\u0439 \u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F\u0445'
-	            )
-	          );
-	          break;
-
-	        case _constants2.default.gameStages.GAME_STAGE_IMPROVED_ANALYTICS:
-	          target = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0427\u0442\u043E\u0431\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u043E\u0447\u043A\u0438 \u044D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u044B (XP) \u043F\u0435\u0440\u0435\u043C\u043E\u0442\u0430\u0439\u0442\u0435 \u0432\u0440\u0435\u043C\u044F \u0434\u043E \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0433\u043E \u043C\u0435\u0441\u044F\u0446\u0430, ( \u0438\u043A\u043E\u043D\u043A\u0430 \u043F\u0435\u0440\u0435\u043C\u043E\u0442\u043A\u0438 \u0432\u0440\u0435\u043C\u0435\u043D\u0438 ',
-	              (0, _preact.h)(
-	                'div',
-	                { className: 'navigation' },
-	                (0, _preact.h)(_UI2.default.Button, { text: '>' })
-	              ),
-	              ')'
-	            )
-	          );
-	          break;
-
-	        case _constants2.default.gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS:
-	          target = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041F\u0435\u0440\u0432\u043E\u0435 \u0442\u0435\u0441\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043E. \u041F\u0440\u043E\u0442\u043E\u0442\u0438\u043F \u0443\u0436\u0430\u0441\u0435\u043D! (\u0420\u0435\u0439\u0442\u0438\u043D\u0433 ',
-	              (0, _preact.h)(_coloredRating2.default, { rating: _flux2.default.productStore.getRating(0) }),
-	              '/10)'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041E\u0434\u043D\u0430\u043A\u043E, \u043C\u044B \u043F\u043E\u043B\u0443\u0447\u0438\u043B\u0438 \u043F\u0430\u0440\u0443 \u0434\u0435\u043B\u044C\u043D\u044B\u0445 \u0441\u043E\u0432\u0435\u0442\u043E\u0432 \u0438 \u043C\u043E\u0436\u0435\u043C \u0443\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u043F\u0440\u043E\u0434\u0443\u043A\u0442'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u0435 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0443 "\u0412\u0438\u0440\u0442\u0443\u0430\u043B\u044C\u043D\u0430\u044F \u043C\u0430\u0448\u0438\u043D\u0430" \u0432 \u0440\u0430\u0437\u0434\u0435\u043B\u0435 "\u0420\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0430", \u0447\u0442\u043E\u0431\u044B \u043F\u043E\u0434\u043D\u044F\u0442\u044C \u043D\u0430\u0448 \u0440\u0435\u0439\u0442\u0438\u043D\u0433'
-	            )
-	          );
-	          break;
-
-	        case _constants2.default.gameStages.GAME_STAGE_IMPROVED_FIRST_FEATURE:
-	          target = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0422\u0430\u043A \u0434\u0435\u0440\u0436\u0430\u0442\u044C! \u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u043B\u0441\u044F! \u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u0432\u043B\u0438\u044F\u0435\u0442 \u043D\u0430 \u043D\u0430\u0448\u0438 \u0434\u043E\u0445\u043E\u0434\u044B \u0438 \u043D\u0430 \u043E\u0442\u0442\u043E\u043A \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 \u0432\u044B\u0448\u0435 7 \u0438 \u0432\u044B \u0441\u043C\u043E\u0436\u0435\u0442\u0435 \u043D\u0430\u0447\u0430\u0442\u044C \u043F\u0440\u0438\u043D\u0438\u043C\u0430\u0442\u044C \u043F\u043B\u0430\u0442\u0435\u0436\u0438 \u043D\u0430 \u0441\u0430\u0439\u0442\u0435!'
-	            )
-	          );
-	          break;
-
-	        case _constants2.default.gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS:
-	          target = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0418\u043D\u0442\u0435\u0440\u0435\u0441 \u043A \u043D\u0430\u0448\u0435\u043C\u0443 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0443 \u043D\u0435 \u043E\u0441\u043B\u0430\u0431\u0435\u0432\u0430\u0435\u0442!'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041C\u043E\u0436\u0435\u0442\u0435 \u043F\u0440\u0438\u0441\u0442\u0443\u043F\u0438\u0442\u044C \u043A \u043C\u043E\u043D\u0435\u0442\u0438\u0437\u0430\u0446\u0438\u0438 \u0441\u0430\u0439\u0442\u0430!'
-	            )
-	          );
-	          // <div>Продолжайте работать над улучшением продукта и вы сможете разорить своих конкурентов!</div>
-	          break;
-
-	        case _constants2.default.gameStages.GAME_STAGE_PAYMENTS_INSTALLED:
-	          target = (0, _preact.h)(
-	            'div',
-	            null,
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0423\u0440\u0440\u0430! \u041C\u044B \u0442\u043E\u0447\u043D\u043E \u0437\u043D\u0430\u0435\u043C, \u0447\u0442\u043E \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0433\u043E\u0442\u043E\u0432\u044B \u043F\u043B\u0430\u0442\u0438\u0442\u044C \u0437\u0430 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442!'
-	            ),
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u041F\u0440\u043E\u0434\u043E\u043B\u0436\u0430\u0439\u0442\u0435 \u0432 \u0442\u043E\u043C \u0436\u0435 \u0434\u0443\u0445\u0435!'
-	            )
-	          );
-	          break;
-	      }
-
-	      if (!target) target = '#' + gamePhase;
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'h3',
-	          null,
-	          '\u0417\u0430\u0434\u0430\u043D\u0438\u0435'
-	        ),
-	        target,
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)('hr', null)
-	      );
-	    }
-	  }]);
-	  return AdviceTab;
-	}(_preact.Component);
-
-	exports.default = AdviceTab;
-
-/***/ },
+/* 186 */,
 /* 187 */
 /***/ function(module, exports, __webpack_require__) {
 

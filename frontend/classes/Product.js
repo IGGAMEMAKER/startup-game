@@ -176,13 +176,13 @@ export default class Product {
   }
 
   getSegmentedPriorities(segId) {
-    const s = this.getSegmentBySegmentId(segId);
+    const segment = this.getSegmentBySegmentId(segId);
     const features = this.getDefaults().features;
 
-    return s.rating.map((r, index) => {
+    return segment.rating.map((r, index) => {
       return {
         rating: r,
-        feature: features[index].shortDescription,
+        feature: features[index].shortDescription
       }
     }).sort((s1, s2) => s2.rating - s1.rating);
   }
@@ -388,9 +388,7 @@ export default class Product {
     const segments = this.getSegments();
 
     return segments
-      .map((s, segId) => {
-        return this.getSegmentIncome(segId);
-      })
+      .map((s, segId) => this.getSegmentIncome(segId))
       .reduce((p, c) => p + c, 0);
   }
 
@@ -410,12 +408,8 @@ export default class Product {
     }
 
     let referralBonuses = 0;
-    // if (marketing.improvedReferralProgram) {
-    //   referralBonuses += 0.45;
-    // }
 
     if (marketing.referralProgram) {
-      // referralBonuses += 0.21;
       referralBonuses += 0.65 * marketing.referralProgram;
     }
 
