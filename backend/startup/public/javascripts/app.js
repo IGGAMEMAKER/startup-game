@@ -2750,6 +2750,14 @@
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
+	var _productStages = __webpack_require__(119);
+
+	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
+
+	var _Product = __webpack_require__(124);
+
+	var _Product2 = _interopRequireDefault(_Product);
+
 	var _computeRating = __webpack_require__(111);
 
 	var _computeRating2 = _interopRequireDefault(_computeRating);
@@ -2758,10 +2766,6 @@
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _productStages = __webpack_require__(119);
-
-	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
-
 	var _computeCompanyCost = __webpack_require__(120);
 
 	var _computeCompanyCost2 = _interopRequireDefault(_computeCompanyCost);
@@ -2769,10 +2773,6 @@
 	var _companyMerger = __webpack_require__(122);
 
 	var _companyMerger2 = _interopRequireDefault(_companyMerger);
-
-	var _Product = __webpack_require__(124);
-
-	var _Product2 = _interopRequireDefault(_Product);
 
 	var _stats = __webpack_require__(195);
 
@@ -6553,24 +6553,6 @@
 	        this.improvements = 1;
 	      }
 	    }
-
-	    // improveMainFeature(p) {
-	    //   const featureId = p.featureId;
-	    //   previous = this.features.offer[featureId];
-	    //
-	    //   const sum = previous + p.value;
-	    //   const max = p.max;
-	    //
-	    //   this.features.offer[featureId] = sum > max ? max: sum;
-	    //   this.XP -= p.value;
-	    //
-	    //   if (this.improvements) {
-	    //     this.improvements++;
-	    //   } else {
-	    //     this.improvements = 1;
-	    //   }
-	    // }
-
 	  }, {
 	    key: 'improveFeatureByPoints',
 	    value: function improveFeatureByPoints(p) {
@@ -6796,8 +6778,6 @@
 	    pricingType: 0
 	  },
 	  isPlayer: true
-	  // на каком основании работает в проекте
-	  // за еду, за опыт, за процент с продаж, собственник бизнеса
 	}];
 
 	var _reputation = 50; // neutral reputation

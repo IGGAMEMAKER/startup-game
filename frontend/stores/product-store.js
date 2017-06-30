@@ -7,18 +7,18 @@ import logger from '../helpers/logger/logger';
 import round from '../helpers/math/round';
 
 import * as IDEAS from '../constants/products/ideas';
+import * as PRODUCT_STAGES from '../constants/products/product-stages';
+import Product from '../classes/Product';
 
 const EC = 'PRODUCT_EVENT_CHANGE';
 
 import computeRating from '../helpers/products/compute-rating';
 import productDescriptions from '../helpers/products/product-descriptions';
 
-import * as PRODUCT_STAGES from '../constants/products/product-stages';
 
 import companyCostComputer from '../helpers/products/compute-company-cost';
 import companyMerger from '../helpers/products/company-merger';
 
-import Product from '../classes/Product';
 
 import stats from '../stats';
 

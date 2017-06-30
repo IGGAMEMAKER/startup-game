@@ -6,7 +6,7 @@ import logger from '../helpers/logger/logger';
 
 import * as GAME_STAGES from '../constants/game-stages';
 
-import { WORK_SPEED_NORMAL, WORK_SPEED_HAS_MAIN_JOB } from '../constants/work-speed';
+import { WORK_SPEED_NORMAL } from '../constants/work-speed';
 
 import stats from '../stats';
 

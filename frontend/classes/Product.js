@@ -1058,23 +1058,6 @@ export default class Product {
     }
   }
 
-  // improveMainFeature(p) {
-  //   const featureId = p.featureId;
-  //   previous = this.features.offer[featureId];
-  //
-  //   const sum = previous + p.value;
-  //   const max = p.max;
-  //
-  //   this.features.offer[featureId] = sum > max ? max: sum;
-  //   this.XP -= p.value;
-  //
-  //   if (this.improvements) {
-  //     this.improvements++;
-  //   } else {
-  //     this.improvements = 1;
-  //   }
-  // }
-
   improveFeatureByPoints(p) {
     this.features[p.featureGroup][p.featureName] = 1;
   }
