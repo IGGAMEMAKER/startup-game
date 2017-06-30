@@ -97,22 +97,17 @@ export default class MainFeature extends Component {
     return '';
   }
 
-  renderMainFeature = (featureGroup, product, id, segments, defaults) => (defaultFeature, featureId) => {
-    const featureName = defaultFeature.name;
-    const { shortDescription } = defaultFeature;
+  renderHypeIncreaseValue(id, featureId) {
+    if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
+      const hypeModifier = flux.productStore.getTechBreakthroughModifierForHype(id, featureId);
 
-    const feature = product.features[featureGroup][featureId];
+      if (hypeModifier) return `Наша известность увеличится! +${hypeModifier} HYPE`;
+    }
 
+    return '';
+  }
 
-    const current = feature || 0;
-    const max = flux.productStore.getCurrentMainFeatureDefaultsById(id)[featureId]; // defaultFeature.data;
-
-
-    const description = defaultFeature.description || '';
-    const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
-    const key = `feature${featureGroup}${featureName}${featureId}`;
-
-
+  renderProgressBar(current, product, max) {
     const data = [
       { value: current }
     ];
@@ -120,6 +115,21 @@ export default class MainFeature extends Component {
     if (product.XP >= 1000) {
       data.push({ value: 1000, style: 'bg-success' })
     }
+
+    return <UI.Bar min={0} max={max} data={data} />;
+  }
+
+  renderMainFeature = (featureGroup, product, id, segments, defaults) => (defaultFeature, featureId) => {
+    const featureName = defaultFeature.name;
+    const { shortDescription } = defaultFeature;
+
+    const current = product.features[featureGroup][featureId] || 0;
+    const max = flux.productStore.getCurrentMainFeatureDefaultsById(id)[featureId]; // defaultFeature.data;
+
+
+    const description = defaultFeature.description || '';
+    const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
+    const key = `feature${featureGroup}${featureName}${featureId}`;
 
     const leaderInTech = flux.productStore.getLeaderInTech(id, featureId);
 
@@ -130,17 +140,17 @@ export default class MainFeature extends Component {
 
     const pp = flux.productStore.getMainFeatureUpgradeCost(id, featureId);
 
-    const notEnoughPPs = !flux.playerStore.enoughProgrammingPoints(pp);
-    const currentXP = flux.productStore.getXP(id);
+    const enoughPPs = flux.playerStore.enoughProgrammingPoints(pp);
+    const currentXP = product.XP; // flux.productStore.getXP(id);
 
-    const disabled = notEnoughPPs || currentXP < 1000;
+    const disabled = !enoughPPs || currentXP < 1000;
 
     return <div key={key}>
       <div>
         <div>{leaderInTechPhrase}</div>
         <span>{userOrientedFeatureName} ({current}/{max}XP)</span>
         <div style="width: 300px;">
-          <UI.Bar min={0} max={max} data={data} />
+          {this.renderProgressBar(current, product, max)}
         </div>
       </div>
       <br />
@@ -148,6 +158,7 @@ export default class MainFeature extends Component {
       <div>{this.renderSegmentRatingImprovementList(segments, id, featureId)}</div>
       <div className="hypothesis-wrapper">
         <div>{this.renderUpgradeCostModifierBonus(id, featureId)}</div>
+        <div>{this.renderHypeIncreaseValue(id, featureId)}</div>
         <UI.Button
           disabled={disabled}
           onClick={() => { this.improveFeature(id, featureId, max, pp) }}
@@ -161,6 +172,8 @@ export default class MainFeature extends Component {
   };
 
   improveFeature(id, featureId, max, pp) {
+    const willResultBreakthrough = flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId);
+
     flux.playerActions.spendPoints(pp, 0);
     flux.productActions.improveFeature(id, 'offer', featureId, max, 1000);
 
@@ -174,6 +187,12 @@ export default class MainFeature extends Component {
       if (rating >= 7) {
         stageHelper.onPaymentRatingMissionCompleted();
       }
+    }
+
+    if (willResultBreakthrough) {
+      const hypeModifier = flux.productStore.getTechBreakthroughModifierForHype(id, featureId);
+
+      flux.productActions.addHype(id, hypeModifier);
     }
 
     // this.setState({ tick: this.state.tick + 1 });

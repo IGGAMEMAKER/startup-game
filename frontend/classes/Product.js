@@ -970,6 +970,10 @@ export default class Product {
     return this.improvements;
   }
 
+  getTechBreakthroughModifierForHype() {
+    return Math.ceil(this.getClients() * this.getBlogPower());
+  }
+
   getTechnologyComplexityModifier() {
     const tests = this.getTestsAmount();
     const improvements = this.getImprovementsAmount();
@@ -1050,32 +1054,24 @@ export default class Product {
     } else {
       this.improvements = 1;
     }
-
-    let hypeIncrease = Math.ceil(this.getClients() * this.getBlogPower() / 1000);
-
-    if (p.isTechnologyLeader) {
-      hypeIncrease *= 100;
-    }
-
-    this.addHype(hypeIncrease);
   }
 
-  improveMainFeature(p) {
-    const featureId = p.featureId;
-    previous = this.features.offer[featureId];
-
-    const sum = previous + p.value;
-    const max = p.max;
-
-    this.features.offer[featureId] = sum > max ? max: sum;
-    this.XP -= p.value;
-
-    if (this.improvements) {
-      this.improvements++;
-    } else {
-      this.improvements = 1;
-    }
-  }
+  // improveMainFeature(p) {
+  //   const featureId = p.featureId;
+  //   previous = this.features.offer[featureId];
+  //
+  //   const sum = previous + p.value;
+  //   const max = p.max;
+  //
+  //   this.features.offer[featureId] = sum > max ? max: sum;
+  //   this.XP -= p.value;
+  //
+  //   if (this.improvements) {
+  //     this.improvements++;
+  //   } else {
+  //     this.improvements = 1;
+  //   }
+  // }
 
   improveFeatureByPoints(p) {
     this.features[p.featureGroup][p.featureName] = 1;
@@ -1092,7 +1088,9 @@ export default class Product {
   }
 
   addHype(hype) {
-    this.KPI.hype = Math.min(productDescriptions(this.idea).marketSize * 10, this.KPI.hype + hype);
+    const max = productDescriptions(this.idea).marketSize * 10;
+
+    this.KPI.hype = Math.min(max, this.KPI.hype + hype);
   }
 
   loseMonthlyHype() {

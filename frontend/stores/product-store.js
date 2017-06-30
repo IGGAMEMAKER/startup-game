@@ -497,6 +497,10 @@ class ProductStore extends EventEmitter {
     return current < 0.3 * max;
   }
 
+  getTechBreakthroughModifierForHype(id, featureId) {
+    return _products[id].getTechBreakthroughModifierForHype()
+  }
+
   getMainFeatureUpgradeCost(id, featureId) {
     let modifier = 1;
 

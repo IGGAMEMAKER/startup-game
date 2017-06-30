@@ -3341,6 +3341,11 @@
 	      return current < 0.3 * max;
 	    }
 	  }, {
+	    key: 'getTechBreakthroughModifierForHype',
+	    value: function getTechBreakthroughModifierForHype(id, featureId) {
+	      return _products[id].getTechBreakthroughModifierForHype();
+	    }
+	  }, {
 	    key: 'getMainFeatureUpgradeCost',
 	    value: function getMainFeatureUpgradeCost(id, featureId) {
 	      var modifier = 1;
@@ -6448,6 +6453,11 @@
 	      return this.improvements;
 	    }
 	  }, {
+	    key: 'getTechBreakthroughModifierForHype',
+	    value: function getTechBreakthroughModifierForHype() {
+	      return Math.ceil(this.getClients() * this.getBlogPower());
+	    }
+	  }, {
 	    key: 'getTechnologyComplexityModifier',
 	    value: function getTechnologyComplexityModifier() {
 	      var tests = this.getTestsAmount();
@@ -6540,33 +6550,25 @@
 	      } else {
 	        this.improvements = 1;
 	      }
-
-	      var hypeIncrease = Math.ceil(this.getClients() * this.getBlogPower() / 1000);
-
-	      if (p.isTechnologyLeader) {
-	        hypeIncrease *= 100;
-	      }
-
-	      this.addHype(hypeIncrease);
 	    }
-	  }, {
-	    key: 'improveMainFeature',
-	    value: function improveMainFeature(p) {
-	      var featureId = p.featureId;
-	      previous = this.features.offer[featureId];
 
-	      var sum = previous + p.value;
-	      var max = p.max;
+	    // improveMainFeature(p) {
+	    //   const featureId = p.featureId;
+	    //   previous = this.features.offer[featureId];
+	    //
+	    //   const sum = previous + p.value;
+	    //   const max = p.max;
+	    //
+	    //   this.features.offer[featureId] = sum > max ? max: sum;
+	    //   this.XP -= p.value;
+	    //
+	    //   if (this.improvements) {
+	    //     this.improvements++;
+	    //   } else {
+	    //     this.improvements = 1;
+	    //   }
+	    // }
 
-	      this.features.offer[featureId] = sum > max ? max : sum;
-	      this.XP -= p.value;
-
-	      if (this.improvements) {
-	        this.improvements++;
-	      } else {
-	        this.improvements = 1;
-	      }
-	    }
 	  }, {
 	    key: 'improveFeatureByPoints',
 	    value: function improveFeatureByPoints(p) {
@@ -6586,7 +6588,9 @@
 	  }, {
 	    key: 'addHype',
 	    value: function addHype(hype) {
-	      this.KPI.hype = Math.min((0, _productDescriptions2.default)(this.idea).marketSize * 10, this.KPI.hype + hype);
+	      var max = (0, _productDescriptions2.default)(this.idea).marketSize * 10;
+
+	      this.KPI.hype = Math.min(max, this.KPI.hype + hype);
 	    }
 	  }, {
 	    key: 'loseMonthlyHype',
@@ -12322,21 +12326,13 @@
 	        var shortDescription = defaultFeature.shortDescription;
 
 
-	        var feature = product.features[featureGroup][featureId];
-
-	        var current = feature || 0;
+	        var current = product.features[featureGroup][featureId] || 0;
 	        var max = _flux2.default.productStore.getCurrentMainFeatureDefaultsById(id)[featureId]; // defaultFeature.data;
 
 
 	        var description = defaultFeature.description || '';
 	        var userOrientedFeatureName = shortDescription ? shortDescription : featureName;
 	        var key = 'feature' + featureGroup + featureName + featureId;
-
-	        var data = [{ value: current }];
-
-	        if (product.XP >= 1000) {
-	          data.push({ value: 1000, style: 'bg-success' });
-	        }
 
 	        var leaderInTech = _flux2.default.productStore.getLeaderInTech(id, featureId);
 
@@ -12347,10 +12343,10 @@
 
 	        var pp = _flux2.default.productStore.getMainFeatureUpgradeCost(id, featureId);
 
-	        var notEnoughPPs = !_flux2.default.playerStore.enoughProgrammingPoints(pp);
-	        var currentXP = _flux2.default.productStore.getXP(id);
+	        var enoughPPs = _flux2.default.playerStore.enoughProgrammingPoints(pp);
+	        var currentXP = product.XP; // flux.productStore.getXP(id);
 
-	        var disabled = notEnoughPPs || currentXP < 1000;
+	        var disabled = !enoughPPs || currentXP < 1000;
 
 	        return (0, _preact.h)(
 	          'div',
@@ -12376,7 +12372,7 @@
 	            (0, _preact.h)(
 	              'div',
 	              { style: 'width: 300px;' },
-	              (0, _preact.h)(_UI2.default.Bar, { min: 0, max: max, data: data })
+	              _this.renderProgressBar(current, product, max)
 	            )
 	          ),
 	          (0, _preact.h)('br', null),
@@ -12397,6 +12393,11 @@
 	              'div',
 	              null,
 	              _this.renderUpgradeCostModifierBonus(id, featureId)
+	            ),
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              _this.renderHypeIncreaseValue(id, featureId)
 	            ),
 	            (0, _preact.h)(_UI2.default.Button, {
 	              disabled: disabled,
@@ -12560,8 +12561,32 @@
 	      return '';
 	    }
 	  }, {
+	    key: 'renderHypeIncreaseValue',
+	    value: function renderHypeIncreaseValue(id, featureId) {
+	      if (_flux2.default.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
+	        var hypeModifier = _flux2.default.productStore.getTechBreakthroughModifierForHype(id, featureId);
+
+	        if (hypeModifier) return '\u041D\u0430\u0448\u0430 \u0438\u0437\u0432\u0435\u0441\u0442\u043D\u043E\u0441\u0442\u044C \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0442\u0441\u044F! +' + hypeModifier + ' HYPE';
+	      }
+
+	      return '';
+	    }
+	  }, {
+	    key: 'renderProgressBar',
+	    value: function renderProgressBar(current, product, max) {
+	      var data = [{ value: current }];
+
+	      if (product.XP >= 1000) {
+	        data.push({ value: 1000, style: 'bg-success' });
+	      }
+
+	      return (0, _preact.h)(_UI2.default.Bar, { min: 0, max: max, data: data });
+	    }
+	  }, {
 	    key: 'improveFeature',
 	    value: function improveFeature(id, featureId, max, pp) {
+	      var willResultBreakthrough = _flux2.default.productStore.isUpgradeWillResultTechBreakthrough(id, featureId);
+
 	      _flux2.default.playerActions.spendPoints(pp, 0);
 	      _flux2.default.productActions.improveFeature(id, 'offer', featureId, max, 1000);
 
@@ -12575,6 +12600,12 @@
 	        if (rating >= 7) {
 	          _stages2.default.onPaymentRatingMissionCompleted();
 	        }
+	      }
+
+	      if (willResultBreakthrough) {
+	        var hypeModifier = _flux2.default.productStore.getTechBreakthroughModifierForHype(id, featureId);
+
+	        _flux2.default.productActions.addHype(id, hypeModifier);
 	      }
 
 	      // this.setState({ tick: this.state.tick + 1 });

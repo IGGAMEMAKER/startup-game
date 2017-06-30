@@ -328,6 +328,7 @@ textarea {
   left: 0;
   height: 50px;
   background-color: var(--main-background-color);
+  padding-left: 15px;
 }
 
 .menu-fixed {
