@@ -4,7 +4,6 @@ import { h, Component } from 'preact';
 import moneyCalculator from '../../helpers/economics/money-difference';
 import pointCalculator from '../../helpers/points/modification';
 
-import scheduleStore from '../../stores/schedule-store';
 import playerStore from '../../stores/player-store';
 
 import logger from '../../helpers/logger/logger';
@@ -28,7 +27,7 @@ export default class Menu extends Component {
   };
 
   renderSpeedIcons() {
-    return speedIcons = [
+    return [
       { speed: 1, icon: '>' },
       { speed: 4, icon: '>>' },
       { speed: 10, icon: '>>>>' }
@@ -47,28 +46,29 @@ export default class Menu extends Component {
 
     const {
       pause,
-      pauseGame
+      pauseGame,
     } = props;
 
     const speedIcons = this.renderSpeedIcons();
-
-    const s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
-
-    const saldoValue = Math.floor(moneyCalculator.saldo());
-    const saldo = saldoValue > 0;
-
-    const moneyDifference = saldo ? `+${saldoValue}` : saldoValue;
-    const moneyPhrase = `$${state.money} (${moneyDifference}$)`;
-    const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
-
-
-    const mpIndication = pointCalculator.marketing().needToHireWorker ? s.moneyNegative : s.moneyPositive;
-    const ppIndication = pointCalculator.programming().needToHireWorker ? s.moneyNegative : s.moneyPositive;
 
     let pauseOrContinue = '';
     if (!pause) {
       pauseOrContinue = <UI.Button text='Пауза' onClick={pauseGame} link />;
     }
+
+    const negative = 'moneyNegative';
+    const positive = 'moneyPositive';
+
+    const saldoValue = moneyCalculator.saldo();
+    const isMakingIncome = saldoValue > 0;
+
+    const moneyIndication = isMakingIncome ? positive : negative;
+    const moneyDifference = isMakingIncome ? `+${saldoValue}` : saldoValue;
+
+
+    const mpIndication = pointCalculator.marketing().needToHireWorker ? negative : positive;
+    const ppIndication = pointCalculator.programming().needToHireWorker ? negative : positive;
+
 
     const year = Math.floor(props.day / 360);
     const month = Math.floor((props.day - year * 360) / 30);
@@ -77,7 +77,7 @@ export default class Menu extends Component {
     return <div>
       <div>
         <div className="navigation">
-          <div className={moneyIndication}>{moneyPhrase}</div>
+          <div className={moneyIndication}>${state.money} ({moneyDifference}$)</div>
         </div>
         <div className="navigation">
           <div>Год: {year} Месяц: {month} День: {day}</div>

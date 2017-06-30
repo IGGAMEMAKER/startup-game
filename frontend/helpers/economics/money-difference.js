@@ -51,5 +51,5 @@ const calculate = () => {
 export default {
   structured: calculate,
 
-  saldo: () => calculate().saldo
+  saldo: () => Math.floor(calculate().saldo)
 }

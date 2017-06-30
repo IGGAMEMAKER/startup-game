@@ -742,14 +742,7 @@
 	      var id = state.id;
 	      var product = state.products[id];
 
-	      return (0, _preact.h)(_Product2.default, {
-	        product: product,
-	        id: id,
-	        onHireProgrammerClick: _this.onRenderStaffMenu,
-	        onHireMarketerClick: _this.onRenderStaffMenu
-	      });
-	    }, _this.onRenderStaffMenu = function () {
-	      _this.setState({ mode: GAME_MODE_STAFF });
+	      return (0, _preact.h)(_Product2.default, { product: product, id: id });
 	    }, _this.renderGameInNormalMode = function (props, state) {
 	      var gamePhase = state.gamePhase;
 
@@ -2671,10 +2664,6 @@
 
 	var _modification2 = _interopRequireDefault(_modification);
 
-	var _scheduleStore = __webpack_require__(115);
-
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
-
 	var _playerStore = __webpack_require__(128);
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
@@ -2692,6 +2681,8 @@
 	var _UI2 = _interopRequireDefault(_UI);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import React, { Component, PropTypes } from 'react';
 
 	var Menu = function (_Component) {
 	  (0, _inherits3.default)(Menu, _Component);
@@ -2727,7 +2718,7 @@
 	    value: function renderSpeedIcons() {
 	      var _this2 = this;
 
-	      return speedIcons = [{ speed: 1, icon: '>' }, { speed: 4, icon: '>>' }, { speed: 10, icon: '>>>>' }].map(function (s) {
+	      return [{ speed: 1, icon: '>' }, { speed: 4, icon: '>>' }, { speed: 10, icon: '>>>>' }].map(function (s) {
 	        return (0, _preact.h)(
 	          'div',
 	          { className: 'navigation' },
@@ -2749,22 +2740,22 @@
 
 	      var speedIcons = this.renderSpeedIcons();
 
-	      var s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
-
-	      var saldoValue = Math.floor(_moneyDifference2.default.saldo());
-	      var saldo = saldoValue > 0;
-
-	      var moneyDifference = saldo ? '+' + saldoValue : saldoValue;
-	      var moneyPhrase = '$' + state.money + ' (' + moneyDifference + '$)';
-	      var moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
-
-	      var mpIndication = _modification2.default.marketing().needToHireWorker ? s.moneyNegative : s.moneyPositive;
-	      var ppIndication = _modification2.default.programming().needToHireWorker ? s.moneyNegative : s.moneyPositive;
-
 	      var pauseOrContinue = '';
 	      if (!pause) {
 	        pauseOrContinue = (0, _preact.h)(_UI2.default.Button, { text: '\u041F\u0430\u0443\u0437\u0430', onClick: pauseGame, link: true });
 	      }
+
+	      var negative = 'moneyNegative';
+	      var positive = 'moneyPositive';
+
+	      var saldoValue = _moneyDifference2.default.saldo();
+	      var isMakingIncome = saldoValue > 0;
+
+	      var moneyIndication = isMakingIncome ? positive : negative;
+	      var moneyDifference = isMakingIncome ? '+' + saldoValue : saldoValue;
+
+	      var mpIndication = _modification2.default.marketing().needToHireWorker ? negative : positive;
+	      var ppIndication = _modification2.default.programming().needToHireWorker ? negative : positive;
 
 	      var year = Math.floor(props.day / 360);
 	      var month = Math.floor((props.day - year * 360) / 30);
@@ -2782,7 +2773,11 @@
 	            (0, _preact.h)(
 	              'div',
 	              { className: moneyIndication },
-	              moneyPhrase
+	              '$',
+	              state.money,
+	              ' (',
+	              moneyDifference,
+	              '$)'
 	            )
 	          ),
 	          (0, _preact.h)(
@@ -2831,7 +2826,6 @@
 	  }]);
 	  return Menu;
 	}(_preact.Component);
-	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = Menu;
 
@@ -2916,7 +2910,7 @@
 	  structured: calculate,
 
 	  saldo: function saldo() {
-	    return calculate().saldo;
+	    return Math.floor(calculate().saldo);
 	  }
 	};
 
@@ -10150,9 +10144,7 @@
 	    key: 'render',
 	    value: function render(props, state) {
 	      var product = props.product,
-	          id = props.id,
-	          onHireProgrammerClick = props.onHireProgrammerClick,
-	          onHireMarketerClick = props.onHireMarketerClick;
+	          id = props.id;
 
 
 	      var body = void 0;
@@ -10165,12 +10157,7 @@
 	          body = (0, _preact.h)(
 	            'div',
 	            null,
-	            (0, _preact.h)(_productPanel2.default, {
-	              product: product,
-	              id: id,
-	              onHireProgrammerClick: onHireProgrammerClick,
-	              onHireMarketerClick: onHireMarketerClick
-	            })
+	            (0, _preact.h)(_productPanel2.default, { product: product, id: id })
 	          );
 	          break;
 	      }
@@ -10499,10 +10486,10 @@
 	    }
 
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = ProductPanel.__proto__ || (0, _getPrototypeOf2.default)(ProductPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      marketing: true,
-	      payment: true,
-	      analytics: true,
-	      features: true,
+	      // marketing: true,
+	      // payment: true,
+	      // analytics: true,
+	      // features: true,
 
 	      mode: MODE_MARKETING
 	    }, _this.setMode = function (mode) {

@@ -49,10 +49,10 @@ const MODE_STAFF = 'MODE_STAFF';
 
 export default class ProductPanel extends Component {
   state = {
-    marketing: true,
-    payment: true,
-    analytics: true,
-    features: true,
+    // marketing: true,
+    // payment: true,
+    // analytics: true,
+    // features: true,
 
     mode: MODE_MARKETING
   };

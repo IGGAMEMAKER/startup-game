@@ -1,19 +1,14 @@
 import { h, Component } from 'preact';
 
-type PropsType = {};
-
-type StateType = {};
-
 import * as PRODUCT_STAGES from '../../../constants/products/product-stages';
 
 import InitialProductTab from './InitialPanel/InitialProductTab';
 import ProductPanel from './ProductPanel/product-panel';
 import logger from '../../../helpers/logger/logger';
 
-
 export default class Product extends Component {
-  render(props: PropsType, state: StateType) {
-    const { product, id, onHireProgrammerClick, onHireMarketerClick } = props;
+  render(props, state) {
+    const { product, id } = props;
 
     let body;
 
@@ -24,12 +19,7 @@ export default class Product extends Component {
       default:
         body = (
           <div>
-            <ProductPanel
-              product={product}
-              id={id}
-              onHireProgrammerClick={onHireProgrammerClick}
-              onHireMarketerClick={onHireMarketerClick}
-            />
+            <ProductPanel product={product} id={id} />
           </div>
         );
         break;
