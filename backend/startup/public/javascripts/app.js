@@ -2723,106 +2723,62 @@
 	      _playerStore2.default.addChangeListener(this.getPlayerInfoFromStore);
 	    }
 	  }, {
+	    key: 'renderSpeedIcons',
+	    value: function renderSpeedIcons() {
+	      var _this2 = this;
+
+	      return speedIcons = [{ speed: 1, icon: '>' }, { speed: 4, icon: '>>' }, { speed: 10, icon: '>>>>' }].map(function (s) {
+	        return (0, _preact.h)(
+	          'div',
+	          { className: 'navigation' },
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: s.icon,
+	            onClick: _this2.props.setGameSpeed(s.speed)
+	          })
+	        );
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render(props, state) {
-	      var gameSpeed = props.gameSpeed,
-	          pause = props.pause,
-	          gamePhase = props.gamePhase,
+	      if (!_stages2.default.canShowUpperTabInMenu()) return (0, _preact.h)('div', null);
+
+	      var pause = props.pause,
 	          pauseGame = props.pauseGame;
 
+
+	      var speedIcons = this.renderSpeedIcons();
+
+	      var s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
 
 	      var saldoValue = Math.floor(_moneyDifference2.default.saldo());
 	      var saldo = saldoValue > 0;
 
-	      var s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
+	      var moneyDifference = saldo ? '+' + saldoValue : saldoValue;
+	      var moneyPhrase = '$' + state.money + ' (' + moneyDifference + '$)';
 	      var moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
-
-	      var navigation = s.navigation;
 
 	      var mpIndication = _modification2.default.marketing().needToHireWorker ? s.moneyNegative : s.moneyPositive;
 	      var ppIndication = _modification2.default.programming().needToHireWorker ? s.moneyNegative : s.moneyPositive;
 
-	      var isRunning = !pause;
-
-	      // <UI.Button
-	      //   text={isRunning && gameSpeed === speed ? '||' : text}
-	      //   onClick={isRunning && gameSpeed === speed ? pauseGame : props.setGameSpeed(speed)}
-	      // />
-	      var speeder = function speeder(speed, text) {
-	        return (0, _preact.h)(
-	          'div',
-	          { className: navigation },
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: text,
-	            onClick: props.setGameSpeed(speed)
-	          })
-	        );
-	      };
-
-	      var moneyDifference = saldo ? '+' + saldoValue : saldoValue;
-	      var moneyPhrase = '$' + Math.floor(state.money) + ' (' + moneyDifference + '$)';
-
-	      var employees = _playerStore2.default.getEmployees().length;
-	      var employeePhrase = employees ? '(' + employees + ')' : '';
-
-	      var pauser = (0, _preact.h)(_UI2.default.Button, {
-	        text: '\u041F\u0430\u0443\u0437\u0430',
-	        onClick: pauseGame,
-	        link: true
-	      });
-
-	      var resumer = (0, _preact.h)(_UI2.default.Button, {
-	        text: '\u0412\u043E\u0437\u043E\u0431\u043D\u043E\u0432\u0438\u0442\u044C',
-	        onClick: props.setGameSpeed(gameSpeed),
-	        link: true
-	      });
-
-	      var speedVariants = [{ s: 1, icon: '>' }, { s: 4, icon: '>>' },
-	      // { s: 7, icon: '>>>' },
-	      { s: 10, icon: '>>>>' }];
-
-	      var pauseOrContinue = void 0;
-	      if (isRunning) {
-	        // pauseOrContinue = <div className={navigation}>{pauser}</div>;
-	        pauseOrContinue = pauser;
-	      } else {
-	        pauseOrContinue = ''; // <div className={navigation}>{resumer}</div>;
+	      var pauseOrContinue = '';
+	      if (!pause) {
+	        pauseOrContinue = (0, _preact.h)(_UI2.default.Button, { text: '\u041F\u0430\u0443\u0437\u0430', onClick: pauseGame, link: true });
 	      }
 
-	      var nextSpeeder = void 0;
+	      var year = Math.floor(props.day / 360);
+	      var month = Math.floor((props.day - year * 360) / 30);
+	      var day = props.day - year * 360 - month * 30;
 
-	      // let currentSpeedIndex = speedVariants.findIndex(s => s.s === gameSpeed);
-	      // if (currentSpeedIndex < speedVariants.length - 1) {
-	      //   // can accelerate speed
-	      //   const s = speedVariants[currentSpeedIndex + 1];
-	      //
-	      //   nextSpeeder = speeder(s.s, s.icon);
-	      // } else {
-	      //   // we are on max speed
-	      //
-	      //   nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
-	      // }
-
-	      nextSpeeder = speedVariants.map(function (s) {
-	        return speeder(s.s, s.icon);
-	      });
-
-	      var upperTab = void 0;
-	      // <div>Месяц: {(props.day % 30) + 1}</div>
-	      // <div className={navigation} onClick={onNextMonth}>Следующий месяц</div>
-	      if (_stages2.default.canShowUpperTabInMenu()) {
-	        var year = Math.floor(props.day / 360);
-	        var month = Math.floor((props.day - year * 360) / 30);
-	        var day = props.day - year * 360 - month * 30;
-
-	        var date = '\u0413\u043E\u0434: ' + year + ' \u041C\u0435\u0441\u044F\u0446: ' + month + ' \u0414\u0435\u043D\u044C: ' + day;
-
-	        upperTab = (0, _preact.h)(
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
 	          'div',
 	          null,
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation },
+	            { className: 'navigation' },
 	            (0, _preact.h)(
 	              'div',
 	              { className: moneyIndication },
@@ -2831,22 +2787,27 @@
 	          ),
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation },
+	            { className: 'navigation' },
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              date
+	              '\u0413\u043E\u0434: ',
+	              year,
+	              ' \u041C\u0435\u0441\u044F\u0446: ',
+	              month,
+	              ' \u0414\u0435\u043D\u044C: ',
+	              day
 	            )
 	          ),
-	          nextSpeeder,
+	          speedIcons,
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation },
+	            { className: 'navigation' },
 	            pauseOrContinue
 	          ),
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation },
+	            { className: 'navigation' },
 	            (0, _preact.h)(
 	              'span',
 	              { className: mpIndication },
@@ -2856,7 +2817,7 @@
 	          ),
 	          (0, _preact.h)(
 	            'div',
-	            { className: navigation },
+	            { className: 'navigation' },
 	            (0, _preact.h)(
 	              'span',
 	              { className: ppIndication },
@@ -2864,13 +2825,7 @@
 	              state.points.programming
 	            )
 	          )
-	        );
-	      }
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        upperTab
+	        )
 	      );
 	    }
 	  }]);
@@ -10516,10 +10471,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var MODE_METRICS = 'MODE_METRICS';
+	var MODE_RATING = 'MODE_RATING';
 	// import React, { Component, PropTypes } from 'react';
 
-	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
 	var MODE_MARKETING = 'MODE_MARKETING';
@@ -10838,7 +10792,7 @@
 	        (0, _preact.h)(_advertPlannerPanel2.default, { product: product, id: id }),
 	        (0, _preact.h)('br', null)
 	      );
-	    }, _this.renderMetricsTab = function (id, product) {
+	    }, _this.renderMetrics = function (id, product) {
 	      if (!_stages2.default.canShowMetricsTab()) return '';
 
 	      return (0, _preact.h)(
@@ -11059,12 +11013,12 @@
 	      return (0, _preact.h)(
 	        'ul',
 	        { className: 'nav nav-tabs' },
-	        hypothesis,
 	        improvements,
 	        clients,
-	        staff,
-	        payments,
 	        competitors,
+	        staff,
+	        hypothesis,
+	        payments,
 	        bonuses
 	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
@@ -11285,10 +11239,6 @@
 	          body = this.renderAnalyticsTab(id, idea);
 	          break;
 
-	        case MODE_METRICS:
-	          body = this.renderMetricsTab(id, product);
-	          break;
-
 	        case MODE_STAFF:
 	          body = this.renderStaffPanel();
 	          break;
@@ -11339,18 +11289,8 @@
 	          break;
 	      }
 
-	      var metrics = this.renderMetricsTab(id, product);
+	      var metrics = this.renderMetrics(id, product);
 	      var menu = this.renderProductMenuNavbar();
-
-	      // let description;
-	      // if (!stageHelper.isFirstWorkerMission()) {
-	      //   description = (
-	      //     <div>
-	      //       <b>Развитие продукта "{product.name}"</b>
-	      //       <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
-	      //     </div>
-	      //   );
-	      // }
 
 	      return (0, _preact.h)(
 	        'div',
@@ -12779,6 +12719,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// import React, { Component, PropTypes } from 'react';
+
 	var AdvertPlannerPanel = function (_Component) {
 	  (0, _inherits3.default)(AdvertPlannerPanel, _Component);
 
@@ -12793,9 +12734,7 @@
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = AdvertPlannerPanel.__proto__ || (0, _getPrototypeOf2.default)(AdvertPlannerPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      toggle: true
-	    }, _this.inviteUsers = function (id, amountOfUsers, cost, mp, ourClients) {
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = AdvertPlannerPanel.__proto__ || (0, _getPrototypeOf2.default)(AdvertPlannerPanel)).call.apply(_ref, [this].concat(args))), _this), _this.inviteUsers = function (id, amountOfUsers, cost, mp, ourClients) {
 	      return function () {
 	        if (_flux2.default.playerStore.getMoney() >= cost) {
 	          if (ourClients + amountOfUsers > 200 && _stages2.default.isFirstAdCampaignMission()) {
@@ -12813,30 +12752,20 @@
 	  }
 
 	  (0, _createClass3.default)(AdvertPlannerPanel, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
-	  }, {
 	    key: 'renderAdCampaignGenerator',
 	    value: function renderAdCampaignGenerator(id, clients, campaignText, mp, money) {
 	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
 	      var campaignCost = Math.ceil(clients * costPerClient);
 
-	      var market = _flux2.default.productStore.getMarketShare(id);
-
-	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, money);
-	      var potentialClients = marketStats.potentialClients,
-	          ourClients = marketStats.ourClients;
-
+	      var _flux$productStore$ge = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, money),
+	          ourClients = _flux$productStore$ge.ourClients;
 
 	      var error = void 0;
 
 	      var disabled = !_flux2.default.playerStore.enoughMarketingPoints(mp);
 
-	      // || clients > market.marketSize || clients > potentialClients
 	      if (money < campaignCost) {
 	        error = '\u041D\u0443\u0436\u043D\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043E\u043B\u043E\u0442\u0430! \u041D\u0430 \u0432\u0430\u0448\u0435\u043C \u0441\u0447\u0435\u0442\u0443: ' + money + '$, \u0430 \u043D\u0443\u0436\u043D\u043E ' + campaignCost + '$';
-	        // return <div>Нужно больше золота! На вашем счету: {money}$, а нужно {campaignCost}$</div>
-	        // return <div></div>;
 	      } else if (disabled) {
 	        error = 'У вас не хватает маркетинговых очков';
 	      }
@@ -12878,28 +12807,16 @@
 	      var id = _ref2.id;
 
 	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
-	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, _flux2.default.playerStore.getMoney());
-
-	      var potentialClients = marketStats.potentialClients;
-
-
-	      var ads = [{ clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 }, { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 }, { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 }].map(function (c, i) {
-	        return (0, _assign2.default)({}, c, { cost: c.clients * costPerClient });
-	      });
-
 	      var money = _flux2.default.playerStore.getMoney();
-
-	      var enoughMoney = function enoughMoney(a) {
-	        return Math.ceil(a.clients * costPerClient) < money;
-	      };
-	      var noClientOverflow = function noClientOverflow(a) {
-	        return a.clients < potentialClients;
-	      };
 	      var enoughPoints = function enoughPoints(a) {
 	        return _flux2.default.playerStore.enoughMarketingPoints(a.mp);
 	      };
 
 	      var error = void 0;
+	      var ads = [{ clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 }, { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 }, { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 }].map(function (c, i) {
+	        return (0, _assign2.default)({}, c, { cost: c.clients * costPerClient });
+	      });
+
 	      var cheapAd = ads[0];
 
 	      if (money < cheapAd.cost) {
@@ -12910,17 +12827,9 @@
 	        error = '\u0414\u043B\u044F \u043F\u0440\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u044F \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u043E\u0439 \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u0438 \u043D\u0443\u0436\u043D\u043E ' + cheapAd.mp + 'MP';
 	      }
 
-	      var adList = ads;
-	      // .filter(noClientOverflow)
-	      // .filter(enoughMoney)
-	      // .filter(enoughPoints);
-
 	      var list = void 0;
-
-	      // if (!ads.filter(enoughMoney))
-
-	      if (adList.length) {
-	        list = adList.map(function (a) {
+	      if (ads.length) {
+	        list = ads.map(function (a) {
 	          return _this2.renderAdCampaignGenerator(id, a.clients, a.text, a.mp, money);
 	        }).reverse();
 	      } else {
@@ -12929,23 +12838,8 @@
 	          null,
 	          error
 	        );
-	        // if (!ads.filter(noClientOverflow).length) {
-	        //   list = <div>
-	        //     Мы привлекли всех клиентов, которых могли.
-	        //     Улучшайте рейтинг, чтобы увеличить потенциальную аудиторию
-	        //   </div>
-	        // }
-	        //
-	        // if (!ads.filter(enoughMoney).length) {
-	        //   list = 'нет доступных рекламных кампаний. Нужно больше золота!';
-	        // }
-	        //
-	        // if (!ads.filter(enoughPoints).length) {
-	        //   list = 'Недостаточно Маркетинговых очков (MP). Минимум: 15MP';
-	        // }
 	      }
 
-	      // <div>Наша потенциальная аудитория: {potentialClients} человек</div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,

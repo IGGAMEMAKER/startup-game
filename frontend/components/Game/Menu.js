@@ -27,128 +27,70 @@ export default class Menu extends Component {
     })
   };
 
-  render(props, state) {
-    const {
-      gameSpeed,
-      pause,
-      gamePhase,
+  renderSpeedIcons() {
+    return speedIcons = [
+      { speed: 1, icon: '>' },
+      { speed: 4, icon: '>>' },
+      { speed: 10, icon: '>>>>' }
+    ].map(s => (
+      <div className="navigation">
+        <UI.Button
+          text={s.icon}
+          onClick={this.props.setGameSpeed(s.speed)}
+        />
+      </div>
+    ));
+  }
 
+  render(props, state) {
+    if (!stageHelper.canShowUpperTabInMenu()) return <div></div>;
+
+    const {
+      pause,
       pauseGame
     } = props;
 
-    const saldoValue = Math.floor(moneyCalculator.saldo());
-    const saldo = saldoValue  > 0;
+    const speedIcons = this.renderSpeedIcons();
 
     const s = { navigation: 'navigation', moneyPositive: 'moneyPositive', moneyNegative: 'moneyNegative' };
+
+    const saldoValue = Math.floor(moneyCalculator.saldo());
+    const saldo = saldoValue > 0;
+
+    const moneyDifference = saldo ? `+${saldoValue}` : saldoValue;
+    const moneyPhrase = `$${state.money} (${moneyDifference}$)`;
     const moneyIndication = saldo ? s.moneyPositive : s.moneyNegative;
 
-    const navigation = s.navigation;
 
     const mpIndication = pointCalculator.marketing().needToHireWorker ? s.moneyNegative : s.moneyPositive;
     const ppIndication = pointCalculator.programming().needToHireWorker ? s.moneyNegative : s.moneyPositive;
 
-    const isRunning = !pause;
-
-    // <UI.Button
-    //   text={isRunning && gameSpeed === speed ? '||' : text}
-    //   onClick={isRunning && gameSpeed === speed ? pauseGame : props.setGameSpeed(speed)}
-    // />
-    const speeder = (speed, text) => (
-      <div className={navigation}>
-        <UI.Button
-          text={text}
-          onClick={props.setGameSpeed(speed)}
-        />
-      </div>
-    );
-
-    const moneyDifference = saldo ? `+${saldoValue}` : saldoValue;
-    const moneyPhrase = `$${Math.floor(state.money)} (${moneyDifference}$)`;
-
-    const employees = playerStore.getEmployees().length;
-    const employeePhrase = employees ? `(${employees})` : '';
-
-    const pauser = (
-      <UI.Button
-        text='Пауза'
-        onClick={pauseGame}
-        link
-      />
-    );
-
-    const resumer = (
-      <UI.Button
-        text='Возобновить'
-        onClick={props.setGameSpeed(gameSpeed)}
-        link
-      />
-    );
-
-    const speedVariants = [
-      { s: 1, icon: '>' },
-      { s: 4, icon: '>>' },
-      // { s: 7, icon: '>>>' },
-      { s: 10, icon: '>>>>' }
-    ];
-
-    let pauseOrContinue;
-    if (isRunning) {
-      // pauseOrContinue = <div className={navigation}>{pauser}</div>;
-      pauseOrContinue = pauser;
-    } else {
-      pauseOrContinue = ''; // <div className={navigation}>{resumer}</div>;
+    let pauseOrContinue = '';
+    if (!pause) {
+      pauseOrContinue = <UI.Button text='Пауза' onClick={pauseGame} link />;
     }
 
-    let nextSpeeder;
+    const year = Math.floor(props.day / 360);
+    const month = Math.floor((props.day - year * 360) / 30);
+    const day = props.day - year * 360 - month * 30;
 
-    // let currentSpeedIndex = speedVariants.findIndex(s => s.s === gameSpeed);
-    // if (currentSpeedIndex < speedVariants.length - 1) {
-    //   // can accelerate speed
-    //   const s = speedVariants[currentSpeedIndex + 1];
-    //
-    //   nextSpeeder = speeder(s.s, s.icon);
-    // } else {
-    //   // we are on max speed
-    //
-    //   nextSpeeder = speeder(speedVariants[0].s, speedVariants[0].icon);
-    // }
-
-    nextSpeeder = speedVariants.map(s => speeder(s.s, s.icon));
-
-    let upperTab;
-            // <div>Месяц: {(props.day % 30) + 1}</div>
-          // <div className={navigation} onClick={onNextMonth}>Следующий месяц</div>
-    if (stageHelper.canShowUpperTabInMenu()) {
-      const year = Math.floor(props.day / 360);
-      const month = Math.floor((props.day - year * 360) / 30);
-      const day = props.day - year * 360 - month * 30;
-
-      let date = `Год: ${year} Месяц: ${month} День: ${day}`;
-
-      upperTab = (
-        <div>
-          <div className={navigation}>
-            <div className={moneyIndication}>{moneyPhrase}</div>
-          </div>
-          <div className={navigation}>
-            <div>{date}</div>
-          </div>
-          {nextSpeeder}
-          <div className={navigation}>{pauseOrContinue}</div>
-          <div className={navigation}>
-            <span className={mpIndication}>MP: {state.points.marketing}</span>
-          </div>
-          <div className={navigation}>
-            <span className={ppIndication}>PP: {state.points.programming}</span>
-          </div>
-        </div>
-      )
-    }
-
-    return (
+    return <div>
       <div>
-        {upperTab}
+        <div className="navigation">
+          <div className={moneyIndication}>{moneyPhrase}</div>
+        </div>
+        <div className="navigation">
+          <div>Год: {year} Месяц: {month} День: {day}</div>
+        </div>
+        {speedIcons}
+        <div className="navigation">{pauseOrContinue}</div>
+        <div className="navigation">
+          <span className={mpIndication}>MP: {state.points.marketing}</span>
+        </div>
+        <div className="navigation">
+          <span className={ppIndication}>PP: {state.points.programming}</span>
+        </div>
       </div>
-    );
+    </div>;
   }
 }

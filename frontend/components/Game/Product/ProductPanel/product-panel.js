@@ -36,7 +36,6 @@ import Product from '../../../../classes/Product';
 import coloringRange from '../../../../helpers/coloring-range';
 
 
-const MODE_METRICS = 'MODE_METRICS';
 const MODE_RATING = 'MODE_RATING';
 const MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 const MODE_ADS = 'MODE_ADS';
@@ -290,7 +289,7 @@ export default class ProductPanel extends Component {
     );
   };
 
-  renderMetricsTab = (id, product) => {
+  renderMetrics = (id, product) => {
     if (!stageHelper.canShowMetricsTab()) return '';
 
     return (
@@ -506,12 +505,12 @@ export default class ProductPanel extends Component {
 
     return (
       <ul className="nav nav-tabs">
-        {hypothesis}
         {improvements}
         {clients}
-        {staff}
-        {payments}
         {competitors}
+        {staff}
+        {hypothesis}
+        {payments}
         {bonuses}
       </ul>
     );
@@ -540,10 +539,6 @@ export default class ProductPanel extends Component {
 
       case MODE_ANALYTICS:
         body = this.renderAnalyticsTab(id, idea);
-        break;
-
-      case MODE_METRICS:
-        body = this.renderMetricsTab(id, product);
         break;
 
       case MODE_STAFF:
@@ -586,18 +581,8 @@ export default class ProductPanel extends Component {
         break;
     }
 
-    const metrics = this.renderMetricsTab(id, product);
+    const metrics = this.renderMetrics(id, product);
     const menu = this.renderProductMenuNavbar();
-
-    // let description;
-    // if (!stageHelper.isFirstWorkerMission()) {
-    //   description = (
-    //     <div>
-    //       <b>Развитие продукта "{product.name}"</b>
-    //       <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
-    //     </div>
-    //   );
-    // }
 
     return (
       <div>
