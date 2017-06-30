@@ -152,6 +152,8 @@ export default class Product {
     const tech = Math.floor(mapper(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, techRange[0], techRange[1]));
 
     const base = 90;
+    const percent = Math.min(base - blog - tech + churn, 100);
+
     return {
       blogRange,
       churnRange,
@@ -159,8 +161,8 @@ export default class Product {
       base,
       blog: -blog,
       tech: -tech,
-      churn: churn,
-      percent: Math.min(base - blog - tech + churn, 100),
+      churn,
+      percent,
       clientModifier: this.getClients() / 1000
     }
   }
@@ -1097,6 +1099,9 @@ export default class Product {
     let numberOfTechnologiesWhereWeMadeBreakthrough = this.getNumberOfTechnologiesWhereWeMadeBreakthrough();
 
     this.KPI.hype += this.getHypeDampingValue(numberOfTechnologiesWhereWeMadeBreakthrough);
+
+    logger.shit('made shitty code here. There was a bug, when on hype = 0 client calculations fail for all users');
+    if (this.KPI.hype === 0) this.KPI.hype = 1;
   }
 
   addViralClients(p) {

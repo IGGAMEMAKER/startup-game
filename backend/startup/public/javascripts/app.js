@@ -5576,6 +5576,8 @@
 	      var tech = Math.floor((0, _mapper2.default)(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, techRange[0], techRange[1]));
 
 	      var base = 90;
+	      var percent = Math.min(base - blog - tech + churn, 100);
+
 	      return {
 	        blogRange: blogRange,
 	        churnRange: churnRange,
@@ -5584,7 +5586,7 @@
 	        blog: -blog,
 	        tech: -tech,
 	        churn: churn,
-	        percent: Math.min(base - blog - tech + churn, 100),
+	        percent: percent,
 	        clientModifier: this.getClients() / 1000
 	      };
 	    }
@@ -6598,6 +6600,9 @@
 	      var numberOfTechnologiesWhereWeMadeBreakthrough = this.getNumberOfTechnologiesWhereWeMadeBreakthrough();
 
 	      this.KPI.hype += this.getHypeDampingValue(numberOfTechnologiesWhereWeMadeBreakthrough);
+
+	      _logger2.default.shit('made shitty code here. There was a bug, when on hype = 0 client calculations fail for all users');
+	      if (this.KPI.hype === 0) this.KPI.hype = 1;
 	    }
 	  }, {
 	    key: 'addViralClients',
