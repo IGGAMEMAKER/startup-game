@@ -12721,7 +12721,55 @@
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = AdvertPlannerPanel.__proto__ || (0, _getPrototypeOf2.default)(AdvertPlannerPanel)).call.apply(_ref, [this].concat(args))), _this), _this.inviteUsers = function (id, amountOfUsers, cost, mp) {
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = AdvertPlannerPanel.__proto__ || (0, _getPrototypeOf2.default)(AdvertPlannerPanel)).call.apply(_ref, [this].concat(args))), _this), _this.renderAdvert = function (money, id) {
+	      return function (a) {
+	        var clients = a.clients,
+	            text = a.text,
+	            mp = a.mp,
+	            campaignCost = a.campaignCost;
+
+
+	        var disabled = !_flux2.default.playerStore.enoughMarketingPoints(mp) || money < campaignCost;
+
+	        var error = void 0;
+	        if (money < campaignCost) {
+	          error = '\u041D\u0443\u0436\u043D\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043E\u043B\u043E\u0442\u0430! \u041D\u0430 \u0432\u0430\u0448\u0435\u043C \u0441\u0447\u0435\u0442\u0443: ' + money + '$, \u0430 \u043D\u0443\u0436\u043D\u043E ' + campaignCost + '$';
+	        } else if (disabled) {
+	          error = 'У вас не хватает маркетинговых очков';
+	        }
+
+	        return (0, _preact.h)(
+	          'li',
+	          null,
+	          text,
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u043E\u0439 \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u0438: ',
+	            campaignCost,
+	            '$ \u0438 ',
+	            mp,
+	            'MP '
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            null,
+	            error
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, {
+	            item: 'start-campaign ' + clients,
+	            text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E',
+	            onClick: function onClick() {
+	              return _this.startAdCampaign(id, clients, campaignCost, mp);
+	            },
+	            disabled: disabled,
+	            primary: true
+	          }),
+	          (0, _preact.h)('br', null)
+	        );
+	      };
+	    }, _this.startAdCampaign = function (id, amountOfUsers, cost, mp) {
 	      if (_flux2.default.playerStore.getMoney() >= cost) {
 	        if (_stages2.default.isFirstAdCampaignMission()) {
 	          _stages2.default.onFirstAdCampaignMissionCompleted();
@@ -12738,20 +12786,16 @@
 	  (0, _createClass3.default)(AdvertPlannerPanel, [{
 	    key: 'render',
 	    value: function render(_ref2) {
-	      var _this2 = this;
-
 	      var id = _ref2.id;
 
 	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
 	      var money = _flux2.default.playerStore.getMoney();
 
 	      var ads = [{ clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 }, { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 }, { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 }].map(function (c, i) {
-	        return (0, _assign2.default)({}, c, { cost: c.clients * costPerClient });
+	        return (0, _assign2.default)({}, c, { campaignCost: Math.ceil(c.clients * costPerClient) });
 	      });
 
-	      var list = ads.map(function (a) {
-	        return _this2.renderAdCampaignGenerator(id, a.clients, a.text, a.mp, money);
-	      }).reverse();;
+	      var list = ads.map(this.renderAdvert(money, id)).reverse();
 
 	      return (0, _preact.h)(
 	        'div',
@@ -12761,54 +12805,6 @@
 	          null,
 	          list
 	        )
-	      );
-	    }
-	  }, {
-	    key: 'renderAdCampaignGenerator',
-	    value: function renderAdCampaignGenerator(id, clients, campaignText, mp, money) {
-	      var _this3 = this;
-
-	      var costPerClient = _flux2.default.productStore.getCostPerClient(id);
-	      var campaignCost = Math.ceil(clients * costPerClient);
-
-	      var disabled = !_flux2.default.playerStore.enoughMarketingPoints(mp);
-
-	      var error = void 0;
-	      if (money < campaignCost) {
-	        error = '\u041D\u0443\u0436\u043D\u043E \u0431\u043E\u043B\u044C\u0448\u0435 \u0437\u043E\u043B\u043E\u0442\u0430! \u041D\u0430 \u0432\u0430\u0448\u0435\u043C \u0441\u0447\u0435\u0442\u0443: ' + money + '$, \u0430 \u043D\u0443\u0436\u043D\u043E ' + campaignCost + '$';
-	      } else if (disabled) {
-	        error = 'У вас не хватает маркетинговых очков';
-	      }
-
-	      return (0, _preact.h)(
-	        'li',
-	        null,
-	        campaignText,
-	        (0, _preact.h)('br', null),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u043E\u0439 \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u0438: ',
-	          campaignCost,
-	          '$ \u0438 ',
-	          mp,
-	          'MP '
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          error
-	        ),
-	        (0, _preact.h)(_UI2.default.Button, {
-	          item: 'start-campaign ' + clients,
-	          text: '\u041D\u0430\u0447\u0430\u0442\u044C \u0440\u0435\u043A\u043B\u0430\u043C\u043D\u0443\u044E \u043A\u0430\u043C\u043F\u0430\u043D\u0438\u044E',
-	          onClick: function onClick() {
-	            return _this3.inviteUsers(id, clients, campaignCost, mp);
-	          },
-	          disabled: disabled,
-	          primary: true
-	        }),
-	        (0, _preact.h)('br', null)
 	      );
 	    }
 	  }]);

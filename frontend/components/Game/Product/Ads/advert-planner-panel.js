@@ -16,9 +16,9 @@ export default class AdvertPlannerPanel extends Component {
       { clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 },
       { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 },
       { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 }
-    ].map((c, i) => Object.assign({}, c, { cost: c.clients * costPerClient } ));
+    ].map((c, i) => Object.assign({}, c, { campaignCost: Math.ceil(c.clients * costPerClient) } ));
 
-    let list = ads.map(a => this.renderAdCampaignGenerator(id, a.clients, a.text, a.mp, money)).reverse();;
+    const list = ads.map(this.renderAdvert(money, id)).reverse();
 
     return (
       <div>
@@ -29,11 +29,10 @@ export default class AdvertPlannerPanel extends Component {
     );
   }
 
-  renderAdCampaignGenerator(id, clients, campaignText, mp, money) {
-    const costPerClient = flux.productStore.getCostPerClient(id);
-    const campaignCost = Math.ceil(clients * costPerClient);
+  renderAdvert = (money, id) => a => {
+    const { clients, text, mp, campaignCost } = a;
 
-    const disabled = !flux.playerStore.enoughMarketingPoints(mp);
+    const disabled = !flux.playerStore.enoughMarketingPoints(mp) || money < campaignCost;
 
     let error;
     if (money < campaignCost) {
@@ -44,23 +43,23 @@ export default class AdvertPlannerPanel extends Component {
 
     return (
       <li>
-        {campaignText}
+        {text}
         <br />
         <div>Стоимость рекламной кампании: {campaignCost}$ и {mp}MP </div>
         <div>{error}</div>
         <UI.Button
           item={`start-campaign ${clients}`}
           text="Начать рекламную кампанию"
-          onClick={() => this.inviteUsers(id, clients, campaignCost, mp)}
+          onClick={() => this.startAdCampaign(id, clients, campaignCost, mp)}
           disabled={disabled}
           primary
         />
         <br />
       </li>
     )
-  }
+  };
 
-  inviteUsers = (id, amountOfUsers, cost, mp) => {
+  startAdCampaign = (id, amountOfUsers, cost, mp) => {
     if (flux.playerStore.getMoney() >= cost) {
       if (stageHelper.isFirstAdCampaignMission()) {
         stageHelper.onFirstAdCampaignMissionCompleted();
