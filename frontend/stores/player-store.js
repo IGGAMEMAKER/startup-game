@@ -14,6 +14,8 @@ const EC = 'PLAYER_EVENT_CHANGE';
 
 import workerGenerator from '../helpers/team/create-random-worker';
 
+import sessionManager from '../session-manager';
+
 
 let _skills = {};
 let _money = 1000;
@@ -88,6 +90,21 @@ let _reputation = 50; // neutral reputation
 let _fame = 0; // nobody knows you
 
 let _loan = 0; // no loans;
+
+const initialize = ({ skills, money, expenses, points, employees, team, reputation, fame, loan }) => {
+  _skills = skills;
+  _money = money;
+  _expenses = expenses;
+  _points = points;
+  _employees = employees;
+  _team = team;
+  _reputation = reputation;
+  _fame = fame;
+  _loan = loan;
+};
+
+initialize(sessionManager.getPlayerStorageData());
+
 
 function isMercenary(worker) {
   return worker.salary.pricingType === 1;
@@ -179,7 +196,7 @@ class PlayerStore extends EventEmitter {
     return _employees.map(this.idHelper).filter(skillHelper.isAnalyst);
   }
 
-  getStoreData() {
+  static getStoreData() {
     return {
       skills: _skills,
       money: _money,
@@ -191,18 +208,6 @@ class PlayerStore extends EventEmitter {
       fame: _fame,
       loan: _loan
     }
-  }
-
-  initialize({ skills, money, expenses, points, employees, team, reputation, fame, loan }) {
-    _skills = skills;
-    _money = money;
-    _expenses = expenses;
-    _points = points;
-    _employees = employees;
-    _team = team;
-    _reputation = reputation;
-    _fame = fame;
-    _loan = loan;
   }
 
   getTeamExpenses() {
@@ -364,7 +369,11 @@ Dispatcher.register((p: PayloadType) => {
   }
 
 
-  if (change) store.emitChange();
+  if (change) {
+    store.emitChange();
+
+    sessionManager.savePlayerStorageData(PlayerStore.getStoreData());
+  }
 });
 
 export default store;

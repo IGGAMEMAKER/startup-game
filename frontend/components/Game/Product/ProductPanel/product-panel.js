@@ -358,6 +358,8 @@ export default class ProductPanel extends Component {
   renderFeatureSupportCost(feature) {
     if (!feature.support) return '';
 
+    const { support } = feature;
+
     let money;
     let mp;
     let pp;

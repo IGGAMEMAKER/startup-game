@@ -6872,6 +6872,10 @@
 
 	var _createRandomWorker2 = _interopRequireDefault(_createRandomWorker);
 
+	var _sessionManager = __webpack_require__(187);
+
+	var _sessionManager2 = _interopRequireDefault(_sessionManager);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -6946,6 +6950,30 @@
 	var _fame = 0; // nobody knows you
 
 	var _loan = 0; // no loans;
+
+	var initialize = function initialize(_ref) {
+	  var skills = _ref.skills,
+	      money = _ref.money,
+	      expenses = _ref.expenses,
+	      points = _ref.points,
+	      employees = _ref.employees,
+	      team = _ref.team,
+	      reputation = _ref.reputation,
+	      fame = _ref.fame,
+	      loan = _ref.loan;
+
+	  _skills = skills;
+	  _money = money;
+	  _expenses = expenses;
+	  _points = points;
+	  _employees = employees;
+	  _team = team;
+	  _reputation = reputation;
+	  _fame = fame;
+	  _loan = loan;
+	};
+
+	initialize(_sessionManager2.default.getPlayerStorageData());
 
 	function isMercenary(worker) {
 	  return worker.salary.pricingType === 1;
@@ -7076,44 +7104,6 @@
 	      return _employees.map(this.idHelper).filter(_skills3.default.isAnalyst);
 	    }
 	  }, {
-	    key: 'getStoreData',
-	    value: function getStoreData() {
-	      return {
-	        skills: _skills,
-	        money: _money,
-	        expenses: _expenses,
-	        points: _points,
-	        employees: _employees,
-	        team: _team,
-	        reputation: _reputation,
-	        fame: _fame,
-	        loan: _loan
-	      };
-	    }
-	  }, {
-	    key: 'initialize',
-	    value: function initialize(_ref) {
-	      var skills = _ref.skills,
-	          money = _ref.money,
-	          expenses = _ref.expenses,
-	          points = _ref.points,
-	          employees = _ref.employees,
-	          team = _ref.team,
-	          reputation = _ref.reputation,
-	          fame = _ref.fame,
-	          loan = _ref.loan;
-
-	      _skills = skills;
-	      _money = money;
-	      _expenses = expenses;
-	      _points = points;
-	      _employees = employees;
-	      _team = team;
-	      _reputation = reputation;
-	      _fame = fame;
-	      _loan = loan;
-	    }
-	  }, {
 	    key: 'getTeamExpenses',
 	    value: function getTeamExpenses() {
 	      return sum(this.getTeam().filter(isMercenary).map(function (worker) {
@@ -7169,6 +7159,21 @@
 	    key: 'getEmployees',
 	    value: function getEmployees() {
 	      return _employees;
+	    }
+	  }], [{
+	    key: 'getStoreData',
+	    value: function getStoreData() {
+	      return {
+	        skills: _skills,
+	        money: _money,
+	        expenses: _expenses,
+	        points: _points,
+	        employees: _employees,
+	        team: _team,
+	        reputation: _reputation,
+	        fame: _fame,
+	        loan: _loan
+	      };
 	    }
 	  }]);
 	  return PlayerStore;
@@ -7279,7 +7284,11 @@
 	      break;
 	  }
 
-	  if (change) store.emitChange();
+	  if (change) {
+	    store.emitChange();
+
+	    _sessionManager2.default.savePlayerStorageData(PlayerStore.getStoreData());
+	  }
 	});
 
 	exports.default = store;
@@ -10653,6 +10662,9 @@
 	    value: function renderFeatureSupportCost(feature) {
 	      if (!feature.support) return '';
 
+	      var support = feature.support;
+
+
 	      var money = void 0;
 	      var mp = void 0;
 	      var pp = void 0;
@@ -13917,15 +13929,18 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.initialize = initialize;
+
+	var _from = __webpack_require__(194);
+
+	var _from2 = _interopRequireDefault(_from);
+
+	var _parseInt = __webpack_require__(188);
+
+	var _parseInt2 = _interopRequireDefault(_parseInt);
 
 	var _sessionStorage = __webpack_require__(120);
 
 	var _sessionStorage2 = _interopRequireDefault(_sessionStorage);
-
-	var _flux = __webpack_require__(138);
-
-	var _flux2 = _interopRequireDefault(_flux);
 
 	var _gameStages = __webpack_require__(117);
 
@@ -13958,6 +13973,11 @@
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function saveToStorage(name, value) {
+	  _sessionStorage2.default.saveInStorage(name, value);
+	}
+	// import flux from './flux';
 
 	function setDefaultValues() {
 	  // schedule
@@ -14045,17 +14065,52 @@
 	  return _sessionStorage2.default.getFromStorage(name);
 	}
 
-	function getPlayerStorageData() {
+	function savePlayerStorageData(_ref) {
+	  var skills = _ref.skills,
+	      money = _ref.money,
+	      expenses = _ref.expenses,
+	      points = _ref.points,
+	      employees = _ref.employees,
+	      team = _ref.team,
+	      reputation = _ref.reputation,
+	      fame = _ref.fame,
+	      loan = _ref.loan;
+
 	  return {
-	    skills: getFromStorage('skills'),
-	    money: getFromStorage('money'),
-	    expenses: getFromStorage('expenses'),
-	    points: getFromStorage('points'),
-	    employees: getFromStorage('employees'),
-	    team: getFromStorage('team'),
-	    reputation: getFromStorage('reputation'),
-	    fame: getFromStorage('fame'),
-	    loan: getFromStorage('loan')
+	    skills: saveToStorage('skills', skills),
+	    money: saveToStorage('money', money),
+	    expenses: saveToStorage('expenses', expenses),
+	    points: saveToStorage('points', points),
+	    employees: saveToStorage('employees', employees),
+	    team: saveToStorage('team', team),
+	    reputation: saveToStorage('reputation', reputation),
+	    fame: saveToStorage('fame', fame),
+	    loan: saveToStorage('loan', loan)
+	  };
+	}
+
+	function getPlayerStorageData() {
+	  var skills = JSON.parse(getFromStorage('skills'));
+	  var money = (0, _parseInt2.default)(getFromStorage('money'));
+	  var expenses = (0, _from2.default)(JSON.parse(getFromStorage('expenses')));
+	  var points = JSON.parse(getFromStorage('points'));
+	  var employees = (0, _from2.default)(JSON.parse(getFromStorage('employees')));
+
+	  var team = (0, _from2.default)(JSON.parse(getFromStorage('team')));
+	  var reputation = (0, _parseInt2.default)(getFromStorage('reputation'));
+	  var fame = (0, _parseInt2.default)(getFromStorage('fame'));
+	  var loan = (0, _parseInt2.default)(getFromStorage('loan'));
+
+	  return {
+	    skills: skills,
+	    money: money,
+	    expenses: expenses,
+	    points: points,
+	    employees: employees,
+	    team: team,
+	    reputation: reputation,
+	    fame: fame,
+	    loan: loan
 	  };
 	}
 
@@ -14075,23 +14130,277 @@
 	  return getFromStorage('messages');
 	}
 
-	function initialize() {
-	  _logger2.default.log('initialize, session-manager');
-
-	  var playerData = getPlayerStorageData();
-	  var productsData = getProductStorageData();
-	  var scheduleData = getScheduleStorageData();
-	  // const messageData = getMessageStorageData();
-
-	  _flux2.default.scheduleStore.initialize(scheduleData);
-	  _flux2.default.productStore.initialize(productsData);
-	  _flux2.default.playerStore.initialize(playerData);
-	  // flux.playerStore.initialize(playerData);
-	}
+	// export function initialize() {
+	//   logger.log('initialize, session-manager');
+	//
+	//   const playerData = getPlayerStorageData();
+	//   const productsData = getProductStorageData();
+	//   const scheduleData = getScheduleStorageData();
+	//   // const messageData = getMessageStorageData();
+	//
+	//   flux.scheduleStore.initialize(scheduleData);
+	//   flux.productStore.initialize(productsData);
+	//   flux.playerStore.initialize(playerData);
+	//   // flux.playerStore.initialize(playerData);
+	// }
 
 	_logger2.default.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
 
+	exports.default = {
+	  getPlayerStorageData: getPlayerStorageData,
+	  getProductStorageData: getProductStorageData,
+	  getScheduleStorageData: getScheduleStorageData,
+	  getMessageStorageData: getMessageStorageData,
+
+	  savePlayerStorageData: savePlayerStorageData
+	};
+
 	// initialize();
+
+/***/ },
+/* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(189), __esModule: true };
+
+/***/ },
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(190);
+	module.exports = parseInt;
+
+/***/ },
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $export   = __webpack_require__(15)
+	  , $parseInt = __webpack_require__(191);
+	// 20.1.2.13 Number.parseInt(string, radix)
+	$export($export.S + $export.F * (Number.parseInt != $parseInt), 'Number', {parseInt: $parseInt});
+
+/***/ },
+/* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $parseInt = __webpack_require__(12).parseInt
+	  , $trim     = __webpack_require__(192).trim
+	  , ws        = __webpack_require__(193)
+	  , hex       = /^[\-+]?0[xX]/;
+
+	module.exports = $parseInt(ws + '08') !== 8 || $parseInt(ws + '0x16') !== 22 ? function parseInt(str, radix){
+	  var string = $trim(String(str), 3);
+	  return $parseInt(string, (radix >>> 0) || (hex.test(string) ? 16 : 10));
+	} : $parseInt;
+
+/***/ },
+/* 192 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $export = __webpack_require__(15)
+	  , defined = __webpack_require__(7)
+	  , fails   = __webpack_require__(25)
+	  , spaces  = __webpack_require__(193)
+	  , space   = '[' + spaces + ']'
+	  , non     = '\u200b\u0085'
+	  , ltrim   = RegExp('^' + space + space + '*')
+	  , rtrim   = RegExp(space + space + '*$');
+
+	var exporter = function(KEY, exec, ALIAS){
+	  var exp   = {};
+	  var FORCE = fails(function(){
+	    return !!spaces[KEY]() || non[KEY]() != non;
+	  });
+	  var fn = exp[KEY] = FORCE ? exec(trim) : spaces[KEY];
+	  if(ALIAS)exp[ALIAS] = fn;
+	  $export($export.P + $export.F * FORCE, 'String', exp);
+	};
+
+	// 1 -> String#trimLeft
+	// 2 -> String#trimRight
+	// 3 -> String#trim
+	var trim = exporter.trim = function(string, TYPE){
+	  string = String(defined(string));
+	  if(TYPE & 1)string = string.replace(ltrim, '');
+	  if(TYPE & 2)string = string.replace(rtrim, '');
+	  return string;
+	};
+
+	module.exports = exporter;
+
+/***/ },
+/* 193 */
+/***/ function(module, exports) {
+
+	module.exports = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' +
+	  '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
+
+/***/ },
+/* 194 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(195), __esModule: true };
+
+/***/ },
+/* 195 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(38);
+	__webpack_require__(196);
+	module.exports = __webpack_require__(16).Array.from;
+
+/***/ },
+/* 196 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var ctx            = __webpack_require__(17)
+	  , $export        = __webpack_require__(15)
+	  , toObject       = __webpack_require__(6)
+	  , call           = __webpack_require__(197)
+	  , isArrayIter    = __webpack_require__(198)
+	  , toLength       = __webpack_require__(54)
+	  , createProperty = __webpack_require__(199)
+	  , getIterFn      = __webpack_require__(200);
+
+	$export($export.S + $export.F * !__webpack_require__(202)(function(iter){ Array.from(iter); }), 'Array', {
+	  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
+	  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
+	    var O       = toObject(arrayLike)
+	      , C       = typeof this == 'function' ? this : Array
+	      , aLen    = arguments.length
+	      , mapfn   = aLen > 1 ? arguments[1] : undefined
+	      , mapping = mapfn !== undefined
+	      , index   = 0
+	      , iterFn  = getIterFn(O)
+	      , length, result, step, iterator;
+	    if(mapping)mapfn = ctx(mapfn, aLen > 2 ? arguments[2] : undefined, 2);
+	    // if object isn't iterable or it's array with default iterator - use simple case
+	    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
+	      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
+	        createProperty(result, index, mapping ? call(iterator, mapfn, [step.value, index], true) : step.value);
+	      }
+	    } else {
+	      length = toLength(O.length);
+	      for(result = new C(length); length > index; index++){
+	        createProperty(result, index, mapping ? mapfn(O[index], index) : O[index]);
+	      }
+	    }
+	    result.length = index;
+	    return result;
+	  }
+	});
+
+
+/***/ },
+/* 197 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// call something on iterator step with safe closing on error
+	var anObject = __webpack_require__(21);
+	module.exports = function(iterator, fn, value, entries){
+	  try {
+	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
+	  // 7.4.6 IteratorClose(iterator, completion)
+	  } catch(e){
+	    var ret = iterator['return'];
+	    if(ret !== undefined)anObject(ret.call(iterator));
+	    throw e;
+	  }
+	};
+
+/***/ },
+/* 198 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// check on default Array iterator
+	var Iterators  = __webpack_require__(44)
+	  , ITERATOR   = __webpack_require__(59)('iterator')
+	  , ArrayProto = Array.prototype;
+
+	module.exports = function(it){
+	  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
+	};
+
+/***/ },
+/* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var $defineProperty = __webpack_require__(20)
+	  , createDesc      = __webpack_require__(28);
+
+	module.exports = function(object, index, value){
+	  if(index in object)$defineProperty.f(object, index, createDesc(0, value));
+	  else object[index] = value;
+	};
+
+/***/ },
+/* 200 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var classof   = __webpack_require__(201)
+	  , ITERATOR  = __webpack_require__(59)('iterator')
+	  , Iterators = __webpack_require__(44);
+	module.exports = __webpack_require__(16).getIteratorMethod = function(it){
+	  if(it != undefined)return it[ITERATOR]
+	    || it['@@iterator']
+	    || Iterators[classof(it)];
+	};
+
+/***/ },
+/* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// getting tag from 19.1.3.6 Object.prototype.toString()
+	var cof = __webpack_require__(52)
+	  , TAG = __webpack_require__(59)('toStringTag')
+	  // ES3 wrong here
+	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
+
+	// fallback for IE11 Script Access Denied error
+	var tryGet = function(it, key){
+	  try {
+	    return it[key];
+	  } catch(e){ /* empty */ }
+	};
+
+	module.exports = function(it){
+	  var O, T, B;
+	  return it === undefined ? 'Undefined' : it === null ? 'Null'
+	    // @@toStringTag case
+	    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
+	    // builtinTag case
+	    : ARG ? cof(O)
+	    // ES3 arguments fallback
+	    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+	};
+
+/***/ },
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ITERATOR     = __webpack_require__(59)('iterator')
+	  , SAFE_CLOSING = false;
+
+	try {
+	  var riter = [7][ITERATOR]();
+	  riter['return'] = function(){ SAFE_CLOSING = true; };
+	  Array.from(riter, function(){ throw 2; });
+	} catch(e){ /* empty */ }
+
+	module.exports = function(exec, skipClosing){
+	  if(!skipClosing && !SAFE_CLOSING)return false;
+	  var safe = false;
+	  try {
+	    var arr  = [7]
+	      , iter = arr[ITERATOR]();
+	    iter.next = function(){ return {done: safe = true}; };
+	    arr[ITERATOR] = function(){ return iter; };
+	    exec(arr);
+	  } catch(e){ /* empty */ }
+	  return safe;
+	};
 
 /***/ }
 /******/ ]);

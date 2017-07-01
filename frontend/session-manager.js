@@ -1,5 +1,5 @@
 import sessionStorage from './sessionStorage';
-import flux from './flux';
+// import flux from './flux';
 
 import * as GAME_STAGES from './constants/game-stages';
 import * as JOB from './constants/job';
@@ -10,6 +10,10 @@ import Product from './classes/Product';
 import productDescriptions from './helpers/products/product-descriptions';
 
 import logger from './helpers/logger/logger';
+
+function saveToStorage(name, value) {
+  sessionStorage.saveInStorage(name, value);
+}
 
 function setDefaultValues() {
   // schedule
@@ -102,17 +106,43 @@ function getFromStorage(name) {
   return sessionStorage.getFromStorage(name);
 }
 
-function getPlayerStorageData() {
+
+function savePlayerStorageData({ skills, money, expenses, points, employees, team, reputation, fame, loan }) {
   return {
-    skills: getFromStorage('skills'),
-    money: getFromStorage('money'),
-    expenses: getFromStorage('expenses'),
-    points: getFromStorage('points'),
-    employees: getFromStorage('employees'),
-    team: getFromStorage('team'),
-    reputation: getFromStorage('reputation'),
-    fame: getFromStorage('fame'),
-    loan: getFromStorage('loan')
+    skills: saveToStorage('skills', skills),
+    money: saveToStorage('money', money),
+    expenses: saveToStorage('expenses', expenses),
+    points: saveToStorage('points', points),
+    employees: saveToStorage('employees', employees),
+    team: saveToStorage('team', team),
+    reputation: saveToStorage('reputation', reputation),
+    fame: saveToStorage('fame', fame),
+    loan: saveToStorage('loan', loan)
+  };
+}
+
+function getPlayerStorageData() {
+  const skills: Object = JSON.parse(getFromStorage('skills'));
+  const money: Number = Number.parseInt(getFromStorage('money'));
+  const expenses: Array = Array.from(JSON.parse(getFromStorage('expenses')));
+  const points: Object = JSON.parse(getFromStorage('points'));
+  const employees: Array = Array.from(JSON.parse(getFromStorage('employees')));
+
+  const team: Array = Array.from(JSON.parse(getFromStorage('team')));
+  const reputation: Number = Number.parseInt(getFromStorage('reputation'));
+  const fame: Number = Number.parseInt(getFromStorage('fame'));
+  const loan: Number = Number.parseInt(getFromStorage('loan'));
+
+  return {
+    skills,
+    money,
+    expenses,
+    points,
+    employees,
+    team,
+    reputation,
+    fame,
+    loan
   };
 }
 
@@ -132,20 +162,29 @@ function getMessageStorageData() {
   return getFromStorage('messages');
 }
 
-export function initialize() {
-  logger.log('initialize, session-manager');
-
-  const playerData = getPlayerStorageData();
-  const productsData = getProductStorageData();
-  const scheduleData = getScheduleStorageData();
-  // const messageData = getMessageStorageData();
-
-  flux.scheduleStore.initialize(scheduleData);
-  flux.productStore.initialize(productsData);
-  flux.playerStore.initialize(playerData);
-  // flux.playerStore.initialize(playerData);
-}
+// export function initialize() {
+//   logger.log('initialize, session-manager');
+//
+//   const playerData = getPlayerStorageData();
+//   const productsData = getProductStorageData();
+//   const scheduleData = getScheduleStorageData();
+//   // const messageData = getMessageStorageData();
+//
+//   flux.scheduleStore.initialize(scheduleData);
+//   flux.productStore.initialize(productsData);
+//   flux.playerStore.initialize(playerData);
+//   // flux.playerStore.initialize(playerData);
+// }
 
 logger.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
+
+export default {
+  getPlayerStorageData,
+  getProductStorageData,
+  getScheduleStorageData,
+  getMessageStorageData,
+
+  savePlayerStorageData
+}
 
 // initialize();
