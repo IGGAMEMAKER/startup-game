@@ -433,7 +433,7 @@ export default class ProductPanel extends Component {
             secondary
           />
         </div>
-        <hr width="60%" />;
+        <hr width="60%" />
       </div>
     )
   };

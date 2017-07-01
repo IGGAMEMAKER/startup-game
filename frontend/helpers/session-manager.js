@@ -1,15 +1,15 @@
-import sessionStorage from './sessionStorage';
-// import flux from './flux';
+import Product from './../classes/Product';
+import productDescriptions from './products/product-descriptions';
 
-import * as GAME_STAGES from './constants/game-stages';
-import * as JOB from './constants/job';
-import * as IDEAS from './constants/products/ideas';
-import * as PRODUCT_STAGES from './constants/products/product-stages';
+import sessionStorage from './../sessionStorage';
 
-import Product from './classes/Product';
-import productDescriptions from './helpers/products/product-descriptions';
+import * as GAME_STAGES from './../constants/game-stages';
+import * as JOB from './../constants/job';
+import * as IDEAS from './../constants/products/ideas';
+import * as PRODUCT_STAGES from './../constants/products/product-stages';
 
-import logger from './helpers/logger/logger';
+
+import logger from './logger/logger';
 
 function saveToStorage(name, value) {
   sessionStorage.saveInStorage(name, value);
@@ -83,24 +83,74 @@ function setDefaultValues() {
   sessionStorage.saveInStorage('reputation', 0);
   sessionStorage.saveInStorage('fame', 0);
   sessionStorage.saveInStorage('loan', 0);
-
+  logger.debug('saved tasks');
+  //
   // products
-  sessionStorage.saveInStorage('products', [
-    new Product({
-      idea: IDEAS.IDEA_WEB_HOSTING,
-      name: 'WWWEB HOSTING',
-      stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-      defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features.map(f => f.data)
-    })
-  ]);
+  const product = new Product({
+    idea: IDEAS.IDEA_WEB_HOSTING,
+    name: 'WWWEB HOSTING',
+    stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
+    // defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features.map(f => f.data)
+    defaultFeatures: [
+      {
+        name: 'scalability',
+        influence: 0,
+        description: '',
+        shortDescription: 'Масштабируемость',
+        data: 5000,
+        time: 20,
+        development: 70
+      },
+      {
+        name: 'website',
+        influence: 1.5,
+        description: '',
+        shortDescription: 'Веб-сайт',
+        data: 15000,
+        time: 30,
+        development: 30
+      },
+      {
+        name: 'support',
+        influence: 1.5,
+        description: '',
+        shortDescription: 'Техподдержка',
+        data: 5000,
+        time: 30,
+        development: 100
+      },
+      {
+        name: 'VPS',
+        influence: 3,
+        description: '',
+        shortDescription: 'Виртуальная машина',
+        data: 7000,
+        time: 30,
+        shareable: true,
+        development: 75
+      },
+      {
+        name: 'VDS',
+        influence: 0,
+        description: '',
+        shortDescription: 'Выделенный сервер',
+        data: 15000,
+        time: 30,
+        shareable: true,
+        development: 135
+      }].map(f => f.data)
+  });
+
+  sessionStorage.saveInStorage('products', [product]);
+}
+
+if (!sessionStorage.getFromStorage('sessionId')) {
+  sessionStorage.saveInStorage('sessionId', 'asd');
+
+  setDefaultValues();
 }
 
 function getFromStorage(name) {
-  if (!sessionStorage.getFromStorage('sessionId')) {
-    sessionStorage.saveInStorage('sessionId', 'asd');
-
-    setDefaultValues();
-  }
   // setDefaultValues();
 
   // logger.log('pick from session-manager', name);
@@ -148,10 +198,18 @@ function getPlayerStorageData() {
 }
 
 function getProductStorageData() {
-  return JSON.parse(getFromStorage('products'));
+  const data = getFromStorage('products');
+
+  logger.debug('getProductStorageData', data);
+
+  const products: Array<Product> = Array.from(JSON.parse(data));
+
+  logger.debug('getProductStorageData', products);
+
+  return products.map(p => new Product(p, true));
 }
 
-function saveProductStorageData(products) {
+function saveProductStorageData({ products }) {
   return {
     products: saveToStorage('products', products)
   }
@@ -177,7 +235,7 @@ function getMessageStorageData() {
   return getFromStorage('messages');
 }
 
-logger.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
+// logger.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
 
 export default {
   getPlayerStorageData,
@@ -189,5 +247,3 @@ export default {
   saveScheduleStorageData,
   saveProductStorageData
 }
-
-// initialize();

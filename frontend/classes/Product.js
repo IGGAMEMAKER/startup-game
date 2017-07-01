@@ -3,27 +3,43 @@ import random from '../helpers/math/random';
 
 import logger from '../helpers/logger/logger';
 
-const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
-
-
 import percentify from '../helpers/math/percentify';
 
 import computeRating from '../helpers/products/compute-rating';
 
-import * as PRODUCT_STAGES from '../constants/products/product-stages';
-
 import companyCostComputer from '../helpers/products/compute-company-cost';
-import companyMerger from '../helpers/products/company-merger';
 
 import * as balance from '../constants/balance';
 
 import round from '../helpers/math/round';
 import mapper from '../helpers/math/mapper';
 
+const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
 
 export default class Product {
-  constructor({ idea, name, isCompetitor, defaultFeatures }) {
-    // this.isCompetitor = isCompetitor;
+  constructor(data, createFromObject) {
+    if (createFromObject) {
+      logger.debug('createFrom Object Product.js', data);
+
+      this.features = data.features;
+      this.featuresOnCreate = data.featuresOnCreate;
+      this.KPI = data.KPI;
+      this.idea = data.idea;
+      this.name = data.name;
+
+      this.XP = data.XP;
+
+      this.tests = data.tests;
+      this.improvements = data.improvements;
+
+      this.owner = data.owner;
+
+      this.defaultFeatures = data.defaultFeatures;
+
+      return;
+    }
+
+    let { idea, name, isCompetitor, defaultFeatures } = data;
 
     if (!idea) throw 'no idea in classes/Product.js';
 
@@ -1105,3 +1121,5 @@ export default class Product {
     }
   }
 }
+
+export var __useDefault = true;

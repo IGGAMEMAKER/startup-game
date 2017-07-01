@@ -14,7 +14,7 @@ const EC = 'PLAYER_EVENT_CHANGE';
 
 import workerGenerator from '../helpers/team/create-random-worker';
 
-import sessionManager from '../session-manager';
+import sessionManager from '../helpers/session-manager';
 
 import stats from '../stats';
 

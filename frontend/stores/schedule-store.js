@@ -8,7 +8,7 @@ import * as GAME_STAGES from '../constants/game-stages';
 
 import { WORK_SPEED_NORMAL } from '../constants/work-speed';
 
-import sessionManager from '../session-manager';
+import sessionManager from '../helpers/session-manager';
 
 import stats from '../stats';
 
@@ -25,9 +25,6 @@ const initialize = ({ tasks, day, gamePhase }) => {
   _day = day;
   _gamePhase = gamePhase;
 };
-
-// logger.debug('sch store', sessionManager);
-// logger.debug('sch store loaded');
 
 initialize(sessionManager.getScheduleStorageData());
 

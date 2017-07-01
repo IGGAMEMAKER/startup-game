@@ -1,15 +1,11 @@
-import scheduleStore from '../../stores/schedule-store';
+// import scheduleStore from '../../stores/schedule-store';
 
 const timeModifier = (value) => {
   return value;
-
-  const day = scheduleStore.getDay();
-  const year = Math.floor(day / 30 / 12);
-
-  return Math.floor(Math.pow(1.2, year) * value);
 };
 
 const marketModifier = () => {
+  return 1;
   const day = scheduleStore.getDay();
   const month = Math.ceil(day / 30);
 

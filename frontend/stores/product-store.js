@@ -10,10 +10,11 @@ import * as IDEAS from '../constants/products/ideas';
 import * as PRODUCT_STAGES from '../constants/products/product-stages';
 import Product from '../classes/Product';
 
-const EC = 'PRODUCT_EVENT_CHANGE';
 
 import computeRating from '../helpers/products/compute-rating';
 import productDescriptions from '../helpers/products/product-descriptions';
+
+import sessionManager from '../helpers/session-manager';
 
 
 import companyCostComputer from '../helpers/products/compute-company-cost';
@@ -22,14 +23,22 @@ import companyMerger from '../helpers/products/company-merger';
 
 import stats from '../stats';
 
+const EC = 'PRODUCT_EVENT_CHANGE';
+
 let _products: Array<Product> = [
-  new Product({
-    idea: IDEAS.IDEA_WEB_HOSTING,
-    name: 'WWWEB HOSTING',
-    stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-    defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features.map(f => f.data)
-  })
+  // new Product({
+  //   idea: IDEAS.IDEA_WEB_HOSTING,
+  //   name: 'WWWEB HOSTING',
+  //   stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
+  //   defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features.map(f => f.data)
+  // })
 ];
+
+const initialize = (products) => {
+  _products = products;
+};
+
+initialize(sessionManager.getProductStorageData());
 
 const getCurrentMainFeatureDefaultsByIdea = (idea) => {
   const productsWithSameIdea = _products.filter((p, i) => p.idea === idea);
@@ -58,14 +67,15 @@ const getCurrentMainFeatureDefaultsById = (id) => {
   const idea = p.getIdea();
 
   return getCurrentMainFeatureDefaultsByIdea(idea);
-}
+};
+
 
 class ProductStore extends EventEmitter {
-  addChangeListener(cb:Function) {
+  addChangeListener(cb: Function) {
     this.addListener(EC, cb);
   }
 
-  removeChangeListener(cb:Function) {
+  removeChangeListener(cb: Function) {
     this.removeListener(EC, cb);
   }
 
@@ -469,11 +479,7 @@ class ProductStore extends EventEmitter {
     return value;
   }
 
-  initialize(products) {
-    _products = products;
-  }
-
-  getStoreData() {
+  static getStoreData() {
     return {
       products: _products
     }
@@ -582,7 +588,7 @@ class ProductStore extends EventEmitter {
     const ourCompany = _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))[0];
     // logger.log('getCompetitorsList', _products);
 
-      // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
+    // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
     return _products
       .map((p, i) => ({ p, id: i })) //  Object.assign({ id: i }, p)
       .map(obj => {
@@ -621,49 +627,6 @@ class ProductStore extends EventEmitter {
         }
       })
       .sort((a, b) => b.hype - a.hype);
-  }
-
-  getMaxAmountOfPossibleClients(id, money) {
-    const competitors = this.getCompetitorsList(id);
-
-    const maxMarketSize = this.getDefaults(id).marketSize;
-    const rating = this.getRating(id);
-    const ourClients = this.getClients(id);
-
-    const uncompeteableApps = competitors.filter(c => c.rating > rating - 1);
-    const totalClients = ourClients + competitors.map(c => c.clients).reduce((p, c) => p + c, 0);
-
-    let frozen = ourClients;
-    const unbeatableClients = uncompeteableApps.map(c => c.clients).reduce((p, c) => p + c, 0);
-    // if (uncompeteableApps.length) {
-    frozen += unbeatableClients;
-    // }
-
-    const availableForYou = maxMarketSize - frozen;
-
-    const costPerClient = this.getCostPerClient(id);
-    const canAffordClientsAmount = Math.floor(money / costPerClient);
-    let result;
-
-    if (canAffordClientsAmount > availableForYou) {
-      // we can buy all available clients
-      result = availableForYou;
-    } else {
-      // we cannot
-      result = canAffordClientsAmount;
-    }
-
-    // return canAffordClientsAmount;
-
-    return {
-      marketSize: maxMarketSize,
-      potentialClients: maxMarketSize - frozen,
-      amount: result,
-      ourClients,
-      unbeatableClients,
-      freeClients: maxMarketSize - totalClients,
-      competitors
-    }
   }
 
   getNextCompetitorInfo(id) {
@@ -782,6 +745,7 @@ Dispatcher.register((p: PayloadType) => {
 
   if (change) {
     stats.saveAction(p.type, p);
+    sessionManager.saveProductStorageData(ProductStore.getStoreData());
 
     store.emitChange();
   }

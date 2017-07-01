@@ -582,7 +582,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Menu = __webpack_require__(143);
+	var _Menu = __webpack_require__(89);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -594,11 +594,11 @@
 
 	var _Tutorial2 = _interopRequireDefault(_Tutorial);
 
-	var _productStore = __webpack_require__(145);
+	var _productStore = __webpack_require__(91);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _scheduleStore = __webpack_require__(123);
+	var _scheduleStore = __webpack_require__(115);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -618,7 +618,7 @@
 
 	var _game2 = _interopRequireDefault(_game);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -626,7 +626,7 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _gameStages = __webpack_require__(108);
+	var _gameStages = __webpack_require__(117);
 
 	var GAME_STAGES = _interopRequireWildcard(_gameStages);
 
@@ -2311,487 +2311,204 @@
 	  value: true
 	});
 
-	var _from = __webpack_require__(90);
+	var _getPrototypeOf = __webpack_require__(3);
 
-	var _from2 = _interopRequireDefault(_from);
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
 
-	var _parseInt = __webpack_require__(99);
+	var _classCallCheck2 = __webpack_require__(29);
 
-	var _parseInt2 = _interopRequireDefault(_parseInt);
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-	var _sessionStorage = __webpack_require__(105);
+	var _createClass2 = __webpack_require__(30);
 
-	var _sessionStorage2 = _interopRequireDefault(_sessionStorage);
+	var _createClass3 = _interopRequireDefault(_createClass2);
 
-	var _gameStages = __webpack_require__(108);
+	var _possibleConstructorReturn2 = __webpack_require__(34);
 
-	var GAME_STAGES = _interopRequireWildcard(_gameStages);
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
-	var _job = __webpack_require__(109);
+	var _inherits2 = __webpack_require__(81);
 
-	var JOB = _interopRequireWildcard(_job);
+	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _ideas = __webpack_require__(110);
+	var _preact = __webpack_require__(1);
 
-	var IDEAS = _interopRequireWildcard(_ideas);
+	var _moneyDifference = __webpack_require__(90);
 
-	var _productStages = __webpack_require__(111);
+	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
+	var _modification = __webpack_require__(153);
 
-	var _Product = __webpack_require__(112);
+	var _modification2 = _interopRequireDefault(_modification);
 
-	var _Product2 = _interopRequireDefault(_Product);
+	var _playerStore = __webpack_require__(147);
 
-	var _productDescriptions = __webpack_require__(120);
+	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var _stages = __webpack_require__(162);
+
+	var _stages2 = _interopRequireDefault(_stages);
+
+	var _UI = __webpack_require__(165);
+
+	var _UI2 = _interopRequireDefault(_UI);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function saveToStorage(name, value) {
-	  _sessionStorage2.default.saveInStorage(name, value);
-	}
-	// import flux from './flux';
+	// import React, { Component, PropTypes } from 'react';
 
-	function setDefaultValues() {
-	  // schedule
-	  _sessionStorage2.default.saveInStorage('tasks', []);
-	  _sessionStorage2.default.saveInStorage('day', 1);
-	  _sessionStorage2.default.saveInStorage('gamePhase', GAME_STAGES.GAME_STAGE_INIT);
+	var Menu = function (_Component) {
+	  (0, _inherits3.default)(Menu, _Component);
 
-	  // player
-	  _sessionStorage2.default.saveInStorage('skills', {});
-	  _sessionStorage2.default.saveInStorage('money', 1000);
-	  _sessionStorage2.default.saveInStorage('expenses', []);
-	  _sessionStorage2.default.saveInStorage('points', {
-	    programming: 5300,
-	    marketing: 5200,
-	    analyst: 300
-	  });
-	  _sessionStorage2.default.saveInStorage('employees', [{
-	    name: 'Lynda',
-	    skills: {
-	      programming: 0,
-	      marketing: 500,
-	      analyst: 150
-	    },
-	    task: JOB.JOB_TASK_MARKETING_POINTS,
-	    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-	    salary: {
-	      money: 500,
-	      percent: 0,
-	      pricingType: 1
+	  function Menu() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Menu);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Menu.__proto__ || (0, _getPrototypeOf2.default)(Menu)).call.apply(_ref, [this].concat(args))), _this), _this.getPlayerInfoFromStore = function () {
+	      _this.setState({
+	        money: _playerStore2.default.getMoney(),
+	        points: _playerStore2.default.getPoints()
+	      });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Menu, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.getPlayerInfoFromStore();
+
+	      _playerStore2.default.addChangeListener(this.getPlayerInfoFromStore);
 	    }
 	  }, {
-	    name: 'Xavier',
-	    skills: {
-	      programming: 600,
-	      marketing: 100,
-	      analyst: 150
-	    },
-	    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
-	    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-	    salary: {
-	      money: 700,
-	      percent: 0,
-	      pricingType: 1
+	    key: 'renderSpeedIcons',
+	    value: function renderSpeedIcons() {
+	      var _this2 = this;
+
+	      return [{ speed: 1, icon: '>' }, { speed: 10, icon: '>>>' }].map(function (s) {
+	        return (0, _preact.h)(
+	          'div',
+	          { className: 'navigation' },
+	          (0, _preact.h)(_UI2.default.Button, {
+	            text: s.icon,
+	            onClick: _this2.props.setGameSpeed(s.speed)
+	          })
+	        );
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(props, state) {
+	      if (!_stages2.default.canShowUpperTabInMenu()) return (0, _preact.h)('div', null);
+
+	      var pause = props.pause,
+	          pauseGame = props.pauseGame,
+	          setGameSpeed = props.setGameSpeed;
+
+
+	      var speedIcons = this.renderSpeedIcons();
+
+	      var pauseOrContinue = '';
+	      if (!pause) {
+	        pauseOrContinue = (0, _preact.h)(_UI2.default.Button, { text: '\u041F\u0430\u0443\u0437\u0430', onClick: pauseGame, link: true });
+	      }
+
+	      var negative = 'moneyNegative';
+	      var positive = 'moneyPositive';
+
+	      var saldoValue = _moneyDifference2.default.saldo();
+	      var isMakingIncome = saldoValue > 0;
+
+	      var moneyIndication = isMakingIncome ? positive : negative;
+	      var moneyDifference = isMakingIncome ? '+' + saldoValue : saldoValue;
+
+	      var mpIndication = _modification2.default.marketing().needToHireWorker ? negative : positive;
+	      var ppIndication = _modification2.default.programming().needToHireWorker ? negative : positive;
+
+	      var year = Math.floor(props.day / 360);
+	      var month = Math.floor((props.day - year * 360) / 30);
+	      var day = props.day - year * 360 - month * 30;
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'navigation' },
+	            (0, _preact.h)(
+	              'div',
+	              { className: moneyIndication },
+	              '$',
+	              state.money,
+	              ' (',
+	              moneyDifference,
+	              '$)'
+	            )
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'navigation' },
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              '\u0413\u043E\u0434: ',
+	              year,
+	              ' \u041C\u0435\u0441\u044F\u0446: ',
+	              month,
+	              ' \u0414\u0435\u043D\u044C: ',
+	              day
+	            )
+	          ),
+	          speedIcons,
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'navigation' },
+	            pauseOrContinue
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'navigation' },
+	            (0, _preact.h)(
+	              'span',
+	              { className: mpIndication },
+	              'MP: ',
+	              state.points.marketing
+	            )
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'navigation' },
+	            (0, _preact.h)(
+	              'span',
+	              { className: ppIndication },
+	              'PP: ',
+	              state.points.programming
+	            )
+	          )
+	        )
+	      );
 	    }
 	  }]);
-	  _sessionStorage2.default.saveInStorage('team', [{
-	    name: 'James',
-	    skills: {
-	      programming: 1000,
-	      marketing: 150,
-	      analyst: 300
-	    },
-	    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
-	    jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
-	    salary: {
-	      percent: 100,
-	      money: 100,
-	      pricingType: 0
-	    },
-	    isPlayer: true
-	  }]);
-	  _sessionStorage2.default.saveInStorage('reputation', 0);
-	  _sessionStorage2.default.saveInStorage('fame', 0);
-	  _sessionStorage2.default.saveInStorage('loan', 0);
+	  return Menu;
+	}(_preact.Component);
 
-	  // products
-	  _sessionStorage2.default.saveInStorage('products', [new _Product2.default({
-	    idea: IDEAS.IDEA_WEB_HOSTING,
-	    name: 'WWWEB HOSTING',
-	    stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-	    defaultFeatures: (0, _productDescriptions2.default)(IDEAS.IDEA_WEB_HOSTING).features.map(function (f) {
-	      return f.data;
-	    })
-	  })]);
-	}
-
-	function getFromStorage(name) {
-	  if (!_sessionStorage2.default.getFromStorage('sessionId')) {
-	    _sessionStorage2.default.saveInStorage('sessionId', 'asd');
-
-	    setDefaultValues();
-	  }
-	  // setDefaultValues();
-
-	  // logger.log('pick from session-manager', name);
-	  return _sessionStorage2.default.getFromStorage(name);
-	}
-
-	function savePlayerStorageData(_ref) {
-	  var skills = _ref.skills,
-	      money = _ref.money,
-	      expenses = _ref.expenses,
-	      points = _ref.points,
-	      employees = _ref.employees,
-	      team = _ref.team,
-	      reputation = _ref.reputation,
-	      fame = _ref.fame,
-	      loan = _ref.loan;
-
-	  return {
-	    skills: saveToStorage('skills', skills),
-	    money: saveToStorage('money', money),
-	    expenses: saveToStorage('expenses', expenses),
-	    points: saveToStorage('points', points),
-	    employees: saveToStorage('employees', employees),
-	    team: saveToStorage('team', team),
-	    reputation: saveToStorage('reputation', reputation),
-	    fame: saveToStorage('fame', fame),
-	    loan: saveToStorage('loan', loan)
-	  };
-	}
-
-	function getPlayerStorageData() {
-	  var skills = JSON.parse(getFromStorage('skills'));
-	  var money = (0, _parseInt2.default)(getFromStorage('money'));
-	  var expenses = (0, _from2.default)(JSON.parse(getFromStorage('expenses')));
-	  var points = JSON.parse(getFromStorage('points'));
-	  var employees = (0, _from2.default)(JSON.parse(getFromStorage('employees')));
-
-	  var team = (0, _from2.default)(JSON.parse(getFromStorage('team')));
-	  var reputation = (0, _parseInt2.default)(getFromStorage('reputation'));
-	  var fame = (0, _parseInt2.default)(getFromStorage('fame'));
-	  var loan = (0, _parseInt2.default)(getFromStorage('loan'));
-
-	  return {
-	    skills: skills,
-	    money: money,
-	    expenses: expenses,
-	    points: points,
-	    employees: employees,
-	    team: team,
-	    reputation: reputation,
-	    fame: fame,
-	    loan: loan
-	  };
-	}
-
-	function getProductStorageData() {
-	  return JSON.parse(getFromStorage('products'));
-	}
-
-	function saveProductStorageData(products) {
-	  return {
-	    products: saveToStorage('products', products)
-	  };
-	}
-
-	function getScheduleStorageData() {
-	  return {
-	    tasks: (0, _from2.default)(JSON.parse(getFromStorage('tasks'))),
-	    day: (0, _parseInt2.default)(getFromStorage('day')),
-	    gamePhase: (0, _parseInt2.default)(getFromStorage('gamePhase'))
-	  };
-	}
-
-	function saveScheduleStorageData(_ref2) {
-	  var tasks = _ref2.tasks,
-	      day = _ref2.day,
-	      gamePhase = _ref2.gamePhase;
-
-	  return {
-	    tasks: saveToStorage('tasks', tasks),
-	    day: saveToStorage('day', day),
-	    gamePhase: saveToStorage('gamePhase', gamePhase)
-	  };
-	}
-
-	function getMessageStorageData() {
-	  return getFromStorage('messages');
-	}
-
-	_logger2.default.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
-
-	exports.default = {
-	  getPlayerStorageData: getPlayerStorageData,
-	  getProductStorageData: getProductStorageData,
-	  getScheduleStorageData: getScheduleStorageData,
-	  getMessageStorageData: getMessageStorageData,
-
-	  savePlayerStorageData: savePlayerStorageData,
-	  saveScheduleStorageData: saveScheduleStorageData,
-	  saveProductStorageData: saveProductStorageData
-	};
-
-	// initialize();
+	exports.default = Menu;
 
 /***/ },
 /* 90 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(91), __esModule: true };
-
-/***/ },
-/* 91 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(38);
-	__webpack_require__(92);
-	module.exports = __webpack_require__(16).Array.from;
-
-/***/ },
-/* 92 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var ctx            = __webpack_require__(17)
-	  , $export        = __webpack_require__(15)
-	  , toObject       = __webpack_require__(6)
-	  , call           = __webpack_require__(93)
-	  , isArrayIter    = __webpack_require__(94)
-	  , toLength       = __webpack_require__(54)
-	  , createProperty = __webpack_require__(95)
-	  , getIterFn      = __webpack_require__(96);
-
-	$export($export.S + $export.F * !__webpack_require__(98)(function(iter){ Array.from(iter); }), 'Array', {
-	  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
-	  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
-	    var O       = toObject(arrayLike)
-	      , C       = typeof this == 'function' ? this : Array
-	      , aLen    = arguments.length
-	      , mapfn   = aLen > 1 ? arguments[1] : undefined
-	      , mapping = mapfn !== undefined
-	      , index   = 0
-	      , iterFn  = getIterFn(O)
-	      , length, result, step, iterator;
-	    if(mapping)mapfn = ctx(mapfn, aLen > 2 ? arguments[2] : undefined, 2);
-	    // if object isn't iterable or it's array with default iterator - use simple case
-	    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
-	      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
-	        createProperty(result, index, mapping ? call(iterator, mapfn, [step.value, index], true) : step.value);
-	      }
-	    } else {
-	      length = toLength(O.length);
-	      for(result = new C(length); length > index; index++){
-	        createProperty(result, index, mapping ? mapfn(O[index], index) : O[index]);
-	      }
-	    }
-	    result.length = index;
-	    return result;
-	  }
-	});
-
-
-/***/ },
-/* 93 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// call something on iterator step with safe closing on error
-	var anObject = __webpack_require__(21);
-	module.exports = function(iterator, fn, value, entries){
-	  try {
-	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
-	  // 7.4.6 IteratorClose(iterator, completion)
-	  } catch(e){
-	    var ret = iterator['return'];
-	    if(ret !== undefined)anObject(ret.call(iterator));
-	    throw e;
-	  }
-	};
-
-/***/ },
-/* 94 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// check on default Array iterator
-	var Iterators  = __webpack_require__(44)
-	  , ITERATOR   = __webpack_require__(59)('iterator')
-	  , ArrayProto = Array.prototype;
-
-	module.exports = function(it){
-	  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
-	};
-
-/***/ },
-/* 95 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var $defineProperty = __webpack_require__(20)
-	  , createDesc      = __webpack_require__(28);
-
-	module.exports = function(object, index, value){
-	  if(index in object)$defineProperty.f(object, index, createDesc(0, value));
-	  else object[index] = value;
-	};
-
-/***/ },
-/* 96 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var classof   = __webpack_require__(97)
-	  , ITERATOR  = __webpack_require__(59)('iterator')
-	  , Iterators = __webpack_require__(44);
-	module.exports = __webpack_require__(16).getIteratorMethod = function(it){
-	  if(it != undefined)return it[ITERATOR]
-	    || it['@@iterator']
-	    || Iterators[classof(it)];
-	};
-
-/***/ },
-/* 97 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// getting tag from 19.1.3.6 Object.prototype.toString()
-	var cof = __webpack_require__(52)
-	  , TAG = __webpack_require__(59)('toStringTag')
-	  // ES3 wrong here
-	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
-
-	// fallback for IE11 Script Access Denied error
-	var tryGet = function(it, key){
-	  try {
-	    return it[key];
-	  } catch(e){ /* empty */ }
-	};
-
-	module.exports = function(it){
-	  var O, T, B;
-	  return it === undefined ? 'Undefined' : it === null ? 'Null'
-	    // @@toStringTag case
-	    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
-	    // builtinTag case
-	    : ARG ? cof(O)
-	    // ES3 arguments fallback
-	    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
-	};
-
-/***/ },
-/* 98 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ITERATOR     = __webpack_require__(59)('iterator')
-	  , SAFE_CLOSING = false;
-
-	try {
-	  var riter = [7][ITERATOR]();
-	  riter['return'] = function(){ SAFE_CLOSING = true; };
-	  Array.from(riter, function(){ throw 2; });
-	} catch(e){ /* empty */ }
-
-	module.exports = function(exec, skipClosing){
-	  if(!skipClosing && !SAFE_CLOSING)return false;
-	  var safe = false;
-	  try {
-	    var arr  = [7]
-	      , iter = arr[ITERATOR]();
-	    iter.next = function(){ return {done: safe = true}; };
-	    arr[ITERATOR] = function(){ return iter; };
-	    exec(arr);
-	  } catch(e){ /* empty */ }
-	  return safe;
-	};
-
-/***/ },
-/* 99 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(100), __esModule: true };
-
-/***/ },
-/* 100 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(101);
-	module.exports = parseInt;
-
-/***/ },
-/* 101 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $export   = __webpack_require__(15)
-	  , $parseInt = __webpack_require__(102);
-	// 20.1.2.13 Number.parseInt(string, radix)
-	$export($export.S + $export.F * (Number.parseInt != $parseInt), 'Number', {parseInt: $parseInt});
-
-/***/ },
-/* 102 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $parseInt = __webpack_require__(12).parseInt
-	  , $trim     = __webpack_require__(103).trim
-	  , ws        = __webpack_require__(104)
-	  , hex       = /^[\-+]?0[xX]/;
-
-	module.exports = $parseInt(ws + '08') !== 8 || $parseInt(ws + '0x16') !== 22 ? function parseInt(str, radix){
-	  var string = $trim(String(str), 3);
-	  return $parseInt(string, (radix >>> 0) || (hex.test(string) ? 16 : 10));
-	} : $parseInt;
-
-/***/ },
-/* 103 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $export = __webpack_require__(15)
-	  , defined = __webpack_require__(7)
-	  , fails   = __webpack_require__(25)
-	  , spaces  = __webpack_require__(104)
-	  , space   = '[' + spaces + ']'
-	  , non     = '\u200b\u0085'
-	  , ltrim   = RegExp('^' + space + space + '*')
-	  , rtrim   = RegExp(space + space + '*$');
-
-	var exporter = function(KEY, exec, ALIAS){
-	  var exp   = {};
-	  var FORCE = fails(function(){
-	    return !!spaces[KEY]() || non[KEY]() != non;
-	  });
-	  var fn = exp[KEY] = FORCE ? exec(trim) : spaces[KEY];
-	  if(ALIAS)exp[ALIAS] = fn;
-	  $export($export.P + $export.F * FORCE, 'String', exp);
-	};
-
-	// 1 -> String#trimLeft
-	// 2 -> String#trimRight
-	// 3 -> String#trim
-	var trim = exporter.trim = function(string, TYPE){
-	  string = String(defined(string));
-	  if(TYPE & 1)string = string.replace(ltrim, '');
-	  if(TYPE & 2)string = string.replace(rtrim, '');
-	  return string;
-	};
-
-	module.exports = exporter;
-
-/***/ },
-/* 104 */
-/***/ function(module, exports) {
-
-	module.exports = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' +
-	  '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
-
-/***/ },
-/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2800,129 +2517,1905 @@
 	  value: true
 	});
 
-	var _stringify = __webpack_require__(106);
+	var _productStore = __webpack_require__(91);
 
-	var _stringify2 = _interopRequireDefault(_stringify);
+	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _typeof2 = __webpack_require__(35);
+	var _playerStore = __webpack_require__(147);
 
-	var _typeof3 = _interopRequireDefault(_typeof2);
+	var _playerStore2 = _interopRequireDefault(_playerStore);
+
+	var _expenses = __webpack_require__(149);
+
+	var EXPENSES = _interopRequireWildcard(_expenses);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function saveInStorage(field, data) {
-	  var item = data;
-	  if ((typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)) == 'object') {
-	    //console.log('object');
-	    item = (0, _stringify2.default)(data);
-	  }
-	  localStorage.setItem(field, item);
-	  //storage[field] = item;
-	}
-	function getFromStorage(field) {
-	  //return storage[field];
-	  return localStorage.getItem(field);
-	}
+	var calculate = function calculate() {
+	  var products = _productStore2.default.getOurProducts();
 
-	function getObject(arrName) {
-	  return JSON.parse(getFromStorage(arrName));
-	}
+	  // check income
+	  var jobIncome = 2000;
 
-	function setInObject(arrName, id, value) {
-	  var array = getObject(arrName);
-	  //prt(arrName, id, value);
-	  array[id] = value;
-	  saveInStorage(arrName, array);
-	}
+	  var income = jobIncome + products.map(function (p, i) {
+	    return _productStore2.default.getProductIncome(i);
+	  }).reduce(function (p, c) {
+	    return p + c;
+	  }, 0);
 
-	function unsetFromObject(arrName, id) {
-	  var array = getObject(arrName);
+	  // check expenses
+	  var nonProductExpenses = _playerStore2.default.getExpenses().filter(function (e) {
+	    return e.type !== EXPENSES.EXPENSES_LOAN;
+	  }).map(function (e, i) {
+	    return e.price;
+	  }).reduce(function (p, c) {
+	    return p + c;
+	  }, 0);
 
-	  // console.log('was', array);
+	  var productExpenses = products.map(function (p, i) {
+	    return _productStore2.default.getProductExpenses(i);
+	  }).reduce(function (p, c) {
+	    return p + c;
+	  }, 0);
 
-	  delete array[id];
+	  var loans = _playerStore2.default.getLoanPaymentAmount();
 
-	  // console.log('became', array);
-	  saveInStorage(arrName, array);
-	}
+	  var teamExpenses = _playerStore2.default.getTeamExpenses();
 
-	function clearStorage() {
-	  localStorage.clear();
+	  var expenses = nonProductExpenses + productExpenses + loans + teamExpenses;
 
-	  // saveInStorage('tournaments', []);
-	  // saveInStorage('addresses', {});
-	  // saveInStorage('money', 0);
-	}
+	  var byProductIncome = products.map(function (p, i) {
+	    return { name: p.name, income: _productStore2.default.getProductIncome(i) };
+	  });
 
-	//clearStorage();
+	  return {
+	    nonProductExpenses: nonProductExpenses,
+	    productExpenses: productExpenses,
+	    loans: loans,
+	    teamExpenses: teamExpenses,
 
-	// cookies
-	// возвращает cookie если есть или undefined
-	function getCookie(name) {
-	  var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
-	  return matches ? decodeURIComponent(matches[1]) : undefined;
-	}
+	    expenses: expenses,
+	    income: income,
+	    byProductIncome: byProductIncome,
 
-	// уcтанавливает cookie
-	function setCookie(name, value, props) {
-	  props = props || {};
-	  var exp = props.expires;
-	  if (typeof exp == "number" && exp) {
-	    var d = new Date();
-	    d.setTime(d.getTime() + exp * 1000);
-	    exp = props.expires = d;
-	  }
-	  if (exp && exp.toUTCString) {
-	    props.expires = exp.toUTCString();
-	  }
-
-	  value = encodeURIComponent(value);
-	  var updatedCookie = name + "=" + value;
-	  for (var propName in props) {
-	    updatedCookie += "; " + propName;
-	    var propValue = props[propName];
-	    if (propValue !== true) {
-	      updatedCookie += "=" + propValue;
-	    }
-	  }
-	  document.cookie = updatedCookie;
-	}
-
-	// удаляет cookie
-	function deleteCookie(name) {
-	  setCookie(name, null, { expires: -1 });
-	}
+	    saldo: income - expenses
+	  };
+	};
 
 	exports.default = {
-	  deleteCookie: deleteCookie,
-	  saveInStorage: saveInStorage,
-	  getFromStorage: getFromStorage,
-	  getObject: getObject,
-	  setInObject: setInObject,
-	  unsetFromObject: unsetFromObject,
-	  clearStorage: clearStorage,
-	  getCookie: getCookie,
-	  setCookie: setCookie
+	  structured: calculate,
+
+	  saldo: function saldo() {
+	    return Math.floor(calculate().saldo);
+	  }
 	};
 
 /***/ },
-/* 106 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(107), __esModule: true };
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(3);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(30);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(34);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(81);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _events = __webpack_require__(92);
+
+	var _dispatcher = __webpack_require__(93);
+
+	var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+	var _productActions = __webpack_require__(98);
+
+	var c = _interopRequireWildcard(_productActions);
+
+	var _payloads = __webpack_require__(99);
+
+	var _payloads2 = _interopRequireDefault(_payloads);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _round = __webpack_require__(101);
+
+	var _round2 = _interopRequireDefault(_round);
+
+	var _ideas = __webpack_require__(102);
+
+	var IDEAS = _interopRequireWildcard(_ideas);
+
+	var _productStages = __webpack_require__(103);
+
+	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
+
+	var _Product = __webpack_require__(104);
+
+	var _Product2 = _interopRequireDefault(_Product);
+
+	var _computeRating = __webpack_require__(142);
+
+	var _computeRating2 = _interopRequireDefault(_computeRating);
+
+	var _productDescriptions = __webpack_require__(112);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	var _sessionManager = __webpack_require__(119);
+
+	var _sessionManager2 = _interopRequireDefault(_sessionManager);
+
+	var _computeCompanyCost = __webpack_require__(143);
+
+	var _computeCompanyCost2 = _interopRequireDefault(_computeCompanyCost);
+
+	var _companyMerger = __webpack_require__(144);
+
+	var _companyMerger2 = _interopRequireDefault(_companyMerger);
+
+	var _stats = __webpack_require__(139);
+
+	var _stats2 = _interopRequireDefault(_stats);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var EC = 'PRODUCT_EVENT_CHANGE';
+
+	var _products = [
+	  // new Product({
+	  //   idea: IDEAS.IDEA_WEB_HOSTING,
+	  //   name: 'WWWEB HOSTING',
+	  //   stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
+	  //   defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features.map(f => f.data)
+	  // })
+	];
+
+	var initialize = function initialize(products) {
+	  _products = products;
+	};
+
+	initialize(_sessionManager2.default.getProductStorageData());
+
+	var _getCurrentMainFeatureDefaultsByIdea = function _getCurrentMainFeatureDefaultsByIdea(idea) {
+	  var productsWithSameIdea = _products.filter(function (p, i) {
+	    return p.idea === idea;
+	  });
+
+	  return (0, _productDescriptions2.default)(idea).features.map(function (f, featureId) {
+	    var max = f.data;
+
+	    productsWithSameIdea.forEach(function (p) {
+	      var temp = p.getMainFeatureQualityByFeatureId(featureId);
+
+	      if (temp > max) {
+	        max = temp;
+	      }
+	    });
+
+	    return max;
+	  });
+
+	  // const suitableId = products.findIndex((p, i) => p.idea === idea);
+	  // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
+	};
+
+	var _getCurrentMainFeatureDefaultsById = function _getCurrentMainFeatureDefaultsById(id) {
+	  var p = _products[id];
+	  // logger.debug('getCurrentMainFeatureDefaultsById', p, _products, id);
+	  var idea = p.getIdea();
+
+	  return _getCurrentMainFeatureDefaultsByIdea(idea);
+	};
+
+	var ProductStore = function (_EventEmitter) {
+	  (0, _inherits3.default)(ProductStore, _EventEmitter);
+
+	  function ProductStore() {
+	    (0, _classCallCheck3.default)(this, ProductStore);
+	    return (0, _possibleConstructorReturn3.default)(this, (ProductStore.__proto__ || (0, _getPrototypeOf2.default)(ProductStore)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(ProductStore, [{
+	    key: 'addChangeListener',
+	    value: function addChangeListener(cb) {
+	      this.addListener(EC, cb);
+	    }
+	  }, {
+	    key: 'removeChangeListener',
+	    value: function removeChangeListener(cb) {
+	      this.removeListener(EC, cb);
+	    }
+	  }, {
+	    key: 'emitChange',
+	    value: function emitChange() {
+	      this.emit(EC);
+	    }
+	  }, {
+	    key: 'getProducts',
+	    value: function getProducts() {
+	      return _products;
+	    }
+	  }, {
+	    key: 'getOurProducts',
+	    value: function getOurProducts() {
+	      return _products.filter(this.isOurProduct);
+	    }
+	  }, {
+	    key: 'isOurProduct',
+	    value: function isOurProduct(p) {
+	      return p.owner;
+	    }
+	  }, {
+	    key: 'getProduct',
+	    value: function getProduct(id) {
+	      return _products[id];
+	    }
+	  }, {
+	    key: 'getCompanyCost',
+	    value: function getCompanyCost(id) {
+	      return _products[id].getCompanyCost();
+	    }
+	  }, {
+	    key: 'getRating',
+	    value: function getRating(id, segmentId) {
+	      if (!segmentId) segmentId = 0;
+
+	      return _products[id].getRating(segmentId);
+	    }
+	  }, {
+	    key: 'getClients',
+	    value: function getClients(id, segmentId) {
+	      return _products[id].getClients(segmentId);
+	    }
+	  }, {
+	    key: 'getSegmentBySegmentId',
+	    value: function getSegmentBySegmentId(id, segId) {
+	      return _products[id].getSegmentBySegmentId(segId);
+	    }
+	  }, {
+	    key: 'getHypeDamping',
+	    value: function getHypeDamping(id) {
+	      return _products[id].getHypeDamping();
+	    }
+	  }, {
+	    key: 'getSegmentedPriorities',
+	    value: function getSegmentedPriorities(id, segId) {
+	      return _products[id].getSegmentedPriorities(segId);
+	    }
+	  }, {
+	    key: 'getNewClients',
+	    value: function getNewClients(id) {
+	      return _products[id].getNewClients();
+	    }
+	  }, {
+	    key: 'getDisloyalClients',
+	    value: function getDisloyalClients(id) {
+	      return _products[id].getDisloyalClients();
+	    }
+	  }, {
+	    key: 'getViralClients',
+	    value: function getViralClients(id) {
+	      return _products[id].getViralClients();
+	    }
+	  }, {
+	    key: 'getMainFeatureQualityByFeatureId',
+	    value: function getMainFeatureQualityByFeatureId(id, featureId) {
+	      return _products[id].getMainFeatureQualityByFeatureId(featureId);
+	    }
+	  }, {
+	    key: 'getMainFeatureDefaultQualityByFeatureId',
+	    value: function getMainFeatureDefaultQualityByFeatureId(id, featureId) {
+	      return this.temporaryMaxFeatureValue(id, featureId);
+	      // return _products[id].getMainFeatureDefaultQualityByFeatureId(featureId);
+	    }
+	  }, {
+	    key: 'getPrettyFeatureNameByFeatureId',
+	    value: function getPrettyFeatureNameByFeatureId(id, featureId) {
+	      return _products[id].getPrettyFeatureNameByFeatureId(featureId);
+	    }
+	  }, {
+	    key: 'requirementsOKforSegment',
+	    value: function requirementsOKforSegment(id, segmentId) {
+	      return _products[id].requirementsOKforSegment(segmentId);
+	    }
+	  }, {
+	    key: 'getAnalyticsValueForFeatureCreating',
+	    value: function getAnalyticsValueForFeatureCreating(id) {
+	      return _products[id].getAnalyticsValueForFeatureCreating();
+	    }
+	  }, {
+	    key: 'getDefaults',
+	    value: function getDefaults(id) {
+	      return _products[id].getDefaults();
+	    }
+	  }, {
+	    key: 'getProductUtility',
+	    value: function getProductUtility(id) {
+	      return _products[id].getProductUtility();
+	    }
+	  }, {
+	    key: 'getPaymentModifier',
+	    value: function getPaymentModifier(id) {
+	      return _products[id].getPaymentModifier();
+	    }
+	  }, {
+	    key: 'getConversionRate',
+	    value: function getConversionRate(id, segmentId) {
+	      return _products[id].getConversionRate(segmentId);
+	    }
+	  }, {
+	    key: 'getProductPrice',
+	    value: function getProductPrice(id, segId) {
+	      return _products[id].getProductPrice(segId);
+	    }
+	  }, {
+	    key: 'getFeatures',
+	    value: function getFeatures(id, featureGroup) {
+	      return _products[id].getFeatures(featureGroup);
+	    }
+	  }, {
+	    key: 'isPaymentEnabled',
+	    value: function isPaymentEnabled(id, segmentId) {
+	      return _products[id].isPaymentEnabled(segmentId);
+	    }
+	  }, {
+	    key: 'getSegmentIncome',
+	    value: function getSegmentIncome(id, segId) {
+	      return _products[id].getSegmentIncome(segId);
+	    }
+	  }, {
+	    key: 'getProductIncome',
+	    value: function getProductIncome(id) {
+	      return _products[id].getProductIncome();
+	    }
+	  }, {
+	    key: 'getIdea',
+	    value: function getIdea(id) {
+	      return _products[id].getIdea();
+	    }
+	  }, {
+	    key: 'getViralityRate',
+	    value: function getViralityRate(id) {
+	      return _products[id].getViralityRate();
+	    }
+	  }, {
+	    key: 'getMarketingFeatures',
+	    value: function getMarketingFeatures(id) {
+	      return _products[id].getMarketingFeatures();
+	    }
+	  }, {
+	    key: 'getBlogPower',
+	    value: function getBlogPower(id) {
+	      return _products[id].getBlogPower();
+	    }
+	  }, {
+	    key: 'getBlogStatusStructured',
+	    value: function getBlogStatusStructured(id) {
+	      return _products[id].getBlogStatusStructured();
+	    }
+	  }, {
+	    key: 'getSupportPower',
+	    value: function getSupportPower(id) {
+	      return _products[id].getSupportPower();
+	    }
+	  }, {
+	    key: 'getEmailPower',
+	    value: function getEmailPower(id) {
+	      return _products[id].getEmailPower();
+	    }
+	  }, {
+	    key: 'getMarketingSupportCostPerClientForSupportFeature',
+	    value: function getMarketingSupportCostPerClientForSupportFeature(id) {
+	      return _products[id].getMarketingSupportCostPerClientForSupportFeature();
+	    }
+	  }, {
+	    key: 'getChurnRate',
+	    value: function getChurnRate(id) {
+	      return _products[id].getChurnRate();
+	    }
+	  }, {
+	    key: 'getProductBlogCost',
+	    value: function getProductBlogCost(id) {
+	      return _products[id].getProductBlogCost();
+	    }
+	  }, {
+	    key: 'getProductSupportCost',
+	    value: function getProductSupportCost(id) {
+	      return _products[id].getProductSupportCost();
+	    }
+	  }, {
+	    key: 'getProductExpenses',
+	    value: function getProductExpenses(id) {
+	      return _products[id].getProductExpenses();
+	    }
+	  }, {
+	    key: 'getName',
+	    value: function getName(id) {
+	      return _products[id].getName();
+	    }
+	  }, {
+	    key: 'getStage',
+	    value: function getStage(id) {
+	      return _products[id].getStage();
+	    }
+	  }, {
+	    key: 'getFeatureStatus',
+	    value: function getFeatureStatus(id, featureGroup, featureName) {
+	      return _products[id].getFeatureStatus(featureGroup, featureName);
+	    }
+	  }, {
+	    key: 'getCostPerClient',
+	    value: function getCostPerClient(id) {
+	      return _products[id].getCostPerClient();
+	    }
+	  }, {
+	    key: 'getRatingForMetricsTab',
+	    value: function getRatingForMetricsTab(id) {
+	      return _products[id].getRatingForMetricsTab();
+	    }
+	  }, {
+	    key: 'getClientAnalyticsModifier',
+	    value: function getClientAnalyticsModifier(id) {
+	      return _products[id].getClientAnalyticsModifier();
+	    }
+	  }, {
+	    key: 'getProgrammingSupportCostModifier',
+	    value: function getProgrammingSupportCostModifier(id) {
+	      return _products[id].getProgrammingSupportCostModifier();
+	    }
+	  }, {
+	    key: 'getProgrammingSupportCost',
+	    value: function getProgrammingSupportCost(id) {
+	      return _products[id].getProgrammingSupportCost();
+	    }
+	  }, {
+	    key: 'getMarketingSupportTechTotalCost',
+	    value: function getMarketingSupportTechTotalCost(id) {
+	      return _products[id].getMarketingSupportTechTotalCost();
+	    }
+	  }, {
+	    key: 'getBaseSupportCost',
+	    value: function getBaseSupportCost() {
+	      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+	      return _products[id].getBaseSupportCost();
+	    }
+	  }, {
+	    key: 'getMarketingSupportCost',
+	    value: function getMarketingSupportCost(id) {
+	      return _products[id].getMarketingSupportCost();
+	    }
+	  }, {
+	    key: 'getMarketingFeatureList',
+	    value: function getMarketingFeatureList(idea) {
+	      return [{
+	        name: 'blog', shortDescription: 'Блог проекта',
+	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150 },
+	        support: { marketing: 50 }
+	      }, {
+	        name: 'support', shortDescription: 'Техподдержка',
+	        description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 },
+	        support: { marketing: 50 }
+	      }, {
+	        name: 'blogII', shortDescription: 'Улучшенный блог проекта',
+	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150 },
+	        support: { marketing: 150 }
+	      }, {
+	        name: 'supportII', shortDescription: 'Улучшенная техподдержка',
+	        description: 'Техподдержка снижает отток клиентов на 15%',
+	        points: { marketing: 50, programming: 100 },
+	        support: { marketing: 50 }
+	      }, {
+	        name: 'emails', shortDescription: 'Рассылка электронной почты',
+	        description: 'Рассылка электронной почти снижает отток клиентов на 5%',
+	        points: { marketing: 50, programming: 100 },
+	        support: { programming: 20 }
+	      }, {
+	        name: 'blogIII', shortDescription: 'Улучшенный блог проекта II',
+	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+	        points: { marketing: 150 },
+	        support: { marketing: 150 }
+	      }, {
+	        name: 'supportIII', shortDescription: 'Улучшенная техподдержка II',
+	        description: 'Техподдержка снижает отток клиентов на 15%. ',
+	        points: { marketing: 50, programming: 100 },
+	        support: { marketing: 50 }
+	      }
+	      // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
+	      //   points: { marketing: 50, programming: 100 }, time: 7 }
+	      ];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getHypothesisAnalyticsFeatures',
+	    value: function getHypothesisAnalyticsFeatures(idea) {
+	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев',
+	        description: 'Общение с вашими клиентами позволяет улучшить ваш продукт. +300XP/мес',
+	        points: { programming: 50, marketing: 0 }, bonus: 300
+	      }, { name: 'webvisor', shortDescription: 'Вебвизор',
+	        description: 'Позволяет просматривать действия пользователей. +200XP/мес',
+	        points: { programming: 150, marketing: 0 }, bonus: 200
+	      }, { name: 'AB', shortDescription: 'A/B тестирование',
+	        description: 'Позволяет тестировать несколько вариантов проекта. +400XP/мес',
+	        points: { programming: 175, marketing: 0 }, bonus: 400
+	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей',
+	        description: '+500XP/мес',
+	        points: { programming: 250, marketing: 0 }, bonus: 500
+	      }, { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II',
+	        description: '+600XP/мес',
+	        points: { programming: 500, marketing: 0 }, bonus: 600
+	      }];
+	    }
+	  }, {
+	    key: 'getAnalyticFeatures',
+	    value: function getAnalyticFeatures(idea) {
+	      return [
+	      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
+	      //   points: { programming: 150, marketing: 100 }
+	      // },
+
+	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
+	      //   points: { programming: 50, marketing: 0 }
+	      // },
+	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
+	        points: { programming: 50, marketing: 0 }
+	      }];
+	      // ].map(computeFeatureCost(cost));
+	    }
+	  }, {
+	    key: 'getPaymentFeatures',
+	    value: function getPaymentFeatures(id, idea) {
+	      return _products[id].getPaymentFeatures(idea);
+	    }
+	  }, {
+	    key: 'getTechnicalDebtDescription',
+	    value: function getTechnicalDebtDescription(debt) {
+	      if (debt < 10) {
+	        return '\u0412\u0441\u0451 \u0445\u043E\u0440\u043E\u0448\u043E';
+	      } else if (debt < 50) {
+	        return '\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0430\u0447\u0438\u043D\u0430\u044E\u0442 \u043F\u043B\u0430\u043A\u0430\u0442\u044C';
+	      } else {
+	        return '\u0422\u044B \u043C\u0440\u0430\u0437\u044C \u0438 \u043F**\u043E\u0440, \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435\u043D\u0430\u0432\u0438\u0434\u044F\u0442 \u0442\u0435\u0431\u044F!! \u041E\u0442\u0440\u0435\u0444\u0430\u043A\u0442\u043E\u0440\u044C \u044D\u0442\u043E\u0442 \u0448\u043B\u0430\u043A!';
+	      }
+	    }
+	  }, {
+	    key: 'getImprovementChances',
+	    value: function getImprovementChances(id) {
+	      return _products[id].getImprovementChances();
+	    }
+	  }, {
+	    key: 'getProductExpensesStructure',
+	    value: function getProductExpensesStructure(id) {
+	      return _products[id].getProductExpensesStructure();
+	    }
+	  }, {
+	    key: 'getXP',
+	    value: function getXP(id) {
+	      return _products[id].getXP();
+	    }
+	  }, {
+	    key: 'getHypothesisPoints',
+	    value: function getHypothesisPoints(id) {
+	      return _products[id].getHypothesisPoints();
+	    }
+	  }, {
+	    key: 'getSegments',
+	    value: function getSegments(id) {
+	      return _products[id].getSegments();
+	    }
+	  }, {
+	    key: 'getSegmentById',
+	    value: function getSegmentById(id, segId) {
+	      return _products[id].getSegmentById(segId);
+	    }
+	  }, {
+	    key: 'getDescriptionOfProduct',
+	    value: function getDescriptionOfProduct(id) {
+	      return _products[id].getDescriptionOfProduct();
+	    }
+	  }, {
+	    key: 'canShowPayPercentageMetric',
+	    value: function canShowPayPercentageMetric(id) {
+	      return _products[id].canShowPayPercentageMetric();
+	    }
+	  }, {
+	    key: 'clientsEnoughToFormSegment',
+	    value: function clientsEnoughToFormSegment(id, segId) {
+	      return _products[id].clientsEnoughToFormSegment(segId);
+	    }
+	  }, {
+	    key: 'getAvailableSegments',
+	    value: function getAvailableSegments(id) {
+	      return _products[id].getAvailableSegments();
+	    }
+	  }, {
+	    key: 'getMarketShare',
+	    value: function getMarketShare(id) {
+	      return _products[id].getMarketShare();
+	    }
+	  }, {
+	    key: 'getTestsAmount',
+	    value: function getTestsAmount(id) {
+	      return _products[id].getTestsAmount();
+	    }
+	  }, {
+	    key: 'getImprovementsAmount',
+	    value: function getImprovementsAmount(id) {
+	      return _products[id].getImprovementsAmount();
+	    }
+	  }, {
+	    key: 'getTechnologyComplexityModifier',
+	    value: function getTechnologyComplexityModifier(id) {
+	      return _products[id].getTechnologyComplexityModifier();
+	    }
+	  }, {
+	    key: 'getHypeValue',
+	    value: function getHypeValue(id) {
+	      return _products[id].getHypeValue();
+	    }
+	  }, {
+	    key: 'getTechnicalDebtModifier',
+	    value: function getTechnicalDebtModifier(id) {
+	      return _products[id].getTechnicalDebtModifier();
+	    }
+	  }, {
+	    key: 'idHelper',
+	    value: function idHelper(p, i) {
+	      return { id: i, p: p };
+	    }
+	  }, {
+	    key: 'getFreeClientsBatch',
+	    value: function getFreeClientsBatch() {
+	      var marketSize = _products[0].getMarketShare().marketSize;
+
+	      var currentSumOfUsers = _products.map(function (p, i) {
+	        return p.getClients();
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
+
+	      var value = marketSize - currentSumOfUsers;
+
+	      if (value <= 0) return 0;
+
+	      if (value > 2000) return 2000;
+
+	      return value;
+	    }
+	  }, {
+	    key: 'isUpgradeWillResultTechBreakthrough',
+	    value: function isUpgradeWillResultTechBreakthrough(id, featureId) {
+	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
+	      var max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
+
+	      // logger.debug('isUpgradeWillResultTechBreakthrough ?', current, max);
+
+	      return current + 1000 > max;
+	    }
+	  }, {
+	    key: 'isWeAreRetards',
+	    value: function isWeAreRetards(id, featureId) {
+	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
+	      var max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
+
+	      // logger.debug('isWeAreRetards ?', current, max);
+
+	      return current < 0.3 * max;
+	    }
+	  }, {
+	    key: 'getTechBreakthroughModifierForHype',
+	    value: function getTechBreakthroughModifierForHype(id, featureId) {
+	      return _products[id].getTechBreakthroughModifierForHype();
+	    }
+	  }, {
+	    key: 'getMainFeatureUpgradeCost',
+	    value: function getMainFeatureUpgradeCost(id, featureId) {
+	      var modifier = 1;
+
+	      _logger2.default.shit('write isUpgradeWillResultTechBreakthrough function!!');
+
+	      // we are able to make breakthrough
+	      if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) {
+	        modifier = 4;
+	      }
+
+	      // we are retards
+	      if (this.isWeAreRetards(id, featureId)) {
+	        modifier = 0.25;
+	      }
+
+	      return Math.ceil((0, _productDescriptions2.default)(this.getIdea(id)).features[featureId].development * modifier);
+	    }
+	  }, {
+	    key: 'getLeaderInTech',
+	    value: function getLeaderInTech(id, featureId) {
+	      var _this2 = this;
+
+	      var leader = _products.map(this.idHelper).filter(function (obj, i) {
+	        return obj.p.idea === _this2.getIdea(id);
+	      }).sort(function (obj1, obj2) {
+	        var p1 = obj1.p;
+	        var p2 = obj2.p;
+
+	        var f1 = p1.getMainFeatureQualityByFeatureId(featureId);
+	        var f2 = p2.getMainFeatureQualityByFeatureId(featureId);
+
+	        return f2 - f1;
+	      })[0];
+
+	      return {
+	        id: leader.id,
+	        name: leader.p.name,
+	        value: leader.p.getMainFeatureQualityByFeatureId(featureId)
+	      };
+	    }
+	  }, {
+	    key: 'ceilXPtoThousandValue',
+	    value: function ceilXPtoThousandValue(value) {
+	      return Math.ceil(value / 1000) * 1000;
+	    }
+	  }, {
+	    key: 'getCurrentMainFeatureDefaultsById',
+	    value: function getCurrentMainFeatureDefaultsById(id) {
+	      // logger.debug('getCurrentMainFeatureDefaultsById in class', id);
+	      // const idea = this.getIdea(id);
+
+	      // return getCurrentMainFeatureDefaultsByIdea(idea);
+	      return _getCurrentMainFeatureDefaultsById(id);
+	    }
+	  }, {
+	    key: 'temporaryMaxFeatureValue',
+	    value: function temporaryMaxFeatureValue(id, featureId) {
+	      return this.ceilXPtoThousandValue(this.getLeaderInTech(id, featureId).value);
+	    }
+	  }, {
+	    key: 'getUpgradedMaxDefaultFeatureValueList',
+	    value: function getUpgradedMaxDefaultFeatureValueList(id) {
+	      var _this3 = this;
+
+	      return this.getDefaults(id).features.map(function (f, featureId) {
+	        var base = _this3.getMainFeatureQualityByFeatureId(id, featureId);
+
+	        var leader = (Math.floor(_this3.getLeaderInTech(id, featureId).value / 1000) + 1) * 1000;
+
+	        return leader > base ? leader : base;
+	      });
+	    }
+	  }, {
+	    key: 'isUpgradingMainFeatureWillResultTechLeadership',
+	    value: function isUpgradingMainFeatureWillResultTechLeadership(id, featureId) {
+	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
+
+	      var max = this.temporaryMaxFeatureValue(id, featureId);
+
+	      return current + 1000 > max;
+	    }
+	  }, {
+	    key: 'getCurrentMainFeatureDefaultsByIdea',
+	    value: function getCurrentMainFeatureDefaultsByIdea(idea) {
+	      return _getCurrentMainFeatureDefaultsByIdea(idea);
+	    }
+	  }, {
+	    key: 'getCompetitorsList',
+	    value: function getCompetitorsList(id) {
+	      var _this4 = this;
+
+	      var ourCompany = _products.filter(function (p) {
+	        return _this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
+	      })[0];
+	      // logger.log('getCompetitorsList', _products);
+
+	      // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
+	      return _products.map(function (p, i) {
+	        return { p: p, id: i };
+	      }) //  Object.assign({ id: i }, p)
+	      .map(function (obj) {
+	        var p = obj.p;
+	        var id = obj.id;
+
+	        var name = p.name;
+
+	        // logger.log('competitor', id, p);
+
+	        var rating = (0, _round2.default)((0, _computeRating2.default)(p, 0));
+	        var hype = p.getHypeValue();
+	        var clients = p.KPI.clients;
+
+	        var features = p.features.offer;
+
+	        var offer = _this4.getDefaults(id).features.map(function (f, i) {
+	          return {
+	            name: f.name,
+	            description: f.shortDescription,
+	            value: features[i]
+	          };
+	        }).sort(function (a, b) {
+	          return b.value - a.value;
+	        });
+
+	        return {
+	          rating: rating,
+	          clients: clients,
+	          name: name,
+	          features: offer,
+	          // cost: companyCostComputer.compute(),
+	          cost: p.getCompanyCost(),
+	          improvements: _companyMerger2.default.merge(ourCompany, p).improvements,
+	          id: id,
+	          hype: hype,
+	          hypeDamping: p.getHypeDampingValue(p.getNumberOfTechnologiesWhereWeMadeBreakthrough())
+	        };
+	      }).sort(function (a, b) {
+	        return b.hype - a.hype;
+	      });
+	    }
+	  }, {
+	    key: 'getNextCompetitorInfo',
+	    value: function getNextCompetitorInfo(id) {
+	      var competitors = this.getCompetitorsList(id);
+	      var rating = this.getRating(id);
+
+	      var betterCompetitors = competitors.filter(function (c) {
+	        return rating < c.rating + 1;
+	      });
+
+	      return betterCompetitors.length ? betterCompetitors[0] : null;
+	    }
+	  }], [{
+	    key: 'getStoreData',
+	    value: function getStoreData() {
+	      return {
+	        products: _products
+	      };
+	    }
+	  }]);
+	  return ProductStore;
+	}(_events.EventEmitter);
+
+	var store = new ProductStore();
+
+	var payload = _payloads2.default.productStorePayload;
+
+
+	_dispatcher2.default.register(function (p) {
+	  if (!p.type) {
+	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
+	    return;
+	  }
+
+	  var id = p.id;
+
+	  var change = true;
+
+	  (function () {
+	    switch (p.type) {
+	      case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
+	        _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 69999);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
+	        _products[id].testHypothesis(p);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_SWITCH_STAGE:
+	        _products[id].switchStage(p.stage);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
+	        _products[id].improveFeature(p);
+
+	        // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
+
+	        _logger2.default.shit('rewrite upgradedDefaults updating in Product.js class. ' + 'You need updating it only on improve Main Feature actions');
+
+	        var upgradedDefaults = _getCurrentMainFeatureDefaultsById(id);
+	        var idea = _products[id].getIdea();
+
+	        // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
+
+	        _products.filter(function (p) {
+	          return p.idea === idea;
+	        }).forEach(function (p) {
+	          // logger.debug('upgrading for product', p.name);
+	          p.setMainFeatureDefaults(upgradedDefaults);
+	          // arr[i].setMainFeatureDefaults(upgradedDefaults);
+	        });
+	        break;
+
+	      case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
+	        _products[id].improveMainFeature(p);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
+	        _products[id].improveFeatureByPoints(p);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_CLIENTS_ADD:
+	        _products[id].addClients(p);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_HYPE_ADD:
+	        _products[id].addHype(p.hype);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
+	        _products[id].loseMonthlyHype();
+	        break;
+
+	      case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
+	        _products[id].addViralClients(p);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
+	        _products[id].removeClients(p);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
+	        // { features , KPI, idea, name }
+	        var competitor = p.p;
+	        // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+	        competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
+	        _products.push(competitor);
+	        break;
+
+	      case c.PRODUCT_ACTIONS_COMPANY_BUY:
+	        _logger2.default.debug('buy company store');
+	        var buyerId = p.buyerId,
+	            sellerId = p.sellerId;
+
+
+	        var buyer = _products[buyerId];
+	        var seller = _products[sellerId];
+
+	        var difference = _companyMerger2.default.merge(buyer, seller);
+
+	        _products[buyerId].KPI.clients = difference.clients;
+	        _products[buyerId].features.offer = difference.features;
+
+	        _products.splice(sellerId, 1);
+	        break;
+
+	      default:
+	        break;
+	    }
+	  })();
+
+	  if (change) {
+	    _stats2.default.saveAction(p.type, p);
+	    _sessionManager2.default.saveProductStorageData(ProductStore.getStoreData());
+
+	    store.emitChange();
+	  }
+	});
+
+	exports.default = store;
 
 /***/ },
-/* 107 */
+/* 92 */
+/***/ function(module, exports) {
+
+	// Copyright Joyent, Inc. and other Node contributors.
+	//
+	// Permission is hereby granted, free of charge, to any person obtaining a
+	// copy of this software and associated documentation files (the
+	// "Software"), to deal in the Software without restriction, including
+	// without limitation the rights to use, copy, modify, merge, publish,
+	// distribute, sublicense, and/or sell copies of the Software, and to permit
+	// persons to whom the Software is furnished to do so, subject to the
+	// following conditions:
+	//
+	// The above copyright notice and this permission notice shall be included
+	// in all copies or substantial portions of the Software.
+	//
+	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+	// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+	// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+	// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	function EventEmitter() {
+	  this._events = this._events || {};
+	  this._maxListeners = this._maxListeners || undefined;
+	}
+	module.exports = EventEmitter;
+
+	// Backwards-compat with node 0.10.x
+	EventEmitter.EventEmitter = EventEmitter;
+
+	EventEmitter.prototype._events = undefined;
+	EventEmitter.prototype._maxListeners = undefined;
+
+	// By default EventEmitters will print a warning if more than 10 listeners are
+	// added to it. This is a useful default which helps finding memory leaks.
+	EventEmitter.defaultMaxListeners = 10;
+
+	// Obviously not all Emitters should be limited to 10. This function allows
+	// that to be increased. Set to zero for unlimited.
+	EventEmitter.prototype.setMaxListeners = function(n) {
+	  if (!isNumber(n) || n < 0 || isNaN(n))
+	    throw TypeError('n must be a positive number');
+	  this._maxListeners = n;
+	  return this;
+	};
+
+	EventEmitter.prototype.emit = function(type) {
+	  var er, handler, len, args, i, listeners;
+
+	  if (!this._events)
+	    this._events = {};
+
+	  // If there is no 'error' event listener then throw.
+	  if (type === 'error') {
+	    if (!this._events.error ||
+	        (isObject(this._events.error) && !this._events.error.length)) {
+	      er = arguments[1];
+	      if (er instanceof Error) {
+	        throw er; // Unhandled 'error' event
+	      } else {
+	        // At least give some kind of context to the user
+	        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+	        err.context = er;
+	        throw err;
+	      }
+	    }
+	  }
+
+	  handler = this._events[type];
+
+	  if (isUndefined(handler))
+	    return false;
+
+	  if (isFunction(handler)) {
+	    switch (arguments.length) {
+	      // fast cases
+	      case 1:
+	        handler.call(this);
+	        break;
+	      case 2:
+	        handler.call(this, arguments[1]);
+	        break;
+	      case 3:
+	        handler.call(this, arguments[1], arguments[2]);
+	        break;
+	      // slower
+	      default:
+	        args = Array.prototype.slice.call(arguments, 1);
+	        handler.apply(this, args);
+	    }
+	  } else if (isObject(handler)) {
+	    args = Array.prototype.slice.call(arguments, 1);
+	    listeners = handler.slice();
+	    len = listeners.length;
+	    for (i = 0; i < len; i++)
+	      listeners[i].apply(this, args);
+	  }
+
+	  return true;
+	};
+
+	EventEmitter.prototype.addListener = function(type, listener) {
+	  var m;
+
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+
+	  if (!this._events)
+	    this._events = {};
+
+	  // To avoid recursion in the case that type === "newListener"! Before
+	  // adding it to the listeners, first emit "newListener".
+	  if (this._events.newListener)
+	    this.emit('newListener', type,
+	              isFunction(listener.listener) ?
+	              listener.listener : listener);
+
+	  if (!this._events[type])
+	    // Optimize the case of one listener. Don't need the extra array object.
+	    this._events[type] = listener;
+	  else if (isObject(this._events[type]))
+	    // If we've already got an array, just append.
+	    this._events[type].push(listener);
+	  else
+	    // Adding the second element, need to change to array.
+	    this._events[type] = [this._events[type], listener];
+
+	  // Check for listener leak
+	  if (isObject(this._events[type]) && !this._events[type].warned) {
+	    if (!isUndefined(this._maxListeners)) {
+	      m = this._maxListeners;
+	    } else {
+	      m = EventEmitter.defaultMaxListeners;
+	    }
+
+	    if (m && m > 0 && this._events[type].length > m) {
+	      this._events[type].warned = true;
+	      console.error('(node) warning: possible EventEmitter memory ' +
+	                    'leak detected. %d listeners added. ' +
+	                    'Use emitter.setMaxListeners() to increase limit.',
+	                    this._events[type].length);
+	      if (typeof console.trace === 'function') {
+	        // not supported in IE 10
+	        console.trace();
+	      }
+	    }
+	  }
+
+	  return this;
+	};
+
+	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+	EventEmitter.prototype.once = function(type, listener) {
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+
+	  var fired = false;
+
+	  function g() {
+	    this.removeListener(type, g);
+
+	    if (!fired) {
+	      fired = true;
+	      listener.apply(this, arguments);
+	    }
+	  }
+
+	  g.listener = listener;
+	  this.on(type, g);
+
+	  return this;
+	};
+
+	// emits a 'removeListener' event iff the listener was removed
+	EventEmitter.prototype.removeListener = function(type, listener) {
+	  var list, position, length, i;
+
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+
+	  if (!this._events || !this._events[type])
+	    return this;
+
+	  list = this._events[type];
+	  length = list.length;
+	  position = -1;
+
+	  if (list === listener ||
+	      (isFunction(list.listener) && list.listener === listener)) {
+	    delete this._events[type];
+	    if (this._events.removeListener)
+	      this.emit('removeListener', type, listener);
+
+	  } else if (isObject(list)) {
+	    for (i = length; i-- > 0;) {
+	      if (list[i] === listener ||
+	          (list[i].listener && list[i].listener === listener)) {
+	        position = i;
+	        break;
+	      }
+	    }
+
+	    if (position < 0)
+	      return this;
+
+	    if (list.length === 1) {
+	      list.length = 0;
+	      delete this._events[type];
+	    } else {
+	      list.splice(position, 1);
+	    }
+
+	    if (this._events.removeListener)
+	      this.emit('removeListener', type, listener);
+	  }
+
+	  return this;
+	};
+
+	EventEmitter.prototype.removeAllListeners = function(type) {
+	  var key, listeners;
+
+	  if (!this._events)
+	    return this;
+
+	  // not listening for removeListener, no need to emit
+	  if (!this._events.removeListener) {
+	    if (arguments.length === 0)
+	      this._events = {};
+	    else if (this._events[type])
+	      delete this._events[type];
+	    return this;
+	  }
+
+	  // emit removeListener for all listeners on all events
+	  if (arguments.length === 0) {
+	    for (key in this._events) {
+	      if (key === 'removeListener') continue;
+	      this.removeAllListeners(key);
+	    }
+	    this.removeAllListeners('removeListener');
+	    this._events = {};
+	    return this;
+	  }
+
+	  listeners = this._events[type];
+
+	  if (isFunction(listeners)) {
+	    this.removeListener(type, listeners);
+	  } else if (listeners) {
+	    // LIFO order
+	    while (listeners.length)
+	      this.removeListener(type, listeners[listeners.length - 1]);
+	  }
+	  delete this._events[type];
+
+	  return this;
+	};
+
+	EventEmitter.prototype.listeners = function(type) {
+	  var ret;
+	  if (!this._events || !this._events[type])
+	    ret = [];
+	  else if (isFunction(this._events[type]))
+	    ret = [this._events[type]];
+	  else
+	    ret = this._events[type].slice();
+	  return ret;
+	};
+
+	EventEmitter.prototype.listenerCount = function(type) {
+	  if (this._events) {
+	    var evlistener = this._events[type];
+
+	    if (isFunction(evlistener))
+	      return 1;
+	    else if (evlistener)
+	      return evlistener.length;
+	  }
+	  return 0;
+	};
+
+	EventEmitter.listenerCount = function(emitter, type) {
+	  return emitter.listenerCount(type);
+	};
+
+	function isFunction(arg) {
+	  return typeof arg === 'function';
+	}
+
+	function isNumber(arg) {
+	  return typeof arg === 'number';
+	}
+
+	function isObject(arg) {
+	  return typeof arg === 'object' && arg !== null;
+	}
+
+	function isUndefined(arg) {
+	  return arg === void 0;
+	}
+
+
+/***/ },
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var core  = __webpack_require__(16)
-	  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
-	module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
-	  return $JSON.stringify.apply($JSON, arguments);
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _flux = __webpack_require__(94);
+
+	exports.default = new _flux.Dispatcher();
+
+/***/ },
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2014-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	module.exports.Dispatcher = __webpack_require__(95);
+
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright (c) 2014-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule Dispatcher
+	 * 
+	 * @preventMunge
+	 */
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var invariant = __webpack_require__(97);
+
+	var _prefix = 'ID_';
+
+	/**
+	 * Dispatcher is used to broadcast payloads to registered callbacks. This is
+	 * different from generic pub-sub systems in two ways:
+	 *
+	 *   1) Callbacks are not subscribed to particular events. Every payload is
+	 *      dispatched to every registered callback.
+	 *   2) Callbacks can be deferred in whole or part until other callbacks have
+	 *      been executed.
+	 *
+	 * For example, consider this hypothetical flight destination form, which
+	 * selects a default city when a country is selected:
+	 *
+	 *   var flightDispatcher = new Dispatcher();
+	 *
+	 *   // Keeps track of which country is selected
+	 *   var CountryStore = {country: null};
+	 *
+	 *   // Keeps track of which city is selected
+	 *   var CityStore = {city: null};
+	 *
+	 *   // Keeps track of the base flight price of the selected city
+	 *   var FlightPriceStore = {price: null}
+	 *
+	 * When a user changes the selected city, we dispatch the payload:
+	 *
+	 *   flightDispatcher.dispatch({
+	 *     actionType: 'city-update',
+	 *     selectedCity: 'paris'
+	 *   });
+	 *
+	 * This payload is digested by `CityStore`:
+	 *
+	 *   flightDispatcher.register(function(payload) {
+	 *     if (payload.actionType === 'city-update') {
+	 *       CityStore.city = payload.selectedCity;
+	 *     }
+	 *   });
+	 *
+	 * When the user selects a country, we dispatch the payload:
+	 *
+	 *   flightDispatcher.dispatch({
+	 *     actionType: 'country-update',
+	 *     selectedCountry: 'australia'
+	 *   });
+	 *
+	 * This payload is digested by both stores:
+	 *
+	 *   CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
+	 *     if (payload.actionType === 'country-update') {
+	 *       CountryStore.country = payload.selectedCountry;
+	 *     }
+	 *   });
+	 *
+	 * When the callback to update `CountryStore` is registered, we save a reference
+	 * to the returned token. Using this token with `waitFor()`, we can guarantee
+	 * that `CountryStore` is updated before the callback that updates `CityStore`
+	 * needs to query its data.
+	 *
+	 *   CityStore.dispatchToken = flightDispatcher.register(function(payload) {
+	 *     if (payload.actionType === 'country-update') {
+	 *       // `CountryStore.country` may not be updated.
+	 *       flightDispatcher.waitFor([CountryStore.dispatchToken]);
+	 *       // `CountryStore.country` is now guaranteed to be updated.
+	 *
+	 *       // Select the default city for the new country
+	 *       CityStore.city = getDefaultCityForCountry(CountryStore.country);
+	 *     }
+	 *   });
+	 *
+	 * The usage of `waitFor()` can be chained, for example:
+	 *
+	 *   FlightPriceStore.dispatchToken =
+	 *     flightDispatcher.register(function(payload) {
+	 *       switch (payload.actionType) {
+	 *         case 'country-update':
+	 *         case 'city-update':
+	 *           flightDispatcher.waitFor([CityStore.dispatchToken]);
+	 *           FlightPriceStore.price =
+	 *             getFlightPriceStore(CountryStore.country, CityStore.city);
+	 *           break;
+	 *     }
+	 *   });
+	 *
+	 * The `country-update` payload will be guaranteed to invoke the stores'
+	 * registered callbacks in order: `CountryStore`, `CityStore`, then
+	 * `FlightPriceStore`.
+	 */
+
+	var Dispatcher = (function () {
+	  function Dispatcher() {
+	    _classCallCheck(this, Dispatcher);
+
+	    this._callbacks = {};
+	    this._isDispatching = false;
+	    this._isHandled = {};
+	    this._isPending = {};
+	    this._lastID = 1;
+	  }
+
+	  /**
+	   * Registers a callback to be invoked with every dispatched payload. Returns
+	   * a token that can be used with `waitFor()`.
+	   */
+
+	  Dispatcher.prototype.register = function register(callback) {
+	    var id = _prefix + this._lastID++;
+	    this._callbacks[id] = callback;
+	    return id;
+	  };
+
+	  /**
+	   * Removes a callback based on its token.
+	   */
+
+	  Dispatcher.prototype.unregister = function unregister(id) {
+	    !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.unregister(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
+	    delete this._callbacks[id];
+	  };
+
+	  /**
+	   * Waits for the callbacks specified to be invoked before continuing execution
+	   * of the current callback. This method should only be used by a callback in
+	   * response to a dispatched payload.
+	   */
+
+	  Dispatcher.prototype.waitFor = function waitFor(ids) {
+	    !this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Must be invoked while dispatching.') : invariant(false) : undefined;
+	    for (var ii = 0; ii < ids.length; ii++) {
+	      var id = ids[ii];
+	      if (this._isPending[id]) {
+	        !this._isHandled[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Circular dependency detected while ' + 'waiting for `%s`.', id) : invariant(false) : undefined;
+	        continue;
+	      }
+	      !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
+	      this._invokeCallback(id);
+	    }
+	  };
+
+	  /**
+	   * Dispatches a payload to all registered callbacks.
+	   */
+
+	  Dispatcher.prototype.dispatch = function dispatch(payload) {
+	    !!this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.') : invariant(false) : undefined;
+	    this._startDispatching(payload);
+	    try {
+	      for (var id in this._callbacks) {
+	        if (this._isPending[id]) {
+	          continue;
+	        }
+	        this._invokeCallback(id);
+	      }
+	    } finally {
+	      this._stopDispatching();
+	    }
+	  };
+
+	  /**
+	   * Is this Dispatcher currently dispatching.
+	   */
+
+	  Dispatcher.prototype.isDispatching = function isDispatching() {
+	    return this._isDispatching;
+	  };
+
+	  /**
+	   * Call the callback stored with the given id. Also do some internal
+	   * bookkeeping.
+	   *
+	   * @internal
+	   */
+
+	  Dispatcher.prototype._invokeCallback = function _invokeCallback(id) {
+	    this._isPending[id] = true;
+	    this._callbacks[id](this._pendingPayload);
+	    this._isHandled[id] = true;
+	  };
+
+	  /**
+	   * Set up bookkeeping needed when dispatching.
+	   *
+	   * @internal
+	   */
+
+	  Dispatcher.prototype._startDispatching = function _startDispatching(payload) {
+	    for (var id in this._callbacks) {
+	      this._isPending[id] = false;
+	      this._isHandled[id] = false;
+	    }
+	    this._pendingPayload = payload;
+	    this._isDispatching = true;
+	  };
+
+	  /**
+	   * Clear bookkeeping used for dispatching.
+	   *
+	   * @internal
+	   */
+
+	  Dispatcher.prototype._stopDispatching = function _stopDispatching() {
+	    delete this._pendingPayload;
+	    this._isDispatching = false;
+	  };
+
+	  return Dispatcher;
+	})();
+
+	module.exports = Dispatcher;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(96)))
+
+/***/ },
+/* 96 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 97 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	'use strict';
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var validateFormat = function validateFormat(format) {};
+
+	if (process.env.NODE_ENV !== 'production') {
+	  validateFormat = function validateFormat(format) {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  };
+	}
+
+	function invariant(condition, format, a, b, c, d, e, f) {
+	  validateFormat(format);
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(format.replace(/%s/g, function () {
+	        return args[argIndex++];
+	      }));
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	}
+
+	module.exports = invariant;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(96)))
+
+/***/ },
+/* 98 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var PRODUCT_ACTIONS_IMPROVE_FEATURE = exports.PRODUCT_ACTIONS_IMPROVE_FEATURE = 'PRODUCT_ACTIONS_IMPROVE_FEATURE';
+	var PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE = exports.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE = 'PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE';
+	var PRODUCT_ACTIONS_CLIENTS_ADD = exports.PRODUCT_ACTIONS_CLIENTS_ADD = 'PRODUCT_ACTIONS_CLIENTS_ADD';
+	var PRODUCT_ACTIONS_CLIENTS_REMOVE = exports.PRODUCT_ACTIONS_CLIENTS_REMOVE = 'PRODUCT_ACTIONS_CLIENTS_REMOVE';
+	var PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD = exports.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD = 'PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD';
+	var PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS = exports.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS = 'PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS';
+	var PRODUCT_ACTIONS_SWITCH_STAGE = exports.PRODUCT_ACTIONS_SWITCH_STAGE = 'PRODUCT_ACTIONS_SWITCH_STAGE';
+	var PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = exports.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = 'PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS';
+	var PRODUCT_ACTIONS_TEST_HYPOTHESIS = exports.PRODUCT_ACTIONS_TEST_HYPOTHESIS = 'PRODUCT_ACTIONS_TEST_HYPOTHESIS';
+	var PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = exports.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = 'PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY';
+	var PRODUCT_ACTIONS_COMPANY_BUY = exports.PRODUCT_ACTIONS_COMPANY_BUY = 'PRODUCT_ACTIONS_COMPANY_BUY';
+	var PRODUCT_ACTIONS_HYPE_ADD = exports.PRODUCT_ACTIONS_HYPE_ADD = 'PRODUCT_ACTIONS_HYPE_ADD';
+	var PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE = exports.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE = 'PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE';
+
+/***/ },
+/* 99 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {
+	  productStorePayload: {
+	    name: 'productStorePayload',
+	    type: {
+	      type: String,
+	      id: Number, // product id
+	      featureGroup: String,
+	      featureName: String,
+	      value: Number
+	    }
+	  },
+	  scheduleStorePayload: {
+	    name: 'scheduleStorePayload',
+	    type: {
+	      type: String,
+	      task: Object,
+	      id: Number
+	    }
+	  },
+
+	  playerStorePayload: {
+	    name: 'playerStorePayload',
+	    type: {
+	      type: String,
+	      amount: Number
+	    }
+	  },
+	  messageStorePayload: {
+	    name: 'messageStorePayload',
+	    type: {
+	      type: String,
+	      amount: Number
+	    }
+	  }
 	};
 
 /***/ },
-/* 108 */
+/* 100 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2930,45 +4423,35 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var GAME_STAGE_INIT = exports.GAME_STAGE_INIT = 0;
-	var GAME_STAGE_GAME_STARTED = exports.GAME_STAGE_GAME_STARTED = 1;
-	var GAME_STAGE_HIRED_FIRST_WORKER = exports.GAME_STAGE_HIRED_FIRST_WORKER = 2;
-	var GAME_STAGE_INVITED_FIRST_CLIENTS = exports.GAME_STAGE_INVITED_FIRST_CLIENTS = 3;
-	var GAME_STAGE_IMPROVED_ANALYTICS = exports.GAME_STAGE_IMPROVED_ANALYTICS = 4;
-	var GAME_STAGE_STARTED_FIRST_HYPOTHESIS = exports.GAME_STAGE_STARTED_FIRST_HYPOTHESIS = 4.1;
-	var GAME_STAGE_LEARNED_SPEEDER = exports.GAME_STAGE_LEARNED_SPEEDER = 5; // month passed
-	var GAME_STAGE_TESTED_FIRST_HYPOTHESIS = exports.GAME_STAGE_TESTED_FIRST_HYPOTHESIS = 6;
-	var GAME_STAGE_IMPROVED_FIRST_FEATURE = exports.GAME_STAGE_IMPROVED_FIRST_FEATURE = 7;
-	var GAME_STAGE_GOT_RATING_SEVEN_PLUS = exports.GAME_STAGE_GOT_RATING_SEVEN_PLUS = 8; // MONETISATION
-	var GAME_STAGE_PAYMENTS_INSTALLED = exports.GAME_STAGE_PAYMENTS_INSTALLED = 9; // MONETISATION
+	exports.default = {
+	  log: console.log,
+	  debug: console.log,
+	  error: console.error,
+	  shit: function shit(text) {
+	    // console.log(`GOVNOKOD: ${text}`);
+	    // console.trace();
+	    // console.log('-----------');
+	  },
+	  actions: function actions(sessionId, userId, action) {}
+
+	};
 
 /***/ },
-/* 109 */
+/* 101 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var JOB_MOTIVATION_BUSINESS_OWNER = exports.JOB_MOTIVATION_BUSINESS_OWNER = 'JOB_MOTIVATION_BUSINESS_OWNER';
-	var JOB_MOTIVATION_IDEA_FAN = exports.JOB_MOTIVATION_IDEA_FAN = 'JOB_MOTIVATION_IDEA_FAN';
-	var JOB_MOTIVATION_SALARY = exports.JOB_MOTIVATION_SALARY = 'JOB_MOTIVATION_SALARY';
-	var JOB_MOTIVATION_PERCENTAGE = exports.JOB_MOTIVATION_PERCENTAGE = 'JOB_MOTIVATION_PERCENTAGE';
 
-	var JOB_TASK_PROGRAMMER_POINTS = exports.JOB_TASK_PROGRAMMER_POINTS = 'JOB_TASK_PROGRAMMER_POINTS';
-	var JOB_TASK_MARKETING_POINTS = exports.JOB_TASK_MARKETING_POINTS = 'JOB_TASK_MARKETING_POINTS';
-
-	var PROFESSION_PROGRAMMER = exports.PROFESSION_PROGRAMMER = 'PROFESSION_PROGRAMMER';
-	var PROFESSION_MARKETER = exports.PROFESSION_MARKETER = 'PROFESSION_MARKETER';
-	var PROFESSION_DESIGNER = exports.PROFESSION_DESIGNER = 'PROFESSION_DESIGNER';
-	var PROFESSION_ANALYST = exports.PROFESSION_ANALYST = 'PROFESSION_ANALYST';
-
-	var PRICE_OF_ONE_MP = exports.PRICE_OF_ONE_MP = 30;
-	var PRICE_OF_ONE_PP = exports.PRICE_OF_ONE_PP = 30;
+	exports.default = function (value) {
+	  return Math.ceil(value * 100) / 100;
+	};
 
 /***/ },
-/* 110 */
+/* 102 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2980,7 +4463,7 @@
 	var IDEA_WEB_HOSTING = exports.IDEA_WEB_HOSTING = 'IDEA_WEB_HOSTING';
 
 /***/ },
-/* 111 */
+/* 103 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2993,7 +4476,7 @@
 	var PRODUCT_STAGE_NORMAL = exports.PRODUCT_STAGE_NORMAL = 'PRODUCT_STAGE_NORMAL';
 
 /***/ },
-/* 112 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3001,12 +4484,13 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.__useDefault = undefined;
 
-	var _log = __webpack_require__(113);
+	var _log = __webpack_require__(105);
 
 	var _log2 = _interopRequireDefault(_log);
 
-	var _assign = __webpack_require__(116);
+	var _assign = __webpack_require__(108);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -3018,47 +4502,39 @@
 
 	var _createClass3 = _interopRequireDefault(_createClass2);
 
-	var _productDescriptions = __webpack_require__(120);
+	var _productDescriptions = __webpack_require__(112);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _random = __webpack_require__(135);
+	var _random = __webpack_require__(140);
 
 	var _random2 = _interopRequireDefault(_random);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _percentify = __webpack_require__(136);
+	var _percentify = __webpack_require__(141);
 
 	var _percentify2 = _interopRequireDefault(_percentify);
 
-	var _computeRating = __webpack_require__(137);
+	var _computeRating = __webpack_require__(142);
 
 	var _computeRating2 = _interopRequireDefault(_computeRating);
 
-	var _productStages = __webpack_require__(111);
-
-	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
-
-	var _computeCompanyCost = __webpack_require__(138);
+	var _computeCompanyCost = __webpack_require__(143);
 
 	var _computeCompanyCost2 = _interopRequireDefault(_computeCompanyCost);
 
-	var _companyMerger = __webpack_require__(139);
-
-	var _companyMerger2 = _interopRequireDefault(_companyMerger);
-
-	var _balance = __webpack_require__(140);
+	var _balance = __webpack_require__(145);
 
 	var balance = _interopRequireWildcard(_balance);
 
-	var _round = __webpack_require__(141);
+	var _round = __webpack_require__(101);
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _mapper = __webpack_require__(142);
+	var _mapper = __webpack_require__(146);
 
 	var _mapper2 = _interopRequireDefault(_mapper);
 
@@ -3069,14 +4545,35 @@
 	var names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
 
 	var Product = function () {
-	  function Product(_ref) {
-	    var idea = _ref.idea,
-	        name = _ref.name,
-	        isCompetitor = _ref.isCompetitor,
-	        defaultFeatures = _ref.defaultFeatures;
+	  function Product(data, createFromObject) {
 	    (0, _classCallCheck3.default)(this, Product);
 
-	    // this.isCompetitor = isCompetitor;
+	    if (createFromObject) {
+	      _logger2.default.debug('createFrom Object Product.js', data);
+
+	      this.features = data.features;
+	      this.featuresOnCreate = data.featuresOnCreate;
+	      this.KPI = data.KPI;
+	      this.idea = data.idea;
+	      this.name = data.name;
+
+	      this.XP = data.XP;
+
+	      this.tests = data.tests;
+	      this.improvements = data.improvements;
+
+	      this.owner = data.owner;
+
+	      this.defaultFeatures = data.defaultFeatures;
+
+	      return;
+	    }
+
+	    var idea = data.idea,
+	        name = data.name,
+	        isCompetitor = data.isCompetitor,
+	        defaultFeatures = data.defaultFeatures;
+
 
 	    if (!idea) throw 'no idea in classes/Product.js';
 
@@ -4251,22 +5748,23 @@
 	}();
 
 	exports.default = Product;
+	var __useDefault = exports.__useDefault = true;
 
 /***/ },
-/* 113 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(114), __esModule: true };
+	module.exports = { "default": __webpack_require__(106), __esModule: true };
 
 /***/ },
-/* 114 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(115);
+	__webpack_require__(107);
 	module.exports = __webpack_require__(16).Math.log10;
 
 /***/ },
-/* 115 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 20.2.2.21 Math.log10(x)
@@ -4279,29 +5777,29 @@
 	});
 
 /***/ },
-/* 116 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(117), __esModule: true };
+	module.exports = { "default": __webpack_require__(109), __esModule: true };
 
 /***/ },
-/* 117 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(118);
+	__webpack_require__(110);
 	module.exports = __webpack_require__(16).Object.assign;
 
 /***/ },
-/* 118 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.3.1 Object.assign(target, source)
 	var $export = __webpack_require__(15);
 
-	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(119)});
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(111)});
 
 /***/ },
-/* 119 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4339,7 +5837,7 @@
 	} : $assign;
 
 /***/ },
-/* 120 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4359,15 +5857,15 @@
 	  }
 	};
 
-	var _ideas = __webpack_require__(110);
+	var _ideas = __webpack_require__(102);
 
 	var IDEAS = _interopRequireWildcard(_ideas);
 
-	var _WEBSTUDIO = __webpack_require__(121);
+	var _WEBSTUDIO = __webpack_require__(113);
 
 	var _WEBSTUDIO2 = _interopRequireDefault(_WEBSTUDIO);
 
-	var _WEBHOSTING = __webpack_require__(122);
+	var _WEBHOSTING = __webpack_require__(114);
 
 	var _WEBHOSTING2 = _interopRequireDefault(_WEBHOSTING);
 
@@ -4378,7 +5876,7 @@
 	;
 
 /***/ },
-/* 121 */
+/* 113 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4401,32 +5899,23 @@
 	};
 
 /***/ },
-/* 122 */
-/***/ function(module, exports, __webpack_require__) {
+/* 114 */
+/***/ function(module, exports) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _scheduleStore = __webpack_require__(123);
-
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	// import scheduleStore from '../../stores/schedule-store';
 
 	var timeModifier = function timeModifier(value) {
 	  return value;
-
-	  var day = _scheduleStore2.default.getDay();
-	  var year = Math.floor(day / 30 / 12);
-
-	  return Math.floor(Math.pow(1.2, year) * value);
 	};
 
 	var marketModifier = function marketModifier() {
-	  var day = _scheduleStore2.default.getDay();
+	  return 1;
+	  var day = scheduleStore.getDay();
 	  var month = Math.ceil(day / 30);
 
 	  if (month > 144) {
@@ -4541,7 +6030,7 @@
 	};
 
 /***/ },
-/* 123 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4550,7 +6039,7 @@
 	  value: true
 	});
 
-	var _assign = __webpack_require__(116);
+	var _assign = __webpack_require__(108);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -4574,35 +6063,35 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _events = __webpack_require__(124);
+	var _events = __webpack_require__(92);
 
-	var _dispatcher = __webpack_require__(125);
+	var _dispatcher = __webpack_require__(93);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _scheduleActions = __webpack_require__(130);
+	var _scheduleActions = __webpack_require__(116);
 
 	var c = _interopRequireWildcard(_scheduleActions);
 
-	var _payloads = __webpack_require__(131);
+	var _payloads = __webpack_require__(99);
 
 	var _payloads2 = _interopRequireDefault(_payloads);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _gameStages = __webpack_require__(108);
+	var _gameStages = __webpack_require__(117);
 
 	var GAME_STAGES = _interopRequireWildcard(_gameStages);
 
-	var _workSpeed = __webpack_require__(133);
+	var _workSpeed = __webpack_require__(118);
 
-	var _sessionManager = __webpack_require__(89);
+	var _sessionManager = __webpack_require__(119);
 
 	var _sessionManager2 = _interopRequireDefault(_sessionManager);
 
-	var _stats = __webpack_require__(134);
+	var _stats = __webpack_require__(139);
 
 	var _stats2 = _interopRequireDefault(_stats);
 
@@ -4627,9 +6116,6 @@
 	  _day = day;
 	  _gamePhase = gamePhase;
 	};
-
-	// logger.debug('sch store', sessionManager);
-	// logger.debug('sch store loaded');
 
 	initialize(_sessionManager2.default.getScheduleStorageData());
 
@@ -4806,829 +6292,7 @@
 	exports.default = store;
 
 /***/ },
-/* 124 */
-/***/ function(module, exports) {
-
-	// Copyright Joyent, Inc. and other Node contributors.
-	//
-	// Permission is hereby granted, free of charge, to any person obtaining a
-	// copy of this software and associated documentation files (the
-	// "Software"), to deal in the Software without restriction, including
-	// without limitation the rights to use, copy, modify, merge, publish,
-	// distribute, sublicense, and/or sell copies of the Software, and to permit
-	// persons to whom the Software is furnished to do so, subject to the
-	// following conditions:
-	//
-	// The above copyright notice and this permission notice shall be included
-	// in all copies or substantial portions of the Software.
-	//
-	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-	// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-	// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-	// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-	// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-	function EventEmitter() {
-	  this._events = this._events || {};
-	  this._maxListeners = this._maxListeners || undefined;
-	}
-	module.exports = EventEmitter;
-
-	// Backwards-compat with node 0.10.x
-	EventEmitter.EventEmitter = EventEmitter;
-
-	EventEmitter.prototype._events = undefined;
-	EventEmitter.prototype._maxListeners = undefined;
-
-	// By default EventEmitters will print a warning if more than 10 listeners are
-	// added to it. This is a useful default which helps finding memory leaks.
-	EventEmitter.defaultMaxListeners = 10;
-
-	// Obviously not all Emitters should be limited to 10. This function allows
-	// that to be increased. Set to zero for unlimited.
-	EventEmitter.prototype.setMaxListeners = function(n) {
-	  if (!isNumber(n) || n < 0 || isNaN(n))
-	    throw TypeError('n must be a positive number');
-	  this._maxListeners = n;
-	  return this;
-	};
-
-	EventEmitter.prototype.emit = function(type) {
-	  var er, handler, len, args, i, listeners;
-
-	  if (!this._events)
-	    this._events = {};
-
-	  // If there is no 'error' event listener then throw.
-	  if (type === 'error') {
-	    if (!this._events.error ||
-	        (isObject(this._events.error) && !this._events.error.length)) {
-	      er = arguments[1];
-	      if (er instanceof Error) {
-	        throw er; // Unhandled 'error' event
-	      } else {
-	        // At least give some kind of context to the user
-	        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
-	        err.context = er;
-	        throw err;
-	      }
-	    }
-	  }
-
-	  handler = this._events[type];
-
-	  if (isUndefined(handler))
-	    return false;
-
-	  if (isFunction(handler)) {
-	    switch (arguments.length) {
-	      // fast cases
-	      case 1:
-	        handler.call(this);
-	        break;
-	      case 2:
-	        handler.call(this, arguments[1]);
-	        break;
-	      case 3:
-	        handler.call(this, arguments[1], arguments[2]);
-	        break;
-	      // slower
-	      default:
-	        args = Array.prototype.slice.call(arguments, 1);
-	        handler.apply(this, args);
-	    }
-	  } else if (isObject(handler)) {
-	    args = Array.prototype.slice.call(arguments, 1);
-	    listeners = handler.slice();
-	    len = listeners.length;
-	    for (i = 0; i < len; i++)
-	      listeners[i].apply(this, args);
-	  }
-
-	  return true;
-	};
-
-	EventEmitter.prototype.addListener = function(type, listener) {
-	  var m;
-
-	  if (!isFunction(listener))
-	    throw TypeError('listener must be a function');
-
-	  if (!this._events)
-	    this._events = {};
-
-	  // To avoid recursion in the case that type === "newListener"! Before
-	  // adding it to the listeners, first emit "newListener".
-	  if (this._events.newListener)
-	    this.emit('newListener', type,
-	              isFunction(listener.listener) ?
-	              listener.listener : listener);
-
-	  if (!this._events[type])
-	    // Optimize the case of one listener. Don't need the extra array object.
-	    this._events[type] = listener;
-	  else if (isObject(this._events[type]))
-	    // If we've already got an array, just append.
-	    this._events[type].push(listener);
-	  else
-	    // Adding the second element, need to change to array.
-	    this._events[type] = [this._events[type], listener];
-
-	  // Check for listener leak
-	  if (isObject(this._events[type]) && !this._events[type].warned) {
-	    if (!isUndefined(this._maxListeners)) {
-	      m = this._maxListeners;
-	    } else {
-	      m = EventEmitter.defaultMaxListeners;
-	    }
-
-	    if (m && m > 0 && this._events[type].length > m) {
-	      this._events[type].warned = true;
-	      console.error('(node) warning: possible EventEmitter memory ' +
-	                    'leak detected. %d listeners added. ' +
-	                    'Use emitter.setMaxListeners() to increase limit.',
-	                    this._events[type].length);
-	      if (typeof console.trace === 'function') {
-	        // not supported in IE 10
-	        console.trace();
-	      }
-	    }
-	  }
-
-	  return this;
-	};
-
-	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-	EventEmitter.prototype.once = function(type, listener) {
-	  if (!isFunction(listener))
-	    throw TypeError('listener must be a function');
-
-	  var fired = false;
-
-	  function g() {
-	    this.removeListener(type, g);
-
-	    if (!fired) {
-	      fired = true;
-	      listener.apply(this, arguments);
-	    }
-	  }
-
-	  g.listener = listener;
-	  this.on(type, g);
-
-	  return this;
-	};
-
-	// emits a 'removeListener' event iff the listener was removed
-	EventEmitter.prototype.removeListener = function(type, listener) {
-	  var list, position, length, i;
-
-	  if (!isFunction(listener))
-	    throw TypeError('listener must be a function');
-
-	  if (!this._events || !this._events[type])
-	    return this;
-
-	  list = this._events[type];
-	  length = list.length;
-	  position = -1;
-
-	  if (list === listener ||
-	      (isFunction(list.listener) && list.listener === listener)) {
-	    delete this._events[type];
-	    if (this._events.removeListener)
-	      this.emit('removeListener', type, listener);
-
-	  } else if (isObject(list)) {
-	    for (i = length; i-- > 0;) {
-	      if (list[i] === listener ||
-	          (list[i].listener && list[i].listener === listener)) {
-	        position = i;
-	        break;
-	      }
-	    }
-
-	    if (position < 0)
-	      return this;
-
-	    if (list.length === 1) {
-	      list.length = 0;
-	      delete this._events[type];
-	    } else {
-	      list.splice(position, 1);
-	    }
-
-	    if (this._events.removeListener)
-	      this.emit('removeListener', type, listener);
-	  }
-
-	  return this;
-	};
-
-	EventEmitter.prototype.removeAllListeners = function(type) {
-	  var key, listeners;
-
-	  if (!this._events)
-	    return this;
-
-	  // not listening for removeListener, no need to emit
-	  if (!this._events.removeListener) {
-	    if (arguments.length === 0)
-	      this._events = {};
-	    else if (this._events[type])
-	      delete this._events[type];
-	    return this;
-	  }
-
-	  // emit removeListener for all listeners on all events
-	  if (arguments.length === 0) {
-	    for (key in this._events) {
-	      if (key === 'removeListener') continue;
-	      this.removeAllListeners(key);
-	    }
-	    this.removeAllListeners('removeListener');
-	    this._events = {};
-	    return this;
-	  }
-
-	  listeners = this._events[type];
-
-	  if (isFunction(listeners)) {
-	    this.removeListener(type, listeners);
-	  } else if (listeners) {
-	    // LIFO order
-	    while (listeners.length)
-	      this.removeListener(type, listeners[listeners.length - 1]);
-	  }
-	  delete this._events[type];
-
-	  return this;
-	};
-
-	EventEmitter.prototype.listeners = function(type) {
-	  var ret;
-	  if (!this._events || !this._events[type])
-	    ret = [];
-	  else if (isFunction(this._events[type]))
-	    ret = [this._events[type]];
-	  else
-	    ret = this._events[type].slice();
-	  return ret;
-	};
-
-	EventEmitter.prototype.listenerCount = function(type) {
-	  if (this._events) {
-	    var evlistener = this._events[type];
-
-	    if (isFunction(evlistener))
-	      return 1;
-	    else if (evlistener)
-	      return evlistener.length;
-	  }
-	  return 0;
-	};
-
-	EventEmitter.listenerCount = function(emitter, type) {
-	  return emitter.listenerCount(type);
-	};
-
-	function isFunction(arg) {
-	  return typeof arg === 'function';
-	}
-
-	function isNumber(arg) {
-	  return typeof arg === 'number';
-	}
-
-	function isObject(arg) {
-	  return typeof arg === 'object' && arg !== null;
-	}
-
-	function isUndefined(arg) {
-	  return arg === void 0;
-	}
-
-
-/***/ },
-/* 125 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _flux = __webpack_require__(126);
-
-	exports.default = new _flux.Dispatcher();
-
-/***/ },
-/* 126 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright (c) 2014-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 */
-
-	module.exports.Dispatcher = __webpack_require__(127);
-
-
-/***/ },
-/* 127 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright (c) 2014-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule Dispatcher
-	 * 
-	 * @preventMunge
-	 */
-
-	'use strict';
-
-	exports.__esModule = true;
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var invariant = __webpack_require__(129);
-
-	var _prefix = 'ID_';
-
-	/**
-	 * Dispatcher is used to broadcast payloads to registered callbacks. This is
-	 * different from generic pub-sub systems in two ways:
-	 *
-	 *   1) Callbacks are not subscribed to particular events. Every payload is
-	 *      dispatched to every registered callback.
-	 *   2) Callbacks can be deferred in whole or part until other callbacks have
-	 *      been executed.
-	 *
-	 * For example, consider this hypothetical flight destination form, which
-	 * selects a default city when a country is selected:
-	 *
-	 *   var flightDispatcher = new Dispatcher();
-	 *
-	 *   // Keeps track of which country is selected
-	 *   var CountryStore = {country: null};
-	 *
-	 *   // Keeps track of which city is selected
-	 *   var CityStore = {city: null};
-	 *
-	 *   // Keeps track of the base flight price of the selected city
-	 *   var FlightPriceStore = {price: null}
-	 *
-	 * When a user changes the selected city, we dispatch the payload:
-	 *
-	 *   flightDispatcher.dispatch({
-	 *     actionType: 'city-update',
-	 *     selectedCity: 'paris'
-	 *   });
-	 *
-	 * This payload is digested by `CityStore`:
-	 *
-	 *   flightDispatcher.register(function(payload) {
-	 *     if (payload.actionType === 'city-update') {
-	 *       CityStore.city = payload.selectedCity;
-	 *     }
-	 *   });
-	 *
-	 * When the user selects a country, we dispatch the payload:
-	 *
-	 *   flightDispatcher.dispatch({
-	 *     actionType: 'country-update',
-	 *     selectedCountry: 'australia'
-	 *   });
-	 *
-	 * This payload is digested by both stores:
-	 *
-	 *   CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
-	 *     if (payload.actionType === 'country-update') {
-	 *       CountryStore.country = payload.selectedCountry;
-	 *     }
-	 *   });
-	 *
-	 * When the callback to update `CountryStore` is registered, we save a reference
-	 * to the returned token. Using this token with `waitFor()`, we can guarantee
-	 * that `CountryStore` is updated before the callback that updates `CityStore`
-	 * needs to query its data.
-	 *
-	 *   CityStore.dispatchToken = flightDispatcher.register(function(payload) {
-	 *     if (payload.actionType === 'country-update') {
-	 *       // `CountryStore.country` may not be updated.
-	 *       flightDispatcher.waitFor([CountryStore.dispatchToken]);
-	 *       // `CountryStore.country` is now guaranteed to be updated.
-	 *
-	 *       // Select the default city for the new country
-	 *       CityStore.city = getDefaultCityForCountry(CountryStore.country);
-	 *     }
-	 *   });
-	 *
-	 * The usage of `waitFor()` can be chained, for example:
-	 *
-	 *   FlightPriceStore.dispatchToken =
-	 *     flightDispatcher.register(function(payload) {
-	 *       switch (payload.actionType) {
-	 *         case 'country-update':
-	 *         case 'city-update':
-	 *           flightDispatcher.waitFor([CityStore.dispatchToken]);
-	 *           FlightPriceStore.price =
-	 *             getFlightPriceStore(CountryStore.country, CityStore.city);
-	 *           break;
-	 *     }
-	 *   });
-	 *
-	 * The `country-update` payload will be guaranteed to invoke the stores'
-	 * registered callbacks in order: `CountryStore`, `CityStore`, then
-	 * `FlightPriceStore`.
-	 */
-
-	var Dispatcher = (function () {
-	  function Dispatcher() {
-	    _classCallCheck(this, Dispatcher);
-
-	    this._callbacks = {};
-	    this._isDispatching = false;
-	    this._isHandled = {};
-	    this._isPending = {};
-	    this._lastID = 1;
-	  }
-
-	  /**
-	   * Registers a callback to be invoked with every dispatched payload. Returns
-	   * a token that can be used with `waitFor()`.
-	   */
-
-	  Dispatcher.prototype.register = function register(callback) {
-	    var id = _prefix + this._lastID++;
-	    this._callbacks[id] = callback;
-	    return id;
-	  };
-
-	  /**
-	   * Removes a callback based on its token.
-	   */
-
-	  Dispatcher.prototype.unregister = function unregister(id) {
-	    !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.unregister(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
-	    delete this._callbacks[id];
-	  };
-
-	  /**
-	   * Waits for the callbacks specified to be invoked before continuing execution
-	   * of the current callback. This method should only be used by a callback in
-	   * response to a dispatched payload.
-	   */
-
-	  Dispatcher.prototype.waitFor = function waitFor(ids) {
-	    !this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Must be invoked while dispatching.') : invariant(false) : undefined;
-	    for (var ii = 0; ii < ids.length; ii++) {
-	      var id = ids[ii];
-	      if (this._isPending[id]) {
-	        !this._isHandled[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): Circular dependency detected while ' + 'waiting for `%s`.', id) : invariant(false) : undefined;
-	        continue;
-	      }
-	      !this._callbacks[id] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatcher.waitFor(...): `%s` does not map to a registered callback.', id) : invariant(false) : undefined;
-	      this._invokeCallback(id);
-	    }
-	  };
-
-	  /**
-	   * Dispatches a payload to all registered callbacks.
-	   */
-
-	  Dispatcher.prototype.dispatch = function dispatch(payload) {
-	    !!this._isDispatching ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.') : invariant(false) : undefined;
-	    this._startDispatching(payload);
-	    try {
-	      for (var id in this._callbacks) {
-	        if (this._isPending[id]) {
-	          continue;
-	        }
-	        this._invokeCallback(id);
-	      }
-	    } finally {
-	      this._stopDispatching();
-	    }
-	  };
-
-	  /**
-	   * Is this Dispatcher currently dispatching.
-	   */
-
-	  Dispatcher.prototype.isDispatching = function isDispatching() {
-	    return this._isDispatching;
-	  };
-
-	  /**
-	   * Call the callback stored with the given id. Also do some internal
-	   * bookkeeping.
-	   *
-	   * @internal
-	   */
-
-	  Dispatcher.prototype._invokeCallback = function _invokeCallback(id) {
-	    this._isPending[id] = true;
-	    this._callbacks[id](this._pendingPayload);
-	    this._isHandled[id] = true;
-	  };
-
-	  /**
-	   * Set up bookkeeping needed when dispatching.
-	   *
-	   * @internal
-	   */
-
-	  Dispatcher.prototype._startDispatching = function _startDispatching(payload) {
-	    for (var id in this._callbacks) {
-	      this._isPending[id] = false;
-	      this._isHandled[id] = false;
-	    }
-	    this._pendingPayload = payload;
-	    this._isDispatching = true;
-	  };
-
-	  /**
-	   * Clear bookkeeping used for dispatching.
-	   *
-	   * @internal
-	   */
-
-	  Dispatcher.prototype._stopDispatching = function _stopDispatching() {
-	    delete this._pendingPayload;
-	    this._isDispatching = false;
-	  };
-
-	  return Dispatcher;
-	})();
-
-	module.exports = Dispatcher;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(128)))
-
-/***/ },
-/* 128 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-	var process = module.exports = {};
-
-	// cached from whatever global is present so that test runners that stub it
-	// don't break things.  But we need to wrap it in a try catch in case it is
-	// wrapped in strict mode code which doesn't define any globals.  It's inside a
-	// function because try/catches deoptimize in certain engines.
-
-	var cachedSetTimeout;
-	var cachedClearTimeout;
-
-	function defaultSetTimout() {
-	    throw new Error('setTimeout has not been defined');
-	}
-	function defaultClearTimeout () {
-	    throw new Error('clearTimeout has not been defined');
-	}
-	(function () {
-	    try {
-	        if (typeof setTimeout === 'function') {
-	            cachedSetTimeout = setTimeout;
-	        } else {
-	            cachedSetTimeout = defaultSetTimout;
-	        }
-	    } catch (e) {
-	        cachedSetTimeout = defaultSetTimout;
-	    }
-	    try {
-	        if (typeof clearTimeout === 'function') {
-	            cachedClearTimeout = clearTimeout;
-	        } else {
-	            cachedClearTimeout = defaultClearTimeout;
-	        }
-	    } catch (e) {
-	        cachedClearTimeout = defaultClearTimeout;
-	    }
-	} ())
-	function runTimeout(fun) {
-	    if (cachedSetTimeout === setTimeout) {
-	        //normal enviroments in sane situations
-	        return setTimeout(fun, 0);
-	    }
-	    // if setTimeout wasn't available but was latter defined
-	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-	        cachedSetTimeout = setTimeout;
-	        return setTimeout(fun, 0);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedSetTimeout(fun, 0);
-	    } catch(e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-	            return cachedSetTimeout.call(null, fun, 0);
-	        } catch(e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-	            return cachedSetTimeout.call(this, fun, 0);
-	        }
-	    }
-
-
-	}
-	function runClearTimeout(marker) {
-	    if (cachedClearTimeout === clearTimeout) {
-	        //normal enviroments in sane situations
-	        return clearTimeout(marker);
-	    }
-	    // if clearTimeout wasn't available but was latter defined
-	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-	        cachedClearTimeout = clearTimeout;
-	        return clearTimeout(marker);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedClearTimeout(marker);
-	    } catch (e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-	            return cachedClearTimeout.call(null, marker);
-	        } catch (e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-	            return cachedClearTimeout.call(this, marker);
-	        }
-	    }
-
-
-
-	}
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-
-	function cleanUpNextTick() {
-	    if (!draining || !currentQueue) {
-	        return;
-	    }
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = runTimeout(cleanUpNextTick);
-	    draining = true;
-
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    runClearTimeout(timeout);
-	}
-
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        runTimeout(drainQueue);
-	    }
-	};
-
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ },
-/* 129 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	/**
-	 * Use invariant() to assert state which your program assumes to be true.
-	 *
-	 * Provide sprintf-style format (only %s is supported) and arguments
-	 * to provide information about what broke and what you were
-	 * expecting.
-	 *
-	 * The invariant message will be stripped in production, but the invariant
-	 * will remain to ensure logic does not differ in production.
-	 */
-
-	var validateFormat = function validateFormat(format) {};
-
-	if (process.env.NODE_ENV !== 'production') {
-	  validateFormat = function validateFormat(format) {
-	    if (format === undefined) {
-	      throw new Error('invariant requires an error message argument');
-	    }
-	  };
-	}
-
-	function invariant(condition, format, a, b, c, d, e, f) {
-	  validateFormat(format);
-
-	  if (!condition) {
-	    var error;
-	    if (format === undefined) {
-	      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
-	    } else {
-	      var args = [a, b, c, d, e, f];
-	      var argIndex = 0;
-	      error = new Error(format.replace(/%s/g, function () {
-	        return args[argIndex++];
-	      }));
-	      error.name = 'Invariant Violation';
-	    }
-
-	    error.framesToPop = 1; // we don't care about invariant's own frame
-	    throw error;
-	  }
-	}
-
-	module.exports = invariant;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(128)))
-
-/***/ },
-/* 130 */
+/* 116 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5644,52 +6308,7 @@
 	var SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = exports.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS = 'SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS';
 
 /***/ },
-/* 131 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = {
-	  productStorePayload: {
-	    name: 'productStorePayload',
-	    type: {
-	      type: String,
-	      id: Number, // product id
-	      featureGroup: String,
-	      featureName: String,
-	      value: Number
-	    }
-	  },
-	  scheduleStorePayload: {
-	    name: 'scheduleStorePayload',
-	    type: {
-	      type: String,
-	      task: Object,
-	      id: Number
-	    }
-	  },
-
-	  playerStorePayload: {
-	    name: 'playerStorePayload',
-	    type: {
-	      type: String,
-	      amount: Number
-	    }
-	  },
-	  messageStorePayload: {
-	    name: 'messageStorePayload',
-	    type: {
-	      type: String,
-	      amount: Number
-	    }
-	  }
-	};
-
-/***/ },
-/* 132 */
+/* 117 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5697,21 +6316,20 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = {
-	  log: console.log,
-	  debug: console.log,
-	  error: console.error,
-	  shit: function shit(text) {
-	    // console.log(`GOVNOKOD: ${text}`);
-	    // console.trace();
-	    // console.log('-----------');
-	  },
-	  actions: function actions(sessionId, userId, action) {}
-
-	};
+	var GAME_STAGE_INIT = exports.GAME_STAGE_INIT = 0;
+	var GAME_STAGE_GAME_STARTED = exports.GAME_STAGE_GAME_STARTED = 1;
+	var GAME_STAGE_HIRED_FIRST_WORKER = exports.GAME_STAGE_HIRED_FIRST_WORKER = 2;
+	var GAME_STAGE_INVITED_FIRST_CLIENTS = exports.GAME_STAGE_INVITED_FIRST_CLIENTS = 3;
+	var GAME_STAGE_IMPROVED_ANALYTICS = exports.GAME_STAGE_IMPROVED_ANALYTICS = 4;
+	var GAME_STAGE_STARTED_FIRST_HYPOTHESIS = exports.GAME_STAGE_STARTED_FIRST_HYPOTHESIS = 4.1;
+	var GAME_STAGE_LEARNED_SPEEDER = exports.GAME_STAGE_LEARNED_SPEEDER = 5; // month passed
+	var GAME_STAGE_TESTED_FIRST_HYPOTHESIS = exports.GAME_STAGE_TESTED_FIRST_HYPOTHESIS = 6;
+	var GAME_STAGE_IMPROVED_FIRST_FEATURE = exports.GAME_STAGE_IMPROVED_FIRST_FEATURE = 7;
+	var GAME_STAGE_GOT_RATING_SEVEN_PLUS = exports.GAME_STAGE_GOT_RATING_SEVEN_PLUS = 8; // MONETISATION
+	var GAME_STAGE_PAYMENTS_INSTALLED = exports.GAME_STAGE_PAYMENTS_INSTALLED = 9; // MONETISATION
 
 /***/ },
-/* 133 */
+/* 118 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5724,7 +6342,708 @@
 	var WORK_SPEED_HAS_MAIN_JOB = exports.WORK_SPEED_HAS_MAIN_JOB = 3;
 
 /***/ },
+/* 119 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _from = __webpack_require__(120);
+
+	var _from2 = _interopRequireDefault(_from);
+
+	var _parseInt = __webpack_require__(129);
+
+	var _parseInt2 = _interopRequireDefault(_parseInt);
+
+	var _Product = __webpack_require__(104);
+
+	var _Product2 = _interopRequireDefault(_Product);
+
+	var _productDescriptions = __webpack_require__(112);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	var _sessionStorage = __webpack_require__(135);
+
+	var _sessionStorage2 = _interopRequireDefault(_sessionStorage);
+
+	var _gameStages = __webpack_require__(117);
+
+	var GAME_STAGES = _interopRequireWildcard(_gameStages);
+
+	var _job = __webpack_require__(138);
+
+	var JOB = _interopRequireWildcard(_job);
+
+	var _ideas = __webpack_require__(102);
+
+	var IDEAS = _interopRequireWildcard(_ideas);
+
+	var _productStages = __webpack_require__(103);
+
+	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function saveToStorage(name, value) {
+	  _sessionStorage2.default.saveInStorage(name, value);
+	}
+
+	function setDefaultValues() {
+	  // schedule
+	  _sessionStorage2.default.saveInStorage('tasks', []);
+	  _sessionStorage2.default.saveInStorage('day', 1);
+	  _sessionStorage2.default.saveInStorage('gamePhase', GAME_STAGES.GAME_STAGE_INIT);
+
+	  // player
+	  _sessionStorage2.default.saveInStorage('skills', {});
+	  _sessionStorage2.default.saveInStorage('money', 1000);
+	  _sessionStorage2.default.saveInStorage('expenses', []);
+	  _sessionStorage2.default.saveInStorage('points', {
+	    programming: 5300,
+	    marketing: 5200,
+	    analyst: 300
+	  });
+	  _sessionStorage2.default.saveInStorage('employees', [{
+	    name: 'Lynda',
+	    skills: {
+	      programming: 0,
+	      marketing: 500,
+	      analyst: 150
+	    },
+	    task: JOB.JOB_TASK_MARKETING_POINTS,
+	    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+	    salary: {
+	      money: 500,
+	      percent: 0,
+	      pricingType: 1
+	    }
+	  }, {
+	    name: 'Xavier',
+	    skills: {
+	      programming: 600,
+	      marketing: 100,
+	      analyst: 150
+	    },
+	    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+	    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+	    salary: {
+	      money: 700,
+	      percent: 0,
+	      pricingType: 1
+	    }
+	  }]);
+	  _sessionStorage2.default.saveInStorage('team', [{
+	    name: 'James',
+	    skills: {
+	      programming: 1000,
+	      marketing: 150,
+	      analyst: 300
+	    },
+	    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+	    jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
+	    salary: {
+	      percent: 100,
+	      money: 100,
+	      pricingType: 0
+	    },
+	    isPlayer: true
+	  }]);
+	  _sessionStorage2.default.saveInStorage('reputation', 0);
+	  _sessionStorage2.default.saveInStorage('fame', 0);
+	  _sessionStorage2.default.saveInStorage('loan', 0);
+	  _logger2.default.debug('saved tasks');
+	  //
+	  // products
+	  var product = new _Product2.default({
+	    idea: IDEAS.IDEA_WEB_HOSTING,
+	    name: 'WWWEB HOSTING',
+	    stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
+	    // defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features.map(f => f.data)
+	    defaultFeatures: [{
+	      name: 'scalability',
+	      influence: 0,
+	      description: '',
+	      shortDescription: 'Масштабируемость',
+	      data: 5000,
+	      time: 20,
+	      development: 70
+	    }, {
+	      name: 'website',
+	      influence: 1.5,
+	      description: '',
+	      shortDescription: 'Веб-сайт',
+	      data: 15000,
+	      time: 30,
+	      development: 30
+	    }, {
+	      name: 'support',
+	      influence: 1.5,
+	      description: '',
+	      shortDescription: 'Техподдержка',
+	      data: 5000,
+	      time: 30,
+	      development: 100
+	    }, {
+	      name: 'VPS',
+	      influence: 3,
+	      description: '',
+	      shortDescription: 'Виртуальная машина',
+	      data: 7000,
+	      time: 30,
+	      shareable: true,
+	      development: 75
+	    }, {
+	      name: 'VDS',
+	      influence: 0,
+	      description: '',
+	      shortDescription: 'Выделенный сервер',
+	      data: 15000,
+	      time: 30,
+	      shareable: true,
+	      development: 135
+	    }].map(function (f) {
+	      return f.data;
+	    })
+	  });
+
+	  _sessionStorage2.default.saveInStorage('products', [product]);
+	}
+
+	if (!_sessionStorage2.default.getFromStorage('sessionId')) {
+	  _sessionStorage2.default.saveInStorage('sessionId', 'asd');
+
+	  setDefaultValues();
+	}
+
+	function getFromStorage(name) {
+	  // setDefaultValues();
+
+	  // logger.log('pick from session-manager', name);
+	  return _sessionStorage2.default.getFromStorage(name);
+	}
+
+	function savePlayerStorageData(_ref) {
+	  var skills = _ref.skills,
+	      money = _ref.money,
+	      expenses = _ref.expenses,
+	      points = _ref.points,
+	      employees = _ref.employees,
+	      team = _ref.team,
+	      reputation = _ref.reputation,
+	      fame = _ref.fame,
+	      loan = _ref.loan;
+
+	  return {
+	    skills: saveToStorage('skills', skills),
+	    money: saveToStorage('money', money),
+	    expenses: saveToStorage('expenses', expenses),
+	    points: saveToStorage('points', points),
+	    employees: saveToStorage('employees', employees),
+	    team: saveToStorage('team', team),
+	    reputation: saveToStorage('reputation', reputation),
+	    fame: saveToStorage('fame', fame),
+	    loan: saveToStorage('loan', loan)
+	  };
+	}
+
+	function getPlayerStorageData() {
+	  var skills = JSON.parse(getFromStorage('skills'));
+	  var money = (0, _parseInt2.default)(getFromStorage('money'));
+	  var expenses = (0, _from2.default)(JSON.parse(getFromStorage('expenses')));
+	  var points = JSON.parse(getFromStorage('points'));
+	  var employees = (0, _from2.default)(JSON.parse(getFromStorage('employees')));
+
+	  var team = (0, _from2.default)(JSON.parse(getFromStorage('team')));
+	  var reputation = (0, _parseInt2.default)(getFromStorage('reputation'));
+	  var fame = (0, _parseInt2.default)(getFromStorage('fame'));
+	  var loan = (0, _parseInt2.default)(getFromStorage('loan'));
+
+	  return {
+	    skills: skills,
+	    money: money,
+	    expenses: expenses,
+	    points: points,
+	    employees: employees,
+	    team: team,
+	    reputation: reputation,
+	    fame: fame,
+	    loan: loan
+	  };
+	}
+
+	function getProductStorageData() {
+	  var data = getFromStorage('products');
+
+	  _logger2.default.debug('getProductStorageData', data);
+
+	  var products = (0, _from2.default)(JSON.parse(data));
+
+	  _logger2.default.debug('getProductStorageData', products);
+
+	  return products.map(function (p) {
+	    return new _Product2.default(p, true);
+	  });
+	}
+
+	function saveProductStorageData(_ref2) {
+	  var products = _ref2.products;
+
+	  return {
+	    products: saveToStorage('products', products)
+	  };
+	}
+
+	function getScheduleStorageData() {
+	  return {
+	    tasks: (0, _from2.default)(JSON.parse(getFromStorage('tasks'))),
+	    day: (0, _parseInt2.default)(getFromStorage('day')),
+	    gamePhase: (0, _parseInt2.default)(getFromStorage('gamePhase'))
+	  };
+	}
+
+	function saveScheduleStorageData(_ref3) {
+	  var tasks = _ref3.tasks,
+	      day = _ref3.day,
+	      gamePhase = _ref3.gamePhase;
+
+	  return {
+	    tasks: saveToStorage('tasks', tasks),
+	    day: saveToStorage('day', day),
+	    gamePhase: saveToStorage('gamePhase', gamePhase)
+	  };
+	}
+
+	function getMessageStorageData() {
+	  return getFromStorage('messages');
+	}
+
+	// logger.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
+
+	exports.default = {
+	  getPlayerStorageData: getPlayerStorageData,
+	  getProductStorageData: getProductStorageData,
+	  getScheduleStorageData: getScheduleStorageData,
+	  getMessageStorageData: getMessageStorageData,
+
+	  savePlayerStorageData: savePlayerStorageData,
+	  saveScheduleStorageData: saveScheduleStorageData,
+	  saveProductStorageData: saveProductStorageData
+	};
+
+/***/ },
+/* 120 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(121), __esModule: true };
+
+/***/ },
+/* 121 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(38);
+	__webpack_require__(122);
+	module.exports = __webpack_require__(16).Array.from;
+
+/***/ },
+/* 122 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var ctx            = __webpack_require__(17)
+	  , $export        = __webpack_require__(15)
+	  , toObject       = __webpack_require__(6)
+	  , call           = __webpack_require__(123)
+	  , isArrayIter    = __webpack_require__(124)
+	  , toLength       = __webpack_require__(54)
+	  , createProperty = __webpack_require__(125)
+	  , getIterFn      = __webpack_require__(126);
+
+	$export($export.S + $export.F * !__webpack_require__(128)(function(iter){ Array.from(iter); }), 'Array', {
+	  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
+	  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
+	    var O       = toObject(arrayLike)
+	      , C       = typeof this == 'function' ? this : Array
+	      , aLen    = arguments.length
+	      , mapfn   = aLen > 1 ? arguments[1] : undefined
+	      , mapping = mapfn !== undefined
+	      , index   = 0
+	      , iterFn  = getIterFn(O)
+	      , length, result, step, iterator;
+	    if(mapping)mapfn = ctx(mapfn, aLen > 2 ? arguments[2] : undefined, 2);
+	    // if object isn't iterable or it's array with default iterator - use simple case
+	    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
+	      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
+	        createProperty(result, index, mapping ? call(iterator, mapfn, [step.value, index], true) : step.value);
+	      }
+	    } else {
+	      length = toLength(O.length);
+	      for(result = new C(length); length > index; index++){
+	        createProperty(result, index, mapping ? mapfn(O[index], index) : O[index]);
+	      }
+	    }
+	    result.length = index;
+	    return result;
+	  }
+	});
+
+
+/***/ },
+/* 123 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// call something on iterator step with safe closing on error
+	var anObject = __webpack_require__(21);
+	module.exports = function(iterator, fn, value, entries){
+	  try {
+	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
+	  // 7.4.6 IteratorClose(iterator, completion)
+	  } catch(e){
+	    var ret = iterator['return'];
+	    if(ret !== undefined)anObject(ret.call(iterator));
+	    throw e;
+	  }
+	};
+
+/***/ },
+/* 124 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// check on default Array iterator
+	var Iterators  = __webpack_require__(44)
+	  , ITERATOR   = __webpack_require__(59)('iterator')
+	  , ArrayProto = Array.prototype;
+
+	module.exports = function(it){
+	  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
+	};
+
+/***/ },
+/* 125 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var $defineProperty = __webpack_require__(20)
+	  , createDesc      = __webpack_require__(28);
+
+	module.exports = function(object, index, value){
+	  if(index in object)$defineProperty.f(object, index, createDesc(0, value));
+	  else object[index] = value;
+	};
+
+/***/ },
+/* 126 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var classof   = __webpack_require__(127)
+	  , ITERATOR  = __webpack_require__(59)('iterator')
+	  , Iterators = __webpack_require__(44);
+	module.exports = __webpack_require__(16).getIteratorMethod = function(it){
+	  if(it != undefined)return it[ITERATOR]
+	    || it['@@iterator']
+	    || Iterators[classof(it)];
+	};
+
+/***/ },
+/* 127 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// getting tag from 19.1.3.6 Object.prototype.toString()
+	var cof = __webpack_require__(52)
+	  , TAG = __webpack_require__(59)('toStringTag')
+	  // ES3 wrong here
+	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
+
+	// fallback for IE11 Script Access Denied error
+	var tryGet = function(it, key){
+	  try {
+	    return it[key];
+	  } catch(e){ /* empty */ }
+	};
+
+	module.exports = function(it){
+	  var O, T, B;
+	  return it === undefined ? 'Undefined' : it === null ? 'Null'
+	    // @@toStringTag case
+	    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
+	    // builtinTag case
+	    : ARG ? cof(O)
+	    // ES3 arguments fallback
+	    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+	};
+
+/***/ },
+/* 128 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ITERATOR     = __webpack_require__(59)('iterator')
+	  , SAFE_CLOSING = false;
+
+	try {
+	  var riter = [7][ITERATOR]();
+	  riter['return'] = function(){ SAFE_CLOSING = true; };
+	  Array.from(riter, function(){ throw 2; });
+	} catch(e){ /* empty */ }
+
+	module.exports = function(exec, skipClosing){
+	  if(!skipClosing && !SAFE_CLOSING)return false;
+	  var safe = false;
+	  try {
+	    var arr  = [7]
+	      , iter = arr[ITERATOR]();
+	    iter.next = function(){ return {done: safe = true}; };
+	    arr[ITERATOR] = function(){ return iter; };
+	    exec(arr);
+	  } catch(e){ /* empty */ }
+	  return safe;
+	};
+
+/***/ },
+/* 129 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(130), __esModule: true };
+
+/***/ },
+/* 130 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(131);
+	module.exports = parseInt;
+
+/***/ },
+/* 131 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $export   = __webpack_require__(15)
+	  , $parseInt = __webpack_require__(132);
+	// 20.1.2.13 Number.parseInt(string, radix)
+	$export($export.S + $export.F * (Number.parseInt != $parseInt), 'Number', {parseInt: $parseInt});
+
+/***/ },
+/* 132 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $parseInt = __webpack_require__(12).parseInt
+	  , $trim     = __webpack_require__(133).trim
+	  , ws        = __webpack_require__(134)
+	  , hex       = /^[\-+]?0[xX]/;
+
+	module.exports = $parseInt(ws + '08') !== 8 || $parseInt(ws + '0x16') !== 22 ? function parseInt(str, radix){
+	  var string = $trim(String(str), 3);
+	  return $parseInt(string, (radix >>> 0) || (hex.test(string) ? 16 : 10));
+	} : $parseInt;
+
+/***/ },
+/* 133 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $export = __webpack_require__(15)
+	  , defined = __webpack_require__(7)
+	  , fails   = __webpack_require__(25)
+	  , spaces  = __webpack_require__(134)
+	  , space   = '[' + spaces + ']'
+	  , non     = '\u200b\u0085'
+	  , ltrim   = RegExp('^' + space + space + '*')
+	  , rtrim   = RegExp(space + space + '*$');
+
+	var exporter = function(KEY, exec, ALIAS){
+	  var exp   = {};
+	  var FORCE = fails(function(){
+	    return !!spaces[KEY]() || non[KEY]() != non;
+	  });
+	  var fn = exp[KEY] = FORCE ? exec(trim) : spaces[KEY];
+	  if(ALIAS)exp[ALIAS] = fn;
+	  $export($export.P + $export.F * FORCE, 'String', exp);
+	};
+
+	// 1 -> String#trimLeft
+	// 2 -> String#trimRight
+	// 3 -> String#trim
+	var trim = exporter.trim = function(string, TYPE){
+	  string = String(defined(string));
+	  if(TYPE & 1)string = string.replace(ltrim, '');
+	  if(TYPE & 2)string = string.replace(rtrim, '');
+	  return string;
+	};
+
+	module.exports = exporter;
+
+/***/ },
 /* 134 */
+/***/ function(module, exports) {
+
+	module.exports = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' +
+	  '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
+
+/***/ },
+/* 135 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _stringify = __webpack_require__(136);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
+
+	var _typeof2 = __webpack_require__(35);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function saveInStorage(field, data) {
+	  var item = data;
+	  if ((typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)) == 'object') {
+	    //console.log('object');
+	    item = (0, _stringify2.default)(data);
+	  }
+	  localStorage.setItem(field, item);
+	  //storage[field] = item;
+	}
+	function getFromStorage(field) {
+	  //return storage[field];
+	  return localStorage.getItem(field);
+	}
+
+	function getObject(arrName) {
+	  return JSON.parse(getFromStorage(arrName));
+	}
+
+	function setInObject(arrName, id, value) {
+	  var array = getObject(arrName);
+	  //prt(arrName, id, value);
+	  array[id] = value;
+	  saveInStorage(arrName, array);
+	}
+
+	function unsetFromObject(arrName, id) {
+	  var array = getObject(arrName);
+
+	  // console.log('was', array);
+
+	  delete array[id];
+
+	  // console.log('became', array);
+	  saveInStorage(arrName, array);
+	}
+
+	function clearStorage() {
+	  localStorage.clear();
+
+	  // saveInStorage('tournaments', []);
+	  // saveInStorage('addresses', {});
+	  // saveInStorage('money', 0);
+	}
+
+	//clearStorage();
+
+	// cookies
+	// возвращает cookie если есть или undefined
+	function getCookie(name) {
+	  var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+	  return matches ? decodeURIComponent(matches[1]) : undefined;
+	}
+
+	// уcтанавливает cookie
+	function setCookie(name, value, props) {
+	  props = props || {};
+	  var exp = props.expires;
+	  if (typeof exp == "number" && exp) {
+	    var d = new Date();
+	    d.setTime(d.getTime() + exp * 1000);
+	    exp = props.expires = d;
+	  }
+	  if (exp && exp.toUTCString) {
+	    props.expires = exp.toUTCString();
+	  }
+
+	  value = encodeURIComponent(value);
+	  var updatedCookie = name + "=" + value;
+	  for (var propName in props) {
+	    updatedCookie += "; " + propName;
+	    var propValue = props[propName];
+	    if (propValue !== true) {
+	      updatedCookie += "=" + propValue;
+	    }
+	  }
+	  document.cookie = updatedCookie;
+	}
+
+	// удаляет cookie
+	function deleteCookie(name) {
+	  setCookie(name, null, { expires: -1 });
+	}
+
+	exports.default = {
+	  deleteCookie: deleteCookie,
+	  saveInStorage: saveInStorage,
+	  getFromStorage: getFromStorage,
+	  getObject: getObject,
+	  setInObject: setInObject,
+	  unsetFromObject: unsetFromObject,
+	  clearStorage: clearStorage,
+	  getCookie: getCookie,
+	  setCookie: setCookie
+	};
+
+/***/ },
+/* 136 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(137), __esModule: true };
+
+/***/ },
+/* 137 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var core  = __webpack_require__(16)
+	  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
+	module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+	  return $JSON.stringify.apply($JSON, arguments);
+	};
+
+/***/ },
+/* 138 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var JOB_MOTIVATION_BUSINESS_OWNER = exports.JOB_MOTIVATION_BUSINESS_OWNER = 'JOB_MOTIVATION_BUSINESS_OWNER';
+	var JOB_MOTIVATION_IDEA_FAN = exports.JOB_MOTIVATION_IDEA_FAN = 'JOB_MOTIVATION_IDEA_FAN';
+	var JOB_MOTIVATION_SALARY = exports.JOB_MOTIVATION_SALARY = 'JOB_MOTIVATION_SALARY';
+	var JOB_MOTIVATION_PERCENTAGE = exports.JOB_MOTIVATION_PERCENTAGE = 'JOB_MOTIVATION_PERCENTAGE';
+
+	var JOB_TASK_PROGRAMMER_POINTS = exports.JOB_TASK_PROGRAMMER_POINTS = 'JOB_TASK_PROGRAMMER_POINTS';
+	var JOB_TASK_MARKETING_POINTS = exports.JOB_TASK_MARKETING_POINTS = 'JOB_TASK_MARKETING_POINTS';
+
+	var PROFESSION_PROGRAMMER = exports.PROFESSION_PROGRAMMER = 'PROFESSION_PROGRAMMER';
+	var PROFESSION_MARKETER = exports.PROFESSION_MARKETER = 'PROFESSION_MARKETER';
+	var PROFESSION_DESIGNER = exports.PROFESSION_DESIGNER = 'PROFESSION_DESIGNER';
+	var PROFESSION_ANALYST = exports.PROFESSION_ANALYST = 'PROFESSION_ANALYST';
+
+	var PRICE_OF_ONE_MP = exports.PRICE_OF_ONE_MP = 30;
+	var PRICE_OF_ONE_PP = exports.PRICE_OF_ONE_PP = 30;
+
+/***/ },
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5735,11 +7054,11 @@
 	exports.saveAction = saveAction;
 	exports.achievement = achievement;
 
-	var _sessionStorage = __webpack_require__(105);
+	var _sessionStorage = __webpack_require__(135);
 
 	var _sessionStorage2 = _interopRequireDefault(_sessionStorage);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -5761,7 +7080,7 @@
 	// }
 
 /***/ },
-/* 135 */
+/* 140 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5777,7 +7096,7 @@
 	;
 
 /***/ },
-/* 136 */
+/* 141 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5791,7 +7110,7 @@
 	};
 
 /***/ },
-/* 137 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5800,11 +7119,11 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(120);
+	var _productDescriptions = __webpack_require__(112);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -5840,7 +7159,7 @@
 	};
 
 /***/ },
-/* 138 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5849,15 +7168,15 @@
 	  value: true
 	});
 
-	var _productDescriptions = __webpack_require__(120);
+	var _productDescriptions = __webpack_require__(112);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _random = __webpack_require__(135);
+	var _random = __webpack_require__(140);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -5902,7 +7221,7 @@
 	};
 
 /***/ },
-/* 139 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5911,11 +7230,11 @@
 	  value: true
 	});
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productDescriptions = __webpack_require__(120);
+	var _productDescriptions = __webpack_require__(112);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -5958,7 +7277,7 @@
 	};
 
 /***/ },
-/* 140 */
+/* 145 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5971,21 +7290,7 @@
 	var SUPPORT_COST_MODIFIER = exports.SUPPORT_COST_MODIFIER = 0.35;
 
 /***/ },
-/* 141 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (value) {
-	  return Math.ceil(value * 100) / 100;
-	};
-
-/***/ },
-/* 142 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6005,1305 +7310,11 @@
 	  return result;
 	};
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ },
-/* 143 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(3);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(29);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(30);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(34);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(81);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _moneyDifference = __webpack_require__(144);
-
-	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
-
-	var _modification = __webpack_require__(153);
-
-	var _modification2 = _interopRequireDefault(_modification);
-
-	var _playerStore = __webpack_require__(147);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _logger = __webpack_require__(132);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _stages = __webpack_require__(162);
-
-	var _stages2 = _interopRequireDefault(_stages);
-
-	var _UI = __webpack_require__(165);
-
-	var _UI2 = _interopRequireDefault(_UI);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
-
-	var Menu = function (_Component) {
-	  (0, _inherits3.default)(Menu, _Component);
-
-	  function Menu() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Menu);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Menu.__proto__ || (0, _getPrototypeOf2.default)(Menu)).call.apply(_ref, [this].concat(args))), _this), _this.getPlayerInfoFromStore = function () {
-	      _this.setState({
-	        money: _playerStore2.default.getMoney(),
-	        points: _playerStore2.default.getPoints()
-	      });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Menu, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.getPlayerInfoFromStore();
-
-	      _playerStore2.default.addChangeListener(this.getPlayerInfoFromStore);
-	    }
-	  }, {
-	    key: 'renderSpeedIcons',
-	    value: function renderSpeedIcons() {
-	      var _this2 = this;
-
-	      return [{ speed: 1, icon: '>' }, { speed: 10, icon: '>>>' }].map(function (s) {
-	        return (0, _preact.h)(
-	          'div',
-	          { className: 'navigation' },
-	          (0, _preact.h)(_UI2.default.Button, {
-	            text: s.icon,
-	            onClick: _this2.props.setGameSpeed(s.speed)
-	          })
-	        );
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render(props, state) {
-	      if (!_stages2.default.canShowUpperTabInMenu()) return (0, _preact.h)('div', null);
-
-	      var pause = props.pause,
-	          pauseGame = props.pauseGame,
-	          setGameSpeed = props.setGameSpeed;
-
-
-	      var speedIcons = this.renderSpeedIcons();
-
-	      var pauseOrContinue = '';
-	      if (!pause) {
-	        pauseOrContinue = (0, _preact.h)(_UI2.default.Button, { text: '\u041F\u0430\u0443\u0437\u0430', onClick: pauseGame, link: true });
-	      }
-
-	      var negative = 'moneyNegative';
-	      var positive = 'moneyPositive';
-
-	      var saldoValue = _moneyDifference2.default.saldo();
-	      var isMakingIncome = saldoValue > 0;
-
-	      var moneyIndication = isMakingIncome ? positive : negative;
-	      var moneyDifference = isMakingIncome ? '+' + saldoValue : saldoValue;
-
-	      var mpIndication = _modification2.default.marketing().needToHireWorker ? negative : positive;
-	      var ppIndication = _modification2.default.programming().needToHireWorker ? negative : positive;
-
-	      var year = Math.floor(props.day / 360);
-	      var month = Math.floor((props.day - year * 360) / 30);
-	      var day = props.day - year * 360 - month * 30;
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'navigation' },
-	            (0, _preact.h)(
-	              'div',
-	              { className: moneyIndication },
-	              '$',
-	              state.money,
-	              ' (',
-	              moneyDifference,
-	              '$)'
-	            )
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'navigation' },
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              '\u0413\u043E\u0434: ',
-	              year,
-	              ' \u041C\u0435\u0441\u044F\u0446: ',
-	              month,
-	              ' \u0414\u0435\u043D\u044C: ',
-	              day
-	            )
-	          ),
-	          speedIcons,
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'navigation' },
-	            pauseOrContinue
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'navigation' },
-	            (0, _preact.h)(
-	              'span',
-	              { className: mpIndication },
-	              'MP: ',
-	              state.points.marketing
-	            )
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'navigation' },
-	            (0, _preact.h)(
-	              'span',
-	              { className: ppIndication },
-	              'PP: ',
-	              state.points.programming
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	  return Menu;
-	}(_preact.Component);
-
-	exports.default = Menu;
-
-/***/ },
-/* 144 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _productStore = __webpack_require__(145);
-
-	var _productStore2 = _interopRequireDefault(_productStore);
-
-	var _playerStore = __webpack_require__(147);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _expenses = __webpack_require__(149);
-
-	var EXPENSES = _interopRequireWildcard(_expenses);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var calculate = function calculate() {
-	  var products = _productStore2.default.getOurProducts();
-
-	  // check income
-	  var jobIncome = 2000;
-
-	  var income = jobIncome + products.map(function (p, i) {
-	    return _productStore2.default.getProductIncome(i);
-	  }).reduce(function (p, c) {
-	    return p + c;
-	  }, 0);
-
-	  // check expenses
-	  var nonProductExpenses = _playerStore2.default.getExpenses().filter(function (e) {
-	    return e.type !== EXPENSES.EXPENSES_LOAN;
-	  }).map(function (e, i) {
-	    return e.price;
-	  }).reduce(function (p, c) {
-	    return p + c;
-	  }, 0);
-
-	  var productExpenses = products.map(function (p, i) {
-	    return _productStore2.default.getProductExpenses(i);
-	  }).reduce(function (p, c) {
-	    return p + c;
-	  }, 0);
-
-	  var loans = _playerStore2.default.getLoanPaymentAmount();
-
-	  var teamExpenses = _playerStore2.default.getTeamExpenses();
-
-	  var expenses = nonProductExpenses + productExpenses + loans + teamExpenses;
-
-	  var byProductIncome = products.map(function (p, i) {
-	    return { name: p.name, income: _productStore2.default.getProductIncome(i) };
-	  });
-
-	  return {
-	    nonProductExpenses: nonProductExpenses,
-	    productExpenses: productExpenses,
-	    loans: loans,
-	    teamExpenses: teamExpenses,
-
-	    expenses: expenses,
-	    income: income,
-	    byProductIncome: byProductIncome,
-
-	    saldo: income - expenses
-	  };
-	};
-
-	exports.default = {
-	  structured: calculate,
-
-	  saldo: function saldo() {
-	    return Math.floor(calculate().saldo);
-	  }
-	};
-
-/***/ },
-/* 145 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(3);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(29);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(30);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(34);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(81);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _events = __webpack_require__(124);
-
-	var _dispatcher = __webpack_require__(125);
-
-	var _dispatcher2 = _interopRequireDefault(_dispatcher);
-
-	var _productActions = __webpack_require__(146);
-
-	var c = _interopRequireWildcard(_productActions);
-
-	var _payloads = __webpack_require__(131);
-
-	var _payloads2 = _interopRequireDefault(_payloads);
-
-	var _logger = __webpack_require__(132);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _round = __webpack_require__(141);
-
-	var _round2 = _interopRequireDefault(_round);
-
-	var _ideas = __webpack_require__(110);
-
-	var IDEAS = _interopRequireWildcard(_ideas);
-
-	var _productStages = __webpack_require__(111);
-
-	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
-
-	var _Product = __webpack_require__(112);
-
-	var _Product2 = _interopRequireDefault(_Product);
-
-	var _computeRating = __webpack_require__(137);
-
-	var _computeRating2 = _interopRequireDefault(_computeRating);
-
-	var _productDescriptions = __webpack_require__(120);
-
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
-	var _computeCompanyCost = __webpack_require__(138);
-
-	var _computeCompanyCost2 = _interopRequireDefault(_computeCompanyCost);
-
-	var _companyMerger = __webpack_require__(139);
-
-	var _companyMerger2 = _interopRequireDefault(_companyMerger);
-
-	var _stats = __webpack_require__(134);
-
-	var _stats2 = _interopRequireDefault(_stats);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var EC = 'PRODUCT_EVENT_CHANGE';
-
-	var _products = [new _Product2.default({
-	  idea: IDEAS.IDEA_WEB_HOSTING,
-	  name: 'WWWEB HOSTING',
-	  stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-	  defaultFeatures: (0, _productDescriptions2.default)(IDEAS.IDEA_WEB_HOSTING).features.map(function (f) {
-	    return f.data;
-	  })
-	})];
-
-	var _getCurrentMainFeatureDefaultsByIdea = function _getCurrentMainFeatureDefaultsByIdea(idea) {
-	  var productsWithSameIdea = _products.filter(function (p, i) {
-	    return p.idea === idea;
-	  });
-
-	  return (0, _productDescriptions2.default)(idea).features.map(function (f, featureId) {
-	    var max = f.data;
-
-	    productsWithSameIdea.forEach(function (p) {
-	      var temp = p.getMainFeatureQualityByFeatureId(featureId);
-
-	      if (temp > max) {
-	        max = temp;
-	      }
-	    });
-
-	    return max;
-	  });
-
-	  // const suitableId = products.findIndex((p, i) => p.idea === idea);
-	  // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
-	};
-
-	var _getCurrentMainFeatureDefaultsById = function _getCurrentMainFeatureDefaultsById(id) {
-	  var p = _products[id];
-	  // logger.debug('getCurrentMainFeatureDefaultsById', p, _products, id);
-	  var idea = p.getIdea();
-
-	  return _getCurrentMainFeatureDefaultsByIdea(idea);
-	};
-
-	var ProductStore = function (_EventEmitter) {
-	  (0, _inherits3.default)(ProductStore, _EventEmitter);
-
-	  function ProductStore() {
-	    (0, _classCallCheck3.default)(this, ProductStore);
-	    return (0, _possibleConstructorReturn3.default)(this, (ProductStore.__proto__ || (0, _getPrototypeOf2.default)(ProductStore)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(ProductStore, [{
-	    key: 'addChangeListener',
-	    value: function addChangeListener(cb) {
-	      this.addListener(EC, cb);
-	    }
-	  }, {
-	    key: 'removeChangeListener',
-	    value: function removeChangeListener(cb) {
-	      this.removeListener(EC, cb);
-	    }
-	  }, {
-	    key: 'emitChange',
-	    value: function emitChange() {
-	      this.emit(EC);
-	    }
-	  }, {
-	    key: 'getProducts',
-	    value: function getProducts() {
-	      return _products;
-	    }
-	  }, {
-	    key: 'getOurProducts',
-	    value: function getOurProducts() {
-	      return _products.filter(this.isOurProduct);
-	    }
-	  }, {
-	    key: 'isOurProduct',
-	    value: function isOurProduct(p) {
-	      return p.owner;
-	    }
-	  }, {
-	    key: 'getProduct',
-	    value: function getProduct(id) {
-	      return _products[id];
-	    }
-	  }, {
-	    key: 'getCompanyCost',
-	    value: function getCompanyCost(id) {
-	      return _products[id].getCompanyCost();
-	    }
-	  }, {
-	    key: 'getRating',
-	    value: function getRating(id, segmentId) {
-	      if (!segmentId) segmentId = 0;
-
-	      return _products[id].getRating(segmentId);
-	    }
-	  }, {
-	    key: 'getClients',
-	    value: function getClients(id, segmentId) {
-	      return _products[id].getClients(segmentId);
-	    }
-	  }, {
-	    key: 'getSegmentBySegmentId',
-	    value: function getSegmentBySegmentId(id, segId) {
-	      return _products[id].getSegmentBySegmentId(segId);
-	    }
-	  }, {
-	    key: 'getHypeDamping',
-	    value: function getHypeDamping(id) {
-	      return _products[id].getHypeDamping();
-	    }
-	  }, {
-	    key: 'getSegmentedPriorities',
-	    value: function getSegmentedPriorities(id, segId) {
-	      return _products[id].getSegmentedPriorities(segId);
-	    }
-	  }, {
-	    key: 'getNewClients',
-	    value: function getNewClients(id) {
-	      return _products[id].getNewClients();
-	    }
-	  }, {
-	    key: 'getDisloyalClients',
-	    value: function getDisloyalClients(id) {
-	      return _products[id].getDisloyalClients();
-	    }
-	  }, {
-	    key: 'getViralClients',
-	    value: function getViralClients(id) {
-	      return _products[id].getViralClients();
-	    }
-	  }, {
-	    key: 'getMainFeatureQualityByFeatureId',
-	    value: function getMainFeatureQualityByFeatureId(id, featureId) {
-	      return _products[id].getMainFeatureQualityByFeatureId(featureId);
-	    }
-	  }, {
-	    key: 'getMainFeatureDefaultQualityByFeatureId',
-	    value: function getMainFeatureDefaultQualityByFeatureId(id, featureId) {
-	      return this.temporaryMaxFeatureValue(id, featureId);
-	      // return _products[id].getMainFeatureDefaultQualityByFeatureId(featureId);
-	    }
-	  }, {
-	    key: 'getPrettyFeatureNameByFeatureId',
-	    value: function getPrettyFeatureNameByFeatureId(id, featureId) {
-	      return _products[id].getPrettyFeatureNameByFeatureId(featureId);
-	    }
-	  }, {
-	    key: 'requirementsOKforSegment',
-	    value: function requirementsOKforSegment(id, segmentId) {
-	      return _products[id].requirementsOKforSegment(segmentId);
-	    }
-	  }, {
-	    key: 'getAnalyticsValueForFeatureCreating',
-	    value: function getAnalyticsValueForFeatureCreating(id) {
-	      return _products[id].getAnalyticsValueForFeatureCreating();
-	    }
-	  }, {
-	    key: 'getDefaults',
-	    value: function getDefaults(id) {
-	      return _products[id].getDefaults();
-	    }
-	  }, {
-	    key: 'getProductUtility',
-	    value: function getProductUtility(id) {
-	      return _products[id].getProductUtility();
-	    }
-	  }, {
-	    key: 'getPaymentModifier',
-	    value: function getPaymentModifier(id) {
-	      return _products[id].getPaymentModifier();
-	    }
-	  }, {
-	    key: 'getConversionRate',
-	    value: function getConversionRate(id, segmentId) {
-	      return _products[id].getConversionRate(segmentId);
-	    }
-	  }, {
-	    key: 'getProductPrice',
-	    value: function getProductPrice(id, segId) {
-	      return _products[id].getProductPrice(segId);
-	    }
-	  }, {
-	    key: 'getFeatures',
-	    value: function getFeatures(id, featureGroup) {
-	      return _products[id].getFeatures(featureGroup);
-	    }
-	  }, {
-	    key: 'isPaymentEnabled',
-	    value: function isPaymentEnabled(id, segmentId) {
-	      return _products[id].isPaymentEnabled(segmentId);
-	    }
-	  }, {
-	    key: 'getSegmentIncome',
-	    value: function getSegmentIncome(id, segId) {
-	      return _products[id].getSegmentIncome(segId);
-	    }
-	  }, {
-	    key: 'getProductIncome',
-	    value: function getProductIncome(id) {
-	      return _products[id].getProductIncome();
-	    }
-	  }, {
-	    key: 'getIdea',
-	    value: function getIdea(id) {
-	      return _products[id].getIdea();
-	    }
-	  }, {
-	    key: 'getViralityRate',
-	    value: function getViralityRate(id) {
-	      return _products[id].getViralityRate();
-	    }
-	  }, {
-	    key: 'getMarketingFeatures',
-	    value: function getMarketingFeatures(id) {
-	      return _products[id].getMarketingFeatures();
-	    }
-	  }, {
-	    key: 'getBlogPower',
-	    value: function getBlogPower(id) {
-	      return _products[id].getBlogPower();
-	    }
-	  }, {
-	    key: 'getBlogStatusStructured',
-	    value: function getBlogStatusStructured(id) {
-	      return _products[id].getBlogStatusStructured();
-	    }
-	  }, {
-	    key: 'getSupportPower',
-	    value: function getSupportPower(id) {
-	      return _products[id].getSupportPower();
-	    }
-	  }, {
-	    key: 'getEmailPower',
-	    value: function getEmailPower(id) {
-	      return _products[id].getEmailPower();
-	    }
-	  }, {
-	    key: 'getMarketingSupportCostPerClientForSupportFeature',
-	    value: function getMarketingSupportCostPerClientForSupportFeature(id) {
-	      return _products[id].getMarketingSupportCostPerClientForSupportFeature();
-	    }
-	  }, {
-	    key: 'getChurnRate',
-	    value: function getChurnRate(id) {
-	      return _products[id].getChurnRate();
-	    }
-	  }, {
-	    key: 'getProductBlogCost',
-	    value: function getProductBlogCost(id) {
-	      return _products[id].getProductBlogCost();
-	    }
-	  }, {
-	    key: 'getProductSupportCost',
-	    value: function getProductSupportCost(id) {
-	      return _products[id].getProductSupportCost();
-	    }
-	  }, {
-	    key: 'getProductExpenses',
-	    value: function getProductExpenses(id) {
-	      return _products[id].getProductExpenses();
-	    }
-	  }, {
-	    key: 'getName',
-	    value: function getName(id) {
-	      return _products[id].getName();
-	    }
-	  }, {
-	    key: 'getStage',
-	    value: function getStage(id) {
-	      return _products[id].getStage();
-	    }
-	  }, {
-	    key: 'getFeatureStatus',
-	    value: function getFeatureStatus(id, featureGroup, featureName) {
-	      return _products[id].getFeatureStatus(featureGroup, featureName);
-	    }
-	  }, {
-	    key: 'getCostPerClient',
-	    value: function getCostPerClient(id) {
-	      return _products[id].getCostPerClient();
-	    }
-	  }, {
-	    key: 'getRatingForMetricsTab',
-	    value: function getRatingForMetricsTab(id) {
-	      return _products[id].getRatingForMetricsTab();
-	    }
-	  }, {
-	    key: 'getClientAnalyticsModifier',
-	    value: function getClientAnalyticsModifier(id) {
-	      return _products[id].getClientAnalyticsModifier();
-	    }
-	  }, {
-	    key: 'getProgrammingSupportCostModifier',
-	    value: function getProgrammingSupportCostModifier(id) {
-	      return _products[id].getProgrammingSupportCostModifier();
-	    }
-	  }, {
-	    key: 'getProgrammingSupportCost',
-	    value: function getProgrammingSupportCost(id) {
-	      return _products[id].getProgrammingSupportCost();
-	    }
-	  }, {
-	    key: 'getMarketingSupportTechTotalCost',
-	    value: function getMarketingSupportTechTotalCost(id) {
-	      return _products[id].getMarketingSupportTechTotalCost();
-	    }
-	  }, {
-	    key: 'getBaseSupportCost',
-	    value: function getBaseSupportCost() {
-	      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-	      return _products[id].getBaseSupportCost();
-	    }
-	  }, {
-	    key: 'getMarketingSupportCost',
-	    value: function getMarketingSupportCost(id) {
-	      return _products[id].getMarketingSupportCost();
-	    }
-	  }, {
-	    key: 'getMarketingFeatureList',
-	    value: function getMarketingFeatureList(idea) {
-	      return [{
-	        name: 'blog', shortDescription: 'Блог проекта',
-	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-	        points: { marketing: 150 },
-	        support: { marketing: 50 }
-	      }, {
-	        name: 'support', shortDescription: 'Техподдержка',
-	        description: 'Техподдержка снижает отток клиентов на 15%',
-	        points: { marketing: 50, programming: 100 },
-	        support: { marketing: 50 }
-	      }, {
-	        name: 'blogII', shortDescription: 'Улучшенный блог проекта',
-	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-	        points: { marketing: 150 },
-	        support: { marketing: 150 }
-	      }, {
-	        name: 'supportII', shortDescription: 'Улучшенная техподдержка',
-	        description: 'Техподдержка снижает отток клиентов на 15%',
-	        points: { marketing: 50, programming: 100 },
-	        support: { marketing: 50 }
-	      }, {
-	        name: 'emails', shortDescription: 'Рассылка электронной почты',
-	        description: 'Рассылка электронной почти снижает отток клиентов на 5%',
-	        points: { marketing: 50, programming: 100 },
-	        support: { programming: 20 }
-	      }, {
-	        name: 'blogIII', shortDescription: 'Улучшенный блог проекта II',
-	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-	        points: { marketing: 150 },
-	        support: { marketing: 150 }
-	      }, {
-	        name: 'supportIII', shortDescription: 'Улучшенная техподдержка II',
-	        description: 'Техподдержка снижает отток клиентов на 15%. ',
-	        points: { marketing: 50, programming: 100 },
-	        support: { marketing: 50 }
-	      }
-	      // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
-	      //   points: { marketing: 50, programming: 100 }, time: 7 }
-	      ];
-	      // ].map(computeFeatureCost(cost));
-	    }
-	  }, {
-	    key: 'getHypothesisAnalyticsFeatures',
-	    value: function getHypothesisAnalyticsFeatures(idea) {
-	      return [{ name: 'feedback', shortDescription: 'Форма для комментариев',
-	        description: 'Общение с вашими клиентами позволяет улучшить ваш продукт. +300XP/мес',
-	        points: { programming: 50, marketing: 0 }, bonus: 300
-	      }, { name: 'webvisor', shortDescription: 'Вебвизор',
-	        description: 'Позволяет просматривать действия пользователей. +200XP/мес',
-	        points: { programming: 150, marketing: 0 }, bonus: 200
-	      }, { name: 'AB', shortDescription: 'A/B тестирование',
-	        description: 'Позволяет тестировать несколько вариантов проекта. +400XP/мес',
-	        points: { programming: 175, marketing: 0 }, bonus: 400
-	      }, { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей',
-	        description: '+500XP/мес',
-	        points: { programming: 250, marketing: 0 }, bonus: 500
-	      }, { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II',
-	        description: '+600XP/мес',
-	        points: { programming: 500, marketing: 0 }, bonus: 600
-	      }];
-	    }
-	  }, {
-	    key: 'getAnalyticFeatures',
-	    value: function getAnalyticFeatures(idea) {
-	      return [
-	      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
-	      //   points: { programming: 150, marketing: 100 }
-	      // },
-
-	      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-	      //   points: { programming: 50, marketing: 0 }
-	      // },
-	      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
-	        points: { programming: 50, marketing: 0 }
-	      }];
-	      // ].map(computeFeatureCost(cost));
-	    }
-	  }, {
-	    key: 'getPaymentFeatures',
-	    value: function getPaymentFeatures(id, idea) {
-	      return _products[id].getPaymentFeatures(idea);
-	    }
-	  }, {
-	    key: 'getTechnicalDebtDescription',
-	    value: function getTechnicalDebtDescription(debt) {
-	      if (debt < 10) {
-	        return '\u0412\u0441\u0451 \u0445\u043E\u0440\u043E\u0448\u043E';
-	      } else if (debt < 50) {
-	        return '\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0430\u0447\u0438\u043D\u0430\u044E\u0442 \u043F\u043B\u0430\u043A\u0430\u0442\u044C';
-	      } else {
-	        return '\u0422\u044B \u043C\u0440\u0430\u0437\u044C \u0438 \u043F**\u043E\u0440, \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0438\u0441\u0442\u044B \u043D\u0435\u043D\u0430\u0432\u0438\u0434\u044F\u0442 \u0442\u0435\u0431\u044F!! \u041E\u0442\u0440\u0435\u0444\u0430\u043A\u0442\u043E\u0440\u044C \u044D\u0442\u043E\u0442 \u0448\u043B\u0430\u043A!';
-	      }
-	    }
-	  }, {
-	    key: 'getImprovementChances',
-	    value: function getImprovementChances(id) {
-	      return _products[id].getImprovementChances();
-	    }
-	  }, {
-	    key: 'getProductExpensesStructure',
-	    value: function getProductExpensesStructure(id) {
-	      return _products[id].getProductExpensesStructure();
-	    }
-	  }, {
-	    key: 'getXP',
-	    value: function getXP(id) {
-	      return _products[id].getXP();
-	    }
-	  }, {
-	    key: 'getHypothesisPoints',
-	    value: function getHypothesisPoints(id) {
-	      return _products[id].getHypothesisPoints();
-	    }
-	  }, {
-	    key: 'getSegments',
-	    value: function getSegments(id) {
-	      return _products[id].getSegments();
-	    }
-	  }, {
-	    key: 'getSegmentById',
-	    value: function getSegmentById(id, segId) {
-	      return _products[id].getSegmentById(segId);
-	    }
-	  }, {
-	    key: 'getDescriptionOfProduct',
-	    value: function getDescriptionOfProduct(id) {
-	      return _products[id].getDescriptionOfProduct();
-	    }
-	  }, {
-	    key: 'canShowPayPercentageMetric',
-	    value: function canShowPayPercentageMetric(id) {
-	      return _products[id].canShowPayPercentageMetric();
-	    }
-	  }, {
-	    key: 'clientsEnoughToFormSegment',
-	    value: function clientsEnoughToFormSegment(id, segId) {
-	      return _products[id].clientsEnoughToFormSegment(segId);
-	    }
-	  }, {
-	    key: 'getAvailableSegments',
-	    value: function getAvailableSegments(id) {
-	      return _products[id].getAvailableSegments();
-	    }
-	  }, {
-	    key: 'getMarketShare',
-	    value: function getMarketShare(id) {
-	      return _products[id].getMarketShare();
-	    }
-	  }, {
-	    key: 'getTestsAmount',
-	    value: function getTestsAmount(id) {
-	      return _products[id].getTestsAmount();
-	    }
-	  }, {
-	    key: 'getImprovementsAmount',
-	    value: function getImprovementsAmount(id) {
-	      return _products[id].getImprovementsAmount();
-	    }
-	  }, {
-	    key: 'getTechnologyComplexityModifier',
-	    value: function getTechnologyComplexityModifier(id) {
-	      return _products[id].getTechnologyComplexityModifier();
-	    }
-	  }, {
-	    key: 'getHypeValue',
-	    value: function getHypeValue(id) {
-	      return _products[id].getHypeValue();
-	    }
-	  }, {
-	    key: 'getTechnicalDebtModifier',
-	    value: function getTechnicalDebtModifier(id) {
-	      return _products[id].getTechnicalDebtModifier();
-	    }
-	  }, {
-	    key: 'idHelper',
-	    value: function idHelper(p, i) {
-	      return { id: i, p: p };
-	    }
-	  }, {
-	    key: 'getFreeClientsBatch',
-	    value: function getFreeClientsBatch() {
-	      var marketSize = _products[0].getMarketShare().marketSize;
-
-	      var currentSumOfUsers = _products.map(function (p, i) {
-	        return p.getClients();
-	      }).reduce(function (p, c) {
-	        return p + c;
-	      }, 0);
-
-	      var value = marketSize - currentSumOfUsers;
-
-	      if (value <= 0) return 0;
-
-	      if (value > 2000) return 2000;
-
-	      return value;
-	    }
-	  }, {
-	    key: 'initialize',
-	    value: function initialize(products) {
-	      _products = products;
-	    }
-	  }, {
-	    key: 'getStoreData',
-	    value: function getStoreData() {
-	      return {
-	        products: _products
-	      };
-	    }
-	  }, {
-	    key: 'isUpgradeWillResultTechBreakthrough',
-	    value: function isUpgradeWillResultTechBreakthrough(id, featureId) {
-	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
-	      var max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
-
-	      // logger.debug('isUpgradeWillResultTechBreakthrough ?', current, max);
-
-	      return current + 1000 > max;
-	    }
-	  }, {
-	    key: 'isWeAreRetards',
-	    value: function isWeAreRetards(id, featureId) {
-	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
-	      var max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
-
-	      // logger.debug('isWeAreRetards ?', current, max);
-
-	      return current < 0.3 * max;
-	    }
-	  }, {
-	    key: 'getTechBreakthroughModifierForHype',
-	    value: function getTechBreakthroughModifierForHype(id, featureId) {
-	      return _products[id].getTechBreakthroughModifierForHype();
-	    }
-	  }, {
-	    key: 'getMainFeatureUpgradeCost',
-	    value: function getMainFeatureUpgradeCost(id, featureId) {
-	      var modifier = 1;
-
-	      _logger2.default.shit('write isUpgradeWillResultTechBreakthrough function!!');
-
-	      // we are able to make breakthrough
-	      if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) {
-	        modifier = 4;
-	      }
-
-	      // we are retards
-	      if (this.isWeAreRetards(id, featureId)) {
-	        modifier = 0.25;
-	      }
-
-	      return Math.ceil((0, _productDescriptions2.default)(this.getIdea(id)).features[featureId].development * modifier);
-	    }
-	  }, {
-	    key: 'getLeaderInTech',
-	    value: function getLeaderInTech(id, featureId) {
-	      var _this2 = this;
-
-	      var leader = _products.map(this.idHelper).filter(function (obj, i) {
-	        return obj.p.idea === _this2.getIdea(id);
-	      }).sort(function (obj1, obj2) {
-	        var p1 = obj1.p;
-	        var p2 = obj2.p;
-
-	        var f1 = p1.getMainFeatureQualityByFeatureId(featureId);
-	        var f2 = p2.getMainFeatureQualityByFeatureId(featureId);
-
-	        return f2 - f1;
-	      })[0];
-
-	      return {
-	        id: leader.id,
-	        name: leader.p.name,
-	        value: leader.p.getMainFeatureQualityByFeatureId(featureId)
-	      };
-	    }
-	  }, {
-	    key: 'ceilXPtoThousandValue',
-	    value: function ceilXPtoThousandValue(value) {
-	      return Math.ceil(value / 1000) * 1000;
-	    }
-	  }, {
-	    key: 'getCurrentMainFeatureDefaultsById',
-	    value: function getCurrentMainFeatureDefaultsById(id) {
-	      // logger.debug('getCurrentMainFeatureDefaultsById in class', id);
-	      // const idea = this.getIdea(id);
-
-	      // return getCurrentMainFeatureDefaultsByIdea(idea);
-	      return _getCurrentMainFeatureDefaultsById(id);
-	    }
-	  }, {
-	    key: 'temporaryMaxFeatureValue',
-	    value: function temporaryMaxFeatureValue(id, featureId) {
-	      return this.ceilXPtoThousandValue(this.getLeaderInTech(id, featureId).value);
-	    }
-	  }, {
-	    key: 'getUpgradedMaxDefaultFeatureValueList',
-	    value: function getUpgradedMaxDefaultFeatureValueList(id) {
-	      var _this3 = this;
-
-	      return this.getDefaults(id).features.map(function (f, featureId) {
-	        var base = _this3.getMainFeatureQualityByFeatureId(id, featureId);
-
-	        var leader = (Math.floor(_this3.getLeaderInTech(id, featureId).value / 1000) + 1) * 1000;
-
-	        return leader > base ? leader : base;
-	      });
-	    }
-	  }, {
-	    key: 'isUpgradingMainFeatureWillResultTechLeadership',
-	    value: function isUpgradingMainFeatureWillResultTechLeadership(id, featureId) {
-	      var current = this.getMainFeatureQualityByFeatureId(id, featureId);
-
-	      var max = this.temporaryMaxFeatureValue(id, featureId);
-
-	      return current + 1000 > max;
-	    }
-	  }, {
-	    key: 'getCurrentMainFeatureDefaultsByIdea',
-	    value: function getCurrentMainFeatureDefaultsByIdea(idea) {
-	      return _getCurrentMainFeatureDefaultsByIdea(idea);
-	    }
-	  }, {
-	    key: 'getCompetitorsList',
-	    value: function getCompetitorsList(id) {
-	      var _this4 = this;
-
-	      var ourCompany = _products.filter(function (p) {
-	        return _this4.isOurProduct(p) && p.idea === _this4.getIdea(id);
-	      })[0];
-	      // logger.log('getCompetitorsList', _products);
-
-	      // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
-	      return _products.map(function (p, i) {
-	        return { p: p, id: i };
-	      }) //  Object.assign({ id: i }, p)
-	      .map(function (obj) {
-	        var p = obj.p;
-	        var id = obj.id;
-
-	        var name = p.name;
-
-	        // logger.log('competitor', id, p);
-
-	        var rating = (0, _round2.default)((0, _computeRating2.default)(p, 0));
-	        var hype = p.getHypeValue();
-	        var clients = p.KPI.clients;
-
-	        var features = p.features.offer;
-
-	        var offer = _this4.getDefaults(id).features.map(function (f, i) {
-	          return {
-	            name: f.name,
-	            description: f.shortDescription,
-	            value: features[i]
-	          };
-	        }).sort(function (a, b) {
-	          return b.value - a.value;
-	        });
-
-	        return {
-	          rating: rating,
-	          clients: clients,
-	          name: name,
-	          features: offer,
-	          // cost: companyCostComputer.compute(),
-	          cost: p.getCompanyCost(),
-	          improvements: _companyMerger2.default.merge(ourCompany, p).improvements,
-	          id: id,
-	          hype: hype,
-	          hypeDamping: p.getHypeDampingValue(p.getNumberOfTechnologiesWhereWeMadeBreakthrough())
-	        };
-	      }).sort(function (a, b) {
-	        return b.hype - a.hype;
-	      });
-	    }
-	  }, {
-	    key: 'getMaxAmountOfPossibleClients',
-	    value: function getMaxAmountOfPossibleClients(id, money) {
-	      var competitors = this.getCompetitorsList(id);
-
-	      var maxMarketSize = this.getDefaults(id).marketSize;
-	      var rating = this.getRating(id);
-	      var ourClients = this.getClients(id);
-
-	      var uncompeteableApps = competitors.filter(function (c) {
-	        return c.rating > rating - 1;
-	      });
-	      var totalClients = ourClients + competitors.map(function (c) {
-	        return c.clients;
-	      }).reduce(function (p, c) {
-	        return p + c;
-	      }, 0);
-
-	      var frozen = ourClients;
-	      var unbeatableClients = uncompeteableApps.map(function (c) {
-	        return c.clients;
-	      }).reduce(function (p, c) {
-	        return p + c;
-	      }, 0);
-	      // if (uncompeteableApps.length) {
-	      frozen += unbeatableClients;
-	      // }
-
-	      var availableForYou = maxMarketSize - frozen;
-
-	      var costPerClient = this.getCostPerClient(id);
-	      var canAffordClientsAmount = Math.floor(money / costPerClient);
-	      var result = void 0;
-
-	      if (canAffordClientsAmount > availableForYou) {
-	        // we can buy all available clients
-	        result = availableForYou;
-	      } else {
-	        // we cannot
-	        result = canAffordClientsAmount;
-	      }
-
-	      // return canAffordClientsAmount;
-
-	      return {
-	        marketSize: maxMarketSize,
-	        potentialClients: maxMarketSize - frozen,
-	        amount: result,
-	        ourClients: ourClients,
-	        unbeatableClients: unbeatableClients,
-	        freeClients: maxMarketSize - totalClients,
-	        competitors: competitors
-	      };
-	    }
-	  }, {
-	    key: 'getNextCompetitorInfo',
-	    value: function getNextCompetitorInfo(id) {
-	      var competitors = this.getCompetitorsList(id);
-	      var rating = this.getRating(id);
-
-	      var betterCompetitors = competitors.filter(function (c) {
-	        return rating < c.rating + 1;
-	      });
-
-	      return betterCompetitors.length ? betterCompetitors[0] : null;
-	    }
-	  }]);
-	  return ProductStore;
-	}(_events.EventEmitter);
-
-	var store = new ProductStore();
-
-	var payload = _payloads2.default.productStorePayload;
-
-
-	_dispatcher2.default.register(function (p) {
-	  if (!p.type) {
-	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
-	    return;
-	  }
-
-	  var id = p.id;
-
-	  var change = true;
-
-	  (function () {
-	    switch (p.type) {
-	      case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-	        _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 69999);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
-	        _products[id].testHypothesis(p);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_SWITCH_STAGE:
-	        _products[id].switchStage(p.stage);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
-	        _products[id].improveFeature(p);
-
-	        // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
-
-	        _logger2.default.shit('rewrite upgradedDefaults updating in Product.js class. ' + 'You need updating it only on improve Main Feature actions');
-
-	        var upgradedDefaults = _getCurrentMainFeatureDefaultsById(id);
-	        var idea = _products[id].getIdea();
-
-	        // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
-
-	        _products.filter(function (p) {
-	          return p.idea === idea;
-	        }).forEach(function (p) {
-	          // logger.debug('upgrading for product', p.name);
-	          p.setMainFeatureDefaults(upgradedDefaults);
-	          // arr[i].setMainFeatureDefaults(upgradedDefaults);
-	        });
-	        break;
-
-	      case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
-	        _products[id].improveMainFeature(p);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
-	        _products[id].improveFeatureByPoints(p);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_CLIENTS_ADD:
-	        _products[id].addClients(p);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_HYPE_ADD:
-	        _products[id].addHype(p.hype);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
-	        _products[id].loseMonthlyHype();
-	        break;
-
-	      case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
-	        _products[id].addViralClients(p);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
-	        _products[id].removeClients(p);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
-	        // { features , KPI, idea, name }
-	        var competitor = p.p;
-	        // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
-	        competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
-	        _products.push(competitor);
-	        break;
-
-	      case c.PRODUCT_ACTIONS_COMPANY_BUY:
-	        _logger2.default.debug('buy company store');
-	        var buyerId = p.buyerId,
-	            sellerId = p.sellerId;
-
-
-	        var buyer = _products[buyerId];
-	        var seller = _products[sellerId];
-
-	        var difference = _companyMerger2.default.merge(buyer, seller);
-
-	        _products[buyerId].KPI.clients = difference.clients;
-	        _products[buyerId].features.offer = difference.features;
-
-	        _products.splice(sellerId, 1);
-	        break;
-
-	      default:
-	        break;
-	    }
-	  })();
-
-	  if (change) {
-	    _stats2.default.saveAction(p.type, p);
-
-	    store.emitChange();
-	  }
-	});
-
-	exports.default = store;
-
-/***/ },
-/* 146 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var PRODUCT_ACTIONS_IMPROVE_FEATURE = exports.PRODUCT_ACTIONS_IMPROVE_FEATURE = 'PRODUCT_ACTIONS_IMPROVE_FEATURE';
-	var PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE = exports.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE = 'PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE';
-	var PRODUCT_ACTIONS_CLIENTS_ADD = exports.PRODUCT_ACTIONS_CLIENTS_ADD = 'PRODUCT_ACTIONS_CLIENTS_ADD';
-	var PRODUCT_ACTIONS_CLIENTS_REMOVE = exports.PRODUCT_ACTIONS_CLIENTS_REMOVE = 'PRODUCT_ACTIONS_CLIENTS_REMOVE';
-	var PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD = exports.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD = 'PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD';
-	var PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS = exports.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS = 'PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS';
-	var PRODUCT_ACTIONS_SWITCH_STAGE = exports.PRODUCT_ACTIONS_SWITCH_STAGE = 'PRODUCT_ACTIONS_SWITCH_STAGE';
-	var PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = exports.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS = 'PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS';
-	var PRODUCT_ACTIONS_TEST_HYPOTHESIS = exports.PRODUCT_ACTIONS_TEST_HYPOTHESIS = 'PRODUCT_ACTIONS_TEST_HYPOTHESIS';
-	var PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = exports.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY = 'PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY';
-	var PRODUCT_ACTIONS_COMPANY_BUY = exports.PRODUCT_ACTIONS_COMPANY_BUY = 'PRODUCT_ACTIONS_COMPANY_BUY';
-	var PRODUCT_ACTIONS_HYPE_ADD = exports.PRODUCT_ACTIONS_HYPE_ADD = 'PRODUCT_ACTIONS_HYPE_ADD';
-	var PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE = exports.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE = 'PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE';
 
 /***/ },
 /* 147 */
@@ -7315,7 +7326,7 @@
 	  value: true
 	});
 
-	var _assign = __webpack_require__(116);
+	var _assign = __webpack_require__(108);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -7339,9 +7350,9 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _events = __webpack_require__(124);
+	var _events = __webpack_require__(92);
 
-	var _dispatcher = __webpack_require__(125);
+	var _dispatcher = __webpack_require__(93);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
@@ -7349,11 +7360,11 @@
 
 	var c = _interopRequireWildcard(_playerActions);
 
-	var _payloads = __webpack_require__(131);
+	var _payloads = __webpack_require__(99);
 
 	var _payloads2 = _interopRequireDefault(_payloads);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -7361,7 +7372,7 @@
 
 	var EXPENSES = _interopRequireWildcard(_expenses2);
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -7377,11 +7388,11 @@
 
 	var _createRandomWorker2 = _interopRequireDefault(_createRandomWorker);
 
-	var _sessionManager = __webpack_require__(89);
+	var _sessionManager = __webpack_require__(119);
 
 	var _sessionManager2 = _interopRequireDefault(_sessionManager);
 
-	var _stats = __webpack_require__(134);
+	var _stats = __webpack_require__(139);
 
 	var _stats2 = _interopRequireDefault(_stats);
 
@@ -7851,7 +7862,7 @@
 	  value: true
 	});
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -7884,7 +7895,7 @@
 
 	var _specialization2 = _interopRequireDefault(_specialization);
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -7984,7 +7995,7 @@
 	  value: true
 	});
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -7992,7 +8003,7 @@
 
 	var _skills2 = _interopRequireDefault(_skills);
 
-	var _random = __webpack_require__(135);
+	var _random = __webpack_require__(140);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -8079,7 +8090,7 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -8138,7 +8149,7 @@
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _scheduleStore = __webpack_require__(123);
+	var _scheduleStore = __webpack_require__(115);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -8146,7 +8157,7 @@
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _productStore = __webpack_require__(145);
+	var _productStore = __webpack_require__(91);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
@@ -8209,9 +8220,9 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _events = __webpack_require__(124);
+	var _events = __webpack_require__(92);
 
-	var _dispatcher = __webpack_require__(125);
+	var _dispatcher = __webpack_require__(93);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
@@ -8223,15 +8234,15 @@
 
 	var t = _interopRequireWildcard(_events2);
 
-	var _payloads = __webpack_require__(131);
+	var _payloads = __webpack_require__(99);
 
 	var _payloads2 = _interopRequireDefault(_payloads);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -8423,7 +8434,7 @@
 	  value: true
 	});
 
-	var _dispatcher = __webpack_require__(125);
+	var _dispatcher = __webpack_require__(93);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
@@ -8431,7 +8442,7 @@
 
 	var ACTIONS = _interopRequireWildcard(_playerActions);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -8550,19 +8561,19 @@
 	  value: true
 	});
 
-	var _dispatcher = __webpack_require__(125);
+	var _dispatcher = __webpack_require__(93);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _scheduleActions = __webpack_require__(130);
+	var _scheduleActions = __webpack_require__(116);
 
 	var ACTIONS = _interopRequireWildcard(_scheduleActions);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _scheduleStore = __webpack_require__(123);
+	var _scheduleStore = __webpack_require__(115);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -8642,11 +8653,11 @@
 	  value: true
 	});
 
-	var _assign = __webpack_require__(116);
+	var _assign = __webpack_require__(108);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
-	var _dispatcher = __webpack_require__(125);
+	var _dispatcher = __webpack_require__(93);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
@@ -8654,7 +8665,7 @@
 
 	var ACTIONS = _interopRequireWildcard(_messageActions);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -8697,19 +8708,19 @@
 	  value: true
 	});
 
-	var _dispatcher = __webpack_require__(125);
+	var _dispatcher = __webpack_require__(93);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _productActions = __webpack_require__(146);
+	var _productActions = __webpack_require__(98);
 
 	var ACTIONS = _interopRequireWildcard(_productActions);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _productStore = __webpack_require__(145);
+	var _productStore = __webpack_require__(91);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
@@ -8832,11 +8843,11 @@
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _gameStages = __webpack_require__(108);
+	var _gameStages = __webpack_require__(117);
 
 	var gameStages = _interopRequireWildcard(_gameStages);
 
@@ -8963,7 +8974,7 @@
 	  value: true
 	});
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var jobConstants = _interopRequireWildcard(_job);
 
@@ -8971,11 +8982,11 @@
 
 	var professionsConstants = _interopRequireWildcard(_professions);
 
-	var _workSpeed = __webpack_require__(133);
+	var _workSpeed = __webpack_require__(118);
 
 	var workSpeedConstants = _interopRequireWildcard(_workSpeed);
 
-	var _gameStages = __webpack_require__(108);
+	var _gameStages = __webpack_require__(117);
 
 	var gameStagesConstants = _interopRequireWildcard(_gameStages);
 
@@ -8983,11 +8994,11 @@
 
 	var expensesConstants = _interopRequireWildcard(_expenses);
 
-	var _ideas = __webpack_require__(110);
+	var _ideas = __webpack_require__(102);
 
 	var ideasConstants = _interopRequireWildcard(_ideas);
 
-	var _productStages = __webpack_require__(111);
+	var _productStages = __webpack_require__(103);
 
 	var productStagesConstants = _interopRequireWildcard(_productStages);
 
@@ -9162,7 +9173,7 @@
 
 	exports.__esModule = true;
 
-	var _assign = __webpack_require__(116);
+	var _assign = __webpack_require__(108);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -9293,7 +9304,7 @@
 	  value: true
 	});
 
-	var _stringify = __webpack_require__(106);
+	var _stringify = __webpack_require__(136);
 
 	var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -9319,7 +9330,7 @@
 
 	var t = _interopRequireWildcard(_events);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -10113,7 +10124,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productStages = __webpack_require__(111);
+	var _productStages = __webpack_require__(103);
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
@@ -10125,7 +10136,7 @@
 
 	var _productPanel2 = _interopRequireDefault(_productPanel);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -10203,7 +10214,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -10215,7 +10226,7 @@
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _productDescriptions = __webpack_require__(120);
+	var _productDescriptions = __webpack_require__(112);
 
 	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
 
@@ -10286,15 +10297,15 @@
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productStore = __webpack_require__(145);
+	var _productStore = __webpack_require__(91);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _Product = __webpack_require__(112);
+	var _Product = __webpack_require__(104);
 
 	var _Product2 = _interopRequireDefault(_Product);
 
@@ -10408,7 +10419,7 @@
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _productStore = __webpack_require__(145);
+	var _productStore = __webpack_require__(91);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
@@ -10420,7 +10431,7 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -10444,11 +10455,11 @@
 
 	var _segment2 = _interopRequireDefault(_segment);
 
-	var _stats = __webpack_require__(134);
+	var _stats = __webpack_require__(139);
 
 	var _stats2 = _interopRequireDefault(_stats);
 
-	var _Product = __webpack_require__(112);
+	var _Product = __webpack_require__(104);
 
 	var _Product2 = _interopRequireDefault(_Product);
 
@@ -10915,8 +10926,7 @@
 	              secondary: true
 	            })
 	          ),
-	          (0, _preact.h)('hr', { width: '60%' }),
-	          ';'
+	          (0, _preact.h)('hr', { width: '60%' })
 	        );
 	      };
 	    }, _this.renderNavbar = function (mode, name) {
@@ -11308,11 +11318,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -11522,7 +11532,7 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -11588,7 +11598,7 @@
 	  value: true
 	});
 
-	var _stringify = __webpack_require__(106);
+	var _stringify = __webpack_require__(136);
 
 	var _stringify2 = _interopRequireDefault(_stringify);
 
@@ -11622,7 +11632,7 @@
 
 	var _skills2 = _interopRequireDefault(_skills);
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -12035,7 +12045,7 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _moneyDifference = __webpack_require__(144);
+	var _moneyDifference = __webpack_require__(90);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
@@ -12043,7 +12053,7 @@
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productStore = __webpack_require__(145);
+	var _productStore = __webpack_require__(91);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
@@ -12055,7 +12065,7 @@
 
 	var _Expenses2 = _interopRequireDefault(_Expenses);
 
-	var _round = __webpack_require__(141);
+	var _round = __webpack_require__(101);
 
 	var _round2 = _interopRequireDefault(_round);
 
@@ -12286,7 +12296,7 @@
 
 	var _playerStore2 = _interopRequireDefault(_playerStore);
 
-	var _productStore = __webpack_require__(145);
+	var _productStore = __webpack_require__(91);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
@@ -12467,11 +12477,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productStore = __webpack_require__(145);
+	var _productStore = __webpack_require__(91);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _round = __webpack_require__(141);
+	var _round = __webpack_require__(101);
 
 	var _round2 = _interopRequireDefault(_round);
 
@@ -12797,7 +12807,7 @@
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
-	var _round = __webpack_require__(141);
+	var _round = __webpack_require__(101);
 
 	var _round2 = _interopRequireDefault(_round);
 
@@ -12844,7 +12854,7 @@
 	  value: true
 	});
 
-	var _assign = __webpack_require__(116);
+	var _assign = __webpack_require__(108);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -12882,7 +12892,7 @@
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -13037,11 +13047,11 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _round = __webpack_require__(141);
+	var _round = __webpack_require__(101);
 
 	var _round2 = _interopRequireDefault(_round);
 
@@ -13403,7 +13413,7 @@
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -13427,13 +13437,7 @@
 
 	      var money = _flux2.default.playerStore.getMoney();
 
-	      var marketStats = _flux2.default.productStore.getMaxAmountOfPossibleClients(id, money);
-	      var marketSize = marketStats.marketSize,
-	          ourClients = marketStats.ourClients,
-	          unbeatableClients = marketStats.unbeatableClients,
-	          competitors = marketStats.competitors;
-
-	      var freeClients = marketSize - ourClients - unbeatableClients;
+	      var competitors = _flux2.default.productStore.getCompetitorsList(id);
 
 	      var rating = _flux2.default.productStore.getRating(id);
 	      // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
@@ -13503,11 +13507,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _round = __webpack_require__(141);
+	var _round = __webpack_require__(101);
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -13916,7 +13920,7 @@
 
 	var _mvpCreator2 = _interopRequireDefault(_mvpCreator);
 
-	var _Menu = __webpack_require__(143);
+	var _Menu = __webpack_require__(89);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -14053,11 +14057,11 @@
 	  value: true
 	});
 
-	var _productStore = __webpack_require__(145);
+	var _productStore = __webpack_require__(91);
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _scheduleStore = __webpack_require__(123);
+	var _scheduleStore = __webpack_require__(115);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -14077,11 +14081,11 @@
 
 	var _playerActions2 = _interopRequireDefault(_playerActions);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _moneyDifference = __webpack_require__(144);
+	var _moneyDifference = __webpack_require__(90);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
@@ -14097,11 +14101,11 @@
 
 	var _stages2 = _interopRequireDefault(_stages);
 
-	var _Product = __webpack_require__(112);
+	var _Product = __webpack_require__(104);
 
 	var _Product2 = _interopRequireDefault(_Product);
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -14285,7 +14289,7 @@
 	  value: true
 	});
 
-	var _random = __webpack_require__(135);
+	var _random = __webpack_require__(140);
 
 	var _random2 = _interopRequireDefault(_random);
 
@@ -14293,7 +14297,7 @@
 
 	var GAME_EVENTS = _interopRequireWildcard(_events);
 
-	var _job = __webpack_require__(109);
+	var _job = __webpack_require__(138);
 
 	var JOB = _interopRequireWildcard(_job);
 
@@ -14313,7 +14317,7 @@
 
 	var _messager2 = _interopRequireDefault(_messager);
 
-	var _logger = __webpack_require__(132);
+	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
 

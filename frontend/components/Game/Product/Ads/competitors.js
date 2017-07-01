@@ -17,14 +17,7 @@ export default class Competitors extends Component {
   render({ id }) {
     const money = flux.playerStore.getMoney();
 
-    const marketStats = flux.productStore.getMaxAmountOfPossibleClients(id, money);
-    const {
-      marketSize,
-      ourClients,
-      unbeatableClients,
-      competitors,
-    } = marketStats;
-    const freeClients = marketSize - ourClients - unbeatableClients;
+    const competitors = flux.productStore.getCompetitorsList(id);
 
     const rating = flux.productStore.getRating(id);
         // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
