@@ -16,6 +16,8 @@ import workerGenerator from '../helpers/team/create-random-worker';
 
 import sessionManager from '../session-manager';
 
+import stats from '../stats';
+
 
 let _skills = {};
 let _money = 1000;
@@ -370,9 +372,10 @@ Dispatcher.register((p: PayloadType) => {
 
 
   if (change) {
-    store.emitChange();
-
+    stats.saveAction(p.type, p);
     sessionManager.savePlayerStorageData(PlayerStore.getStoreData());
+
+    store.emitChange();
   }
 });
 

@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-import '../../session-manager';
+// import '../../session-manager';
 
 import Menu from '../Game/Menu';
 import Product from './Product';
@@ -9,6 +9,7 @@ import Tutorial from './Tutorial';
 
 import productStore from  '../../stores/product-store';
 import scheduleStore from '../../stores/schedule-store';
+import playerStore from '../../stores/player-store';
 import messageStore from  '../../stores/message-store';
 
 import flux from '../../flux';
@@ -94,6 +95,7 @@ export default class Game extends Component {
     this.initialize();
 
     flux.productStore.addChangeListener(this.getProductsFromStore);
+    playerStore.addChangeListener(this.getProductsFromStore);
     flux.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
     flux.messageStore.addChangeListener(this.getMessages);
   }

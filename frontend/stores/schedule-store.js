@@ -8,38 +8,28 @@ import * as GAME_STAGES from '../constants/game-stages';
 
 import { WORK_SPEED_NORMAL } from '../constants/work-speed';
 
+import sessionManager from '../session-manager';
+
 import stats from '../stats';
 
 const EC = 'MAIN_EVENT_CHANGE';
 
 let _tasks = [];
-// let _tasks = [{
-//   description: 'improve main feature',
-//   inProgress: true,
-//   isSynchronous: true,
-//   progress: 1,
-//   timecost: 15 * WORK_SPEED_HAS_MAIN_JOB,
-//   speed: WORK_SPEED_HAS_MAIN_JOB,
-// }, {
-//   description: 'improve secondary feature',
-//   inProgress: true,
-//   isSynchronous: false,
-//   progress: 8,
-//   timecost: 2 * WORK_SPEED_NORMAL,
-//   speed: WORK_SPEED_NORMAL
-// }, {
-//   description: 'improve analytics',
-//   inProgress: false,
-//   isSynchronous: true,
-//   progress: 1,
-//   timecost: 2 * WORK_SPEED_NORMAL,
-//   speed: WORK_SPEED_NORMAL
-// }];
 
 let _day = 1;
-let _workHours = 4;
 
 let _gamePhase = GAME_STAGES.GAME_STAGE_INIT;
+
+const initialize = ({ tasks, day, gamePhase }) => {
+  _tasks = tasks;
+  _day = day;
+  _gamePhase = gamePhase;
+};
+
+// logger.debug('sch store', sessionManager);
+// logger.debug('sch store loaded');
+
+initialize(sessionManager.getScheduleStorageData());
 
 class ScheduleStore extends EventEmitter {
   addChangeListener(cb:Function) {
@@ -66,13 +56,7 @@ class ScheduleStore extends EventEmitter {
     return _gamePhase;
   }
 
-  initialize({ tasks, day, gamePhase }) {
-    _tasks = tasks;
-    _day = day;
-    _gamePhase = gamePhase;
-  }
-
-  getStoreData() {
+  static getStoreData() {
     return {
       tasks: _tasks,
       day: _day,
@@ -144,7 +128,7 @@ Dispatcher.register((p: PayloadType) => {
       // let tasks = [10, 1, 3, 2]; // p.tasks.sort((a, b) => a - b);
       let tasks = p.tasks.sort((a, b) => b - a);
 
-      tasks.forEach((taskId, i) => {
+      tasks.forEach((taskId) => {
         // const callback = _tasks[taskId].cb;
 
         // if (callback) {
@@ -182,6 +166,7 @@ Dispatcher.register((p: PayloadType) => {
 
   if (change) {
     stats.saveAction(p.type, p);
+    sessionManager.saveScheduleStorageData(ScheduleStore.getStoreData());
 
     store.emitChange();
   }

@@ -101,8 +101,9 @@ function getFromStorage(name) {
 
     setDefaultValues();
   }
+  // setDefaultValues();
 
-  logger.log('pick from session-manager', name);
+  // logger.log('pick from session-manager', name);
   return sessionStorage.getFromStorage(name);
 }
 
@@ -147,34 +148,34 @@ function getPlayerStorageData() {
 }
 
 function getProductStorageData() {
-  return getFromStorage('products');
+  return JSON.parse(getFromStorage('products'));
+}
+
+function saveProductStorageData(products) {
+  return {
+    products: saveToStorage('products', products)
+  }
 }
 
 function getScheduleStorageData() {
   return {
-    tasks: getFromStorage('tasks'),
-    day: getFromStorage('day'),
-    gamePhase: getFromStorage('gamePhase')
+    tasks: Array.from(JSON.parse(getFromStorage('tasks'))),
+    day: Number.parseInt(getFromStorage('day')),
+    gamePhase: Number.parseInt(getFromStorage('gamePhase'))
+  };
+}
+
+function saveScheduleStorageData({ tasks, day, gamePhase }) {
+  return {
+    tasks: saveToStorage('tasks', tasks),
+    day: saveToStorage('day', day),
+    gamePhase: saveToStorage('gamePhase', gamePhase)
   };
 }
 
 function getMessageStorageData() {
   return getFromStorage('messages');
 }
-
-// export function initialize() {
-//   logger.log('initialize, session-manager');
-//
-//   const playerData = getPlayerStorageData();
-//   const productsData = getProductStorageData();
-//   const scheduleData = getScheduleStorageData();
-//   // const messageData = getMessageStorageData();
-//
-//   flux.scheduleStore.initialize(scheduleData);
-//   flux.productStore.initialize(productsData);
-//   flux.playerStore.initialize(playerData);
-//   // flux.playerStore.initialize(playerData);
-// }
 
 logger.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
 
@@ -184,7 +185,9 @@ export default {
   getScheduleStorageData,
   getMessageStorageData,
 
-  savePlayerStorageData
+  savePlayerStorageData,
+  saveScheduleStorageData,
+  saveProductStorageData
 }
 
 // initialize();

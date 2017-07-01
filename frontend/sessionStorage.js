@@ -37,9 +37,9 @@ function unsetFromObject(arrName, id){
 function clearStorage(){
   localStorage.clear();
 
-  saveInStorage('tournaments', []);
-  saveInStorage('addresses', {});
-  saveInStorage('money', 0);
+  // saveInStorage('tournaments', []);
+  // saveInStorage('addresses', {});
+  // saveInStorage('money', 0);
 }
 
 //clearStorage();
