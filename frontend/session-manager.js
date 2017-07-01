@@ -3,10 +3,13 @@ import flux from './flux';
 
 import * as GAME_STAGES from './constants/game-stages';
 import * as JOB from './constants/job';
-
 import * as IDEAS from './constants/products/ideas';
 import * as PRODUCT_STAGES from './constants/products/product-stages';
+
 import Product from './classes/Product';
+import productDescriptions from './helpers/products/product-descriptions';
+
+import logger from './helpers/logger/logger';
 
 function setDefaultValues() {
   // schedule
@@ -89,6 +92,13 @@ function setDefaultValues() {
 }
 
 function getFromStorage(name) {
+  if (!sessionStorage.getFromStorage('sessionId')) {
+    sessionStorage.saveInStorage('sessionId', 'asd');
+
+    setDefaultValues();
+  }
+
+  logger.log('pick from session-manager', name);
   return sessionStorage.getFromStorage(name);
 }
 
@@ -123,11 +133,7 @@ function getMessageStorageData() {
 }
 
 export function initialize() {
-  if (!sessionStorage.getFromStorage('sessionId')) {
-    sessionStorage.saveInStorage('sessionId', 'asd');
-
-    setDefaultValues();
-  }
+  logger.log('initialize, session-manager');
 
   const playerData = getPlayerStorageData();
   const productsData = getProductStorageData();
@@ -140,8 +146,6 @@ export function initialize() {
   // flux.playerStore.initialize(playerData);
 }
 
-initialize();
+logger.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
 
-// export default function () {
-//
-// }
+// initialize();

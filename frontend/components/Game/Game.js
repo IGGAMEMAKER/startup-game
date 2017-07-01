@@ -1,6 +1,8 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
+import '../../session-manager';
+
 import Menu from '../Game/Menu';
 import Product from './Product';
 import Tutorial from './Tutorial';
@@ -92,9 +94,7 @@ export default class Game extends Component {
     this.initialize();
 
     flux.productStore.addChangeListener(this.getProductsFromStore);
-
     flux.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
-
     flux.messageStore.addChangeListener(this.getMessages);
   }
 
@@ -107,8 +107,10 @@ export default class Game extends Component {
     return <Product product={product} id={id} />;
   };
 
-  renderGameInNormalMode = (props, state) => {
-    const body = this.renderProductMenu(state);
+  render(props: PropsType, state) {
+    if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) {
+      return <Tutorial />;
+    }
 
     const MessageTab = <div className="bottom-fixed">MessageTab</div>;
 
@@ -117,29 +119,21 @@ export default class Game extends Component {
         <UI.Modal onclose={this.resumeGame} />
         <div className="body-wrapper">
           <div className="menu-fixed">
-          <Menu
-            pause={state.pause}
-            pauseGame={this.pauseGame}
-            setGameSpeed={this.setGameSpeed}
-            day={state.day}
-          />
+            <Menu
+              pause={state.pause}
+              pauseGame={this.pauseGame}
+              setGameSpeed={this.setGameSpeed}
+              day={state.day}
+            />
           </div>
           <hr />
-          {body}
+          {this.renderProductMenu(state)}
           <br />
           <hr />
           {MessageTab}
         </div>
       </div>
     );
-  };
-
-  render(props: PropsType, state) {
-    if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) {
-      return <Tutorial />;
-    }
-
-    return this.renderGameInNormalMode(props, state);
 
     //   <h3>Два вопроса бизнеса</h3>
     //   <div>Готовы ли люди этим пользоваться</div>

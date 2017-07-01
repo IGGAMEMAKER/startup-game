@@ -474,3 +474,8 @@ textarea {
 .product-menu-toggler.active {
   color: var(--active-menu-item-color);
 }
+
+.product-panel-body {
+  padding: 15px;
+  min-height: 500px;
+}

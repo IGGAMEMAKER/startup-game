@@ -146,7 +146,7 @@ export default class ProductPanel extends Component {
     let feature = featureList.filter(f => f.name === unlockedFeature);
 
     if (groupType === 'payment' && stageHelper.isInstallPaymentModuleMission()) {
-      return feature.map(this.renderFeature(groupType, id, idea, true, stageHelper.onInstallPaymentModuleMissionCompleted));
+      return feature.map(this.renderFeature(groupType, id, idea, stageHelper.onInstallPaymentModuleMissionCompleted));
     } else {
       return feature.map(this.renderFeature(groupType, id, idea));
     }
@@ -355,7 +355,9 @@ export default class ProductPanel extends Component {
     </div>;
   }
 
-  renderFeatureSupportCost(support) {
+  renderFeatureSupportCost(feature) {
+    if (!feature.support) return '';
+
     let money;
     let mp;
     let pp;
@@ -371,7 +373,7 @@ export default class ProductPanel extends Component {
     return <div>Стоимость поддержки (ежемесячно) - {mp} {pp} {money}</div>;
   };
 
-  renderFeature = (featureGroup, id, idea, hideOnComplete, onUpgraded) => (feature, i) => {
+  renderFeature = (featureGroup, id, idea, onUpgraded) => (feature, i) => {
     const featureName = feature.name;
 
     const key = `feature${featureGroup}${featureName}${i}`;
@@ -384,7 +386,7 @@ export default class ProductPanel extends Component {
     const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
 
     const upgradeFeature = event => {
-      logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
+      // logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
 
       if (enoughPointsToUpgrade) {
         playerActions.spendPoints(pp, mp);
@@ -393,6 +395,7 @@ export default class ProductPanel extends Component {
         if (featureGroup === 'analytics' && stageHelper.isInstallPrimitiveAnalyticsMission()) {
           stageHelper.onInstallPrimitiveAnalyticsMissionCompleted();
         }
+
         if (onUpgraded) {
           onUpgraded();
         }
@@ -400,33 +403,11 @@ export default class ProductPanel extends Component {
     };
 
     const description = feature.description || '';
-    const isUpgraded = productStore.getFeatureStatus(id, featureGroup, featureName);
-
-    const separator = <hr width="60%" />;
 
     const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
-    if (isUpgraded) {
-      if (hideOnComplete) {
-        return <div key={key}></div>;
-      }
-
-      return (
-        <div key={key}>
-          {userOrientedFeatureName}: Улучшено {UI.symbols.ok}
-          <br />
-          <div className="featureDescription">{description}</div>
-          {separator}
-        </div>
-      );
-    }
 
     const mpColors = points.marketing < mp ? "noPoints": "enoughPoints";
     const ppColors = points.programming < pp ? "noPoints": "enoughPoints";
-
-    let support;
-    if (feature.support) {
-      support = this.renderFeatureSupportCost(feature.support);
-    }
 
     return (
       <div key={key}>
@@ -441,7 +422,7 @@ export default class ProductPanel extends Component {
               {mp > 0 ? <span className={mpColors}>{mp}MP&nbsp;</span> : ''}
               {pp > 0 ? <span className={ppColors}>{pp}PP</span> : ''}
             </div>
-            <div>{support}</div>
+            <div>{this.renderFeatureSupportCost(feature)}</div>
           </div>
           <UI.Button
             text="Улучшить"
@@ -450,7 +431,7 @@ export default class ProductPanel extends Component {
             secondary
           />
         </div>
-        {separator}
+        <hr width="60%" />;
       </div>
     )
   };
@@ -588,7 +569,7 @@ export default class ProductPanel extends Component {
       <div>
         {metrics}
         {menu}
-        <div style={{padding: '15px', 'min-height': '500px'}}>
+        <div className="product-panel-body">
           {body}
         </div>
       </div>

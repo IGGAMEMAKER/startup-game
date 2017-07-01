@@ -10,6 +10,7 @@
 import React, { Component, PropTypes } from 'react';
 import emptyFunction from 'fbjs/lib/emptyFunction';
 import s from './App.scss';
+
 import Game from '../Game/Game';
 
 class App extends Component {
