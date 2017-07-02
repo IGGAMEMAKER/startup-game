@@ -14623,7 +14623,7 @@
 
 	      return (0, _preact.h)(
 	        'div',
-	        null,
+	        { className: 'bonus-wrapper' },
 	        (0, _preact.h)('div', { className: 'bonus-icon', style: '' }),
 	        (0, _preact.h)(
 	          'div',

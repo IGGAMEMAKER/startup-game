@@ -254,6 +254,46 @@ textarea {
   min-width: 280px;
 }
 
+.btn-primary,
+.btn-success {
+  border-radius: 0 !important;
+}
+
+.bonus-wrapper {
+  margin: 10px 0px;
+  background-color: #464646;
+  padding: 16px 0;
+  border-color: aqua;
+  border-style: solid;
+  border-width: thin;
+}
+
+.bonus-icon {
+  background-image: url(http://serenityva.com/wp-content/uploads/2013/02/bonus-red.png);
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  background-position: center;
+  background-size: cover;
+}
+
+.bonus-description-wrapper {
+  display: inline-block;
+  padding-left: 10px;
+}
+.bonus-title {
+
+}
+.bonus-description {
+
+}
+.bonus-description-short {
+
+}
+.bonus-cost {
+
+}
+
 .featureGroupTitle {
 //padding: 7px;
   font-weight: 700;

@@ -25,7 +25,7 @@ export default class Bonus extends Component {
     const onPick = props.onPickBonus ? props.onPickBonus : () => {};
 
     return (
-      <div>
+      <div className="bonus-wrapper">
         <div className={`bonus-icon`} style=""></div>
         <div className="bonus-description-wrapper">
           <div className="bonus-title">{props.title}</div>
