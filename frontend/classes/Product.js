@@ -989,7 +989,7 @@ export default class Product {
   }
 
   getTechBreakthroughModifierForHype() {
-    return Math.ceil(this.getClients() * this.getBlogPower());
+    return Math.ceil(Math.pow(this.getClients(), 0.5) * this.getBlogPower());
   }
 
   getTechnologyComplexityModifier() {
