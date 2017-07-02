@@ -582,6 +582,10 @@
 
 	var _preact = __webpack_require__(1);
 
+	var _sessionManager = __webpack_require__(119);
+
+	var _sessionManager2 = _interopRequireDefault(_sessionManager);
+
 	var _Menu = __webpack_require__(89);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
@@ -633,10 +637,6 @@
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// import React, { Component, PropTypes } from 'react';
-
-	// import '../../session-manager';
 
 	var Game = function (_Component) {
 	  (0, _inherits3.default)(Game, _Component);
@@ -757,6 +757,8 @@
 	          this.renderProductMenu(state),
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)('hr', null),
+	          (0, _preact.h)(_UI2.default.Button, { link: true, onClick: _sessionManager2.default.restartGame, text: '\u0420\u0435\u0441\u0442\u0430\u0440\u0442 \u0438\u0433\u0440\u044B' }),
+	          (0, _preact.h)(_UI2.default.Button, { link: true, onClick: _sessionManager2.default.restartGame, text: '\u0420\u0435\u0441\u0442\u0430\u0440\u0442 \u0438\u0433\u0440\u044B' }),
 	          MessageTab
 	        )
 	      );
@@ -768,6 +770,7 @@
 	  }]);
 	  return Game;
 	}(_preact.Component);
+	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = Game;
 
@@ -5682,7 +5685,7 @@
 	        _logger2.default.shit('need game message, that we became tech leaders! classes/product.js');
 	      }
 
-	      this.XP -= p.value;
+	      // this.XP -= p.value;
 
 	      if (this.improvements) {
 	        this.improvements++;
@@ -6387,6 +6390,10 @@
 
 	var PRODUCT_STAGES = _interopRequireWildcard(_productStages);
 
+	var _stats = __webpack_require__(139);
+
+	var _stats2 = _interopRequireDefault(_stats);
+
 	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
@@ -6527,10 +6534,13 @@
 	}
 
 	function getFromStorage(name) {
-	  // setDefaultValues();
-
-	  // logger.log('pick from session-manager', name);
 	  return _sessionStorage2.default.getFromStorage(name);
+	}
+
+	function restartGame() {
+	  setDefaultValues();
+
+	  _stats2.default.saveAction('restartGame', {});
 	}
 
 	function savePlayerStorageData(_ref) {
@@ -6638,7 +6648,9 @@
 
 	  savePlayerStorageData: savePlayerStorageData,
 	  saveScheduleStorageData: saveScheduleStorageData,
-	  saveProductStorageData: saveProductStorageData
+	  saveProductStorageData: saveProductStorageData,
+
+	  restartGame: restartGame
 	};
 
 /***/ },
@@ -10949,6 +10961,7 @@
 	      if (_stages2.default.canShowHypothesisTab()) {
 	        hypothesis = _this.renderNavbar(MODE_HYPOTHESIS, 'Аналитика');
 	      }
+	      hypothesis = '';
 
 	      var improvements = void 0;
 	      if (_stages2.default.canShowMainFeatureTab()) {
@@ -12731,6 +12744,8 @@
 	        )
 	      );
 
+	      expertiseTab = '';
+
 	      var hypeTab = (0, _preact.h)(
 	        'li',
 	        null,
@@ -13101,9 +13116,8 @@
 	        var pp = _flux2.default.productStore.getMainFeatureUpgradeCost(id, featureId);
 
 	        var enoughPPs = _flux2.default.playerStore.enoughProgrammingPoints(pp);
-	        var currentXP = product.XP; // flux.productStore.getXP(id);
 
-	        var disabled = !enoughPPs || currentXP < 1000;
+	        var disabled = !enoughPPs;
 
 	        return (0, _preact.h)(
 	          'div',
@@ -13207,13 +13221,6 @@
 	          (0, _preact.h)('br', null),
 	          (0, _preact.h)(
 	            'div',
-	            null,
-	            '\u0414\u043E\u0441\u0442\u0443\u043F\u043D\u043E: ',
-	            product.XP,
-	            'XP'
-	          ),
-	          (0, _preact.h)(
-	            'div',
 	            { className: 'featureGroupBody' },
 	            featureList
 	          )
@@ -13280,6 +13287,8 @@
 	  }, {
 	    key: 'renderSegmentRatingImprovementList',
 	    value: function renderSegmentRatingImprovementList(segments, id, featureId) {
+	      if (_flux2.default.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) return '';
+
 	      var openedInfluence = false;
 
 	      var segmentRatingImprovementList = segments.map(function (s) {

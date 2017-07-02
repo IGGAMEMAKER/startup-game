@@ -1065,7 +1065,7 @@ export default class Product {
       logger.shit('need game message, that we became tech leaders! classes/product.js');
     }
 
-    this.XP -= p.value;
+    // this.XP -= p.value;
 
     if (this.improvements) {
       this.improvements++;

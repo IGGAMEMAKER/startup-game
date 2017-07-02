@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-// import '../../session-manager';
+import sessionManager from '../../helpers/session-manager';
 
 import Menu from '../Game/Menu';
 import Product from './Product';
@@ -132,6 +132,8 @@ export default class Game extends Component {
           {this.renderProductMenu(state)}
           <br />
           <hr />
+          <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
+          <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
           {MessageTab}
         </div>
       </div>

@@ -8,6 +8,8 @@ import * as JOB from './../constants/job';
 import * as IDEAS from './../constants/products/ideas';
 import * as PRODUCT_STAGES from './../constants/products/product-stages';
 
+import stats from '../stats';
+
 
 import logger from './logger/logger';
 
@@ -151,10 +153,13 @@ if (!sessionStorage.getFromStorage('sessionId')) {
 }
 
 function getFromStorage(name) {
-  // setDefaultValues();
-
-  // logger.log('pick from session-manager', name);
   return sessionStorage.getFromStorage(name);
+}
+
+function restartGame() {
+  setDefaultValues();
+
+  stats.saveAction('restartGame', {});
 }
 
 
@@ -245,5 +250,7 @@ export default {
 
   savePlayerStorageData,
   saveScheduleStorageData,
-  saveProductStorageData
+  saveProductStorageData,
+
+  restartGame,
 }

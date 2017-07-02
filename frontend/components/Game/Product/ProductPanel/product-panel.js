@@ -454,6 +454,7 @@ export default class ProductPanel extends Component {
     if (stageHelper.canShowHypothesisTab()) {
       hypothesis = this.renderNavbar(MODE_HYPOTHESIS, 'Аналитика');
     }
+    hypothesis = '';
 
     let improvements;
     if (stageHelper.canShowMainFeatureTab()) {

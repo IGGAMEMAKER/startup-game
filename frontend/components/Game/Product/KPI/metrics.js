@@ -140,6 +140,8 @@ export default class Metrics extends Component {
       <span className="metric-link" onClick={onExpertisePressed}>Повысить</span>
     </li>;
 
+    expertiseTab = '';
+
     let hypeTab = <li>
         <b>HYPE: {hype}</b>
       </li>;

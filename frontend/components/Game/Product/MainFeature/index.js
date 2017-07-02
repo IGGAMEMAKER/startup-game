@@ -34,7 +34,6 @@ export default class MainFeature extends Component {
             что приводит к снижению оттока клиентов и увеличению доходов с продукта
           </div>
           <br />
-          <div>Доступно: {product.XP}XP</div>
           <div className="featureGroupBody">{featureList}</div>
         </div>
       </div>
@@ -66,6 +65,8 @@ export default class MainFeature extends Component {
   }
 
   renderSegmentRatingImprovementList(segments, id, featureId) {
+    if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) return '';
+
     let openedInfluence = false;
 
     const segmentRatingImprovementList = segments
@@ -141,9 +142,8 @@ export default class MainFeature extends Component {
     const pp = flux.productStore.getMainFeatureUpgradeCost(id, featureId);
 
     const enoughPPs = flux.playerStore.enoughProgrammingPoints(pp);
-    const currentXP = product.XP; // flux.productStore.getXP(id);
 
-    const disabled = !enoughPPs || currentXP < 1000;
+    const disabled = !enoughPPs;
 
     return <div key={key}>
       <div>
