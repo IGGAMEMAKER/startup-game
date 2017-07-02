@@ -1,11 +1,5 @@
 import { h, Component } from 'preact';
 
-type PropsType = {};
-
-type StateType = {};
-
-type ResponseType = {};
-
 import flux from '../../../../flux';
 import Competitor from './competitor';
 
@@ -23,6 +17,8 @@ export default class Competitors extends Component {
     const competitors = flux.productStore.getCompetitorsList(id);
 
     const rating = flux.productStore.getRating(id);
+
+    logger.shit('competitors.js hardcoded isCompetitor check: c.id != 0');
 
     const competitorList = competitors.map((c, i) =>
       <Competitor

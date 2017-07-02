@@ -19,8 +19,6 @@ const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Un
 export default class Product {
   constructor(data, createFromObject) {
     if (createFromObject) {
-      logger.debug('createFrom Object Product.js', data);
-
       this.features = data.features;
       this.featuresOnCreate = data.featuresOnCreate;
       this.KPI = data.KPI;
@@ -49,12 +47,14 @@ export default class Product {
     }
 
     const defaults = productDescriptions(idea);
+
+    // logger.log('new Product constructor', defaultFeatures);
+    // const defaultFeatures = defaults.features;
+
     if (!defaultFeatures) {
       logger.error(idea, name, isCompetitor);
       throw 'no default features!!!';
     }
-    // logger.log('new Product constructor', defaultFeatures);
-    // const defaultFeatures = defaults.features;
 
     let maxRating = 6;
     if (isCompetitor) {
@@ -76,7 +76,9 @@ export default class Product {
       // not only chat with users, but also localisations, content updates
       // and all sort of things, that you need doing constantly
       support: {},
-      payment: {}
+      payment: {},
+
+      bonuses: {}
     };
 
     const clients = isCompetitor ? Math.ceil(random(100, defaults.marketSize / 10)) : 10;
@@ -715,7 +717,15 @@ export default class Product {
     return this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured().supportCost;
   }
 
-  getMarketingFeatureList(idea) {
+  getBonusesList() {
+    
+  }
+
+  getSegmentBonuses() {
+
+  }
+
+  getMarketingFeatureList() {
     return [
       {
         name: 'blog', shortDescription: 'Блог проекта',
@@ -762,7 +772,6 @@ export default class Product {
       // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
       //   points: { marketing: 50, programming: 100 }, time: 7 }
     ];
-    // ].map(computeFeatureCost(cost));
   };
 
   getHypothesisAnalyticsFeatures(idea) {

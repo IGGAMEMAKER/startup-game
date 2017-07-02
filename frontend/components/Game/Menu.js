@@ -74,13 +74,16 @@ export default class Menu extends Component {
     const month = Math.floor((props.day - year * 360) / 30);
     const day = props.day - year * 360 - month * 30;
 
+    // {day}.{month}.{year + 2016}
+    //       <div>{new Date(year + 2016, month, day).toLocaleDateString()}</div>
+    //       <div>Год: {year + 2016} Месяц: {month} День: {day}</div>
     return <div>
       <div>
         <div className="navigation">
           <div className={moneyIndication}>${state.money} ({moneyDifference}$)</div>
         </div>
         <div className="navigation">
-          <div>Год: {year} Месяц: {month} День: {day}</div>
+          <div>{day + 1}.{month + 1}.{year + 2016}</div>
         </div>
         {speedIcons}
         <div className="navigation">{pauseOrContinue}</div>

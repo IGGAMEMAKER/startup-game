@@ -7,11 +7,6 @@ import Menu from '../Game/Menu';
 import Product from './Product';
 import Tutorial from './Tutorial';
 
-import productStore from  '../../stores/product-store';
-import scheduleStore from '../../stores/schedule-store';
-import playerStore from '../../stores/player-store';
-import messageStore from  '../../stores/message-store';
-
 import flux from '../../flux';
 
 import gameRunner from '../../game';
@@ -71,22 +66,22 @@ export default class Game extends Component {
   };
 
   getMessages = () => {
-    if (messageStore.isDrawable()) {
+    if (flux.messageStore.isDrawable()) {
       this.pauseGame();
     }
   };
 
   pickDataFromScheduleStore = () => {
     this.setState({
-      day: scheduleStore.getDay(),
-      tasks: scheduleStore.getTasks(),
-      gamePhase: scheduleStore.getGamePhase()
+      day: flux.scheduleStore.getDay(),
+      tasks: flux.scheduleStore.getTasks(),
+      gamePhase: flux.scheduleStore.getGamePhase()
     })
   };
 
   getProductsFromStore = () => {
     this.setState({
-      products: productStore.getOurProducts()
+      products: flux.productStore.getOurProducts()
     });
   };
 
@@ -95,7 +90,7 @@ export default class Game extends Component {
     this.initialize();
 
     flux.productStore.addChangeListener(this.getProductsFromStore);
-    playerStore.addChangeListener(this.getProductsFromStore);
+    flux.playerStore.addChangeListener(this.getProductsFromStore);
     flux.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
     flux.messageStore.addChangeListener(this.getMessages);
   }

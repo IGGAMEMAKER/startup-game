@@ -205,11 +205,9 @@ function getPlayerStorageData() {
 function getProductStorageData() {
   const data = getFromStorage('products');
 
-  logger.debug('getProductStorageData', data);
-
   const products: Array<Product> = Array.from(JSON.parse(data));
 
-  logger.debug('getProductStorageData', products);
+  // logger.debug('getProductStorageData', products);
 
   return products.map(p => new Product(p, true));
 }

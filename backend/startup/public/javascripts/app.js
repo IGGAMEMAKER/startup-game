@@ -598,22 +598,6 @@
 
 	var _Tutorial2 = _interopRequireDefault(_Tutorial);
 
-	var _productStore = __webpack_require__(91);
-
-	var _productStore2 = _interopRequireDefault(_productStore);
-
-	var _scheduleStore = __webpack_require__(115);
-
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
-
-	var _playerStore = __webpack_require__(147);
-
-	var _playerStore2 = _interopRequireDefault(_playerStore);
-
-	var _messageStore = __webpack_require__(155);
-
-	var _messageStore2 = _interopRequireDefault(_messageStore);
-
 	var _flux = __webpack_require__(154);
 
 	var _flux2 = _interopRequireDefault(_flux);
@@ -690,18 +674,18 @@
 	    }, _this.resumeGame = function () {
 	      _this.setState({ pause: false });
 	    }, _this.getMessages = function () {
-	      if (_messageStore2.default.isDrawable()) {
+	      if (_flux2.default.messageStore.isDrawable()) {
 	        _this.pauseGame();
 	      }
 	    }, _this.pickDataFromScheduleStore = function () {
 	      _this.setState({
-	        day: _scheduleStore2.default.getDay(),
-	        tasks: _scheduleStore2.default.getTasks(),
-	        gamePhase: _scheduleStore2.default.getGamePhase()
+	        day: _flux2.default.scheduleStore.getDay(),
+	        tasks: _flux2.default.scheduleStore.getTasks(),
+	        gamePhase: _flux2.default.scheduleStore.getGamePhase()
 	      });
 	    }, _this.getProductsFromStore = function () {
 	      _this.setState({
-	        products: _productStore2.default.getOurProducts()
+	        products: _flux2.default.productStore.getOurProducts()
 	      });
 	    }, _this.renderProductMenu = function (state) {
 	      if (!state.products.length) return (0, _preact.h)('div', null);
@@ -719,7 +703,7 @@
 	      this.initialize();
 
 	      _flux2.default.productStore.addChangeListener(this.getProductsFromStore);
-	      _playerStore2.default.addChangeListener(this.getProductsFromStore);
+	      _flux2.default.playerStore.addChangeListener(this.getProductsFromStore);
 	      _flux2.default.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
 	      _flux2.default.messageStore.addChangeListener(this.getMessages);
 	    }
@@ -2442,6 +2426,9 @@
 	      var month = Math.floor((props.day - year * 360) / 30);
 	      var day = props.day - year * 360 - month * 30;
 
+	      // {day}.{month}.{year + 2016}
+	      //       <div>{new Date(year + 2016, month, day).toLocaleDateString()}</div>
+	      //       <div>Год: {year + 2016} Месяц: {month} День: {day}</div>
 	      return (0, _preact.h)(
 	        'div',
 	        null,
@@ -2467,12 +2454,11 @@
 	            (0, _preact.h)(
 	              'div',
 	              null,
-	              '\u0413\u043E\u0434: ',
-	              year,
-	              ' \u041C\u0435\u0441\u044F\u0446: ',
-	              month,
-	              ' \u0414\u0435\u043D\u044C: ',
-	              day
+	              day + 1,
+	              '.',
+	              month + 1,
+	              '.',
+	              year + 2016
 	            )
 	          ),
 	          speedIcons,
@@ -4552,8 +4538,6 @@
 	    (0, _classCallCheck3.default)(this, Product);
 
 	    if (createFromObject) {
-	      _logger2.default.debug('createFrom Object Product.js', data);
-
 	      this.features = data.features;
 	      this.featuresOnCreate = data.featuresOnCreate;
 	      this.KPI = data.KPI;
@@ -4586,12 +4570,14 @@
 	    }
 
 	    var defaults = (0, _productDescriptions2.default)(idea);
+
+	    // logger.log('new Product constructor', defaultFeatures);
+	    // const defaultFeatures = defaults.features;
+
 	    if (!defaultFeatures) {
 	      _logger2.default.error(idea, name, isCompetitor);
 	      throw 'no default features!!!';
 	    }
-	    // logger.log('new Product constructor', defaultFeatures);
-	    // const defaultFeatures = defaults.features;
 
 	    var maxRating = 6;
 	    if (isCompetitor) {
@@ -4615,7 +4601,9 @@
 	      // not only chat with users, but also localisations, content updates
 	      // and all sort of things, that you need doing constantly
 	      support: {},
-	      payment: {}
+	      payment: {},
+
+	      bonuses: {}
 	    };
 
 	    var clients = isCompetitor ? Math.ceil((0, _random2.default)(100, defaults.marketSize / 10)) : 10;
@@ -5321,8 +5309,14 @@
 	      return this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured().supportCost;
 	    }
 	  }, {
+	    key: 'getBonusesList',
+	    value: function getBonusesList() {}
+	  }, {
+	    key: 'getSegmentBonuses',
+	    value: function getSegmentBonuses() {}
+	  }, {
 	    key: 'getMarketingFeatureList',
-	    value: function getMarketingFeatureList(idea) {
+	    value: function getMarketingFeatureList() {
 	      return [{
 	        name: 'blog', shortDescription: 'Блог проекта',
 	        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
@@ -5362,7 +5356,6 @@
 	      // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
 	      //   points: { marketing: 50, programming: 100 }, time: 7 }
 	      ];
-	      // ].map(computeFeatureCost(cost));
 	    }
 	  }, {
 	    key: 'getHypothesisAnalyticsFeatures',
@@ -6595,11 +6588,9 @@
 	function getProductStorageData() {
 	  var data = getFromStorage('products');
 
-	  _logger2.default.debug('getProductStorageData', data);
-
 	  var products = (0, _from2.default)(JSON.parse(data));
 
-	  _logger2.default.debug('getProductStorageData', products);
+	  // logger.debug('getProductStorageData', products);
 
 	  return products.map(function (p) {
 	    return new _Product2.default(p, true);
@@ -10415,6 +10406,10 @@
 
 	var _Economics2 = _interopRequireDefault(_Economics);
 
+	var _list = __webpack_require__(206);
+
+	var _list2 = _interopRequireDefault(_list);
+
 	var _metrics = __webpack_require__(192);
 
 	var _metrics2 = _interopRequireDefault(_metrics);
@@ -10481,9 +10476,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var MODE_RATING = 'MODE_RATING';
 	// import React, { Component, PropTypes } from 'react';
 
+	var MODE_RATING = 'MODE_RATING';
 	var MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 	var MODE_ADS = 'MODE_ADS';
 	var MODE_MARKETING = 'MODE_MARKETING';
@@ -11162,7 +11157,8 @@
 	            tech,
 	            '%'
 	          )
-	        )
+	        ),
+	        (0, _preact.h)(_list2.default, null)
 	      );
 	    }
 	  }, {
@@ -13462,6 +13458,8 @@
 
 	      var rating = _flux2.default.productStore.getRating(id);
 
+	      _logger2.default.shit('competitors.js hardcoded isCompetitor check: c.id != 0');
+
 	      var competitorList = competitors.map(function (c, i) {
 	        return (0, _preact.h)(_competitor2.default, {
 	          c: c,
@@ -14409,6 +14407,272 @@
 	  addModalMessage: addModalMessage,
 	  addPlainMessage: addPlainMessage
 	};
+
+/***/ },
+/* 203 */,
+/* 204 */,
+/* 205 */,
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(3);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(30);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(34);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(81);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _index = __webpack_require__(207);
+
+	var _index2 = _interopRequireDefault(_index);
+
+	var _bonuses = __webpack_require__(208);
+
+	var BONUSES = _interopRequireWildcard(_bonuses);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var BonusesList = function (_Component) {
+	  (0, _inherits3.default)(BonusesList, _Component);
+
+	  function BonusesList() {
+	    (0, _classCallCheck3.default)(this, BonusesList);
+	    return (0, _possibleConstructorReturn3.default)(this, (BonusesList.__proto__ || (0, _getPrototypeOf2.default)(BonusesList)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(BonusesList, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {}
+	  }, {
+	    key: 'getBonuses',
+	    value: function getBonuses() {
+	      var chain = function chain(root, childs) {
+	        root.childs = childs;
+	      };
+
+	      var programmerPerformanceBonus = {
+	        name: BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER,
+	        title: 'Улучшение производительности программистов',
+	        bonus: '+25% PP ежемесячно',
+	        description: 'Мы стали лучше понимать, как организовать работу команды программистов',
+	        costDescription: '500PP'
+	      };
+
+	      var programmerPerformanceBonusII = {
+	        name: BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II,
+	        title: 'Улучшение производительности программистов II',
+	        bonus: '+25% PP ежемесячно',
+	        description: 'Благодаря, как организовать работу команды программистов',
+	        costDescription: '1500PP'
+	      };
+
+	      chain(programmerPerformanceBonus, [programmerPerformanceBonusII]);
+
+	      var marketerPerformanceBonus = {
+	        name: BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER,
+	        title: 'Улучшение производительности маркетологов',
+	        bonus: '+25% MP ежемесячно',
+	        description: 'Мы стали лучше понимать, как организовать работу команды маркетологов',
+	        costDescription: '500MP'
+	      };
+
+	      var marketerPerformanceBonusII = {
+	        name: BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER_II,
+	        title: 'Улучшение производительности маркетологов',
+	        bonus: '+25% MP ежемесячно',
+	        description: 'Мы провели кучу рекламных кампаний и хорошо знаем, что нужно нашим клиентам',
+	        costDescription: '1500MP'
+	      };
+
+	      chain(marketerPerformanceBonus, [marketerPerformanceBonusII]);
+
+	      return [programmerPerformanceBonus, marketerPerformanceBonus];
+	    }
+	  }, {
+	    key: 'onPick',
+	    value: function onPick(bonusName) {
+	      _logger2.default.debug('pick bonus', bonusName);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(props) {
+	      var _this2 = this;
+
+	      _logger2.default.shit('write boolean checks, for bonus picking availability! you cannot take them all');
+
+	      var list = this.getBonuses().map(function (b, i) {
+	        return (0, _preact.h)(
+	          'div',
+	          { key: 'bonus' + i },
+	          (0, _preact.h)(_index2.default, {
+	            title: b.title,
+	            description: b.description,
+	            bonus: b.bonus,
+	            canPick: true,
+	            onPickBonus: function onPickBonus() {
+	              _this2.onPick(b.name);
+	            }
+	          })
+	        );
+	      });
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u043E\u043D\u043D\u044B\u0435 \u0431\u043E\u043D\u0443\u0441\u044B'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          list
+	        )
+	      );
+	    }
+	  }]);
+	  return BonusesList;
+	}(_preact.Component);
+
+	exports.default = BonusesList;
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(3);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(30);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(34);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(81);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _logger = __webpack_require__(100);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _UI = __webpack_require__(165);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Bonus = function (_Component) {
+	  (0, _inherits3.default)(Bonus, _Component);
+
+	  function Bonus() {
+	    (0, _classCallCheck3.default)(this, Bonus);
+	    return (0, _possibleConstructorReturn3.default)(this, (Bonus.__proto__ || (0, _getPrototypeOf2.default)(Bonus)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(Bonus, [{
+	    key: 'render',
+	    value: function render(props) {
+	      _logger2.default.shit('no bonus icon!!');
+
+	      var onPick = props.onPickBonus ? props.onPickBonus : function () {};
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)('div', { className: 'bonus-icon', style: '' }),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'bonus-description-wrapper' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'bonus-title' },
+	            props.title
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'bonus-description' },
+	            props.description
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'bonus-description-short' },
+	            props.bonus
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'bonus-cost' },
+	            props.costDescription
+	          ),
+	          (0, _preact.h)(_UI2.default.Button, { text: '\u0410\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u0442\u044C', onClick: onPick, primary: true, disabled: !props.canPick }),
+	          props.isPicked ? props.childs : ''
+	        )
+	      );
+	    }
+	  }]);
+	  return Bonus;
+	}(_preact.Component);
+
+	exports.default = Bonus;
+
+/***/ },
+/* 208 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER = exports.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER = 'BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER';
+	var BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II = exports.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II = 'BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II';
+
+	var BONUSES_MARKETER_PERFORMANCE_MODIFIER = exports.BONUSES_MARKETER_PERFORMANCE_MODIFIER = 'BONUSES_MARKETER_PERFORMANCE_MODIFIER';
+	var BONUSES_MARKETER_PERFORMANCE_MODIFIER_II = exports.BONUSES_MARKETER_PERFORMANCE_MODIFIER_II = 'BONUSES_MARKETER_PERFORMANCE_MODIFIER_II';
 
 /***/ }
 /******/ ]);

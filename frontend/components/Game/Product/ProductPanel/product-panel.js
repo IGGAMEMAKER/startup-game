@@ -5,6 +5,7 @@ import Staff from '../../Staff';
 
 import Employees from '../../Team/Employees';
 import Economics from '../../Economics/Economics';
+import Bonuses from '../../Product/Bonuses/list';
 
 
 import Metrics from '../KPI/metrics';
@@ -352,6 +353,7 @@ export default class ProductPanel extends Component {
         <li style={`color: ${churnStyleColor}`}>От рейтинга: {churn}%</li>
         <li style={`color: ${techStyleColor}`}>Технологическое лидерство: {tech}%</li>
       </ul>
+      <Bonuses />
     </div>;
   }
 
