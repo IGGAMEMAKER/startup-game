@@ -13108,7 +13108,11 @@
 
 	        var leaderInTech = _flux2.default.productStore.getLeaderInTech(id, featureId);
 
-	        var leaderInTechPhrase = '\u041B\u0438\u0434\u0435\u0440 \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438: \u041A\u043E\u043C\u043F\u0430\u043D\u0438\u044F "' + leaderInTech.name + '" (' + leaderInTech.value + 'XP)';
+	        var minify = function minify(v) {
+	          return Math.floor(v / 1000);
+	        };
+
+	        var leaderInTechPhrase = '\u041B\u0438\u0434\u0435\u0440 \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438: \u041A\u043E\u043C\u043F\u0430\u043D\u0438\u044F "' + leaderInTech.name + '" (' + minify(leaderInTech.value) + 'lvl)';
 	        if (leaderInTech.id === 0) {
 	          leaderInTechPhrase = '\u041C\u044B \u043B\u0438\u0434\u0438\u0440\u0443\u0435\u043C \u0432 \u044D\u0442\u043E\u0439 \u0442\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438!';
 	        }
@@ -13118,6 +13122,9 @@
 	        var enoughPPs = _flux2.default.playerStore.enoughProgrammingPoints(pp);
 
 	        var disabled = !enoughPPs;
+
+	        var currentMinified = minify(current);
+	        var maxMinified = minify(max);
 
 	        return (0, _preact.h)(
 	          'div',
@@ -13135,10 +13142,10 @@
 	              null,
 	              userOrientedFeatureName,
 	              ' (',
-	              current,
+	              currentMinified,
 	              '/',
-	              max,
-	              'XP)'
+	              maxMinified,
+	              'lvl)'
 	            ),
 	            (0, _preact.h)(
 	              'div',
@@ -13437,11 +13444,16 @@
 	  }
 
 	  (0, _createClass3.default)(Competitors, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {}
+	    key: 'buyCompany',
+	    value: function buyCompany(buyerId, sellerId, transferSum) {
+	      _flux2.default.productActions.buyCompany(buyerId, sellerId);
+	      _flux2.default.playerActions.decreaseMoney(transferSum);
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render(_ref) {
+	      var _this2 = this;
+
 	      var id = _ref.id;
 
 	      var money = _flux2.default.playerStore.getMoney();
@@ -13449,15 +13461,6 @@
 	      var competitors = _flux2.default.productStore.getCompetitorsList(id);
 
 	      var rating = _flux2.default.productStore.getRating(id);
-	      // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
-
-	      var buyCompany = function buyCompany(buyerId, sellerId, transferSum) {
-	        // console.log('buyC', sellerId);
-
-	        _flux2.default.productActions.buyCompany(buyerId, sellerId);
-	        _flux2.default.playerActions.decreaseMoney(transferSum);
-	        // flux.messageActions.addGameEvent(transferSum);
-	      };
 
 	      var competitorList = competitors.map(function (c, i) {
 	        return (0, _preact.h)(_competitor2.default, {
@@ -13466,7 +13469,7 @@
 	          rating: rating,
 	          money: money,
 	          onBuyCompany: function onBuyCompany() {
-	            buyCompany(0, c.id, c.cost);
+	            _this2.buyCompany(0, c.id, c.cost);
 	          },
 	          isCompetitor: c.id != 0
 	        });
@@ -13516,10 +13519,6 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _round = __webpack_require__(101);
-
-	var _round2 = _interopRequireDefault(_round);
-
 	var _logger = __webpack_require__(100);
 
 	var _logger2 = _interopRequireDefault(_logger);
@@ -13539,6 +13538,57 @@
 	  }
 
 	  (0, _createClass3.default)(Competitor, [{
+	    key: 'convertXPtoLvl',
+	    value: function convertXPtoLvl(value) {
+	      return Math.floor(value / 1000);
+	    }
+	  }, {
+	    key: 'renderFeatureList',
+	    value: function renderFeatureList(c) {
+	      var _this2 = this;
+
+	      return c.features.map(function (f) {
+	        var difference = c.improvements.filter(function (d) {
+	          return d.name === f.name;
+	        });
+
+	        var differencePhrase = '';
+	        if (difference.length) {
+	          var featureDifference = _this2.convertXPtoLvl(difference[0].difference);
+
+	          if (featureDifference) {
+	            // competitor feature is better than ours
+	            differencePhrase = (0, _preact.h)(
+	              'span',
+	              null,
+	              (0, _preact.h)(
+	                'span',
+	                { className: 'positive' },
+	                _UI2.default.symbols.triangle.up
+	              ),
+	              (0, _preact.h)(
+	                'span',
+	                null,
+	                '+',
+	                featureDifference,
+	                'lvl'
+	              )
+	            );
+	          }
+	        }
+
+	        return (0, _preact.h)(
+	          'li',
+	          null,
+	          f.description,
+	          ': ',
+	          _this2.convertXPtoLvl(f.value),
+	          'lvl ',
+	          differencePhrase
+	        );
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render(_ref) {
 	      var rating = _ref.rating,
@@ -13548,84 +13598,27 @@
 	          onBuyCompany = _ref.onBuyCompany,
 	          money = _ref.money;
 
-	      var needToCompeteRating = c.rating + 1;
-	      var competeable = needToCompeteRating < rating;
-	      var canWeCompeteThem = competeable ? 'Мы можем переманить их клиентов' : '\u0414\u043E\u0431\u0435\u0439\u0442\u0435\u0441\u044C \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430 ' + (0, _round2.default)(needToCompeteRating) + ' \u0438 \u0438\u0445 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438 \u0432\u044B\u0431\u0435\u0440\u0443\u0442 \u043D\u0430\u0448 \u043F\u0440\u043E\u0434\u0443\u043A\u0442';
+	      var background = 'competitor competeable';
+	      var companyTitle = '"' + c.name + '"';
+	      var buyingCompanyButtonVisible = 'hide';
 
-	      var background = 'competitor ';
-	      // if (competeable) {
-	      if (!isCompetitor) {
-	        background += 'competeable';
-	      } else {
-	        background += 'uncompeteable';
+	      if (isCompetitor) {
+	        background = 'competitor uncompeteable';
+	        companyTitle = '\u041A\u043E\u043C\u043F\u0430\u043D\u0438\u044F \u2116' + (i + 1) + ' - "' + c.name + '"';
+	        buyingCompanyButtonVisible = '';
 	      }
-
-	      var name = i >= 0 ? '\u041A\u043E\u043C\u043F\u0430\u043D\u0438\u044F \u2116' + (i + 1) + ' - "' + c.name + '"' : '"' + c.name + '"';
-
-	      var features = c.features.map(function (f, ii) {
-	        // logger.debug('compet improvs', i, c.improvements, f);
-	        _logger2.default.shit('EXTRA SHIT!!! I=== -1 IS HARDCODED CHECKING FOR OUR COMPANY. REWRITE THIS');
-
-	        var difference = c.improvements.filter(function (d) {
-	          return d.name === f.name;
-	        });
-
-	        var differencePhrase = '';
-	        if (difference.length) {
-	          // competitor feature is better than ours
-
-	          differencePhrase = (0, _preact.h)(
-	            'span',
-	            null,
-	            (0, _preact.h)(
-	              'span',
-	              { className: 'positive' },
-	              _UI2.default.symbols.triangle.up
-	            ),
-	            '(+',
-	            difference[0].difference,
-	            ' XP)'
-	          );
-	        } else {
-	          differencePhrase = ''; // <span className="negative">{UI.symbols.up}</span>;
-	        }
-
-	        return (0, _preact.h)(
-	          'li',
-	          null,
-	          f.description,
-	          ': ',
-	          f.value,
-	          'XP ',
-	          differencePhrase
-	        );
-	      });
 
 	      var hasEnoughMoney = money >= c.cost;
 
-	      var theyAreBetterPhrase = '';
-
-	      var betterFeaturesCount = c.improvements.length;
-	      if (betterFeaturesCount) {
-	        theyAreBetterPhrase = (0, _preact.h)(
-	          'div',
-	          { className: 'offset-mid' },
-	          '\u041E\u043D\u0438 \u043B\u0443\u0447\u0448\u0435 \u043D\u0430\u0441 \u0432 ',
-	          betterFeaturesCount,
-	          ' \u043E\u0431\u043B\u0430\u0441\u0442\u044F\u0445'
-	        );
-	      }
-
-	      var buyingCompanyButtonVisible = isCompetitor ? '' : 'hide';
-
 	      var hypeChangePhrase = c.hypeDamping < 0 ? c.hypeDamping : '+' + c.hypeDamping;
+
 	      return (0, _preact.h)(
 	        'div',
 	        { className: background },
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'offset-min' },
-	          name
+	          companyTitle
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -13655,14 +13648,13 @@
 	          { className: 'offset-mid' },
 	          '\u0422\u0435\u0445\u043D\u043E\u043B\u043E\u0433\u0438\u0438'
 	        ),
-	        theyAreBetterPhrase,
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'offset-mid' },
 	          (0, _preact.h)(
 	            'ul',
 	            null,
-	            features
+	            this.renderFeatureList(c)
 	          )
 	        ),
 	        (0, _preact.h)(

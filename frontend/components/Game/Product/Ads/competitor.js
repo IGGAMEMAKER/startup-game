@@ -1,84 +1,61 @@
 import { h, Component } from 'preact';
-import round from '../../../../helpers/math/round';
 
 import logger from '../../../../helpers/logger/logger';
 
 import UI from '../../../UI';
 
-type PropsType = {};
-
-type StateType = {};
-
-type ResponseType = {};
-
 export default class Competitor extends Component {
-  render({ rating, c, i, isCompetitor, onBuyCompany, money }) {
-    const needToCompeteRating = c.rating + 1;
-    const competeable = needToCompeteRating < rating;
-    const canWeCompeteThem = competeable ?
-      'Мы можем переманить их клиентов'
-      :
-      `Добейтесь рейтинга ${round(needToCompeteRating)} и их пользователи выберут наш продукт`;
+  convertXPtoLvl(value) {
+    return Math.floor(value / 1000);
+  }
 
-    let background = 'competitor ';
-    // if (competeable) {
-    if (!isCompetitor) {
-      background += 'competeable';
-    } else {
-      background += 'uncompeteable';
-    }
-
-    const name = i >= 0 ? `Компания №${i + 1} - "${c.name}"` : `"${c.name}"`;
-
-    const features = c.features.map((f, ii) => {
-      // logger.debug('compet improvs', i, c.improvements, f);
-      logger.shit('EXTRA SHIT!!! I=== -1 IS HARDCODED CHECKING FOR OUR COMPANY. REWRITE THIS');
-
+  renderFeatureList(c) {
+    return c.features.map(f => {
       const difference = c.improvements.filter(d => d.name === f.name);
 
       let differencePhrase = '';
       if (difference.length) {
-        // competitor feature is better than ours
+        const featureDifference = this.convertXPtoLvl(difference[0].difference);
 
-        differencePhrase = (
-          <span>
-            <span className="positive">{UI.symbols.triangle.up}</span>
-            (+{difference[0].difference} XP)
-          </span>
-        )
-      } else {
-        differencePhrase = ''; // <span className="negative">{UI.symbols.up}</span>;
+        if (featureDifference) {
+          // competitor feature is better than ours
+          differencePhrase = (
+            <span>
+              <span className="positive">{UI.symbols.triangle.up}</span>
+              <span>+{featureDifference}lvl</span>
+            </span>
+          )
+        }
       }
 
-      return (
-        <li>{f.description}: {f.value}XP {differencePhrase}</li>
-      );
+      return <li>{f.description}: {this.convertXPtoLvl(f.value)}lvl {differencePhrase}</li>;
     });
+  }
+
+  render({ rating, c, i, isCompetitor, onBuyCompany, money }) {
+    let background = 'competitor competeable';
+    let companyTitle = `"${c.name}"`;
+    let buyingCompanyButtonVisible = 'hide';
+
+    if (isCompetitor) {
+      background = 'competitor uncompeteable';
+      companyTitle = `Компания №${i + 1} - "${c.name}"`;
+      buyingCompanyButtonVisible = '';
+    }
 
     const hasEnoughMoney = money >= c.cost;
 
-    let theyAreBetterPhrase = '';
-
-    const betterFeaturesCount = c.improvements.length;
-    if (betterFeaturesCount) {
-      theyAreBetterPhrase = (
-        <div className="offset-mid">Они лучше нас в {betterFeaturesCount} областях</div>
-      )
-    }
-
-    const buyingCompanyButtonVisible = isCompetitor ? '' : 'hide';
-
     const hypeChangePhrase = c.hypeDamping < 0 ? c.hypeDamping : `+${c.hypeDamping}`;
+
     return (
       <div className={background}>
-        <div className="offset-min">{name}</div>
+        <div className="offset-min">{companyTitle}</div>
         <div className="offset-min">Известность (HYPE): {c.hype} ({hypeChangePhrase} ежемесячно)</div>
         <br />
         <div className="offset-min">Рейтинг: {c.rating}</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
         <div className="offset-mid">Технологии</div>
-        {theyAreBetterPhrase}
-        <div className="offset-mid"><ul>{features}</ul></div>
+        <div className="offset-mid"><ul>{this.renderFeatureList(c)}</ul></div>
         <div className="offset-mid">Рыночная стоимость: {c.cost}$</div>
 
         <div className={`offset-mid ${buyingCompanyButtonVisible}`}>
@@ -89,7 +66,6 @@ export default class Competitor extends Component {
             onClick={onBuyCompany ? onBuyCompany : () => {}}
           />
         </div>
-
 
         <div className="offset-mid">
           <hr width="80%" />

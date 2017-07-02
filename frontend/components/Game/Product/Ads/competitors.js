@@ -12,7 +12,10 @@ import Competitor from './competitor';
 import logger from '../../../../helpers/logger/logger';
 
 export default class Competitors extends Component {
-  componentWillMount() {}
+  buyCompany(buyerId, sellerId, transferSum) {
+    flux.productActions.buyCompany(buyerId, sellerId);
+    flux.playerActions.decreaseMoney(transferSum);
+  }
 
   render({ id }) {
     const money = flux.playerStore.getMoney();
@@ -20,15 +23,6 @@ export default class Competitors extends Component {
     const competitors = flux.productStore.getCompetitorsList(id);
 
     const rating = flux.productStore.getRating(id);
-        // <div className="offset-min competitor competeable">Свободные клиенты: {freeClients}</div>
-
-    const buyCompany = (buyerId, sellerId, transferSum) => {
-      // console.log('buyC', sellerId);
-
-      flux.productActions.buyCompany(buyerId, sellerId);
-      flux.playerActions.decreaseMoney(transferSum);
-      // flux.messageActions.addGameEvent(transferSum);
-    };
 
     const competitorList = competitors.map((c, i) =>
       <Competitor
@@ -36,7 +30,7 @@ export default class Competitors extends Component {
         i={i}
         rating={rating}
         money={money}
-        onBuyCompany={() => { buyCompany(0, c.id, c.cost) }}
+        onBuyCompany={() => { this.buyCompany(0, c.id, c.cost) }}
         isCompetitor={c.id != 0}
       />
     );

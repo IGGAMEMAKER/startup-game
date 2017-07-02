@@ -134,7 +134,11 @@ export default class MainFeature extends Component {
 
     const leaderInTech = flux.productStore.getLeaderInTech(id, featureId);
 
-    let leaderInTechPhrase = `Лидер в этой технологии: Компания "${leaderInTech.name}" (${leaderInTech.value}XP)`;
+    const minify = v => {
+      return Math.floor(v / 1000);
+    };
+
+    let leaderInTechPhrase = `Лидер в этой технологии: Компания "${leaderInTech.name}" (${minify(leaderInTech.value)}lvl)`;
     if (leaderInTech.id === 0) {
       leaderInTechPhrase = `Мы лидируем в этой технологии!`;
     }
@@ -145,10 +149,13 @@ export default class MainFeature extends Component {
 
     const disabled = !enoughPPs;
 
+    const currentMinified = minify(current);
+    const maxMinified = minify(max);
+
     return <div key={key}>
       <div>
         <div>{leaderInTechPhrase}</div>
-        <span>{userOrientedFeatureName} ({current}/{max}XP)</span>
+        <span>{userOrientedFeatureName} ({currentMinified}/{maxMinified}lvl)</span>
         <div style="width: 300px;">
           {this.renderProgressBar(current, product, max)}
         </div>
