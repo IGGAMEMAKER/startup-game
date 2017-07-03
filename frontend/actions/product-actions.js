@@ -53,6 +53,16 @@ export default {
       featureName
     })
   },
+  pickBonus(id, bonusName) {
+    logger.shit('this function is same to improveFeatureByPoints()');
+
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
+      id,
+      featureGroup: 'bonuses',
+      featureName: bonusName
+    })
+  },
   setInitialProductSettings(id, features, KPI) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS,

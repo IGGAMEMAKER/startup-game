@@ -10,6 +10,10 @@ import * as BONUSES from '../../../../constants/bonuses';
 
 import logger from '../../../../helpers/logger/logger';
 
+import flux from '../../../../flux';
+
+import UI from '../../../UI';
+
 export default class BonusesList extends Component {
   componentWillMount() {}
 
@@ -21,7 +25,8 @@ export default class BonusesList extends Component {
     const programmerPerformanceBonus = {
       name: BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER,
       title: 'Улучшение производительности программистов',
-      bonus: '+25% PP ежемесячно',
+      bonus: '+15% PP ежемесячно',
+      value: 15,
       description: 'Мы стали лучше понимать, как организовать работу команды программистов',
       costDescription: '500PP',
     };
@@ -30,7 +35,8 @@ export default class BonusesList extends Component {
       name: BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II,
       title: 'Улучшение производительности программистов II',
       bonus: '+25% PP ежемесячно',
-      description: 'Благодаря, как организовать работу команды программистов',
+      value: 25,
+      description: 'Мы накопили солидный опыт решения технических задач. Новые задачи не кажутся такими уж сложными',
       costDescription: '1500PP',
     };
 
@@ -46,7 +52,7 @@ export default class BonusesList extends Component {
 
     const marketerPerformanceBonusII = {
       name: BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER_II,
-      title: 'Улучшение производительности маркетологов',
+      title: 'Улучшение производительности маркетологов II',
       bonus: '+25% MP ежемесячно',
       description: 'Мы провели кучу рекламных кампаний и хорошо знаем, что нужно нашим клиентам',
       costDescription: '1500MP',
@@ -57,29 +63,46 @@ export default class BonusesList extends Component {
     return [programmerPerformanceBonus, marketerPerformanceBonus];
   }
 
-  onPick(bonusName) {
+  onPick(productId, bonusName) {
     logger.debug('pick bonus', bonusName);
+
+    flux.productActions.pickBonus(productId, bonusName)
   }
+
+  renderBonus = (b) => {
+    const isPicked = flux.productStore.getBonusStatus(this.props.productId, b.name);
+
+    if (isPicked) {
+      if (b.childs) return b.childs.map(this.renderBonus);
+
+      return '';
+    }
+
+    return (
+      <div key={b.name}>
+        <Bonus
+          title={b.title}
+          description={b.description}
+          bonus={b.bonus}
+          costDescription={b.costDescription}
+          canPick
+          onPickBonus={() => { this.onPick(this.props.productId, b.name) }}
+        />
+      </div>
+    )
+  };
 
   render(props: PropsType) {
     logger.shit('write boolean checks, for bonus picking availability! you cannot take them all');
 
-    const list = this.getBonuses()
-      .map((b, i) => (
-        <div key={`bonus${i}`}>
-          <Bonus
-            title={b.title}
-            description={b.description}
-            bonus={b.bonus}
-            canPick
-            onPickBonus={() => { this.onPick(b.name) }}
-          />
-        </div>
-      ));
+    const list = this.getBonuses().map(this.renderBonus);
+
+    const names = flux.productStore.getBonuses(props.productId).map(b => <div>{b}</div>);
 
     return (
       <div>
         <div>Организационные бонусы</div>
+        <div>{names}</div>
         <div>{list}</div>
       </div>
     );

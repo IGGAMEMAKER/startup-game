@@ -2591,6 +2591,10 @@
 	  value: true
 	});
 
+	var _keys = __webpack_require__(209);
+
+	var _keys2 = _interopRequireDefault(_keys);
+
 	var _getPrototypeOf = __webpack_require__(3);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -2956,6 +2960,16 @@
 	    key: 'getFeatureStatus',
 	    value: function getFeatureStatus(id, featureGroup, featureName) {
 	      return _products[id].getFeatureStatus(featureGroup, featureName);
+	    }
+	  }, {
+	    key: 'getBonusStatus',
+	    value: function getBonusStatus(id, bonusName) {
+	      return _products[id].getFeatureStatus('bonuses', bonusName);
+	    }
+	  }, {
+	    key: 'getBonuses',
+	    value: function getBonuses(id) {
+	      return (0, _keys2.default)(_products[id].features.bonuses);
 	    }
 	  }, {
 	    key: 'getCostPerClient',
@@ -8780,6 +8794,16 @@
 	      featureName: featureName
 	    });
 	  },
+	  pickBonus: function pickBonus(id, bonusName) {
+	    _logger2.default.shit('this function is same to improveFeatureByPoints()');
+
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
+	      id: id,
+	      featureGroup: 'bonuses',
+	      featureName: bonusName
+	    });
+	  },
 	  setInitialProductSettings: function setInitialProductSettings(id, features, KPI) {
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS,
@@ -11158,7 +11182,7 @@
 	            '%'
 	          )
 	        ),
-	        (0, _preact.h)(_list2.default, null)
+	        (0, _preact.h)(_list2.default, { productId: id })
 	      );
 	    }
 	  }, {
@@ -14455,6 +14479,14 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
+	var _flux = __webpack_require__(154);
+
+	var _flux2 = _interopRequireDefault(_flux);
+
+	var _UI = __webpack_require__(165);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -14463,8 +14495,40 @@
 	  (0, _inherits3.default)(BonusesList, _Component);
 
 	  function BonusesList() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
 	    (0, _classCallCheck3.default)(this, BonusesList);
-	    return (0, _possibleConstructorReturn3.default)(this, (BonusesList.__proto__ || (0, _getPrototypeOf2.default)(BonusesList)).apply(this, arguments));
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = BonusesList.__proto__ || (0, _getPrototypeOf2.default)(BonusesList)).call.apply(_ref, [this].concat(args))), _this), _this.renderBonus = function (b) {
+	      var isPicked = _flux2.default.productStore.getBonusStatus(_this.props.productId, b.name);
+
+	      if (isPicked) {
+	        if (b.childs) return b.childs.map(_this.renderBonus);
+
+	        return '';
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        { key: b.name },
+	        (0, _preact.h)(_index2.default, {
+	          title: b.title,
+	          description: b.description,
+	          bonus: b.bonus,
+	          costDescription: b.costDescription,
+	          canPick: true,
+	          onPickBonus: function onPickBonus() {
+	            _this.onPick(_this.props.productId, b.name);
+	          }
+	        })
+	      );
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
 	  (0, _createClass3.default)(BonusesList, [{
@@ -14480,7 +14544,8 @@
 	      var programmerPerformanceBonus = {
 	        name: BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER,
 	        title: 'Улучшение производительности программистов',
-	        bonus: '+25% PP ежемесячно',
+	        bonus: '+15% PP ежемесячно',
+	        value: 15,
 	        description: 'Мы стали лучше понимать, как организовать работу команды программистов',
 	        costDescription: '500PP'
 	      };
@@ -14489,7 +14554,8 @@
 	        name: BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II,
 	        title: 'Улучшение производительности программистов II',
 	        bonus: '+25% PP ежемесячно',
-	        description: 'Благодаря, как организовать работу команды программистов',
+	        value: 25,
+	        description: 'Мы накопили солидный опыт решения технических задач. Новые задачи не кажутся такими уж сложными',
 	        costDescription: '1500PP'
 	      };
 
@@ -14505,7 +14571,7 @@
 
 	      var marketerPerformanceBonusII = {
 	        name: BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER_II,
-	        title: 'Улучшение производительности маркетологов',
+	        title: 'Улучшение производительности маркетологов II',
 	        bonus: '+25% MP ежемесячно',
 	        description: 'Мы провели кучу рекламных кампаний и хорошо знаем, что нужно нашим клиентам',
 	        costDescription: '1500MP'
@@ -14517,29 +14583,23 @@
 	    }
 	  }, {
 	    key: 'onPick',
-	    value: function onPick(bonusName) {
+	    value: function onPick(productId, bonusName) {
 	      _logger2.default.debug('pick bonus', bonusName);
+
+	      _flux2.default.productActions.pickBonus(productId, bonusName);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render(props) {
-	      var _this2 = this;
-
 	      _logger2.default.shit('write boolean checks, for bonus picking availability! you cannot take them all');
 
-	      var list = this.getBonuses().map(function (b, i) {
+	      var list = this.getBonuses().map(this.renderBonus);
+
+	      var names = _flux2.default.productStore.getBonuses(props.productId).map(function (b) {
 	        return (0, _preact.h)(
 	          'div',
-	          { key: 'bonus' + i },
-	          (0, _preact.h)(_index2.default, {
-	            title: b.title,
-	            description: b.description,
-	            bonus: b.bonus,
-	            canPick: true,
-	            onPickBonus: function onPickBonus() {
-	              _this2.onPick(b.name);
-	            }
-	          })
+	          null,
+	          b
 	        );
 	      });
 
@@ -14550,6 +14610,11 @@
 	          'div',
 	          null,
 	          '\u041E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u043E\u043D\u043D\u044B\u0435 \u0431\u043E\u043D\u0443\u0441\u044B'
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          names
 	        ),
 	        (0, _preact.h)(
 	          'div',
@@ -14621,6 +14686,7 @@
 
 	      var onPick = props.onPickBonus ? props.onPickBonus : function () {};
 
+	      // <div className="bonus-description-short">Бонус: </div>
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'bonus-wrapper' },
@@ -14631,7 +14697,10 @@
 	          (0, _preact.h)(
 	            'div',
 	            { className: 'bonus-title' },
-	            props.title
+	            props.title,
+	            ' (',
+	            props.bonus,
+	            ')'
 	          ),
 	          (0, _preact.h)(
 	            'div',
@@ -14640,12 +14709,8 @@
 	          ),
 	          (0, _preact.h)(
 	            'div',
-	            { className: 'bonus-description-short' },
-	            props.bonus
-	          ),
-	          (0, _preact.h)(
-	            'div',
 	            { className: 'bonus-cost' },
+	            '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: ',
 	            props.costDescription
 	          ),
 	          (0, _preact.h)(_UI2.default.Button, { text: '\u0410\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u0442\u044C', onClick: onPick, primary: true, disabled: !props.canPick }),
@@ -14673,6 +14738,33 @@
 
 	var BONUSES_MARKETER_PERFORMANCE_MODIFIER = exports.BONUSES_MARKETER_PERFORMANCE_MODIFIER = 'BONUSES_MARKETER_PERFORMANCE_MODIFIER';
 	var BONUSES_MARKETER_PERFORMANCE_MODIFIER_II = exports.BONUSES_MARKETER_PERFORMANCE_MODIFIER_II = 'BONUSES_MARKETER_PERFORMANCE_MODIFIER_II';
+
+/***/ },
+/* 209 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(210), __esModule: true };
+
+/***/ },
+/* 210 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(211);
+	module.exports = __webpack_require__(16).Object.keys;
+
+/***/ },
+/* 211 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.14 Object.keys(O)
+	var toObject = __webpack_require__(6)
+	  , $keys    = __webpack_require__(48);
+
+	__webpack_require__(14)('keys', function(){
+	  return function keys(it){
+	    return $keys(toObject(it));
+	  };
+	});
 
 /***/ }
 /******/ ]);

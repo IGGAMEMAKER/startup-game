@@ -254,6 +254,14 @@ class ProductStore extends EventEmitter {
     return _products[id].getFeatureStatus(featureGroup, featureName);
   }
 
+  getBonusStatus(id, bonusName) {
+    return _products[id].getFeatureStatus('bonuses', bonusName);
+  }
+
+  getBonuses(id) {
+    return Object.keys(_products[id].features.bonuses);
+  }
+
   getCostPerClient(id) {
     return _products[id].getCostPerClient();
   }

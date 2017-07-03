@@ -353,7 +353,7 @@ export default class ProductPanel extends Component {
         <li style={`color: ${churnStyleColor}`}>От рейтинга: {churn}%</li>
         <li style={`color: ${techStyleColor}`}>Технологическое лидерство: {tech}%</li>
       </ul>
-      <Bonuses />
+      <Bonuses productId={id} />
     </div>;
   }
 
