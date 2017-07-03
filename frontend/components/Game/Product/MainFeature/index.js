@@ -92,7 +92,7 @@ export default class MainFeature extends Component {
     }
 
     if (flux.productStore.isWeAreRetards(id, featureId)) {
-      return `Мы отстаём в развитии, поэтому копируем всё у конкурентов. Стоимость улучшения: -75%`;
+      return `Мы отстаём от конкурентов, поэтому копируем всё у них. Стоимость улучшения: -75%`;
     }
 
     return '';

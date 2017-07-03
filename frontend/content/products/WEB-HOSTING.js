@@ -120,7 +120,7 @@ export default {
           name: 'middle business',
           userOrientedName: 'Малый бизнес',
           percentage: 3,
-          price: 350,
+          price: 150,
           rating: [0.5, 1.5, 1, 0, 7],
           requirements: [75, 0, 0, 0, 95]
         }

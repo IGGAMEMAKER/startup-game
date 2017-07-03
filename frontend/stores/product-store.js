@@ -711,6 +711,10 @@ class ProductStore extends EventEmitter {
     return _products[id].getTechBreakthroughModifierForHype()
   }
 
+  getBonusModifiers(id) {
+    return _products[id].getBonusModifiers();
+  }
+
   getMainFeatureUpgradeCost(id, featureId) {
     let modifier = 1;
 
@@ -718,13 +722,13 @@ class ProductStore extends EventEmitter {
 
     // we are able to make breakthrough
     if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) {
-      modifier = 4;
+      modifier = 4  - _products[id].getBonusModifiers().techBreakthroughDiscount / 100;
     }
 
 
     // we are retards
     if (this.isWeAreRetards(id, featureId)) {
-      modifier = 0.25;
+      modifier = 0.25 - _products[id].getBonusModifiers().followerDiscount / 100;
     }
 
     return Math.ceil(productDescriptions(this.getIdea(id)).features[featureId].development * modifier);

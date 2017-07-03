@@ -754,7 +754,7 @@ export default class Product {
     const marketerPerformanceBonus = {
       name: BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER,
       title: 'Улучшение производительности маркетологов',
-      bonus: '+25% MP ежемесячно',
+      bonus: '+15% MP ежемесячно',
       description: 'Мы стали лучше понимать, как организовать работу команды маркетологов',
       costDescription: '500MP',
     };
@@ -787,12 +787,34 @@ export default class Product {
 
     chain(marketerPerformanceBonus, [marketerPerformanceBonusII]);
 
+
+    const techBreakthroughBonus = {
+      name: BONUSES.BONUSES_TECHNOLOGY_LEADER_MODIFIER,
+      title: 'Наше кредо: быть первыми во всём!',
+      bonus: '-80% к штрафу за технологический прорыв',
+      description: 'Культивируя тягу к инновациям и лояльно относясь к экспериментам, ' +
+      'нашей команде стало проще задавать тренды',
+      costDescription: 'бесплатно',
+    };
+
+    const followerBonus = {
+      name: BONUSES.BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER,
+      title: 'Великие художники копируют, гениальные - воруют',
+      bonus: '-15% к штрафу при технологическом отставании. +150% к штрафу за технологический прорыв',
+      description: 'Наша команда не считает зазорным подглядывать за конкурентами;' +
+      ' мы копируем лучшие решения одними из первых, но сами не способны придумать что-либо новое',
+      costDescription: 'бесплатно',
+    };
+
     return [
       programmerPerformanceBonus,
       marketerPerformanceBonus,
 
       programmingSupportCostBonus,
-      marketingSupportCostBonus
+      marketingSupportCostBonus,
+
+      techBreakthroughBonus,
+      followerBonus
     ];
   }
 
@@ -815,13 +837,22 @@ export default class Product {
     let marketingSupportCost = 0;
     if (picked(BONUSES.BONUSES_MARKETER_SUPPORT_COST_MODIFIER)) marketingSupportCost = 30;
 
+    let techBreakthroughDiscount = 0;
+    if (picked(BONUSES.BONUSES_TECHNOLOGY_LEADER_MODIFIER)) techBreakthroughDiscount = 80;
+    if (picked(BONUSES.BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER)) techBreakthroughDiscount = -150;
+
+    let followerDiscount = 0;
+    if (picked(BONUSES.BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER)) followerDiscount = 15;
 
     return {
       programmingEfficiency,
       marketingEfficiency,
 
       programmingSupportCost,
-      marketingSupportCost
+      marketingSupportCost,
+
+      techBreakthroughDiscount,
+      followerDiscount
     }
   }
 
@@ -1225,4 +1256,4 @@ export default class Product {
   }
 }
 
-export var __useDefault = true;
+// export var __useDefault = true;
