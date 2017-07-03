@@ -19,16 +19,8 @@ import sessionManager from '../helpers/session-manager';
 import stats from '../stats';
 
 
-let _skills = {};
 let _money = 1000;
-let _expenses = [
-  // {
-  //   type: EXPENSES.EXPENSES_FOOD,
-  //   quality: 0, // poor. Eat doshik and be happy (no). costs low money
-  //   price: 300,
-  //   regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
-  // }
-];
+let _expenses = [];
 
 let _points = {
   programming: 5300,
@@ -93,8 +85,7 @@ let _fame = 0; // nobody knows you
 
 let _loan = 0; // no loans;
 
-const initialize = ({ skills, money, expenses, points, employees, team, reputation, fame, loan }) => {
-  _skills = skills;
+const initialize = ({ money, expenses, points, employees, team, reputation, fame, loan }) => {
   _money = money;
   _expenses = expenses;
   _points = points;
@@ -127,10 +118,6 @@ class PlayerStore extends EventEmitter {
     this.emit(EC);
   }
 
-  getSkills() {
-    return _skills;
-  }
-
   getMoney() {
     return Math.floor(_money);
   }
@@ -147,9 +134,6 @@ class PlayerStore extends EventEmitter {
     return _loan;
   }
 
-  // getExpectedMoney() {
-  //   return
-  // }
   getPoints() {
     return _points;
   }
@@ -178,29 +162,8 @@ class PlayerStore extends EventEmitter {
     return Object.assign({}, e, { id: i });
   }
 
-  getTeamProgrammers() {
-    return _team.map(this.idHelper).filter(skillHelper.isProgrammer)
-  }
-  getTeamMarketers() {
-    return _team.map(this.idHelper).filter(skillHelper.isMarketer)
-  }
-  getTeamAnalysts() {
-    return _team.map(this.idHelper).filter(skillHelper.isAnalyst)
-  }
-
-  getEmployeesProgrammers() {
-    return _employees.map(this.idHelper).filter(skillHelper.isProgrammer);
-  }
-  getEmployeesMarketers() {
-    return _employees.map(this.idHelper).filter(skillHelper.isMarketer);
-  }
-  getEmployeesAnalysts() {
-    return _employees.map(this.idHelper).filter(skillHelper.isAnalyst);
-  }
-
   static getStoreData() {
     return {
-      skills: _skills,
       money: _money,
       expenses: _expenses,
       points: _points,
@@ -313,16 +276,6 @@ Dispatcher.register((p: PayloadType) => {
     case c.PLAYER_ACTIONS_INCREASE_POINTS:
       _points.marketing += p.points.marketing;
       _points.programming += p.points.programming;
-      break;
-
-    case c.PLAYER_ACTIONS_BUY_PP:
-      _points.programming += p.pp;
-      _money -= p.pp * JOB.PRICE_OF_ONE_PP;
-      break;
-
-    case c.PLAYER_ACTIONS_BUY_MP:
-      _points.marketing += p.mp;
-      _money -= p.mp * JOB.PRICE_OF_ONE_MP;
       break;
 
     case c.PLAYER_ACTIONS_DECREASE_POINTS:

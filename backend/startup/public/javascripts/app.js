@@ -6095,7 +6095,7 @@
 	  (function () {
 	    switch (p.type) {
 	      case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-	        _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 69999);
+	        _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 1999);
 	        break;
 
 	      case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
@@ -7232,9 +7232,9 @@
 
 	var _specialization2 = _interopRequireDefault(_specialization);
 
-	var _skills2 = __webpack_require__(151);
+	var _skills = __webpack_require__(151);
 
-	var _skills3 = _interopRequireDefault(_skills2);
+	var _skills2 = _interopRequireDefault(_skills);
 
 	var _createRandomWorker = __webpack_require__(152);
 
@@ -7254,16 +7254,8 @@
 
 	var EC = 'PLAYER_EVENT_CHANGE';
 
-	var _skills = {};
 	var _money = 1000;
-	var _expenses = [
-	  // {
-	  //   type: EXPENSES.EXPENSES_FOOD,
-	  //   quality: 0, // poor. Eat doshik and be happy (no). costs low money
-	  //   price: 300,
-	  //   regularity: 1 // everyday, 2 - once a week, 3 - once a month, 4 - once in half of the year, 5 - yearly
-	  // }
-	];
+	var _expenses = [];
 
 	var _points = {
 	  programming: 5300,
@@ -7324,8 +7316,7 @@
 	var _loan = 0; // no loans;
 
 	var initialize = function initialize(_ref) {
-	  var skills = _ref.skills,
-	      money = _ref.money,
+	  var money = _ref.money,
 	      expenses = _ref.expenses,
 	      points = _ref.points,
 	      employees = _ref.employees,
@@ -7334,7 +7325,6 @@
 	      fame = _ref.fame,
 	      loan = _ref.loan;
 
-	  _skills = skills;
 	  _money = money;
 	  _expenses = expenses;
 	  _points = points;
@@ -7381,11 +7371,6 @@
 	      this.emit(EC);
 	    }
 	  }, {
-	    key: 'getSkills',
-	    value: function getSkills() {
-	      return _skills;
-	    }
-	  }, {
 	    key: 'getMoney',
 	    value: function getMoney() {
 	      return Math.floor(_money);
@@ -7405,11 +7390,6 @@
 	    value: function getLoanSize() {
 	      return _loan;
 	    }
-
-	    // getExpectedMoney() {
-	    //   return
-	    // }
-
 	  }, {
 	    key: 'getPoints',
 	    value: function getPoints() {
@@ -7433,47 +7413,17 @@
 	  }, {
 	    key: 'getMonthlyMarketerPoints',
 	    value: function getMonthlyMarketerPoints() {
-	      return sum(this.getMarketers().map(_skills3.default.getMarketingPointsProducedBy));
+	      return sum(this.getMarketers().map(_skills2.default.getMarketingPointsProducedBy));
 	    }
 	  }, {
 	    key: 'getMonthlyProgrammerPoints',
 	    value: function getMonthlyProgrammerPoints() {
-	      return sum(this.getProgrammers().map(_skills3.default.getProgrammingPointsProducedBy));
+	      return sum(this.getProgrammers().map(_skills2.default.getProgrammingPointsProducedBy));
 	    }
 	  }, {
 	    key: 'idHelper',
 	    value: function idHelper(e, i) {
 	      return (0, _assign2.default)({}, e, { id: i });
-	    }
-	  }, {
-	    key: 'getTeamProgrammers',
-	    value: function getTeamProgrammers() {
-	      return _team.map(this.idHelper).filter(_skills3.default.isProgrammer);
-	    }
-	  }, {
-	    key: 'getTeamMarketers',
-	    value: function getTeamMarketers() {
-	      return _team.map(this.idHelper).filter(_skills3.default.isMarketer);
-	    }
-	  }, {
-	    key: 'getTeamAnalysts',
-	    value: function getTeamAnalysts() {
-	      return _team.map(this.idHelper).filter(_skills3.default.isAnalyst);
-	    }
-	  }, {
-	    key: 'getEmployeesProgrammers',
-	    value: function getEmployeesProgrammers() {
-	      return _employees.map(this.idHelper).filter(_skills3.default.isProgrammer);
-	    }
-	  }, {
-	    key: 'getEmployeesMarketers',
-	    value: function getEmployeesMarketers() {
-	      return _employees.map(this.idHelper).filter(_skills3.default.isMarketer);
-	    }
-	  }, {
-	    key: 'getEmployeesAnalysts',
-	    value: function getEmployeesAnalysts() {
-	      return _employees.map(this.idHelper).filter(_skills3.default.isAnalyst);
 	    }
 	  }, {
 	    key: 'getTeamExpenses',
@@ -7536,7 +7486,6 @@
 	    key: 'getStoreData',
 	    value: function getStoreData() {
 	      return {
-	        skills: _skills,
 	        money: _money,
 	        expenses: _expenses,
 	        points: _points,
@@ -7609,16 +7558,6 @@
 	    case c.PLAYER_ACTIONS_INCREASE_POINTS:
 	      _points.marketing += p.points.marketing;
 	      _points.programming += p.points.programming;
-	      break;
-
-	    case c.PLAYER_ACTIONS_BUY_PP:
-	      _points.programming += p.pp;
-	      _money -= p.pp * JOB.PRICE_OF_ONE_PP;
-	      break;
-
-	    case c.PLAYER_ACTIONS_BUY_MP:
-	      _points.marketing += p.mp;
-	      _money -= p.mp * JOB.PRICE_OF_ONE_MP;
 	      break;
 
 	    case c.PLAYER_ACTIONS_DECREASE_POINTS:
@@ -14632,25 +14571,30 @@
 	      // calculate human points
 
 	      // calculate programmer points
-	      var ppProducers = _playerStore2.default.getTeam().filter(function (p) {
-	        return p.task === JOB.JOB_TASK_PROGRAMMER_POINTS;
-	      });
+	      // const ppProducers = playerStore
+	      //   .getTeam()
+	      //   .filter(p => p.task === JOB.JOB_TASK_PROGRAMMER_POINTS);
 
-	      var programmingPoints = ppProducers.length ? ppProducers.map(function (p) {
-	        return _skills2.default.getProgrammingPointsProducedBy(p);
-	      }).reduce(function (p, c) {
-	        return p + c;
-	      }) : 0;
+	      var programmingPoints = _playerStore2.default.getMonthlyProgrammerPoints();
+	      // ppProducers.length ?
+	      //   ppProducers
+	      //     .map(p => skillHelper.getProgrammingPointsProducedBy(p))
+	      //     .reduce((p, c) => p + c)
+	      //   :
+	      //   0;
 
 	      // calculate marketing points
-	      var mpProducers = _playerStore2.default.getTeam().filter(function (p) {
-	        return p.task === JOB.JOB_TASK_MARKETING_POINTS;
-	      });
-	      var marketingPoints = mpProducers.length ? mpProducers.map(function (p) {
-	        return _skills2.default.getMarketingPointsProducedBy(p);
-	      }).reduce(function (p, c) {
-	        return p + c;
-	      }) : 0;
+	      // const mpProducers = playerStore
+	      //   .getTeam()
+	      //   .filter(p => p.task === JOB.JOB_TASK_MARKETING_POINTS);
+
+	      var marketingPoints = _playerStore2.default.getMonthlyMarketerPoints();
+	      // mpProducers.length ?
+	      //   mpProducers
+	      //     .map(p => skillHelper.getMarketingPointsProducedBy(p))
+	      //     .reduce((p, c) => p + c)
+	      //   :
+	      //   0;
 
 	      var programmingSupportPoints = _productStore2.default.getProgrammingSupportCost(0);
 	      var marketingSupportPoints = _productStore2.default.getMarketingSupportCost(0);

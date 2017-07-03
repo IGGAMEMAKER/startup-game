@@ -135,27 +135,30 @@ const run = () => {
     // calculate human points
 
     // calculate programmer points
-    const ppProducers = playerStore
-      .getTeam()
-      .filter(p => p.task === JOB.JOB_TASK_PROGRAMMER_POINTS);
+    // const ppProducers = playerStore
+    //   .getTeam()
+    //   .filter(p => p.task === JOB.JOB_TASK_PROGRAMMER_POINTS);
 
-    let programmingPoints = ppProducers.length ?
-      ppProducers
-        .map(p => skillHelper.getProgrammingPointsProducedBy(p))
-        .reduce((p, c) => p + c)
-      :
-      0;
+    let programmingPoints = playerStore.getMonthlyProgrammerPoints();
+    // ppProducers.length ?
+    //   ppProducers
+    //     .map(p => skillHelper.getProgrammingPointsProducedBy(p))
+    //     .reduce((p, c) => p + c)
+    //   :
+    //   0;
 
     // calculate marketing points
-    const mpProducers = playerStore
-      .getTeam()
-      .filter(p => p.task === JOB.JOB_TASK_MARKETING_POINTS);
-    let marketingPoints = mpProducers.length ?
-      mpProducers
-        .map(p => skillHelper.getMarketingPointsProducedBy(p))
-        .reduce((p, c) => p + c)
-      :
-      0;
+    // const mpProducers = playerStore
+    //   .getTeam()
+    //   .filter(p => p.task === JOB.JOB_TASK_MARKETING_POINTS);
+
+    let marketingPoints = playerStore.getMonthlyMarketerPoints();
+    // mpProducers.length ?
+    //   mpProducers
+    //     .map(p => skillHelper.getMarketingPointsProducedBy(p))
+    //     .reduce((p, c) => p + c)
+    //   :
+    //   0;
 
     const programmingSupportPoints = productStore.getProgrammingSupportCost(0);
     const marketingSupportPoints = productStore.getMarketingSupportCost(0);
