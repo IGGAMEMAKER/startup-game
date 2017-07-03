@@ -403,7 +403,7 @@ export default class Product {
     // need app
     // want to pay
     // can pay
-    return payments * price;
+    return payments * price * (1 + this.getSegmentPaymentBonus(segId) / 100);
   }
 
   getProductIncome() {
@@ -821,14 +821,30 @@ export default class Product {
     const amountOfFeatures = this.defaultFeatures.length;
 
     for (let i = 0; i < amountOfFeatures; i++) {
-      let featureName = this.getDefaults().features[i].shortDescription; // `Фича№${i}`;
+      let featureName = this.getDefaults().features[i].shortDescription;
 
       array.push({
         name: `lowerDevelopmentCostOfFeature${i}`,
         title: `Наша сила в технологии "${featureName}"`,
         bonus: `Снижение стоимости улучшения технологии "${featureName}" на 50%`,
         description: `Как известно, ключ всех побед состоит в правильной 
-        фокусировке на чём-то одном. В нашем случае, это технология "${featureName}"`,
+        фокусировке на чём-то одном. В нашем случае, это технология "${featureName}". 
+        У нас есть все шансы стать лидерами в этой технологии и сдавать её в аренду другим компаниям`,
+      })
+    }
+
+    // improvedPaymentsOfSegment
+    const amountOfSegments = this.getSegments().length;
+
+    for (let i = 0; i < amountOfSegments; i++) {
+      let segmentName = this.getSegmentBySegmentId(i).userOrientedName;
+
+      array.push({
+        name: `improvedPaymentsOfSegment${i}`,
+        title: `Наша главные клиенты: "${segmentName}"`,
+        bonus: `Доход от группы "${segmentName}" увеличивается в 1.5 раза`,
+        description: `Мы, как никто другие, понимаем, что именно нужно нашим 
+        главным клиентам. ${segmentName} точно знают, что мы их не подведём.`,
       })
     }
 
@@ -877,8 +893,14 @@ export default class Product {
     };
   }
 
-  getSegmentBonuses() {
+  getSegmentPaymentBonus(segmentId) {
+    let value = 0;
 
+    if (this.picked(`improvedPaymentsOfSegment${segmentId}`)) {
+      value = 50;
+    }
+
+    return value;
   }
 
   getSpecificFeatureDevelopmentCostModifier(featureId) {

@@ -731,9 +731,9 @@ class ProductStore extends EventEmitter {
       modifier = 0.25 - _products[id].getBonusModifiers().followerDiscount / 100;
     }
 
-    const specificFeatureModifier = _products[id].getSpecificFeatureDevelopmentCostModifier(featureId);
+    const specificFeatureModifier = 1 - _products[id].getSpecificFeatureDevelopmentCostModifier(featureId) / 100;
 
-    modifier *= 1 - specificFeatureModifier / 100;
+    modifier *= specificFeatureModifier;
 
     return Math.ceil(productDescriptions(this.getIdea(id)).features[featureId].development * modifier);
   }
