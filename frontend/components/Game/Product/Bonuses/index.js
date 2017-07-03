@@ -25,15 +25,19 @@ export default class Bonus extends Component {
     const onPick = props.onPickBonus ? props.onPickBonus : () => {};
 
           // <div className="bonus-description-short">Бонус: </div>
+          // <div className="bonus-cost">Стоимость: {props.costDescription}</div>
     return (
       <div className="bonus-wrapper">
         <div className={`bonus-icon`} style=""></div>
         <div className="bonus-description-wrapper">
-          <div className="bonus-title">{props.title} ({props.bonus})</div>
+          <div className="bonus-title">
+            {props.title} ({props.bonus})
+            <div className="bonus-button">
+              <UI.Button text="Активировать" onClick={onPick} link disabled={!props.canPick} />
+            </div>
+          </div>
           <div className="bonus-description">{props.description}</div>
-          <div className="bonus-cost">Стоимость: {props.costDescription}</div>
 
-          <UI.Button text="Активировать" onClick={onPick} primary disabled={!props.canPick} />
 
           {props.isPicked ? props.childs : ''}
         </div>

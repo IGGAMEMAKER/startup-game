@@ -16,6 +16,8 @@ import mapper from '../helpers/math/mapper';
 
 const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
 
+import * as BONUSES from '../constants/bonuses';
+
 export default class Product {
   constructor(data, createFromObject) {
     if (createFromObject) {
@@ -698,7 +700,9 @@ export default class Product {
   }
 
   getProgrammingSupportCost() {
-    return Math.floor(this.getDefaults().support.pp * this.getProgrammingSupportCostModifier());
+    const bonus = 1 - this.getBonusModifiers().programmingSupportCost / 100;
+
+    return Math.ceil(this.getDefaults().support.pp * this.getProgrammingSupportCostModifier() * bonus);
   }
 
   getMarketingSupportTechTotalCost() {
@@ -714,11 +718,111 @@ export default class Product {
     // const blogSupportCost = this.getBlogPower(id);
 
     const supportSupportCost = this.getMarketingSupportTechTotalCost();
-    return this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured().supportCost;
+
+    const bonus = 1 - this.getBonusModifiers().marketingSupportCost / 100;
+
+    const flatCost = this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured().supportCost;
+
+    return Math.ceil(flatCost * bonus);
   }
 
-  getBonusesList() {
-    
+  getBonusesList(): Array {
+    const chain = (root, childs) => {
+      root.childs = childs;
+    };
+
+    const programmerPerformanceBonus = {
+      name: BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER,
+      title: 'Улучшение производительности программистов',
+      bonus: '+15% PP ежемесячно',
+      value: 1.15,
+      description: 'Мы стали лучше понимать, как организовать работу команды программистов',
+      costDescription: '500PP',
+    };
+
+    const programmerPerformanceBonusII = {
+      name: BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II,
+      title: 'Улучшение производительности программистов II',
+      bonus: '+25% PP ежемесячно',
+      value: 1.4,
+      description: 'Мы накопили солидный опыт решения технических задач. Новые задачи не кажутся такими уж сложными',
+      costDescription: '1500PP',
+    };
+
+    chain(programmerPerformanceBonus, [programmerPerformanceBonusII]);
+
+    const marketerPerformanceBonus = {
+      name: BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER,
+      title: 'Улучшение производительности маркетологов',
+      bonus: '+25% MP ежемесячно',
+      description: 'Мы стали лучше понимать, как организовать работу команды маркетологов',
+      costDescription: '500MP',
+    };
+
+    const marketerPerformanceBonusII = {
+      name: BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER_II,
+      title: 'Улучшение производительности маркетологов II',
+      bonus: '+25% MP ежемесячно',
+      description: 'Мы провели кучу рекламных кампаний и хорошо знаем, что нужно нашим клиентам',
+      costDescription: '1500MP',
+    };
+
+    const programmingSupportCostBonus = {
+      name: BONUSES.BONUSES_PROGRAMMER_SUPPORT_COST_MODIFIER,
+      title: 'Снижение программистских затрат на поддержку',
+      bonus: '-30% ежемесячно',
+      description: 'Благодаря принятым стандартам разработки, наши программисты автоматизируют всё,' +
+      ' что только возможно, что приводит к снижению стоимости поддержки',
+      costDescription: 'бесплатно',
+    };
+
+    const marketingSupportCostBonus = {
+      name: BONUSES.BONUSES_MARKETER_SUPPORT_COST_MODIFIER,
+      title: 'Снижение маркетинговых затрат на поддержку',
+      bonus: '-30% ежемесячно',
+      description: 'Наши маркетологи стали лучше понимать нашу аудиторию и им проще работать с нашими клиентами,' +
+      ' что приводит к снижению стоимости поддержки',
+      costDescription: 'бесплатно',
+    };
+
+    chain(marketerPerformanceBonus, [marketerPerformanceBonusII]);
+
+    return [
+      programmerPerformanceBonus,
+      marketerPerformanceBonus,
+
+      programmingSupportCostBonus,
+      marketingSupportCostBonus
+    ];
+  }
+
+  getBonusModifiers() {
+    // write all values in percents!!!
+
+    const picked = value => this.features.bonuses[value];
+
+    let programmingEfficiency = 0;
+    if (picked(BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER)) programmingEfficiency = 15;
+    if (picked(BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II)) programmingEfficiency = 40;
+
+    let marketingEfficiency = 0;
+    if (picked(BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER)) marketingEfficiency = 15;
+    if (picked(BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER_II)) marketingEfficiency = 40;
+
+    let programmingSupportCost = 0;
+    if (picked(BONUSES.BONUSES_PROGRAMMER_SUPPORT_COST_MODIFIER)) programmingSupportCost = 30;
+
+    let marketingSupportCost = 0;
+    if (picked(BONUSES.BONUSES_MARKETER_SUPPORT_COST_MODIFIER)) marketingSupportCost = 30;
+
+
+    return {
+      programmingEfficiency,
+      marketingEfficiency,
+
+      programmingSupportCost,
+      marketingSupportCost
+    }
   }
 
   getSegmentBonuses() {
@@ -890,10 +994,6 @@ export default class Product {
 
 
     const basicBonus = 100;
-    const feedbackBonus = 1000;
-    const webvisorBonus = 1500;
-    const segmentingBonus = 500;
-    const segmentingBonus2 = 500;
 
     let bonuses = basicBonus;
 
@@ -907,14 +1007,8 @@ export default class Product {
     // maxXP *= clientModifier.modifier;
 
     return {
-      middle: maxXP, // * clientModifier.modifier / 2,
-      // min: 0,
-      // max: maxXP * clientModifier.modifier,
+      middle: maxXP,
       maxXPWithoutBonuses: maxXP,
-      // webvisorBonus,
-      // feedbackBonus,
-      // segmentingBonus,
-      // basicBonus,
 
       hasWebvisor: webvisor,
       hasFeedback: feedback,

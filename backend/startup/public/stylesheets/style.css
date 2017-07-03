@@ -280,18 +280,25 @@ textarea {
 .bonus-description-wrapper {
   display: inline-block;
   padding-left: 10px;
+  max-width: 800px;
 }
 .bonus-title {
-
+  font-style: italic;
+  margin-bottom: 5px;
+  font-weight: 100;
 }
 .bonus-description {
-
+  margin-bottom: 9px;
 }
 .bonus-description-short {
 
 }
 .bonus-cost {
 
+}
+
+.bonus-button {
+  display: inline-block;
 }
 
 .featureGroupTitle {
