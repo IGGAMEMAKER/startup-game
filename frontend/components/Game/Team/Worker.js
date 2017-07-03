@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 
 import Person from './Person';
-import actions from '../../../actions/player-actions';
+import actions from '../../../actions/product-actions';
 
 import logger from '../../../helpers/logger/logger';
 

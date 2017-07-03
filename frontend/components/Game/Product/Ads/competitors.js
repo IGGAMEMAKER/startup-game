@@ -8,11 +8,11 @@ import logger from '../../../../helpers/logger/logger';
 export default class Competitors extends Component {
   buyCompany(buyerId, sellerId, transferSum) {
     flux.productActions.buyCompany(buyerId, sellerId);
-    flux.playerActions.decreaseMoney(transferSum);
+    flux.productActions.decreaseMoney(transferSum);
   }
 
   render({ id }) {
-    const money = flux.playerStore.getMoney();
+    const money = flux.productStore.getMoney();
 
     const competitors = flux.productStore.getCompetitorsList(id);
 

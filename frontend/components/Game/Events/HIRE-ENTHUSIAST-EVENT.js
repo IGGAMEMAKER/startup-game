@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 
 import Button from '../../Shared/Button';
 
-import playerActions from '../../../actions/player-actions';
+import productActions from '../../../actions/product-actions';
 import messageActions from '../../../actions/message-actions';
 
 import teamHelper from '../../../helpers/team/skills';
@@ -16,7 +16,7 @@ export default class HireEnthusiastEvent extends Component {
     const player = data.player;
 
     const hireEnthusiast = () => {
-      playerActions.hireWorker(player);
+      productActions.hireWorker(player);
       messageActions.closeEvent(id);
       props.onclose();
     };

@@ -20,7 +20,7 @@ type StateType = {
 
 type PropsType = {};
 
-import store from '../../stores/player-store';
+import store from '../../stores/product-store';
 
 const IS_STAFF = 'IS_STAFF';
 const IS_EMPLOYEES = 'IS_EMPLOYEES';

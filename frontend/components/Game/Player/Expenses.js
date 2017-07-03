@@ -1,9 +1,8 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-import playerStore from '../../../stores/player-store';
 import productStore from '../../../stores/product-store';
-import playerActions from '../../../actions/player-actions';
+import productActions from '../../../actions/product-actions';
 
 import * as EXPENSES from '../../../constants/expenses';
 
@@ -42,7 +41,7 @@ export default class Expenses extends Component {
         loanIndex++;
         phrase = <div>
           Выплата процентов по долгу #${loanIndex}: ${Math.ceil(e.price * 0.01)}
-          <Button text={`Погасить долг (${Math.ceil(e.price)})`} onClick={() => { playerActions.loans.repay(i); }} />
+          <Button text={`Погасить долг (${Math.ceil(e.price)})`} onClick={() => { productActions.loans.repay(i); }} />
         </div>
       }
 

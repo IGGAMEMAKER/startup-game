@@ -6,7 +6,7 @@ const monthlyProgrammingPointsDifferenceStructured = () => {
   logger.shit('getProgrammingSupportCost with zero index... ' +
     'we need real ID of our product!! /helpers/points/modification.js');
 
-  const increase = flux.playerStore.getMonthlyProgrammerPoints();
+  const increase = flux.productStore.getMonthlyProgrammerPoints();
   const decrease = flux.productStore.getProgrammingSupportCost(id);
 
   return {
@@ -21,7 +21,7 @@ const monthlyMarketingPointsDifferenceStructured = () => {
   const id = 0;
 
   const decrease = flux.productStore.getMarketingSupportCost(id);
-  const increase = flux.playerStore.getMonthlyMarketerPoints();
+  const increase = flux.productStore.getMonthlyMarketerPoints();
 
   return {
     increase,

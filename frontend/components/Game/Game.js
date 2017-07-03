@@ -90,7 +90,7 @@ export default class Game extends Component {
     this.initialize();
 
     flux.productStore.addChangeListener(this.getProductsFromStore);
-    flux.playerStore.addChangeListener(this.getProductsFromStore);
+    flux.productStore.addChangeListener(this.getProductsFromStore);
     flux.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
     flux.messageStore.addChangeListener(this.getMessages);
   }

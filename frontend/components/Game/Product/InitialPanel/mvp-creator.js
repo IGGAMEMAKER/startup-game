@@ -1,6 +1,4 @@
 import productActions from '../../../../actions/product-actions';
-import playerActions from '../../../../actions/player-actions';
-import playerStore from '../../../../stores/player-store';
 import productStore from '../../../../stores/product-store';
 
 import logger from '../../../../helpers/logger/logger';
@@ -15,7 +13,7 @@ const getCurrentDefaultFeatures = (idea) => {
 };
 
 const create = (i, basePoints, idea) => {
-  const points = playerStore.getPoints();
+  const points = productStore.getPoints();
 
   // basePoints must be an array
   logger.shit('WRITE proper basePoints array in mvp-creator.js');
@@ -35,7 +33,7 @@ const create = (i, basePoints, idea) => {
 
     const p = new Product({ idea, name: 'WWWEB HOSTING', defaultFeatures: getCurrentDefaultFeatures(idea) });
 
-    playerActions.spendPoints(basePoints[1].amount, basePoints[0].amount);
+    productActions.spendPoints(basePoints[1].amount, basePoints[0].amount);
     productActions.setInitialProductSettings(i, p.features, p.KPI);
 
     createCompetitorCompany(idea);

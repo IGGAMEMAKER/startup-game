@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 
 import Button from '../../Shared/Button';
 
-import playerActions from '../../../actions/player-actions';
+import productActions from '../../../actions/product-actions';
 import messageActions from '../../../actions/message-actions';
 
 
@@ -15,19 +15,19 @@ export default class FreePointsEvent extends Component {
     const points = data.points;
 
     const pickProgrammingPoints = () => {
-      playerActions.increasePoints({ marketing: 0, programming: points * 2 });
+      productActions.increasePoints({ marketing: 0, programming: points * 2 });
       messageActions.closeEvent(id);
       props.onclose();
     };
 
     const pickMarketingPoints = () => {
-      playerActions.increasePoints({ marketing: points * 2, programming: 0 });
+      productActions.increasePoints({ marketing: points * 2, programming: 0 });
       messageActions.closeEvent(id);
       props.onclose();
     };
 
     const pickBoth = () => {
-      playerActions.increasePoints({ marketing: points, programming: points });
+      productActions.increasePoints({ marketing: points, programming: points });
       messageActions.closeEvent(id);
       props.onclose();
     };

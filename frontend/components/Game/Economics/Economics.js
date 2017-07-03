@@ -2,9 +2,8 @@ import { h, Component } from 'preact';
 
 import UI from '../../UI';
 import moneyCalculator from '../../../helpers/economics/money-difference';
-import playerStore from '../../../stores/player-store';
 import productStore from '../../../stores/product-store';
-import playerActions from '../../../actions/player-actions';
+import productActions from '../../../actions/product-actions';
 
 import Expenses from '../Player/Expenses';
 
@@ -24,7 +23,7 @@ export default class Economics extends Component {
     this.pickProducts();
     this.pickMoney();
 
-    playerStore.addChangeListener(this.pickMoney);
+    productStore.addChangeListener(this.pickMoney);
     productStore.addChangeListener(this.pickProducts);
   }
 
@@ -36,8 +35,8 @@ export default class Economics extends Component {
 
   pickMoney = () => {
     this.setState({
-      money: playerStore.getMoney(),
-      basicExpenses: playerStore.getExpenses(),
+      money: productStore.getMoney(),
+      basicExpenses: productStore.getExpenses(),
     })
   };
 
@@ -82,7 +81,7 @@ export default class Economics extends Component {
         <div>
           Взять кредит на сумму {amount}$. Ежемесячный платёж составит: {monthlyPayment}$
         </div>
-        <UI.Button text={`Взять кредит (${amount}$)`} onClick={() => playerActions.loans.take(amount)} />
+        <UI.Button text={`Взять кредит (${amount}$)`} onClick={() => productActions.loans.take(amount)} />
       </div>
     )
   };
@@ -92,7 +91,7 @@ export default class Economics extends Component {
   };
 
   getLoans = () => {
-    return playerStore.getLoanSize();
+    return productStore.getLoanSize();
   };
 
   renderLoanTakingTab = (state) => {

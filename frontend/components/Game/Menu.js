@@ -4,7 +4,7 @@ import { h, Component } from 'preact';
 import moneyCalculator from '../../helpers/economics/money-difference';
 import pointCalculator from '../../helpers/points/modification';
 
-import playerStore from '../../stores/player-store';
+import productStore from '../../stores/product-store';
 
 import logger from '../../helpers/logger/logger';
 
@@ -16,13 +16,13 @@ export default class Menu extends Component {
   componentWillMount() {
     this.getPlayerInfoFromStore();
 
-    playerStore.addChangeListener(this.getPlayerInfoFromStore);
+    productStore.addChangeListener(this.getPlayerInfoFromStore);
   }
 
   getPlayerInfoFromStore = () => {
     this.setState({
-      money: playerStore.getMoney(),
-      points: playerStore.getPoints()
+      money: productStore.getMoney(),
+      points: productStore.getPoints()
     })
   };
 

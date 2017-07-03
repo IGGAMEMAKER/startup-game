@@ -5,7 +5,7 @@ import stageHelper from '../../../helpers/stages';
 
 import UI from '../../UI';
 
-import actions from '../../../actions/player-actions';
+import actions from '../../../actions/product-actions';
 
 
 export default class Employee extends Component {

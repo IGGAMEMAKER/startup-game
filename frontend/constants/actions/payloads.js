@@ -18,8 +18,8 @@ export default {
     }
   },
 
-  playerStorePayload: {
-    name: 'playerStorePayload',
+  productStorePayload: {
+    name: 'productStorePayload',
     type: {
       type: String,
       amount: Number

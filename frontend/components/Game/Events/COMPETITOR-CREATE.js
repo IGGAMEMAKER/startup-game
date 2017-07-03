@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 
 import Button from '../../Shared/Button';
 
-import playerActions from '../../../actions/player-actions';
+import productActions from '../../../actions/product-actions';
 import messageActions from '../../../actions/message-actions';
 
 
@@ -15,7 +15,7 @@ export default class CompetitorCreateEvent extends Component {
     const p = data.p;
 
     const close = () => {
-      // playerActions.increasePoints({ marketing: 0, programming: points * 2 });
+      // productActions.increasePoints({ marketing: 0, programming: points * 2 });
       messageActions.closeEvent(id);
       props.onclose();
     };

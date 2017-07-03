@@ -1,5 +1,4 @@
 import productStore from '../../stores/product-store';
-import playerStore from '../../stores/player-store';
 
 import * as EXPENSES from '../../constants/expenses';
 
@@ -14,7 +13,7 @@ const calculate = () => {
       .reduce((p, c) => p + c, 0);
 
   // check expenses
-  const nonProductExpenses = playerStore.getExpenses()
+  const nonProductExpenses = productStore.getExpenses()
     .filter(e => e.type !== EXPENSES.EXPENSES_LOAN)
     .map((e, i) => e.price)
     .reduce((p, c) => p + c, 0);
@@ -24,9 +23,9 @@ const calculate = () => {
     .map((p, i) => productStore.getProductExpenses(i))
     .reduce((p, c) => p + c, 0);
 
-  const loans = playerStore.getLoanPaymentAmount();
+  const loans = productStore.getLoanPaymentAmount();
 
-  const teamExpenses = playerStore.getTeamExpenses();
+  const teamExpenses = productStore.getTeamExpenses();
 
   const expenses = nonProductExpenses + productExpenses + loans + teamExpenses;
 

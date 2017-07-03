@@ -42,7 +42,7 @@ export default class MainFeature extends Component {
 
   renderProgrammingSupportTab(id, onHireProgrammerClick) {
     const support = flux.productStore.getProgrammingSupportCost(id);
-    const ppIncrease = flux.playerStore.getMonthlyProgrammerPoints();
+    const ppIncrease = flux.productStore.getMonthlyProgrammerPoints();
 
     let hireProgrammerLink;
 
@@ -145,7 +145,7 @@ export default class MainFeature extends Component {
 
     const pp = flux.productStore.getMainFeatureUpgradeCost(id, featureId);
 
-    const enoughPPs = flux.playerStore.enoughProgrammingPoints(pp);
+    const enoughPPs = flux.productStore.enoughProgrammingPoints(pp);
 
     const disabled = !enoughPPs;
 
@@ -181,7 +181,7 @@ export default class MainFeature extends Component {
   improveFeature(id, featureId, max, pp) {
     const willResultBreakthrough = flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId);
 
-    flux.playerActions.spendPoints(pp, 0);
+    flux.productActions.spendPoints(pp, 0);
     flux.productActions.improveFeature(id, 'offer', featureId, max, 1000);
 
     if (stageHelper.isFirstFeatureMission()) {

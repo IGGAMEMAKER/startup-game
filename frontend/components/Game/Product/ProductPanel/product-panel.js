@@ -13,12 +13,8 @@ import UI from '../../../UI';
 
 import pointSaldoHelper from '../../../../helpers/points/modification';
 
-import productActions from '../../../../actions/product-actions';
-
 import productStore from '../../../../stores/product-store';
-
-import playerStore from '../../../../stores/player-store';
-import playerActions from '../../../../actions/player-actions';
+import productActions from '../../../../actions/product-actions';
 
 import logger from '../../../../helpers/logger/logger';
 
@@ -77,7 +73,7 @@ export default class ProductPanel extends Component {
   };
 
   haveEnoughPointsToUpgrade = necessaryPoints => {
-    const points = playerStore.getPoints();
+    const points = productStore.getPoints();
 
     const mp = necessaryPoints.mp || 0;
     const pp = necessaryPoints.pp || 0;
@@ -385,7 +381,7 @@ export default class ProductPanel extends Component {
     const standardPoints = feature.points || {};
     const mp = standardPoints.marketing || 0;
     const pp = standardPoints.programming || 0;
-    const points = playerStore.getPoints();
+    const points = productStore.getPoints();
 
     const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
 
@@ -393,7 +389,7 @@ export default class ProductPanel extends Component {
       // logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
 
       if (enoughPointsToUpgrade) {
-        playerActions.spendPoints(pp, mp);
+        productActions.spendPoints(pp, mp);
         productActions.improveFeatureByPoints(id, featureGroup, featureName);
 
         if (featureGroup === 'analytics' && stageHelper.isInstallPrimitiveAnalyticsMission()) {

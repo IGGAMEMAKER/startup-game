@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 
 import Button from '../../Shared/Button';
 
-import playerActions from '../../../actions/player-actions';
+import productActions from '../../../actions/product-actions';
 import messageActions from '../../../actions/message-actions';
 
 export default class FreeMoneyEvent extends Component {
@@ -14,7 +14,7 @@ export default class FreeMoneyEvent extends Component {
     const money = data.money;
 
     const onClick = () => {
-      playerActions.increaseMoney(money);
+      productActions.increaseMoney(money);
       messageActions.closeEvent(id);
       props.onclose();
     };

@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-import playerStore from '../../../stores/player-store';
-import playerActions from '../../../actions/player-actions';
+import productStore from '../../../stores/product-store';
+import productActions from '../../../actions/product-actions';
 
 import UI from '../../UI';
 
@@ -24,10 +24,10 @@ export default class PointShop extends Component {
     const { state } = this;
 
     const minPP = 0;
-    const maxPP = playerStore.getMaxPossibleFreelanceProgrammingPoints();
+    const maxPP = productStore.getMaxPossibleFreelanceProgrammingPoints();
 
     const minMP = 0;
-    const maxMP = playerStore.getMaxPossibleFreelanceMarketingPoints();
+    const maxMP = productStore.getMaxPossibleFreelanceMarketingPoints();
 
     const { pp, mp } = state;
 
@@ -41,7 +41,7 @@ export default class PointShop extends Component {
         <span>{maxPP}</span>
         <UI.Button
           text={`Купить ${pp} PP за ${JOB.PRICE_OF_ONE_PP * pp}$`}
-          onClick={() => { playerActions.buyProgrammingPoints(pp) }}
+          onClick={() => { productActions.buyProgrammingPoints(pp) }}
         />
         <br />
         <span>{minMP}</span>
@@ -51,7 +51,7 @@ export default class PointShop extends Component {
         <span>{maxMP}</span>
         <UI.Button
           text={`Купить ${mp} MP за ${JOB.PRICE_OF_ONE_MP * mp}$`}
-          onClick={() => { playerActions.buyMarketingPoints(mp) }}
+          onClick={() => { productActions.buyMarketingPoints(mp) }}
         />
       </div>
     );

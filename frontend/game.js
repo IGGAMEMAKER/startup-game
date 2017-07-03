@@ -1,10 +1,8 @@
 import productStore from './stores/product-store';
 import scheduleStore from './stores/schedule-store';
-import playerStore from './stores/player-store';
 
 import productActions from './actions/product-actions';
 import scheduleActions from './actions/schedule-actions';
-import playerActions from './actions/player-actions';
 
 import logger from './helpers/logger/logger';
 
@@ -122,24 +120,24 @@ const run = () => {
 
     const difference = moneyCalculator.saldo();
 
-    playerActions.increaseMoney(difference);
+    productActions.increaseMoney(difference);
 
-    const money = playerStore.getMoney();
+    const money = productStore.getMoney();
 
     // take loans if necessary
     if (money < 0) {
       logger.log('money below zero');
-      // playerActions.loans.take(-money);
+      // productActions.loans.take(-money);
     }
 
     // calculate human points
 
     // calculate programmer points
-    // const ppProducers = playerStore
+    // const ppProducers = productStore
     //   .getTeam()
     //   .filter(p => p.task === JOB.JOB_TASK_PROGRAMMER_POINTS);
 
-    let programmingPoints = playerStore.getMonthlyProgrammerPoints();
+    let programmingPoints = productStore.getMonthlyProgrammerPoints();
     // ppProducers.length ?
     //   ppProducers
     //     .map(p => skillHelper.getProgrammingPointsProducedBy(p))
@@ -148,11 +146,11 @@ const run = () => {
     //   0;
 
     // calculate marketing points
-    // const mpProducers = playerStore
+    // const mpProducers = productStore
     //   .getTeam()
     //   .filter(p => p.task === JOB.JOB_TASK_MARKETING_POINTS);
 
-    let marketingPoints = playerStore.getMonthlyMarketerPoints();
+    let marketingPoints = productStore.getMonthlyMarketerPoints();
     // mpProducers.length ?
     //   mpProducers
     //     .map(p => skillHelper.getMarketingPointsProducedBy(p))
@@ -176,10 +174,10 @@ const run = () => {
       programming: programmingPoints,
       marketing: marketingPoints
     };
-    playerActions.increasePoints(points);
+    productActions.increasePoints(points);
 
 
-    playerActions.updateEmployees();
+    productActions.updateEmployees();
   }
 
   // try to make an event

@@ -24,7 +24,6 @@ function setDefaultValues() {
   sessionStorage.saveInStorage('gamePhase', GAME_STAGES.GAME_STAGE_INIT);
 
   // player
-  sessionStorage.saveInStorage('skills', {});
   sessionStorage.saveInStorage('money', 1000);
   sessionStorage.saveInStorage('expenses', []);
   sessionStorage.saveInStorage('points', {
@@ -163,9 +162,9 @@ function restartGame() {
 }
 
 
-function savePlayerStorageData({ skills, money, expenses, points, employees, team, reputation, fame, loan }) {
+function saveProductStorageData({ products, money, expenses, points, employees, team, reputation, fame, loan }) {
   return {
-    skills: saveToStorage('skills', skills),
+    products: saveToStorage('products', products),
     money: saveToStorage('money', money),
     expenses: saveToStorage('expenses', expenses),
     points: saveToStorage('points', points),
@@ -177,8 +176,7 @@ function savePlayerStorageData({ skills, money, expenses, points, employees, tea
   };
 }
 
-function getPlayerStorageData() {
-  const skills: Object = JSON.parse(getFromStorage('skills'));
+function getProductStorageData() {
   const money: Number = Number.parseInt(getFromStorage('money'));
   const expenses: Array = Array.from(JSON.parse(getFromStorage('expenses')));
   const points: Object = JSON.parse(getFromStorage('points'));
@@ -189,8 +187,11 @@ function getPlayerStorageData() {
   const fame: Number = Number.parseInt(getFromStorage('fame'));
   const loan: Number = Number.parseInt(getFromStorage('loan'));
 
+  const data = getFromStorage('products');
+
+  const products: Array<Product> = Array.from(JSON.parse(data)).map(p => new Product(p, true));
+
   return {
-    skills,
     money,
     expenses,
     points,
@@ -198,24 +199,9 @@ function getPlayerStorageData() {
     team,
     reputation,
     fame,
-    loan
+    loan,
+    products
   };
-}
-
-function getProductStorageData() {
-  const data = getFromStorage('products');
-
-  const products: Array<Product> = Array.from(JSON.parse(data));
-
-  // logger.debug('getProductStorageData', products);
-
-  return products.map(p => new Product(p, true));
-}
-
-function saveProductStorageData({ products }) {
-  return {
-    products: saveToStorage('products', products)
-  }
 }
 
 function getScheduleStorageData() {
@@ -241,12 +227,10 @@ function getMessageStorageData() {
 // logger.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
 
 export default {
-  getPlayerStorageData,
   getProductStorageData,
   getScheduleStorageData,
   getMessageStorageData,
 
-  savePlayerStorageData,
   saveScheduleStorageData,
   saveProductStorageData,
 

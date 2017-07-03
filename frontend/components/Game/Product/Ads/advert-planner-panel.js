@@ -10,7 +10,7 @@ import logger from '../../../../helpers/logger/logger';
 export default class AdvertPlannerPanel extends Component {
   render({ id }) {
     const costPerClient = flux.productStore.getCostPerClient(id);
-    const money = flux.playerStore.getMoney();
+    const money = flux.productStore.getMoney();
 
     const ads = [
       { clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 },
@@ -32,7 +32,7 @@ export default class AdvertPlannerPanel extends Component {
   renderAdvert = (money, id) => a => {
     const { clients, text, mp, campaignCost } = a;
 
-    const disabled = !flux.playerStore.enoughMarketingPoints(mp) || money < campaignCost;
+    const disabled = !flux.productStore.enoughMarketingPoints(mp) || money < campaignCost;
 
     let error;
     if (money < campaignCost) {
@@ -60,15 +60,15 @@ export default class AdvertPlannerPanel extends Component {
   };
 
   startAdCampaign = (id, amountOfUsers, cost, mp) => {
-    if (flux.playerStore.getMoney() >= cost) {
+    if (flux.productStore.getMoney() >= cost) {
       if (stageHelper.isFirstAdCampaignMission()) {
         stageHelper.onFirstAdCampaignMissionCompleted();
       }
 
       flux.productActions.addHype(id, amountOfUsers);
 
-      flux.playerActions.increaseMoney(-cost);
-      flux.playerActions.spendPoints(0, mp);
+      flux.productActions.increaseMoney(-cost);
+      flux.productActions.spendPoints(0, mp);
     }
   };
 };

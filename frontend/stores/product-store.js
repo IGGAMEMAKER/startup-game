@@ -21,9 +21,84 @@ import companyCostComputer from '../helpers/products/compute-company-cost';
 import companyMerger from '../helpers/products/company-merger';
 
 
+import * as EXPENSES from '../constants/expenses';
+import * as JOB from '../constants/job';
+
+import getSpecialization from '../helpers/team/specialization';
+import skillHelper from '../helpers/team/skills';
+
+import workerGenerator from '../helpers/team/create-random-worker';
+
+
 import stats from '../stats';
 
 const EC = 'PRODUCT_EVENT_CHANGE';
+
+let _money = 1000;
+let _expenses = [];
+
+let _points = {
+  programming: 5300,
+  marketing: 5200,
+  analyst: 300
+};
+
+let _employees = [
+  {
+    name: 'Lynda',
+    skills: {
+      programming: 0,
+      marketing: 500,
+      analyst: 150
+    },
+    task: JOB.JOB_TASK_MARKETING_POINTS,
+    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+    salary: {
+      money: 500,
+      percent: 0,
+      pricingType: 1
+    }
+  },
+  {
+    name: 'Xavier',
+    skills: {
+      programming: 600,
+      marketing: 100,
+      analyst: 150
+    },
+    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+    salary: {
+      money: 700,
+      percent: 0,
+      pricingType: 1
+    }
+  }
+];
+
+let _team = [
+  {
+    name: 'James',
+    skills: {
+      programming: 1000,
+      marketing: 150,
+      analyst: 300
+    },
+    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+    jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
+    salary: {
+      percent: 100,
+      money: 100,
+      pricingType: 0
+    },
+    isPlayer: true
+  }
+];
+
+let _reputation = 50; // neutral reputation
+let _fame = 0; // nobody knows you
+
+let _loan = 0; // no loans;
 
 let _products: Array<Product> = [
   // new Product({
@@ -34,8 +109,17 @@ let _products: Array<Product> = [
   // })
 ];
 
-const initialize = (products) => {
+const initialize = ({ products, money, expenses, points, employees, team, reputation, fame, loan}) => {
   _products = products;
+
+  _money = money;
+  _expenses = expenses;
+  _points = points;
+  _employees = employees;
+  _team = team;
+  _reputation = reputation;
+  _fame = fame;
+  _loan = loan;
 };
 
 initialize(sessionManager.getProductStorageData());
@@ -69,6 +153,12 @@ const getCurrentMainFeatureDefaultsById = (id) => {
   return getCurrentMainFeatureDefaultsByIdea(idea);
 };
 
+function isMercenary(worker) {
+  return worker.salary.pricingType === 1;
+}
+
+const sum = (arr) => arr.reduce((p, c) => p + c, 0);
+
 
 class ProductStore extends EventEmitter {
   addChangeListener(cb: Function) {
@@ -82,6 +172,106 @@ class ProductStore extends EventEmitter {
   emitChange() {
     this.emit(EC);
   }
+
+
+
+  getMoney() {
+    return Math.floor(_money);
+  }
+
+  getExpenses() {
+    return _expenses;
+  }
+
+  getLoanPaymentAmount() {
+    return _loan ? _loan * 0.01 : 0;
+  }
+
+  getLoanSize() {
+    return _loan;
+  }
+
+  getPoints() {
+    return _points;
+  }
+
+  enoughMarketingPoints(mp) {
+    return _points.marketing >= mp;
+  }
+
+  enoughProgrammingPoints(pp) {
+    return _points.programming >= pp;
+  }
+
+  getTeam() {
+    return _team.map((e, i) => Object.assign({}, e, { id: i }));
+  }
+
+  getMonthlyMarketerPoints() {
+    return sum(this.getMarketers().map(skillHelper.getMarketingPointsProducedBy));
+  }
+
+  getMonthlyProgrammerPoints() {
+    return sum(this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy));
+  }
+
+  static getStoreData() {
+    return {
+      money: _money,
+      expenses: _expenses,
+      points: _points,
+      employees: _employees,
+      team: _team,
+      reputation: _reputation,
+      fame: _fame,
+      loan: _loan,
+      products: _products
+    }
+  }
+
+  getTeamExpenses() {
+    return sum(
+      this.getTeam()
+        .filter(isMercenary)
+        .map(worker => worker.salary.money)
+    );
+  }
+
+  getMaxPossibleFreelanceMarketingPoints() {
+    return Math.floor(_money / JOB.PRICE_OF_ONE_MP)
+  }
+
+  getMaxPossibleFreelanceProgrammingPoints() {
+    return Math.floor(_money / JOB.PRICE_OF_ONE_PP)
+  }
+
+  getMaxPossibleAdClients() {
+    const CLIENT_PRICE = 1;
+
+    return Math.floor(_money / CLIENT_PRICE);
+  }
+
+  getProgrammers() {
+    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_PROGRAMMER)
+  }
+
+  getMarketers() {
+    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_MARKETER)
+  }
+
+  getAnalysts() {
+    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_ANALYST)
+  }
+
+  getDesigners() {
+    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_DESIGNER)
+  }
+
+  getEmployees() {
+    return _employees;
+  }
+
+
 
   getProducts(): Array<Product> {
     return _products;
@@ -749,6 +939,95 @@ Dispatcher.register((p: PayloadType) => {
       _products[buyerId].features.offer = difference.features;
 
       _products.splice(sellerId, 1);
+      break;
+
+
+    case c.PLAYER_ACTIONS_INCREASE_MONEY:
+      _money += p.amount;
+      break;
+
+    case c.PLAYER_ACTIONS_EXPENSES_ADD:
+      _expenses.push(p.expense);
+      break;
+
+    case c.PLAYER_ACTIONS_EXPENSES_REMOVE:
+      _expenses.splice(p.id, 1);
+      break;
+
+    case c.PLAYER_ACTIONS_LOANS_TAKE:
+      logger.shit('LOAN SIZE MUST BASE ON YOUR INCOME!!!. stores product-store.js');
+
+      const repay = 1.3;
+      _money += p.amount;
+      _loan += p.amount * repay;
+
+      _expenses.push({
+        type: EXPENSES.EXPENSES_LOAN,
+        price: p.amount * repay,
+        regularity: 1
+      });
+      break;
+
+    case c.PLAYER_ACTIONS_LOANS_REPAY:
+      let loanSize = _expenses[p.id].price;
+      if (loanSize <= _money) {
+        _money -= loanSize;
+        _loan -= loanSize;
+
+        _expenses.splice(p.id, 1);
+      } else {
+        change = false;
+      }
+      break;
+
+    case c.PLAYER_ACTIONS_SET_TASK:
+      _team[p.index].task = p.task;
+      break;
+
+    case c.PLAYER_ACTIONS_INCREASE_POINTS:
+      _points.marketing += p.points.marketing;
+      _points.programming += p.points.programming;
+      break;
+
+    case c.PLAYER_ACTIONS_DECREASE_POINTS:
+      _points.marketing -= p.mp;
+      _points.programming -= p.pp;
+      break;
+
+    case c.PLAYER_ACTIONS_HIRE_WORKER:
+      _team.push(p.player);
+      _employees.splice(p.i, 1);
+      break;
+
+    case c.PLAYER_ACTIONS_FIRE_WORKER:
+      logger.debug('PLAYER_ACTIONS_FIRE_WORKER', p);
+
+      _money -= _team[p.i].salary.money;
+      _team.splice(p.i, 1);
+      break;
+
+    case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
+      _employees.push(p.player);
+      // logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+      // logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
+      break;
+
+    case c.PLAYER_ACTIONS_UPDATE_EMPLOYEES:
+      _employees = [
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create(),
+        workerGenerator.create()
+      ];
+      break;
+
+    case c.PLAYER_ACTIONS_EMPLOYEE_REMOVE:
+      _employees.splice(p.i, 1);
       break;
 
     default:

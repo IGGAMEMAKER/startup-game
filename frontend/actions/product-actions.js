@@ -8,6 +8,7 @@ function getRandomRange(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+
 export default {
   improveFeature(id, featureGroup, featureName, max, XP) {
     Dispatcher.dispatch({
@@ -109,5 +110,98 @@ export default {
       type: ACTIONS.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY,
       p
     })
+  },
+
+
+
+  increaseMoney: (amount) => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_INCREASE_MONEY,
+      amount
+    })
+  },
+  decreaseMoney: (amount) => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_INCREASE_MONEY,
+      amount: -amount
+    })
+  },
+  hireWorker: (player, i) => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_HIRE_WORKER,
+      player,
+      i
+    })
+  },
+  fireWorker(i) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_FIRE_WORKER,
+      i
+    })
+  },
+  addEmployee(player) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_ADD,
+      player
+    })
+  },
+  updateEmployees() {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_UPDATE_EMPLOYEES
+    })
+  },
+  rejectEmployee(i) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_REMOVE,
+      i
+    })
+  },
+
+  increasePoints(points) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_INCREASE_POINTS,
+      points
+    })
+  },
+  spendPoints(pp, mp) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_DECREASE_POINTS,
+      pp,
+      mp
+    })
+  },
+  buyProgrammingPoints: pp => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_BUY_PP,
+      pp
+    })
+  },
+  buyMarketingPoints: mp => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_BUY_MP,
+      mp
+    })
+  },
+  setTaskForPerson: (task, index) => {
+    Dispatcher.dispatch({
+      type: ACTIONS.PLAYER_ACTIONS_SET_TASK,
+      task,
+      index
+    })
+  },
+
+  loans: {
+    take: (amount) => {
+      Dispatcher.dispatch({
+        type: ACTIONS.PLAYER_ACTIONS_LOANS_TAKE,
+        amount
+      })
+    },
+    repay: (id) => {
+      Dispatcher.dispatch({
+        type: ACTIONS.PLAYER_ACTIONS_LOANS_REPAY,
+        id
+      })
+    }
   }
 };
