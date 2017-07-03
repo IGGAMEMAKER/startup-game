@@ -39,21 +39,16 @@ export default class Staff extends Component {
   }
 
   getStaff = () => {
+    logger.shit('NO COMPANY ID!! Staff.js');
+
     this.setState({
       staff: store.getTeam(),
       employees: store.getEmployees(),
 
-      pps: store.getMonthlyProgrammerPoints(),
-      mps: store.getMonthlyMarketerPoints(),
+      pps: store.getMonthlyProgrammerPoints(0),
+      mps: store.getMonthlyMarketerPoints(0)
     })
   };
-
-  toggle = (name) => () => {
-    const obj = {};
-    obj[name] = !this.state[name];
-    this.setState(obj)
-  };
-
 
   getMotivation(p) {
     let motivation = '';

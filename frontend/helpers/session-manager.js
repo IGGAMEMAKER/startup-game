@@ -161,24 +161,30 @@ function restartGame() {
   stats.saveAction('restartGame', {});
 }
 
+// restartGame();
 
 function saveProductStorageData({ products, money, expenses, points, employees, team, reputation, fame, loan }) {
-  return {
-    products: saveToStorage('products', products),
-    money: saveToStorage('money', money),
-    expenses: saveToStorage('expenses', expenses),
-    points: saveToStorage('points', points),
-    employees: saveToStorage('employees', employees),
-    team: saveToStorage('team', team),
-    reputation: saveToStorage('reputation', reputation),
-    fame: saveToStorage('fame', fame),
-    loan: saveToStorage('loan', loan)
-  };
+  saveToStorage('products', products);
+  saveToStorage('money', money);
+  saveToStorage('expenses', expenses);
+  saveToStorage('points', points);
+  saveToStorage('employees', employees);
+  saveToStorage('team', team);
+  saveToStorage('reputation', reputation);
+  saveToStorage('fame', fame);
+  saveToStorage('loan', loan);
 }
 
 function getProductStorageData() {
   const money: Number = Number.parseInt(getFromStorage('money'));
-  const expenses: Array = Array.from(JSON.parse(getFromStorage('expenses')));
+
+  let raw = getFromStorage('expenses');
+
+  logger.debug('raw data for expenses!!!', raw, getFromStorage('money'), getFromStorage('points'),
+    getFromStorage('employees'));
+
+  const expenses: Array = Array.from(JSON.parse(raw));
+  logger.debug('expenses needed');
   const points: Object = JSON.parse(getFromStorage('points'));
   const employees: Array = Array.from(JSON.parse(getFromStorage('employees')));
 
@@ -186,6 +192,8 @@ function getProductStorageData() {
   const reputation: Number = Number.parseInt(getFromStorage('reputation'));
   const fame: Number = Number.parseInt(getFromStorage('fame'));
   const loan: Number = Number.parseInt(getFromStorage('loan'));
+
+  logger.debug('products needed');
 
   const data = getFromStorage('products');
 
@@ -223,8 +231,6 @@ function saveScheduleStorageData({ tasks, day, gamePhase }) {
 function getMessageStorageData() {
   return getFromStorage('messages');
 }
-
-// logger.log('initialize, session-manager', getPlayerStorageData(), getProductStorageData(), getScheduleStorageData());
 
 export default {
   getProductStorageData,

@@ -1,8 +1,9 @@
 import { h, Component } from 'preact';
 import store from '../../../stores/product-store';
 
-import Staff from '../Staff';
 import Employee from '../Team/Employee';
+
+import logger from '../../../helpers/logger/logger';
 
 
 export default class Employees extends Component {
@@ -18,10 +19,13 @@ export default class Employees extends Component {
   }
 
   getStaff = () => {
+    logger.shit('NO COMPANY ID!! Employees.js');
+    const companyId = 0;
+
     this.setState({
       employees: store.getEmployees(),
-      pps: store.getMonthlyProgrammerPoints(),
-      mps: store.getMonthlyMarketerPoints(),
+      pps: store.getMonthlyProgrammerPoints(companyId),
+      mps: store.getMonthlyMarketerPoints(companyId)
     })
   };
 

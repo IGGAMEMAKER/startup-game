@@ -207,12 +207,20 @@ class ProductStore extends EventEmitter {
     return _team.map((e, i) => Object.assign({}, e, { id: i }));
   }
 
-  getMonthlyMarketerPoints() {
-    return sum(this.getMarketers().map(skillHelper.getMarketingPointsProducedBy));
+  getMonthlyMarketerPoints(id) {
+    const bonus = 1 + _products[id].getBonusModifiers().marketingEfficiency / 100;
+
+    const base = sum(this.getMarketers().map(skillHelper.getMarketingPointsProducedBy));
+
+    return Math.floor(base * bonus);
   }
 
-  getMonthlyProgrammerPoints() {
-    return sum(this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy));
+  getMonthlyProgrammerPoints(id) {
+    const bonus = 1 + _products[id].getBonusModifiers().programmingEfficiency / 100;
+
+    const base = sum(this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy));
+
+    return Math.floor(base * bonus);
   }
 
   static getStoreData() {
@@ -679,12 +687,6 @@ class ProductStore extends EventEmitter {
     if (value > 2000) return 2000;
 
     return value;
-  }
-
-  static getStoreData() {
-    return {
-      products: _products
-    }
   }
 
   isUpgradeWillResultTechBreakthrough(id, featureId) {

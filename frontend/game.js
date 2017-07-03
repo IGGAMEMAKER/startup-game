@@ -130,37 +130,18 @@ const run = () => {
       // productActions.loans.take(-money);
     }
 
+    const companyId = 0;
     // calculate human points
 
     // calculate programmer points
-    // const ppProducers = productStore
-    //   .getTeam()
-    //   .filter(p => p.task === JOB.JOB_TASK_PROGRAMMER_POINTS);
-
-    let programmingPoints = productStore.getMonthlyProgrammerPoints();
-    // ppProducers.length ?
-    //   ppProducers
-    //     .map(p => skillHelper.getProgrammingPointsProducedBy(p))
-    //     .reduce((p, c) => p + c)
-    //   :
-    //   0;
+    let programmingPoints = productStore.getMonthlyProgrammerPoints(companyId);
 
     // calculate marketing points
-    // const mpProducers = productStore
-    //   .getTeam()
-    //   .filter(p => p.task === JOB.JOB_TASK_MARKETING_POINTS);
+    let marketingPoints = productStore.getMonthlyMarketerPoints(companyId);
 
-    let marketingPoints = productStore.getMonthlyMarketerPoints();
-    // mpProducers.length ?
-    //   mpProducers
-    //     .map(p => skillHelper.getMarketingPointsProducedBy(p))
-    //     .reduce((p, c) => p + c)
-    //   :
-    //   0;
-
-    const programmingSupportPoints = productStore.getProgrammingSupportCost(0);
-    const marketingSupportPoints = productStore.getMarketingSupportCost(0);
-    logger.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js')
+    const programmingSupportPoints = productStore.getProgrammingSupportCost(companyId);
+    const marketingSupportPoints = productStore.getMarketingSupportCost(companyId);
+    logger.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js');
 
 
     // logger.log('increase points game.js', programmingPoints, marketingPoints);

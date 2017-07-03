@@ -42,7 +42,7 @@ export default class MainFeature extends Component {
 
   renderProgrammingSupportTab(id, onHireProgrammerClick) {
     const support = flux.productStore.getProgrammingSupportCost(id);
-    const ppIncrease = flux.productStore.getMonthlyProgrammerPoints();
+    const ppIncrease = flux.productStore.getMonthlyProgrammerPoints(id);
 
     let hireProgrammerLink;
 
