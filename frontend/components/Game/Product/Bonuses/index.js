@@ -32,12 +32,11 @@ export default class Bonus extends Component {
         <div className="bonus-description-wrapper">
           <div className="bonus-title">
             {props.title} ({props.bonus})
-            <div className="bonus-button">
-              <UI.Button text="Активировать" onClick={onPick} link disabled={!props.canPick} />
-            </div>
+            <div className="bonus-button"></div>
           </div>
           <div className="bonus-description">{props.description}</div>
 
+          <UI.Button text="Активировать" onClick={onPick} primary disabled={!props.canPick} />
 
           {props.isPicked ? props.childs : ''}
         </div>

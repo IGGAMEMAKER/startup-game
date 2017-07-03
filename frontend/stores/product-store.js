@@ -704,7 +704,7 @@ class ProductStore extends EventEmitter {
 
     // logger.debug('isWeAreRetards ?', current, max);
 
-    return current < 0.3 * max;
+    return current < 0.7 * max;
   }
 
   getTechBreakthroughModifierForHype(id, featureId) {
@@ -730,6 +730,10 @@ class ProductStore extends EventEmitter {
     if (this.isWeAreRetards(id, featureId)) {
       modifier = 0.25 - _products[id].getBonusModifiers().followerDiscount / 100;
     }
+
+    const specificFeatureModifier = _products[id].getSpecificFeatureDevelopmentCostModifier(featureId);
+
+    modifier *= 1 - specificFeatureModifier / 100;
 
     return Math.ceil(productDescriptions(this.getIdea(id)).features[featureId].development * modifier);
   }

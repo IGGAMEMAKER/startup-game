@@ -162,11 +162,13 @@ export default class ProductPanel extends Component {
 
     return (
       <div>
-        <div className="featureGroupTitle" >Монетизация</div>
-        <div className="featureGroupDescriptionWrapper">
-          <div>{payAbilityPhrase}</div>
-          <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
-          <div className="featureGroupBody">{payment}</div>
+        <div className="content-block">
+          <div className="featureGroupTitle">Монетизация</div>
+          <div className="featureGroupDescriptionWrapper">
+            <div>{payAbilityPhrase}</div>
+            <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
+            <div className="featureGroupBody">{payment}</div>
+          </div>
         </div>
         <Economics />
       </div>
@@ -228,7 +230,7 @@ export default class ProductPanel extends Component {
 
     let clientTab;
     if (stageHelper.canShowAdTab()) {
-      clientTab = <div>
+      clientTab = <div className="content-block">
         <div className="featureGroupTitle">Работа с клиентами</div>
         <div>Наши клиенты: {market.clients}</div>
         <br />
@@ -342,13 +344,15 @@ export default class ProductPanel extends Component {
     const churnStyleColor = coloringRange.ranged(churn, churnRange[1], churnRange[0]);
 
     return <div>
-      <div>Ежемесячное снижение известности (HYPE): {percent}%</div>
-      <ul>
-        <li>Базовое значение: {base}%</li>
-        <li style={`color: ${blogStyleColor}`}>От блога: {blog}%</li>
-        <li style={`color: ${churnStyleColor}`}>От рейтинга: {churn}%</li>
-        <li style={`color: ${techStyleColor}`}>Технологическое лидерство: {tech}%</li>
-      </ul>
+      <div className="content-block">
+        <div>Ежемесячное снижение известности (HYPE): {percent}%</div>
+        <ul>
+          <li>Базовое значение: {base}%</li>
+          <li style={`color: ${blogStyleColor}`}>От блога: {blog}%</li>
+          <li style={`color: ${churnStyleColor}`}>От рейтинга: {churn}%</li>
+          <li style={`color: ${techStyleColor}`}>Технологическое лидерство: {tech}%</li>
+        </ul>
+      </div>
       <Bonuses productId={id} />
     </div>;
   }
@@ -483,7 +487,7 @@ export default class ProductPanel extends Component {
     }
 
     let staff;
-      staff = this.renderNavbar(MODE_STAFF, 'Команда');
+    staff = this.renderNavbar(MODE_STAFF, 'Команда');
 
     return (
       <ul className="nav nav-tabs">

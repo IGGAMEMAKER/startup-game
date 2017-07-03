@@ -806,7 +806,7 @@ export default class Product {
       costDescription: 'бесплатно',
     };
 
-    return [
+    const array = [
       programmerPerformanceBonus,
       marketerPerformanceBonus,
 
@@ -816,12 +816,33 @@ export default class Product {
       techBreakthroughBonus,
       followerBonus
     ];
+
+    // lowerDevelopmentCostOfFeature
+    const amountOfFeatures = this.defaultFeatures.length;
+
+    for (let i = 0; i < amountOfFeatures; i++) {
+      let featureName = this.getDefaults().features[i].shortDescription; // `Фича№${i}`;
+
+      array.push({
+        name: `lowerDevelopmentCostOfFeature${i}`,
+        title: `Наша сила в технологии "${featureName}"`,
+        bonus: `Снижение стоимости улучшения технологии "${featureName}" на 50%`,
+        description: `Как известно, ключ всех побед состоит в правильной 
+        фокусировке на чём-то одном. В нашем случае, это технология "${featureName}"`,
+      })
+    }
+
+    return array
   }
+
+  picked = (value) => {
+    return this.features.bonuses[value]
+  };
 
   getBonusModifiers() {
     // write all values in percents!!!
 
-    const picked = value => this.features.bonuses[value];
+    const picked = this.picked;
 
     let programmingEfficiency = 0;
     if (picked(BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER)) programmingEfficiency = 15;
@@ -853,11 +874,21 @@ export default class Product {
 
       techBreakthroughDiscount,
       followerDiscount
-    }
+    };
   }
 
   getSegmentBonuses() {
 
+  }
+
+  getSpecificFeatureDevelopmentCostModifier(featureId) {
+    let value = 0;
+
+    if (this.picked(`lowerDevelopmentCostOfFeature${featureId}`)) {
+      value = 50;
+    }
+
+    return value;
   }
 
   getMarketingFeatureList() {
