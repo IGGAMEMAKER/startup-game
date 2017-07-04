@@ -10,21 +10,23 @@ const merge = (buyer, seller) => {
 
   productDescriptions(buyer.idea).features
     .map((f, i) => {
+      const isShareableFeature = f.shareable;
+
       const current = buyer.features.offer[i];
       const next = seller.features.offer[i];
 
-      if (current < next) {
+      features[i] = current;
+
+      if ((current < next) && isShareableFeature) {
         improvements.push({ name: f.name, i, value: next, difference: next - current });
         features[i] = next;
-      } else {
-        features[i] = current;
       }
     });
 
 
   const sellerClients = seller.KPI.clients;
   const buyerClients = buyer.KPI.clients;
-  const clients = sellerClients > buyerClients ? sellerClients : buyerClients;
+  const clients = sellerClients + buyerClients; // ? sellerClients : buyerClients;
 
   const result = {
     clients,

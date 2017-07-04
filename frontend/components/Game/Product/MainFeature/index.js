@@ -88,11 +88,11 @@ export default class MainFeature extends Component {
 
   renderUpgradeCostModifierBonus(id, featureId) {
     if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
-      return `Мы задаём новые тренды! Стоимость улучшения: +400%`;
+      return `Мы задаём новые тренды, но это даётся нелегко. Стоимость улучшения повышается`;
     }
 
     if (flux.productStore.isWeAreRetards(id, featureId)) {
-      return `Мы отстаём от конкурентов, поэтому копируем всё у них. Стоимость улучшения: -75%`;
+      return `Мы отстаём от конкурентов, поэтому копируем всё у них. Стоимость улучшения снижена`;
     }
 
     return '';

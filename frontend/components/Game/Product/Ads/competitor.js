@@ -2,6 +2,8 @@ import { h, Component } from 'preact';
 
 import logger from '../../../../helpers/logger/logger';
 
+import productStore from '../../../../stores/product-store';
+
 import UI from '../../../UI';
 
 export default class Competitor extends Component {
@@ -10,14 +12,15 @@ export default class Competitor extends Component {
   }
 
   renderFeatureList(c) {
-    return c.features.map(f => {
-      const difference = c.improvements.filter(d => d.name === f.name);
-
+    return c.features.map((f, featureId) => {
       let differencePhrase = '';
-      if (difference.length) {
-        const featureDifference = this.convertXPtoLvl(difference[0].difference);
 
-        if (featureDifference) {
+      const difference = c.improvements.find(d => d.name === f.name);
+
+      if (difference) {
+        const featureDifference = this.convertXPtoLvl(difference);
+
+        if (featureDifference > 0) {
           // competitor feature is better than ours
           differencePhrase = (
             <span>

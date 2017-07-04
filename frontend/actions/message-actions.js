@@ -22,5 +22,18 @@ export default {
       type: ACTIONS.GAME_EVENT_CLOSE_TAB,
       id
     });
+  },
+
+  addNotification: (eventType, data) => {
+    const obj = Object.assign({}, data, { type: eventType });
+
+    Dispatcher.dispatch({
+      type: ACTIONS.GAME_EVENT_ADD,
+      message: {
+        type: eventType,
+        data: obj,
+        isModal: false
+      }
+    });
   }
 };

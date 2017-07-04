@@ -7,8 +7,16 @@ import logger from '../../../../helpers/logger/logger';
 
 export default class Competitors extends Component {
   buyCompany(buyerId, sellerId, transferSum) {
+    const buyerName = flux.productStore.getName(buyerId);
+    const sellerName = flux.productStore.getName(sellerId);
+
     flux.productActions.buyCompany(buyerId, sellerId);
     flux.productActions.decreaseMoney(transferSum);
+
+    flux.messageActions.addNotification('company-merge', {
+      buyerName,
+      sellerName
+    });
   }
 
   render({ id }) {
