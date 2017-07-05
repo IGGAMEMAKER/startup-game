@@ -5,8 +5,8 @@ const getSpecificProductFeatureListByIdea = idea => {
   return ProductDescriptions(idea).features;
 };
 
+// export default (product, segmentId) => {
 export default (product, segmentId) => {
-  // TODO: include other features too
   let rating = 0;
 
   const { idea } = product;

@@ -11,7 +11,6 @@ import * as PRODUCT_STAGES from '../constants/products/product-stages';
 import Product from '../classes/Product';
 
 
-import computeRating from '../helpers/products/compute-rating';
 import productDescriptions from '../helpers/products/product-descriptions';
 
 import sessionManager from '../helpers/session-manager';
@@ -43,6 +42,8 @@ let _points = {
   marketing: 5200,
   analyst: 300
 };
+
+let _rents = [];
 
 let _employees = [
   {
@@ -110,7 +111,7 @@ let _products: Array<Product> = [
   // })
 ];
 
-const initialize = ({ products, money, expenses, points, employees, team, reputation, fame, loan}) => {
+const initialize = ({ products, rents, money, expenses, points, employees, team, reputation, fame, loan}) => {
   _products = products;
 
   _money = money;
@@ -121,6 +122,7 @@ const initialize = ({ products, money, expenses, points, employees, team, reputa
   _reputation = reputation;
   _fame = fame;
   _loan = loan;
+  _rents = rents;
 };
 
 initialize(sessionManager.getProductStorageData());
@@ -191,6 +193,10 @@ class ProductStore extends EventEmitter {
   getLoanSize() {
     return _loan;
   }
+
+  getRents() {
+    return _rents;
+  };
 
   getPoints() {
     return _points;
@@ -354,6 +360,16 @@ class ProductStore extends EventEmitter {
   getDefaults(id) {
     return _products[id].getDefaults();
   }
+
+  hasIncomingRents(id) {
+    return _rents.find(r => r.in === id);
+  }
+
+  hasOutgoingRents(id) {
+    return _rents.find(r => r.out === id);
+  }
+
+  
 
   getProductUtility(id) {
     return _products[id].getProductUtility();
@@ -852,7 +868,7 @@ class ProductStore extends EventEmitter {
         const p: Product = obj.p;
         const id = obj.id;
 
-        const rating = round(computeRating(p, 0));
+        const rating = Product.getRating(p, 0);
 
         const features = p.features.offer;
 

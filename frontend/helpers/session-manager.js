@@ -84,8 +84,9 @@ function setDefaultValues() {
   sessionStorage.saveInStorage('reputation', 0);
   sessionStorage.saveInStorage('fame', 0);
   sessionStorage.saveInStorage('loan', 0);
+  sessionStorage.saveInStorage('rents', []);
   logger.debug('saved tasks');
-  //
+
   // products
   const product = new Product({
     idea: IDEAS.IDEA_WEB_HOSTING,
@@ -163,7 +164,7 @@ function restartGame() {
 
 // restartGame();
 
-function saveProductStorageData({ products, money, expenses, points, employees, team, reputation, fame, loan }) {
+function saveProductStorageData({ products, rents, money, expenses, points, employees, team, reputation, fame, loan }) {
   saveToStorage('products', products);
   saveToStorage('money', money);
   saveToStorage('expenses', expenses);
@@ -173,6 +174,7 @@ function saveProductStorageData({ products, money, expenses, points, employees, 
   saveToStorage('reputation', reputation);
   saveToStorage('fame', fame);
   saveToStorage('loan', loan);
+  saveToStorage('rents', rents);
 }
 
 function getProductStorageData() {
@@ -188,6 +190,7 @@ function getProductStorageData() {
   const points: Object = JSON.parse(getFromStorage('points'));
   const employees: Array = Array.from(JSON.parse(getFromStorage('employees')));
 
+  const rents: Array = Array.from(JSON.parse(getFromStorage('rents')));
   const team: Array = Array.from(JSON.parse(getFromStorage('team')));
   const reputation: Number = Number.parseInt(getFromStorage('reputation'));
   const fame: Number = Number.parseInt(getFromStorage('fame'));
@@ -208,6 +211,7 @@ function getProductStorageData() {
     reputation,
     fame,
     loan,
+    rents,
     products
   };
 }
