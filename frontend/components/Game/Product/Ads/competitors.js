@@ -24,7 +24,7 @@ export default class Competitors extends Component {
 
     const competitors = flux.productStore.getCompetitorsList(id);
 
-    const rating = flux.productStore.getRating(id);
+    const rating = 1; // flux.productStore.getRating(id);
 
     logger.shit('competitors.js hardcoded isCompetitor check: c.id != 0');
 

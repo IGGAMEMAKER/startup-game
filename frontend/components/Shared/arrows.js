@@ -7,6 +7,7 @@ export default {
   dot: '\u00B7',
 
   triangle: {
-    up: '\u25B2'
+    up: '\u25B2',
+    down: '\u25BC'
   }
 }

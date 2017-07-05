@@ -175,31 +175,10 @@ export default class ProductPanel extends Component {
     )
   };
 
-  renderAnalyticsTab = (id, idea) => {
-    const analytics = productStore
-      .getAnalyticFeatures(idea)
-      .map(this.renderFeature('analytics', id, idea));
-
-    return (
-      <div>
-        <div className="featureGroupTitle">Аналитика</div>
-        <div className="featureGroupDescriptionWrapper">
-          <div className="featureGroupDescription">Позволяет быстрее улучшать главные характеристики проекта</div>
-          <div className="featureGroupBody">{analytics}</div>
-        </div>
-      </div>
-    );
-  };
-
   renderSegmentTab(id) {
-    let segments = productStore.getSegments(id);
+    if (!stageHelper.canShowSegments()) return '';
 
-    if (!stageHelper.canShowSegments()) {
-      return '';
-      // segments = [segments[0]];
-    }
-
-    const segmentList = segments.map((s, i) => <Segment productId={id} segment={s} id={i} />);
+    const segmentList = productStore.getSegments(id).map((s, i) => <Segment productId={id} segment={s} id={i} />);
 
     return (
       <div>
@@ -306,7 +285,6 @@ export default class ProductPanel extends Component {
           onClientsPressed={() => this.setMode(MODE_MARKETING)}
           onPaymentsPressed={() => this.setMode(MODE_PAYMENTS)}
           onAdsPressed={() => this.setMode(MODE_ADS)}
-          onAnalyticsPressed={() => this.setMode(MODE_ANALYTICS)}
           onExpertisePressed={() => this.setMode(MODE_HYPOTHESIS)}
         />
       </div>
@@ -324,9 +302,8 @@ export default class ProductPanel extends Component {
     )
   }
 
-  renderBonusesTab(id, product: Product) {
-    const breakthroughAmount = product.getNumberOfTechnologiesWhereWeMadeBreakthrough();
-    const hypeDampingStructured = product.getHypeDampingStructured(breakthroughAmount);
+  renderBonusesTab(id) {
+    const hypeDampingStructured = productStore.getHypeDampingStructured(id);
 
     const {
       blogRange,
@@ -521,10 +498,6 @@ export default class ProductPanel extends Component {
 
       case MODE_ADS:
         body = this.renderAdTab(id, product);
-        break;
-
-      case MODE_ANALYTICS:
-        body = this.renderAnalyticsTab(id, idea);
         break;
 
       case MODE_STAFF:

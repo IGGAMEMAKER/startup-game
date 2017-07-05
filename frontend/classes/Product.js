@@ -12,7 +12,6 @@ import companyCostComputer from '../helpers/products/compute-company-cost';
 import * as balance from '../constants/balance';
 
 import round from '../helpers/math/round';
-import mapper from '../helpers/math/mapper';
 
 const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
 
@@ -35,6 +34,8 @@ export default class Product {
       this.owner = data.owner;
 
       this.defaultFeatures = data.defaultFeatures;
+
+      // this.rentedFeatures = data.rentedFeatures;
 
       return;
     }
@@ -113,6 +114,7 @@ export default class Product {
     this.owner = !isCompetitor;
 
     this.defaultFeatures = defaultFeatures;
+    // this.rentedFeatures = [].fill(null, defaultFeatures.length); //
   }
 
   setMainFeatureDefaults(upgradedDefaults) {
@@ -127,12 +129,10 @@ export default class Product {
     return companyCostComputer.compute(this);
   }
 
-  getRating(segmentId) {
+  static getRating(p, segmentId) {
     if (!segmentId) segmentId = 0;
 
-    const result = round(computeRating(this, segmentId));
-
-    return Math.max(result, 0);
+    return round(computeRating(p, segmentId));
   }
 
   getClients(segmentId) {
@@ -146,55 +146,6 @@ export default class Product {
 
   getSegmentBySegmentId(segId) {
     return this.getSegments()[segId];
-  }
-
-  getHypeDamping() {
-    return this.getChurnRate().raw;
-  }
-
-  getHypeDampingStructured(numberOfTechnologiesWhereWeMadeBreakthrough) {
-    const blogPower = this.getBlogHypeModifier();
-    const rating = this.getRating();
-
-    const blogRange = [0, 40];
-    const churnRange = [10, 50];
-    const techRange = [0, 25];
-
-    const blog = Math.floor(mapper(blogPower, 0, 1, blogRange[0], blogRange[1]));
-    const churn = Math.ceil(mapper(10 - rating, 0, 10, churnRange[0], churnRange[1]));
-
-    // logger.debug(`getHypeDampingStructured,
-    // blogPower: ${blogPower}, churnModifier: ${churnModifier},
-    // blog: ${blog}, churn: ${churn},
-    // `);
-
-    const maxNumberOfTechnologies = productDescriptions(this.idea).features.length;
-    const tech = Math.floor(mapper(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, techRange[0], techRange[1]));
-
-    const base = 90;
-    const percent = Math.min(base - blog - tech + churn, 100);
-
-    return {
-      blogRange,
-      churnRange,
-      techRange,
-      base,
-      blog: -blog,
-      tech: -tech,
-      churn,
-      percent,
-      clientModifier: this.getClients() / 1000
-    }
-  }
-
-  getHypeDampingValue(numberOfTechnologiesWhereWeMadeBreakthrough) {
-    const current = this.getHypeValue();
-
-    const data = this.getHypeDampingStructured(numberOfTechnologiesWhereWeMadeBreakthrough);
-
-    const v = Math.floor(current * data.percent / 100);
-
-    return -v;
   }
 
   getSegmentedPriorities(segId) {
@@ -213,22 +164,10 @@ export default class Product {
     return this.KPI.newClients;
   }
 
-  getDisloyalClients() {
-    return Math.floor(this.getClients() * this.getChurnRate().raw);
-  }
-
-  getViralClients() {
-    return Math.floor(this.getNewClients() * this.getViralityRate());
-  }
-
   getMainFeatureQualityByFeatureId(featureId) {
     const value = this.features.offer[featureId];
 
     return value; // round(value / feature.data);
-  }
-
-  getMainFeatureDefaultQualityByFeatureId(featureId) {
-    return this.getDefaults().features[featureId].data;
   }
 
   getPrettyFeatureNameByFeatureId(featureId){
@@ -336,7 +275,8 @@ export default class Product {
   }
 
   getConversionRate(segmentId) {
-    const rating = this.getRating(segmentId);
+    // const rating = this.getRating(segmentId);
+    const rating = Product.getRating(this, segmentId); // this.getRating(segmentId);
     const utility = this.getProductUtility();
 
     const paymentModifier = this.getPaymentModifier();
@@ -396,13 +336,8 @@ export default class Product {
     const clients = this.getClients(segId);
     const price = this.getProductPrice(segId);
 
-    // logger.debug(`getSegmentIncome segment ${segId}, ${conversion}%, ${clients} cli, ${price}$`);
     const payments = conversion * clients;
 
-    // logger.debug('getProductIncome', segId, payments);
-    // need app
-    // want to pay
-    // can pay
     return payments * price * (1 + this.getSegmentPaymentBonus(segId) / 100);
   }
 
@@ -418,26 +353,6 @@ export default class Product {
     return this.idea;
   }
 
-  getViralityRate() {
-    const rating = this.getRating();
-    const multiplier = this.getDefaults().virality;
-    const marketing = this.getMarketingFeatures();
-
-    let base = 0.1;
-
-    if (rating >= 7) {
-      base += (rating - 7) / 10;
-    }
-
-    let referralBonuses = 0;
-
-    if (marketing.referralProgram) {
-      referralBonuses += 0.65 * marketing.referralProgram;
-    }
-
-    return (base + referralBonuses) * multiplier;
-  }
-
   getMarketingFeatures() {
     return this.features.marketing;
   }
@@ -448,8 +363,6 @@ export default class Product {
 
   getBlogHypeModifier() {
     return this.getBlogPower();
-
-    return Math.ceil(this.getClients() * this.getBlogPower() / 1000);
   }
 
   getBlogStatusStructured() {
@@ -509,27 +422,20 @@ export default class Product {
     return 0;
   }
 
-  getChurnRate() {
-    // TODO fix constant values in blog, email, support in getChurnRate(i)
+  static getChurnRate(rating, p: Product) {
     // return answer in partitions 0-1
-    logger.shit('TODO fix constant values in blog, email, support in getChurnRate(i)');
 
-    let rating = this.getRating();
+    // let rating = this.getRating();
 
     if (rating < 3) {
       rating = 3;
-      // return {
-      //   raw: 1,
-      //   pretty: 100
-      // };
     }
 
-    // logger.log('getChurnRate in ProductStore', rating, Math.pow(12 - rating, 1.7));
     const ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
 
-    const blog = this.getBlogPower();
-    const emails = this.getEmailPower();
-    const support = this.getSupportPower();
+    const blog = p.getBlogPower();
+    const emails = p.getEmailPower();
+    const support = p.getSupportPower();
     const k = 0.6; // поправочный коэффициент
 
     const marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
@@ -538,8 +444,6 @@ export default class Product {
     // bad 10-15+
     // good 1-5
     const churn = ratingModifier * (1 - k * marketingModifier) / 100;
-
-    // logger.debug('product-store.js getChurnRate', churn);
 
     return {
       raw: churn, // 0 - 1
@@ -588,65 +492,6 @@ export default class Product {
 
   getCostPerClient() {
     return this.getDefaults().CAC;
-  }
-
-  getRatingForMetricsTab() {
-    let phrase;
-    const features = this.features;
-    const analytics = features.analytics;
-
-    // rating depends on
-    // number of users (stat pogreshnost)
-    // feedback form
-    // segmenting
-    // webvisor
-
-    // if (!analytics.feedback && !analytics.webvisor && !analytics.segmenting) {
-    //   return 0;
-    // }
-    let analyticsModifier = 1;
-    if (analytics.feedback) analyticsModifier -= 0.3;
-
-    if (analytics.webvisor) {
-      analyticsModifier -= 0.5;
-    } else if (analytics.segmenting) {
-      analyticsModifier -= 0.65;
-    }
-
-    const clients = this.getClients();
-    let factor = 2;
-    if (clients > 100000) {
-      factor = 1;
-    } else if (clients > 10000) {
-      factor = 1.1;
-    } else if (clients > 1000) {
-      factor = 1.2;
-    } else if (clients > 100) {
-      factor = 1.5;
-    } else {
-      factor = 2;
-    }
-
-    const error = round(5 * factor * analyticsModifier);
-    const offset = Math.random() * error;
-    const rating = this.getRating();
-
-    let leftValue = round(rating - offset);
-    if (leftValue < 0) {
-      leftValue = 0;
-    }
-
-    let rightValue = round(leftValue + error);
-    if (rightValue < 0) {
-      rightValue = 0;
-    } else if (rightValue > 10) {
-      rightValue = 10;
-    }
-
-    phrase = `${leftValue} - ${rightValue}`;
-    phrase = rating;
-
-    return phrase;
   }
 
   getClientAnalyticsModifier() {
@@ -1281,20 +1126,11 @@ export default class Product {
     this.KPI.hype = Math.min(max, this.KPI.hype + hype);
   }
 
-  loseMonthlyHype() {
-    let numberOfTechnologiesWhereWeMadeBreakthrough = this.getNumberOfTechnologiesWhereWeMadeBreakthrough();
-
-    this.KPI.hype += this.getHypeDampingValue(numberOfTechnologiesWhereWeMadeBreakthrough);
+  loseMonthlyHype(value = -100) {
+    this.KPI.hype += value;
 
     logger.shit('made shitty code here. There was a bug, when on hype = 0 client calculations fail for all users');
     if (this.KPI.hype === 0) this.KPI.hype = 1;
-  }
-
-  addViralClients(p) {
-    const clients = p.clients;
-
-    this.KPI.clients += clients;
-    this.KPI.newClients = clients;
   }
 
   removeClients(p) {
@@ -1304,9 +1140,8 @@ export default class Product {
     if (this.KPI.clients - clients < 0) {
       this.KPI.clients = 0;
     } else {
-      this.KPI.clients -= Math.floor(clients);
+      this.KPI.clients -= clients;
     }
   }
 }
 
-// export var __useDefault = true;

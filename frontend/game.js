@@ -50,7 +50,7 @@ const run = () => {
   const day = scheduleStore.getDay();
   const tasks = scheduleStore.getTasks();
 
-  // const products = productStore.getCompetitorsList(0); logger.shit(`frontend/game.js magic id=0`);
+  
   const products: Array<Product> = productStore.getProducts();
 
   // check tasks for finishing
@@ -114,8 +114,6 @@ const run = () => {
         productActions.removeClients(id, churn);
 
         productActions.loseMonthlyHype(id);
-        // const viral = productStore.getViralClients(id);
-        // productActions.viralClients(id, viral);
       });
 
     const difference = moneyCalculator.saldo();

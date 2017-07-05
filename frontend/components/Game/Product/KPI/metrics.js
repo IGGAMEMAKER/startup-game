@@ -23,7 +23,6 @@ export default class Metrics extends Component {
     onClientsPressed,
     onPaymentsPressed,
     onAdsPressed,
-    onAnalyticsPressed,
     onExpertisePressed
   }, {}) {
     const { idea } = product;
@@ -40,8 +39,6 @@ export default class Metrics extends Component {
     const conversion = productStore.getConversionRate(id).pretty;
     const clients = productStore.getClients(id);
     const income = round(productStore.getProductIncome(id));
-    const virality = round(productStore.getViralityRate(id));
-    const viralClients = productStore.getViralClients(id);
 
     const hype = productStore.getHypeValue(id);
 
@@ -49,7 +46,7 @@ export default class Metrics extends Component {
 
     let canShowRatingTab = productStore.getRatingForMetricsTab(id) != 0;
     let canShowChurnTab = !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
-    let canShowViralityTab = !!productStore.getFeatureStatus(id, 'analytics', 'shareAnalytics');
+
     let canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'payment', 'mockBuying');
     // let canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
     let canShowClientsTab =
@@ -78,19 +75,6 @@ export default class Metrics extends Component {
         <span className="metric-link" onClick={onClientsPressed}>Улучшить</span>
       </li>;
     }
-
-    let viralityTab;
-    if (canShowViralityTab) {
-      viralityTab = <li>
-        <b>Вирусность: {virality} ({viralClients})</b>
-      </li>
-    } else {
-      viralityTab = <li>
-        <b>Вирусность: ???</b>
-        <span className="metric-link" onClick={onAnalyticsPressed}>Разблокировать эту метрику</span>
-      </li>
-    }
-    viralityTab = '';
 
     let newClientsTab;
     if (canShowNewClientsTab) {
@@ -130,8 +114,6 @@ export default class Metrics extends Component {
           <span className="metric-link" onClick={onPaymentsPressed}>Повысить</span>
         </li>
       }
-    } else {
-      incomeTab = <li onClick={onAnalyticsPressed}>Разблокировать эту метрику</li>
     }
 
     let expertiseTab = <li>
@@ -157,9 +139,6 @@ export default class Metrics extends Component {
 
             {hypeTab}
 
-            {viralityTab}
-
-            {payingPercentageTab}
             {incomeTab}
           </ul>
         </div>

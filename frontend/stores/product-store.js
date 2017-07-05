@@ -16,6 +16,7 @@ import productDescriptions from '../helpers/products/product-descriptions';
 
 import sessionManager from '../helpers/session-manager';
 
+import mapper from '../helpers/math/mapper';
 
 import companyCostComputer from '../helpers/products/compute-company-cost';
 import companyMerger from '../helpers/products/company-merger';
@@ -304,7 +305,7 @@ class ProductStore extends EventEmitter {
   getRating(id, segmentId) {
     if (!segmentId) segmentId = 0;
 
-    return _products[id].getRating(segmentId);
+    return Product.getRating(_products[id], segmentId);
   }
 
   getClients(id, segmentId) {
@@ -328,20 +329,14 @@ class ProductStore extends EventEmitter {
   }
 
   getDisloyalClients(id) {
-    return _products[id].getDisloyalClients();
-  }
+    const p = _products[id];
+    const rating = this.getRating(id);
 
-  getViralClients(id) {
-    return _products[id].getViralClients();
+    return Math.floor(p.getClients() * Product.getChurnRate(rating, p).raw);
   }
 
   getMainFeatureQualityByFeatureId(id, featureId) {
     return _products[id].getMainFeatureQualityByFeatureId(featureId);
-  }
-
-  getMainFeatureDefaultQualityByFeatureId(id, featureId) {
-    return this.temporaryMaxFeatureValue(id, featureId);
-    // return _products[id].getMainFeatureDefaultQualityByFeatureId(featureId);
   }
 
   getPrettyFeatureNameByFeatureId(id, featureId){
@@ -396,10 +391,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getIdea();
   }
 
-  getViralityRate(id) {
-    return _products[id].getViralityRate();
-  }
-
   getMarketingFeatures(id) {
     return _products[id].getMarketingFeatures();
   }
@@ -425,7 +416,9 @@ class ProductStore extends EventEmitter {
   }
 
   getChurnRate(id) {
-    return _products[id].getChurnRate();
+    const p = _products[id];
+
+    return Product.getChurnRate(this.getRating(id), p); //_products[id].getChurnRate();
   }
 
   getProductBlogCost(id) {
@@ -469,7 +462,7 @@ class ProductStore extends EventEmitter {
   }
 
   getRatingForMetricsTab(id) {
-    return _products[id].getRatingForMetricsTab();
+    return this.getRating(id);
   }
 
   getClientAnalyticsModifier(id) {
@@ -667,6 +660,55 @@ class ProductStore extends EventEmitter {
     return _products[id].getHypeValue();
   }
 
+  getNumberOfTechnologiesWhereWeMadeBreakthrough(id) {
+    return _products[id].getNumberOfTechnologiesWhereWeMadeBreakthrough();
+  }
+
+  getHypeDampingValue(id) {
+    const current = this.getHypeValue(id);
+
+    const data = this.getHypeDampingStructured(id);
+
+    const v = Math.floor(current * data.percent / 100);
+
+    return -v;
+  }
+
+  getHypeDampingStructured(id) {
+    const numberOfTechnologiesWhereWeMadeBreakthrough = this.getNumberOfTechnologiesWhereWeMadeBreakthrough(id);
+    const p = _products[id];
+
+    const blogPower = p.getBlogHypeModifier();
+    const rating = this.getRating(id);
+
+    const blogRange = [0, 40];
+    const churnRange = [10, 50];
+    const techRange = [0, 25];
+
+    const blog = Math.floor(mapper(blogPower, 0, 1, blogRange[0], blogRange[1]));
+    const churn = Math.ceil(mapper(10 - rating, 0, 10, churnRange[0], churnRange[1]));
+
+
+    const maxNumberOfTechnologies = productDescriptions(p.idea).features.length;
+    const tech = Math.floor(mapper(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, techRange[0], techRange[1]));
+
+    const base = 90;
+    const percent = Math.min(base - blog - tech + churn, 100);
+
+    return {
+      blogRange,
+      churnRange,
+      techRange,
+      base,
+      blog: -blog,
+      tech: -tech,
+      churn,
+      percent,
+      clientModifier: this.getClients(id) / 1000
+    }
+  }
+
+
   getTechnicalDebtModifier(id) {
     return _products[id].getTechnicalDebtModifier();
   }
@@ -770,6 +812,10 @@ class ProductStore extends EventEmitter {
     return getCurrentMainFeatureDefaultsById(id);
   }
 
+  isShareableFeature(id, featureId) {
+    return productDescriptions(this.getIdea(id)).features[featureId].shareable;
+  }
+
   temporaryMaxFeatureValue(id, featureId) {
     return this.ceilXPtoThousandValue(this.getLeaderInTech(id, featureId).value);
   }
@@ -797,23 +843,16 @@ class ProductStore extends EventEmitter {
   }
 
   getCompetitorsList(id) {
-    const ourCompany = _products.filter(p => this.isOurProduct(p) && p.idea === this.getIdea(id))[0];
-    // logger.log('getCompetitorsList', _products);
+    logger.shit('getCompetitorsList shows ALL COMPANIES with different ideas! ' +
+      'You need an opportunity to toggle between all/same idea companies');
 
-    // .filter(obj => !obj.p.isOurProduct() && obj.p.idea === this.getIdea(id))
     return _products
-      .map((p, i) => ({ p, id: i })) //  Object.assign({ id: i }, p)
+      .map((p, i) => ({ p, id: i }))
       .map(obj => {
         const p: Product = obj.p;
         const id = obj.id;
 
-        const name = p.name;
-
-        // logger.log('competitor', id, p);
-
         const rating = round(computeRating(p, 0));
-        const hype = p.getHypeValue();
-        const clients = p.KPI.clients;
 
         const features = p.features.offer;
 
@@ -822,32 +861,20 @@ class ProductStore extends EventEmitter {
             name: f.name,
             description: f.shortDescription,
             value: features[i]
-          }))
-          .sort((a, b) => b.value - a.value);
+          }));
 
         return {
           rating,
-          clients,
-          name,
+          clients: p.KPI.clients,
+          name: p.name,
           features: offer,
-          // cost: companyCostComputer.compute(),
           cost: p.getCompanyCost(),
-          improvements: companyMerger.merge(ourCompany, p).improvements,
           id,
-          hype,
-          hypeDamping: p.getHypeDampingValue(p.getNumberOfTechnologiesWhereWeMadeBreakthrough())
+          hype: p.getHypeValue(),
+          hypeDamping: this.getHypeDampingValue(id)
         }
       })
       .sort((a, b) => b.hype - a.hype);
-  }
-
-  getNextCompetitorInfo(id) {
-    const competitors = this.getCompetitorsList(id);
-    const rating = this.getRating(id);
-
-    const betterCompetitors = competitors.filter(c => rating < c.rating + 1);
-
-    return betterCompetitors.length ? betterCompetitors[0] : null;
   }
 }
 
@@ -918,10 +945,6 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
       _products[id].loseMonthlyHype();
-      break;
-
-    case c.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD:
-      _products[id].addViralClients(p);
       break;
 
     case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
