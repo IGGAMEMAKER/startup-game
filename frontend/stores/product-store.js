@@ -4,10 +4,12 @@ import * as c from '../constants/actions/product-actions';
 import payloads from '../constants/actions/payloads';
 import logger from '../helpers/logger/logger';
 
-import round from '../helpers/math/round';
+import percentify from '../helpers/math/percentify';
 
-import * as IDEAS from '../constants/products/ideas';
 import * as PRODUCT_STAGES from '../constants/products/product-stages';
+import * as EXPENSES from '../constants/expenses';
+import * as JOB from '../constants/job';
+
 import Product from '../classes/Product';
 
 
@@ -20,9 +22,6 @@ import mapper from '../helpers/math/mapper';
 import companyCostComputer from '../helpers/products/compute-company-cost';
 import companyMerger from '../helpers/products/company-merger';
 
-
-import * as EXPENSES from '../constants/expenses';
-import * as JOB from '../constants/job';
 
 import getSpecialization from '../helpers/team/specialization';
 import skillHelper from '../helpers/team/skills';
@@ -43,7 +42,16 @@ let _points = {
   analyst: 300
 };
 
-let _rents = [];
+type Rent = {
+  in: Number,
+  out: Number,
+  featureId: Number
+};
+
+let _rents: Array<Rent> = [
+  { in: 2, out: 0, featureId: 3 },
+  { in: 2, out: 0, featureId: 4 },
+];
 
 let _employees = [
   {
@@ -122,7 +130,7 @@ const initialize = ({ products, rents, money, expenses, points, employees, team,
   _reputation = reputation;
   _fame = fame;
   _loan = loan;
-  _rents = rents;
+  // _rents = rents;
 };
 
 initialize(sessionManager.getProductStorageData());
@@ -308,10 +316,30 @@ class ProductStore extends EventEmitter {
     return _products[id].getCompanyCost();
   }
 
+  enforceFeaturesByRentedOnes(offer: Array<Number>, rented: Array<Rent>) {
+    const list = offer.map(v => v);
+
+    rented.forEach(r => {
+      const id = r.featureId;
+
+      const current = list[id];
+      const next = this.getMainFeatureQualityByFeatureId(r.out, id);
+
+      if (next >= current) {
+        list[id] = next;
+      }
+    });
+
+    return list;
+  }
+
   getRating(id, segmentId) {
     if (!segmentId) segmentId = 0;
 
-    return Product.getRating(_products[id], segmentId);
+    const rented = this.incomingRentList(id);
+    const features = this.enforceFeaturesByRentedOnes(_products[id].features.offer, rented);
+
+    return Product.getRating(_products[id], features, segmentId);
   }
 
   getClients(id, segmentId) {
@@ -361,6 +389,14 @@ class ProductStore extends EventEmitter {
     return _products[id].getDefaults();
   }
 
+  incomingRentList(id) {
+    return _rents.filter(r => r.in === id);
+  }
+
+  outgoingRentList(id) {
+    return _rents.filter(r => r.out === id);
+  }
+
   hasIncomingRents(id) {
     return _rents.find(r => r.in === id);
   }
@@ -369,7 +405,7 @@ class ProductStore extends EventEmitter {
     return _rents.find(r => r.out === id);
   }
 
-  
+
 
   getProductUtility(id) {
     return _products[id].getProductUtility();
@@ -380,7 +416,24 @@ class ProductStore extends EventEmitter {
   }
 
   getConversionRate(id, segmentId) {
-    return _products[id].getConversionRate(segmentId);
+    const rating = this.getRating(id, segmentId);
+    const utility = this.getProductUtility(id);
+
+    const paymentModifier = this.getPaymentModifier(id);
+
+    let conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
+
+    let raw;
+    let pretty;
+    if (conversion < 0 || conversion > 15) {
+      logger.error(`invalid conversion value ${conversion}`);
+      conversion = 0;
+    }
+
+    raw = conversion;
+    pretty = percentify(conversion);
+
+    return { raw, pretty };
   }
 
   getProductPrice(id, segId) {
@@ -396,11 +449,25 @@ class ProductStore extends EventEmitter {
   }
 
   getSegmentIncome(id, segId) {
-    return _products[id].getSegmentIncome(segId);
+    // rating 10 - 0.05
+    const conversion = this.getConversionRate(id, segId).raw * this.isPaymentEnabled(id, segId);
+
+    const clients = this.getClients(id, segId);
+    const price = this.getProductPrice(id, segId);
+
+    const payments = conversion * clients;
+
+    return payments * price * (1 + _products[id].getSegmentPaymentBonus(segId) / 100);
   }
 
   getProductIncome(id) {
-    return _products[id].getProductIncome();
+    // return _products[id].getProductIncome();
+
+    const segments = this.getSegments(id);
+
+    return segments
+      .map((s, segId) => this.getSegmentIncome(id, segId))
+      .reduce((p, c) => p + c, 0);
   }
 
   getIdea(id) {
@@ -868,7 +935,7 @@ class ProductStore extends EventEmitter {
         const p: Product = obj.p;
         const id = obj.id;
 
-        const rating = Product.getRating(p, 0);
+        const rating = this.getRating(id, 0);
 
         const features = p.features.offer;
 

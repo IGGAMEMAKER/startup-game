@@ -129,10 +129,15 @@ export default class Product {
     return companyCostComputer.compute(this);
   }
 
-  static getRating(p, segmentId) {
+  static getRating(p: Product, features, segmentId) {
     if (!segmentId) segmentId = 0;
 
-    return round(computeRating(p, segmentId));
+    const maxValues = p.defaultFeatures;
+    const segmentalInfluences = p.getSegmentById(segmentId).rating;
+
+
+
+    return round(computeRating(features, maxValues, segmentalInfluences));
   }
 
   getClients(segmentId) {
@@ -274,33 +279,6 @@ export default class Product {
     return 0;
   }
 
-  getConversionRate(segmentId) {
-    // const rating = this.getRating(segmentId);
-    const rating = Product.getRating(this, segmentId); // this.getRating(segmentId);
-    const utility = this.getProductUtility();
-
-    const paymentModifier = this.getPaymentModifier();
-
-    let conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
-
-    let raw;
-    let pretty;
-    if (conversion < 0 || conversion > 15) {
-      logger.error(`invalid conversion value ${conversion}`);
-      // throw 'INVALID_CONVERSION_ERROR';
-      conversion = 0;
-    }
-
-    // if (segmentId > 0) {
-    //   conversion = rating * paymentModifier / 10;
-    // }
-
-    raw = conversion;
-    pretty = percentify(conversion);
-
-    return { raw, pretty };
-  }
-
   getProductPrice(segId) {
     const defaults = this.getDefaults();
 
@@ -328,25 +306,6 @@ export default class Product {
     }
 
     return 0;
-  }
-
-  getSegmentIncome(segId) {
-    const conversion = this.getConversionRate(segId).raw * this.isPaymentEnabled(segId); // rating 10 - 0.05
-
-    const clients = this.getClients(segId);
-    const price = this.getProductPrice(segId);
-
-    const payments = conversion * clients;
-
-    return payments * price * (1 + this.getSegmentPaymentBonus(segId) / 100);
-  }
-
-  getProductIncome() {
-    const segments = this.getSegments();
-
-    return segments
-      .map((s, segId) => this.getSegmentIncome(segId))
-      .reduce((p, c) => p + c, 0);
   }
 
   getIdea() {
@@ -424,8 +383,6 @@ export default class Product {
 
   static getChurnRate(rating, p: Product) {
     // return answer in partitions 0-1
-
-    // let rating = this.getRating();
 
     if (rating < 3) {
       rating = 3;

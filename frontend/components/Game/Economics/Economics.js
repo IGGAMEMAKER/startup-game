@@ -142,8 +142,8 @@ export default class Economics extends Component {
       <div>
         {this.renderIncome(state)}
         {this.renderExpenses(state)}
-        {this.renderCredits(props, state)}
       </div>
-    )
+    );
+        // {this.renderCredits(props, state)}
   }
 }

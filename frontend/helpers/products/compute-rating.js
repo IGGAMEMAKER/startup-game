@@ -1,29 +1,14 @@
-import ProductDescriptions from './product-descriptions';
 import logger from '../logger/logger';
 
-const getSpecificProductFeatureListByIdea = idea => {
-  return ProductDescriptions(idea).features;
-};
-
-// export default (product, segmentId) => {
-export default (product, segmentId) => {
+export default (features, maxValues, influenceValuesOnRating) => {
   let rating = 0;
 
-  const { idea } = product;
+  features.forEach((current, i) => {
+    const quality = features[i] / maxValues[i];
 
-  const segments = ProductDescriptions(idea).segments;
+    const influence = influenceValuesOnRating[i];
 
-  // logger.debug('computeRating', product.name, product.defaultFeatures);
-
-  getSpecificProductFeatureListByIdea(idea).forEach((f, i) => {
-    const max = product.defaultFeatures[i]; // upgradedDefaults ? upgradedDefaults[i] : f.data;
-
-    const value = (product.features.offer[i]) / max;
-
-    // const influence = f.influence;
-    const influence = segments[segmentId].rating[i];
-
-    rating += value * influence;
+    rating += quality * influence;
   });
 
   return rating;

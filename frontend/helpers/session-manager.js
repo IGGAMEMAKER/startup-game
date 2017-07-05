@@ -180,17 +180,16 @@ function saveProductStorageData({ products, rents, money, expenses, points, empl
 function getProductStorageData() {
   const money: Number = Number.parseInt(getFromStorage('money'));
 
-  let raw = getFromStorage('expenses');
+  let raw = getFromStorage('rents');
+  if (!raw) raw = "[]";
 
-  logger.debug('raw data for expenses!!!', raw, getFromStorage('money'), getFromStorage('points'),
-    getFromStorage('employees'));
-
-  const expenses: Array = Array.from(JSON.parse(raw));
+  const expenses: Array = Array.from(JSON.parse(getFromStorage('expenses')));
   logger.debug('expenses needed');
   const points: Object = JSON.parse(getFromStorage('points'));
   const employees: Array = Array.from(JSON.parse(getFromStorage('employees')));
 
-  const rents: Array = Array.from(JSON.parse(getFromStorage('rents')));
+  const rents: Array = Array.from(JSON.parse(raw));
+
   const team: Array = Array.from(JSON.parse(getFromStorage('team')));
   const reputation: Number = Number.parseInt(getFromStorage('reputation'));
   const fame: Number = Number.parseInt(getFromStorage('fame'));
