@@ -24,6 +24,8 @@ export default class Competitors extends Component {
 
     const competitors = flux.productStore.getCompetitorsList(id);
 
+    const rents = flux.productStore.getRents();
+
     const rating = 1; // flux.productStore.getRating(id);
 
     logger.shit('competitors.js hardcoded isCompetitor check: c.id != 0');
@@ -39,6 +41,6 @@ export default class Competitors extends Component {
       />
     );
 
-    return <div>{competitorList}</div>;
+    return <div>{JSON.stringify(rents)} {competitorList}</div>;
   }
 }

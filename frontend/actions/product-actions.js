@@ -35,6 +35,12 @@ export default {
       buyerId, sellerId
     })
   },
+  rentTech(sender, acceptor, featureId) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_TECHNOLOGY_RENT,
+      sender, acceptor, featureId
+    })
+  },
   testHypothesis(id) {
     const range = productStore.getImprovementChances(id);
 

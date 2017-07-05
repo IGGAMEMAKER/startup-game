@@ -136,7 +136,6 @@ export default class Product {
     const segmentalInfluences = p.getSegmentById(segmentId).rating;
 
 
-
     return round(computeRating(features, maxValues, segmentalInfluences));
   }
 

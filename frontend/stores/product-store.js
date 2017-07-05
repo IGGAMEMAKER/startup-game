@@ -50,7 +50,7 @@ type Rent = {
 
 let _rents: Array<Rent> = [
   { in: 2, out: 0, featureId: 3 },
-  { in: 2, out: 0, featureId: 4 },
+  // { in: 2, out: 0, featureId: 4 },
 ];
 
 let _employees = [
@@ -331,6 +331,13 @@ class ProductStore extends EventEmitter {
     });
 
     return list;
+  }
+
+  canRentTechFromAtoB(sender, acceptor, featureId) {
+    const result = _rents.find(r => r.featureId === featureId && (r.in === acceptor || r.out === acceptor || r.in === sender));
+
+    logger.debug('can rent', sender, acceptor, featureId, result);
+    return !result
   }
 
   getRating(id, segmentId) {
@@ -1056,6 +1063,15 @@ Dispatcher.register((p: PayloadType) => {
 
       _products.splice(sellerId, 1);
       break;
+
+    case c.PRODUCT_ACTIONS_TECHNOLOGY_RENT:
+      _rents.push({
+        in: p.acceptor,
+        out: p.sender,
+        featureId: p.featureId
+      });
+      break;
+
 
 
     case c.PLAYER_ACTIONS_INCREASE_MONEY:
