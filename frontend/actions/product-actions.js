@@ -98,10 +98,13 @@ export default {
       clients
     })
   },
-  loseMonthlyHype(id) {
+  loseMonthlyHype(id, hypeDamping) {
+    // hypeDamping MUST BE NEGATIVE!!
+
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE,
-      id
+      id,
+      hypeDamping
     })
   },
 

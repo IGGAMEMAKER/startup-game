@@ -50,7 +50,7 @@ const run = () => {
   const day = scheduleStore.getDay();
   const tasks = scheduleStore.getTasks();
 
-  
+
   const products: Array<Product> = productStore.getProducts();
 
   // check tasks for finishing
@@ -74,10 +74,10 @@ const run = () => {
       .reduce((p, c) => p + c, 0);
 
     const transformations: Array = products
-      .map((p: Product) =>
+      .map((p: Product, id) =>
         ({
           increase: 0,
-          decrease: p.getDisloyalClients(),
+          decrease: productStore.getDisloyalClients(id),
           hypeValue: p.getHypeValue(),
           hype: p.getHypeValue() / sumOfHypes
         })
@@ -113,7 +113,8 @@ const run = () => {
         productActions.addClients(id, clients);
         productActions.removeClients(id, churn);
 
-        productActions.loseMonthlyHype(id);
+        const damping = productStore.getHypeDampingValue(id);
+        productActions.loseMonthlyHype(id, damping);
       });
 
     const difference = moneyCalculator.saldo();

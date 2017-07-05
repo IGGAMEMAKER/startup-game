@@ -944,7 +944,7 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
-      _products[id].loseMonthlyHype();
+      _products[id].loseMonthlyHype(p.hypeDamping);
       break;
 
     case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
