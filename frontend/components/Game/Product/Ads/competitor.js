@@ -3,6 +3,7 @@ import { h, Component } from 'preact';
 import logger from '../../../../helpers/logger/logger';
 
 import productStore from '../../../../stores/product-store';
+import scheduleStore from '../../../../stores/schedule-store';
 
 import productActions from '../../../../actions/product-actions';
 
@@ -151,6 +152,9 @@ export default class Competitor extends Component {
 
         error = '';
 
+        let price = 1000;
+        let until = scheduleStore.getNextYear();
+
         differencePhrase = (
           <span>
             <span className={symbolColor}>{symbol}</span>
@@ -160,7 +164,7 @@ export default class Competitor extends Component {
               <UI.Button
                 text={rentPhrase}
                 secondary
-                onClick={() => productActions.rentTech(sender, acceptor, featureId)}
+                onClick={() => productActions.rentTech(sender, acceptor, featureId, price, until)}
               />
             </span>
           </span>

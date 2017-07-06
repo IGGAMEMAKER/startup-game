@@ -35,10 +35,10 @@ export default {
       buyerId, sellerId
     })
   },
-  rentTech(sender, acceptor, featureId) {
+  rentTech(sender, acceptor, featureId, price, until) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_TECHNOLOGY_RENT,
-      sender, acceptor, featureId
+      sender, acceptor, featureId, price, until
     })
   },
   testHypothesis(id) {

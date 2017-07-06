@@ -211,6 +211,7 @@ class ProductStore extends EventEmitter {
       obj.senderName = _products[r.out].getName();
       obj.acceptorName = _products[r.in].getName();
       obj.senderValue = this.getMainFeatureQualityByFeatureId(r.out, r.featureId);
+      obj.techName = this.getPrettyFeatureNameByFeatureId(r.out, r.featureId);
 
       return obj;
     });
@@ -1093,7 +1094,9 @@ Dispatcher.register((p: PayloadType) => {
       _rents.push({
         in: p.acceptor,
         out: p.sender,
-        featureId: p.featureId
+        featureId: p.featureId,
+        price: p.price,
+        until: p.until
       });
       break;
 

@@ -49,6 +49,27 @@ class ScheduleStore extends EventEmitter {
     return _day;
   }
 
+  getGameFormattedDay(input = _day) {
+    // let input =
+    const year = Math.floor(input / 360);
+    const month = Math.floor((input - year * 360) / 30);
+    const day = input - year * 360 - month * 30;
+
+    return `${day + 1}.${month + 1}.${year + 2016}`;
+  }
+
+  getOffsetFormattedDay(offset) {
+    return this.getGameFormattedDay(_day + offset);
+  }
+
+  getNextYearFormatted() {
+    return this.getOffsetFormattedDay(360);
+  }
+
+  getNextYear() {
+    return _day + 360;
+  }
+
   getGamePhase() {
     return _gamePhase;
   }
