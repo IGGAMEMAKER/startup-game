@@ -13,7 +13,8 @@ import * as balance from '../constants/balance';
 
 import round from '../helpers/math/round';
 
-const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Unnamed'];
+const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes',
+  'Best Hosting', 'Tech-Labs', 'Gingerbeard', 'Mercury', 'Phantom', 'Modern', 'Unnamed'];
 
 import * as BONUSES from '../constants/bonuses';
 

@@ -45,11 +45,13 @@ let _points = {
 type Rent = {
   in: Number,
   out: Number,
-  featureId: Number
+  featureId: Number,
+  price: Number,
+  until: Number
 };
 
 let _rents: Array<Rent> = [
-  { in: 2, out: 0, featureId: 3 },
+  { in: 2, out: 0, featureId: 3, price: 1000, until: 420 },
   // { in: 2, out: 0, featureId: 4 },
 ];
 
@@ -130,7 +132,7 @@ const initialize = ({ products, rents, money, expenses, points, employees, team,
   _reputation = reputation;
   _fame = fame;
   _loan = loan;
-  // _rents = rents;
+  _rents = rents;
 };
 
 initialize(sessionManager.getProductStorageData());
@@ -203,7 +205,15 @@ class ProductStore extends EventEmitter {
   }
 
   getRents() {
-    return _rents;
+    return _rents.map(r => {
+      const obj = Object.assign({} , r);
+
+      obj.senderName = _products[r.out].getName();
+      obj.acceptorName = _products[r.in].getName();
+      obj.senderValue = this.getMainFeatureQualityByFeatureId(r.out, r.featureId);
+
+      return obj;
+    });
   };
 
   getPoints() {
@@ -338,6 +348,10 @@ class ProductStore extends EventEmitter {
 
     logger.debug('can rent', sender, acceptor, featureId, result);
     return !result
+  }
+
+  isRentingAlready(sender, acceptor, featureId) {
+    return _rents.find(r => r.featureId === featureId && ((r.in === acceptor && r.out === sender) || (r.out === acceptor && r.in === sender)));
   }
 
   getRating(id, segmentId) {

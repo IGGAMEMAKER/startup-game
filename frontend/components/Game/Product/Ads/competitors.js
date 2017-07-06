@@ -36,6 +36,7 @@ export default class Competitors extends Component {
         i={i}
         rating={rating}
         money={money}
+        rents={rents}
         onBuyCompany={() => { this.buyCompany(0, c.id, c.cost) }}
         isCompetitor={c.id != 0}
       />

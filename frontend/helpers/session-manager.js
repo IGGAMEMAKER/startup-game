@@ -162,7 +162,7 @@ function restartGame() {
   stats.saveAction('restartGame', {});
 }
 
-// restartGame();
+restartGame();
 
 function saveProductStorageData({ products, rents, money, expenses, points, employees, team, reputation, fame, loan }) {
   saveToStorage('products', products);
@@ -178,28 +178,56 @@ function saveProductStorageData({ products, rents, money, expenses, points, empl
 }
 
 function getProductStorageData() {
-  const money: Number = Number.parseInt(getFromStorage('money'));
+  let money: Number;
+  let expenses: Array;
+  let points: Object;
+  let employees: Array;
+  let team: Array;
+  let reputation: Number;
+  let fame: Number;
+  let loan: Number;
+  let rents: Array;
+  let products: Array<Product>;
 
-  let raw = getFromStorage('rents');
-  if (!raw) raw = "[]";
+  try {
+    money = Number.parseInt(getFromStorage('money'));
+    logger.debug('got money');
 
-  const expenses: Array = Array.from(JSON.parse(getFromStorage('expenses')));
-  logger.debug('expenses needed');
-  const points: Object = JSON.parse(getFromStorage('points'));
-  const employees: Array = Array.from(JSON.parse(getFromStorage('employees')));
+    let raw = getFromStorage('rents');
+    logger.debug('raw rents', raw);
+    // if (!raw) raw = "[]";
+    rents = Array.from(JSON.parse(raw));
 
-  const rents: Array = Array.from(JSON.parse(raw));
+    expenses = Array.from(JSON.parse(getFromStorage('expenses')));
+    logger.debug('got expenses');
 
-  const team: Array = Array.from(JSON.parse(getFromStorage('team')));
-  const reputation: Number = Number.parseInt(getFromStorage('reputation'));
-  const fame: Number = Number.parseInt(getFromStorage('fame'));
-  const loan: Number = Number.parseInt(getFromStorage('loan'));
+    points = JSON.parse(getFromStorage('points'));
+    logger.debug('got points');
 
-  logger.debug('products needed');
+    employees = Array.from(JSON.parse(getFromStorage('employees')));
+    logger.debug('got employees');
 
-  const data = getFromStorage('products');
 
-  const products: Array<Product> = Array.from(JSON.parse(data)).map(p => new Product(p, true));
+    team = Array.from(JSON.parse(getFromStorage('team')));
+    logger.debug('got team');
+
+    reputation = Number.parseInt(getFromStorage('reputation'));
+    logger.debug('got rep');
+
+    fame = Number.parseInt(getFromStorage('fame'));
+    logger.debug('got fame');
+
+    loan = Number.parseInt(getFromStorage('loan'));
+    logger.debug('got loan');
+
+    logger.debug('products needed');
+
+    const data = getFromStorage('products');
+
+    products = Array.from(JSON.parse(data)).map(p => new Product(p, true));
+  } catch (ex) {
+    logger.error('error in getProductStorageData', ex);
+  }
 
   return {
     money,
