@@ -3,14 +3,17 @@ import productStore from '../../stores/product-store';
 import * as EXPENSES from '../../constants/expenses';
 
 const calculate = () => {
+  const ourCompanyId = 0;
   const products = productStore.getOurProducts();
 
   // check income
   const jobIncome = 2000;
 
+  const rentIncome = productStore.getRentIncomes(ourCompanyId);
+
   const income = jobIncome + products
       .map((p, i) => productStore.getProductIncome(i))
-      .reduce((p, c) => p + c, 0);
+      .reduce((p, c) => p + c, 0) + rentIncome.sum;
 
   // check expenses
   const nonProductExpenses = productStore.getExpenses()
@@ -32,11 +35,13 @@ const calculate = () => {
   const byProductIncome = products
     .map((p, i) => ({ name: p.name, income: productStore.getProductIncome(i) }));
 
+
   return {
     nonProductExpenses,
     productExpenses,
     loans,
     teamExpenses,
+    rentIncome: rentIncome.sum,
 
 
     expenses,

@@ -50,6 +50,19 @@ type Rent = {
   until: Number
 };
 
+type DescribedRent = {
+  in: Number,
+  out: Number,
+  featureId: Number,
+  price: Number,
+  until: Number,
+
+  senderName: String,
+  acceptorName: String,
+  senderValue: Number,
+  techName: String
+};
+
 let _rents: Array<Rent> = [
   { in: 2, out: 0, featureId: 3, price: 1000, until: 420 },
   // { in: 2, out: 0, featureId: 4 },
@@ -204,7 +217,7 @@ class ProductStore extends EventEmitter {
     return _loan;
   }
 
-  getRents() {
+  getRents(): Array<DescribedRent> {
     return _rents.map(r => {
       const obj = Object.assign({} , r);
 
@@ -350,6 +363,18 @@ class ProductStore extends EventEmitter {
 
     logger.debug('can rent', sender, acceptor, featureId, result);
     return !result
+  }
+
+  getRentIncomes(id) {
+    const outgoingRents = this.getRents()
+      .filter(r => r.out === id);
+
+    const sum = outgoingRents.map(r => r.price).reduce((p, c) => p + c, 0);
+
+    return {
+      outgoingRents,
+      sum
+    };
   }
 
   getRentingStatus(id, featureId) {
@@ -775,6 +800,8 @@ class ProductStore extends EventEmitter {
   getHypeValue(id) {
     return _products[id].getHypeValue();
   }
+
+
 
   getNumberOfTechnologiesWhereWeMadeBreakthrough(id) {
     return _products[id].getNumberOfTechnologiesWhereWeMadeBreakthrough();

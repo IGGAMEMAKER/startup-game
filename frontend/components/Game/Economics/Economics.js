@@ -46,12 +46,22 @@ export default class Economics extends Component {
       .filter(p => p.income > 0)
       .map(p => (<div>{p.name} : {Math.floor(p.income)}$</div>));
 
+    const rentIncomeList = productStore.getRentIncomes(0)
+      .outgoingRents
+      .map(r => (<li>Аренда технологии "{r.techName}" компанией "{r.acceptorName}" за {r.price}$</li>) );
+
     return (
       <div>
         <h4>Доходы</h4>
         <br />
         <div>Фриланс: 2000$</div>
         <div>{productIncome}</div>
+        <div>Аренда технологий</div>
+        <div>
+          <ul>
+            {rentIncomeList}
+          </ul>
+        </div>
         <hr />
       </div>
     )
@@ -116,7 +126,7 @@ export default class Economics extends Component {
     const loans = this.getLoans();
 
     if (loans <= 0) {
-     return <div>Долгов нет</div>;
+      return <div>Долгов нет</div>;
     }
 
     return (
@@ -144,6 +154,6 @@ export default class Economics extends Component {
         {this.renderExpenses(state)}
       </div>
     );
-        // {this.renderCredits(props, state)}
+    // {this.renderCredits(props, state)}
   }
 }
