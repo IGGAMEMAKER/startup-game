@@ -162,7 +162,7 @@ function restartGame() {
   stats.saveAction('restartGame', {});
 }
 
-restartGame();
+// restartGame();
 
 function saveProductStorageData({ products, rents, money, expenses, points, employees, team, reputation, fame, loan }) {
   saveToStorage('products', products);

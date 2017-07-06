@@ -13,7 +13,7 @@ export default class Competitor extends Component {
     return Math.floor(value / 1000);
   }
 
-  renderFeatureList(c, productId, rents, ourCompany) {
+  renderFeatureList(c, productId, rents: Array, ourCompany) {
     const ourCompanyId = 0;
 
     return c.features.map((f, featureId) => {
@@ -22,63 +22,130 @@ export default class Competitor extends Component {
 
       const difference = this.convertXPtoLvl(ourCompany.features.offer[featureId] - c.features[featureId].value);
 
-      if (productStore.isShareableFeature(productId, featureId)) {
+      if (productStore.isShareableFeature(productId, featureId) && (difference > 0 || difference <= -1)) {
+        let canRentTech = 'hide';
+
+        let sender;
+        let acceptor;
+
+        let rentPhrase;
+        let symbol;
+        let symbolColor;
+
+        let level;
+
+        let rentStatus = {
+          canAccept: true,
+          canSend: true,
+          weCanSend: true,
+          weCanAccept: true,
+          phrase: ''
+        };
+
+        const they = productStore.getRentingStatus(productId, featureId);
+        rentStatus.theyCanAccept = they.canAccept;
+        rentStatus.theyCanSend = they.canSend;
+
+        const we = productStore.getRentingStatus(ourCompanyId, featureId);
+        rentStatus.weCanAccept = we.canAccept;
+        rentStatus.weCanSend = we.canSend;
+
+        const weHaveConnectionAlready = productStore.isRentingAlready(productId, ourCompanyId, featureId);
+
+        rents
+          .filter(r => r.featureId === featureId && (r.out === productId || r.in === productId))
+          .forEach(r => {
+            const level = this.convertXPtoLvl(r.value);
+
+            if (r.in === productId) {
+              // if company accepts tech, it is frozen for any operations on this feature
+              let name = r.out === ourCompanyId ? 'нас' : `"${r.senderName}"`;
+
+              rentStatus.phrase = `Они арендуют технологию у ${name} (${level}lvl)`;
+              rentStatus.canAccept = false;
+              rentStatus.canSend = false;
+            }
+
+            if (r.out === productId) {
+              // if company sends tech, it cannot accept anything, but can send this feature
+              rentStatus.canAccept = false;
+              rentStatus.canSend = true;
+              rentStatus.phrase = 'Они сдают эту технологию в аренду';
+
+              if (r.in === ourCompanyId) {
+                rentStatus.phrase += ' нам';
+              }
+            }
+          });
 
         if (difference > 0) {
-          let canRentTech = 'hide';
-
-          if (productStore.canRentTechFromAtoB(ourCompanyId, productId, featureId)) {
-            canRentTech = 'show';
-          } else {
-            if (productStore.isRentingAlready(ourCompanyId, productId, featureId)) {
-              error = 'Договор аренды уже был заключён между нашими компаниями';
-            } else {
-              error = 'Они связаны договором аренды с другой компанией';
-            }
-          }
-
           // our feature is better than competitor's one
-          differencePhrase = (
-            <span>
-              <span className="positive">{UI.symbols.triangle.up}</span>
-              <span>+{difference}lvl {error}</span>
-              <span>{error}</span>
-              <span className={`${canRentTech}`}>
-                <UI.Button
-                  text="Сдать технологию в аренду"
-                  link
-                  onClick={() => productActions.rentTech(ourCompanyId, productId, featureId)}
-                />
-              </span>
-            </span>
-          );
-        } else if (difference <= -1) {
-          let canRentTech = 'hide';
+          sender = ourCompanyId;
+          acceptor = productId;
 
-          if (productStore.canRentTechFromAtoB(productId, ourCompanyId, featureId)) {
-            canRentTech = 'show';
-          } else {
-            if (productStore.isRentingAlready(productId, ourCompanyId, featureId)) {
-              error = '(Договор аренды уже был заключён между нашими компаниями)';
+          symbol = UI.symbols.triangle.up;
+          symbolColor = "positive";
+
+          rentPhrase = "Сдать технологию в аренду на год";
+          level = `+${difference}`;
+
+          // we have incoming rent contract with another company
+          // we have outgoing rent contract with another company
+          
+          if (rentStatus.weCanSend) {
+            if (rentStatus.canAccept) {
+              rentStatus.phrase = 'You can rent them this tech'
             } else {
-              error = '(Они связаны договором аренды с другой компанией)';
+              if (weHaveConnectionAlready) {
+                rentStatus.phrase = 'Мы уже связаны договором';
+              } else {
+                rentStatus.phrase = 'Они связаны договором с другой компанией';
+              }
             }
+          } else {
+            rentStatus.phrase = 'Они связаны договором с другой компанией';
           }
+        } else {
+          // we are worse than competitors
+          acceptor = ourCompanyId;
+          sender = productId;
 
-          differencePhrase = (
-            <span>
-            <span className="negative">{UI.symbols.triangle.down}</span>
-            <span>{difference}lvl {error}</span>
+          symbol = UI.symbols.triangle.down;
+          symbolColor = "negative";
+
+          rentPhrase = "Арендовать технологию на год";
+          level = difference;
+        }
+
+        // errors
+        // we have rent contract already with this company
+
+        if (productStore.canRentTechFromAtoB(sender, acceptor, featureId)) {
+          canRentTech = 'show';
+        } else {
+          if (weHaveConnectionAlready) {
+            error = 'Договор аренды уже был заключён между нашими компаниями';
+          } else {
+            error = 'Они связаны договором аренды с другой компанией';
+          }
+        }
+
+        // error = '';
+
+        differencePhrase = (
+          <span>
+            <span className={symbolColor}>{symbol}</span>
+            <span>{level}lvl {rentStatus.phrase}</span>
+            <div>{error}</div>
             <span className={`${canRentTech}`}>
               <UI.Button
-                text="Арендовать технологию на 1 годg"
+                text={rentPhrase}
                 link
-                onClick={() => productActions.rentTech(productId, ourCompanyId, featureId)}
+                onClick={() => productActions.rentTech(sender, acceptor, featureId)}
               />
             </span>
           </span>
-          );
-        }
+        );
 
         return <li>{f.description}: {this.convertXPtoLvl(f.value)}lvl {differencePhrase}</li>;
       }

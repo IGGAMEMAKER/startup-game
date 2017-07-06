@@ -351,6 +351,16 @@ class ProductStore extends EventEmitter {
     return !result
   }
 
+  getRentingStatus(id, featureId) {
+    const canSend = !_rents.find(r => r.featureId === featureId && r.in === id);
+    const canAccept = !_rents.find(r => r.featureId === featureId && (r.out === id || r.in === id));
+
+    return {
+      canSend,
+      canAccept
+    };
+  }
+
   isRentingAlready(sender, acceptor, featureId) {
     return _rents.find(r => r.featureId === featureId && ((r.in === acceptor && r.out === sender) || (r.out === acceptor && r.in === sender)));
   }
