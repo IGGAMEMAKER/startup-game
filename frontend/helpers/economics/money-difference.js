@@ -10,6 +10,7 @@ const calculate = () => {
   const jobIncome = 2000;
 
   const rentIncome = productStore.getRentIncomes(ourCompanyId);
+  const rentExpense = productStore.getRentExpenses(ourCompanyId);
 
   const income = jobIncome + products
       .map((p, i) => productStore.getProductIncome(i))
@@ -30,7 +31,7 @@ const calculate = () => {
 
   const teamExpenses = productStore.getTeamExpenses();
 
-  const expenses = nonProductExpenses + productExpenses + loans + teamExpenses;
+  const expenses = nonProductExpenses + productExpenses + loans + teamExpenses + rentExpense.sum;
 
   const byProductIncome = products
     .map((p, i) => ({ name: p.name, income: productStore.getProductIncome(i) }));
@@ -42,6 +43,7 @@ const calculate = () => {
     loans,
     teamExpenses,
     rentIncome: rentIncome.sum,
+    rentExpense: rentExpense.sum,
 
 
     expenses,

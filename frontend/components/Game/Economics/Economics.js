@@ -71,12 +71,14 @@ export default class Economics extends Component {
     const productExpenses = state.products.map((p, i) => productStore.getProductExpensesStructure(i));
     const basicExpenses = state.basicExpenses;
     const teamExpenses = moneyCalculator.structured().teamExpenses;
+    const rentExpenses = productStore.getRentExpenses(0).incomingRents;
 
     return <div>
       <Expenses
         productExpenses={productExpenses}
         basicExpenses={basicExpenses}
         teamExpenses={teamExpenses}
+        rentExpenses={rentExpenses}
       />
       <hr />
     </div>;

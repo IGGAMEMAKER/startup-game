@@ -377,6 +377,18 @@ class ProductStore extends EventEmitter {
     };
   }
 
+  getRentExpenses(id) {
+    const incomingRents = this.getRents()
+      .filter(r => r.in === id);
+
+    const sum = incomingRents.map(r => r.price).reduce((p, c) => p + c, 0);
+
+    return {
+      incomingRents,
+      sum
+    };
+  }
+
   getRentingStatus(id, featureId) {
     const canSend = !_rents.find(r => r.featureId === featureId && r.in === id);
     const canAccept = !_rents.find(r => r.featureId === featureId && (r.out === id || r.in === id));

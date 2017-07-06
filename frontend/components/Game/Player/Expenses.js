@@ -27,7 +27,7 @@ export default class Expenses extends Component {
     );
   };
 
-  render({ productExpenses, basicExpenses, teamExpenses }) {
+  render({ productExpenses, basicExpenses, teamExpenses, rentExpenses }) {
     let loanIndex = 0;
 
     const renderBasicExpense = (e, i) => {
@@ -48,6 +48,10 @@ export default class Expenses extends Component {
       return <div key={`basic-expense${i}`}>{phrase}</div>;
     };
 
+    const rentList = rentExpenses
+      .map(r => (<li>Аренда технологии "{r.techName}" у компании "{r.senderName}" за {r.price}$</li>) );
+
+
     return (
       <div>
         <h4>Расходы</h4>
@@ -58,6 +62,10 @@ export default class Expenses extends Component {
         <div className="offset-mid">
           <h5>Расходы на содержание команды</h5>
           <div>{teamExpenses}$</div>
+        </div>
+        <div className="offset-mid">
+          <h5>Расходы на арендуемые технологии</h5>
+          <div>{rentList}$</div>
         </div>
       </div>
     )
