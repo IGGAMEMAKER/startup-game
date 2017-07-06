@@ -258,7 +258,8 @@ class ProductStore extends EventEmitter {
       reputation: _reputation,
       fame: _fame,
       loan: _loan,
-      products: _products
+      products: _products,
+      rents: _rents
     }
   }
 

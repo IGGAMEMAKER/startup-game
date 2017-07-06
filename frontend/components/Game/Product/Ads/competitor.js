@@ -37,11 +37,11 @@ export default class Competitor extends Component {
             }
           }
 
-          // our feature is better than ours
+          // our feature is better than competitor's one
           differencePhrase = (
             <span>
               <span className="positive">{UI.symbols.triangle.up}</span>
-              <span>+{difference}lvl</span>
+              <span>+{difference}lvl {error}</span>
               <span>{error}</span>
               <span className={`${canRentTech}`}>
                 <UI.Button
@@ -59,20 +59,19 @@ export default class Competitor extends Component {
             canRentTech = 'show';
           } else {
             if (productStore.isRentingAlready(productId, ourCompanyId, featureId)) {
-              error = 'Договор аренды уже был заключён между нашими компаниями';
+              error = '(Договор аренды уже был заключён между нашими компаниями)';
             } else {
-              error = 'Они связаны договором аренды с другой компанией';
+              error = '(Они связаны договором аренды с другой компанией)';
             }
           }
 
           differencePhrase = (
             <span>
             <span className="negative">{UI.symbols.triangle.down}</span>
-            <span>{difference}lvl</span>
-            <span>{error}</span>
+            <span>{difference}lvl {error}</span>
             <span className={`${canRentTech}`}>
               <UI.Button
-                text="Арендовать технологию"
+                text="Арендовать технологию на 1 годg"
                 link
                 onClick={() => productActions.rentTech(productId, ourCompanyId, featureId)}
               />
@@ -81,7 +80,6 @@ export default class Competitor extends Component {
           );
         }
 
-        // {difference} {JSON.stringify(c)} |||||||| {JSON.stringify(ourCompany)}
         return <li>{f.description}: {this.convertXPtoLvl(f.value)}lvl {differencePhrase}</li>;
       }
 
