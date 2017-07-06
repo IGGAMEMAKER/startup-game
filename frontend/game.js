@@ -156,6 +156,24 @@ const run = () => {
     };
     productActions.increasePoints(points);
 
+    // clean expired rents
+    const refreshRents = [];
+    const rents = productStore.getRents();
+
+    // logger.debug('rents', rents, 'game.js');
+
+
+    rents
+      .forEach((r, i) => {
+        // logger.debug('check rent', r, day);
+
+        if (r.until <= day) {
+          // logger.debug('expiration!!', r);
+          refreshRents.push(i);
+        }
+      });
+
+    if (refreshRents.length) productActions.refreshRents(refreshRents);
 
     productActions.updateEmployees();
   }

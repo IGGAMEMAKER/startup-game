@@ -1139,7 +1139,13 @@ Dispatcher.register((p: PayloadType) => {
       });
       break;
 
-
+    case c.PRODUCT_ACTIONS_TECHNOLOGY_RENT_REFRESH:
+      // it must be reversed in product-actions from max id to min id
+      logger.debug(p, 'refresh');
+      p.list.forEach((id) => {
+        _rents.splice(id, 1);
+      });
+      break;
 
     case c.PLAYER_ACTIONS_INCREASE_MONEY:
       _money += p.amount;

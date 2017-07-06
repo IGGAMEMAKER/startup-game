@@ -20,6 +20,12 @@ export default {
       max
     })
   },
+  refreshRents(ids: Array) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_TECHNOLOGY_RENT_REFRESH,
+      list: ids.reverse()
+    })
+  },
   improveMainFeature(id, featureId, max, XP) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE,
