@@ -61,7 +61,9 @@ export default class Competitor extends Component {
               // if company accepts tech, it is frozen for any operations on this feature
               let name = r.out === ourCompanyId ? 'нас' : `"${r.senderName}"`;
 
-              rentStatus.phrase = `Они арендуют технологию у ${name} (${level}lvl)`;
+              rentStatus.rentFromName = name;
+              rentStatus.level = `(${level}lvl)`;
+
               rentStatus.canAccept = false;
               rentStatus.canSend = false;
             }
@@ -71,10 +73,6 @@ export default class Competitor extends Component {
               rentStatus.canAccept = false;
               rentStatus.canSend = true;
               rentStatus.phrase = 'Они сдают эту технологию в аренду';
-
-              if (r.in === ourCompanyId) {
-                rentStatus.phrase += ' нам';
-              }
             }
           });
 
@@ -91,10 +89,11 @@ export default class Competitor extends Component {
 
           // we have incoming rent contract with another company
           // we have outgoing rent contract with another company
-          
+
           if (rentStatus.weCanSend) {
-            if (rentStatus.canAccept) {
-              rentStatus.phrase = 'You can rent them this tech'
+            if (rentStatus.theyCanAccept) {
+              rentStatus.phrase = ''; // 'Мы можем сдать эту технологию в аренду';
+              rentStatus.available = true;
             } else {
               if (weHaveConnectionAlready) {
                 rentStatus.phrase = 'Мы уже связаны договором';
@@ -103,7 +102,7 @@ export default class Competitor extends Component {
               }
             }
           } else {
-            rentStatus.phrase = 'Они связаны договором с другой компанией';
+            rentStatus.phrase = 'Мы уже арендуем эту технологию';
           }
         } else {
           // we are worse than competitors
@@ -115,22 +114,42 @@ export default class Competitor extends Component {
 
           rentPhrase = "Арендовать технологию на год";
           level = difference;
+
+          if (rentStatus.weCanAccept) {
+            if (rentStatus.theyCanSend) {
+              rentStatus.phrase =''; // 'Мы можем арендовать эту технологию';
+              rentStatus.available = true;
+            } else {
+              rentStatus.phrase = `Они арендуют эту технологию у компании 
+              "${rentStatus.rentFromName}" ${rentStatus.level}`;
+            }
+          } else {
+            if (weHaveConnectionAlready) {
+              rentStatus.phrase = 'Мы уже связаны договором с этой компанией';
+            } else {
+              rentStatus.phrase = 'Мы связаны договором с другой компанией';
+            }
+          }
+
         }
 
         // errors
         // we have rent contract already with this company
 
-        if (productStore.canRentTechFromAtoB(sender, acceptor, featureId)) {
+        // if (productStore.canRentTechFromAtoB(sender, acceptor, featureId)) {
+        //   canRentTech = 'show';
+        // } else {
+        //   if (weHaveConnectionAlready) {
+        //     error = 'Договор аренды уже был заключён между нашими компаниями';
+        //   } else {
+        //     error = 'Они связаны договором аренды с другой компанией';
+        //   }
+        // }
+        if (rentStatus.available) {
           canRentTech = 'show';
-        } else {
-          if (weHaveConnectionAlready) {
-            error = 'Договор аренды уже был заключён между нашими компаниями';
-          } else {
-            error = 'Они связаны договором аренды с другой компанией';
-          }
         }
 
-        // error = '';
+        error = '';
 
         differencePhrase = (
           <span>
@@ -140,7 +159,7 @@ export default class Competitor extends Component {
             <span className={`${canRentTech}`}>
               <UI.Button
                 text={rentPhrase}
-                link
+                secondary
                 onClick={() => productActions.rentTech(sender, acceptor, featureId)}
               />
             </span>
