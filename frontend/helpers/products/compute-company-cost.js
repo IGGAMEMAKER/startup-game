@@ -1,9 +1,8 @@
 import productDescriptions from './product-descriptions';
 import logger from '../logger/logger';
 
-import random from '../math/random';
-
 const compute = (c) => {
+  // logger.debug('compute cost of company', c);
   let cost = 10000;
 
   const featureCost = 15;
@@ -19,8 +18,8 @@ const compute = (c) => {
   let totalXP = 0;
 
   let featureSum = 0;
-  defaultFeatures.forEach(f => {
-    const xp = c.features.offer[f.name];
+  defaultFeatures.forEach((f, featureId) => {
+    const xp = c.features.offer[featureId];
 
     totalXP += xp / 1000;
     featureSum += xp * featureCost;
@@ -34,8 +33,8 @@ const compute = (c) => {
   cost += c.KPI.clients * defaults.CAC * 1.5;
 
 
-  // return Math.ceil(cost);
-  return 1;
+  return Math.ceil(cost);
+  // return 1;
 };
 
 export default {

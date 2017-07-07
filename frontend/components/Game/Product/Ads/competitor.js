@@ -21,9 +21,9 @@ export default class Competitor extends Component {
       let error;
       let differencePhrase = '';
 
-      const difference = this.convertXPtoLvl(ourCompany.features.offer[featureId] - c.features[featureId].value);
+      const difference = this.convertXPtoLvl(ourCompany.features.offer[featureId] - f.value);
 
-      if (productStore.isShareableFeature(productId, featureId) && (difference > 0 || difference <= -1)) {
+      if (productStore.isShareableFeature(productId, featureId)) {
         let canRentTech = 'hide';
 
         let sender;
@@ -105,7 +105,7 @@ export default class Competitor extends Component {
           } else {
             rentStatus.phrase = 'Мы уже арендуем эту технологию';
           }
-        } else {
+        } else if (difference <= -1) {
           // we are worse than competitors
           acceptor = ourCompanyId;
           sender = productId;
@@ -131,21 +131,11 @@ export default class Competitor extends Component {
               rentStatus.phrase = 'Мы связаны договором с другой компанией';
             }
           }
-
         }
 
         // errors
         // we have rent contract already with this company
 
-        // if (productStore.canRentTechFromAtoB(sender, acceptor, featureId)) {
-        //   canRentTech = 'show';
-        // } else {
-        //   if (weHaveConnectionAlready) {
-        //     error = 'Договор аренды уже был заключён между нашими компаниями';
-        //   } else {
-        //     error = 'Они связаны договором аренды с другой компанией';
-        //   }
-        // }
         if (rentStatus.available) {
           canRentTech = 'show';
         }
@@ -170,6 +160,11 @@ export default class Competitor extends Component {
           </span>
         );
 
+        if (Math.abs(difference) < 1) {
+          rentStatus.phrase = '';
+          differencePhrase = '';
+        }
+
         return <li>{f.description}: {this.convertXPtoLvl(f.value)}lvl {differencePhrase}</li>;
       }
 
@@ -178,6 +173,8 @@ export default class Competitor extends Component {
   }
 
   render({ rating, c, i, isCompetitor, onBuyCompany, rents, money }) {
+    logger.debug('render competitor', c);
+
     const ourCompany = productStore.getProduct(0);
 
     let background = 'competitor competeable';
