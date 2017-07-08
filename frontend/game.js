@@ -8,17 +8,12 @@ import logger from './helpers/logger/logger';
 
 import moneyCalculator from './helpers/economics/money-difference';
 import eventGenerator from './helpers/events/event-generator';
-import skillHelper from './helpers/team/skills';
 
 import stageHelper from './helpers/stages';
 
 import Product from './classes/Product';
 
-import * as JOB from './constants/job';
-
-const isLastDayOfMonth = (day) => {
-  return day % 30 === 0;
-};
+import { isLastDayOfMonth } from './helpers/date';
 
 const computeTasks = (tasks) => {
   const finishing = [];
@@ -63,10 +58,6 @@ const run = () => {
     }
 
     // calculate client amount change
-    // const frees = productStore.getFreeClientsBatch();
-    // products.forEach((p, i) => {
-    //   productActions.testHypothesis(i);
-    // });
 
     const frees = productStore.getFreeClientsBatch();
     const sumOfHypes = products
@@ -143,8 +134,6 @@ const run = () => {
     logger.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js');
 
 
-    // logger.log('increase points game.js', programmingPoints, marketingPoints);
-    // logger.log('decrease points game.js', programmingSupportPoints, marketingSupportPoints);
     logger.shit('compute penalties and bonuses for point production');
 
     programmingPoints -= programmingSupportPoints;
@@ -154,6 +143,7 @@ const run = () => {
       programming: programmingPoints,
       marketing: marketingPoints
     };
+
     productActions.increasePoints(points);
 
     // clean expired rents

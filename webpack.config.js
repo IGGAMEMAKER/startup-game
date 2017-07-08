@@ -81,9 +81,8 @@ module.exports = [
           query: {
             presets: ['es2015', 'stage-0'],
             plugins: [
-              ['transform-react-jsx', {
-                pragma: 'h'
-              }],
+              "transform-decorators-legacy",
+              ['transform-react-jsx', { pragma: 'h' }],
               // ['typecheck', {
               //   disable: {
               //     production: true

@@ -19,7 +19,6 @@ import sessionManager from '../helpers/session-manager';
 
 import mapper from '../helpers/math/mapper';
 
-import companyCostComputer from '../helpers/products/compute-company-cost';
 import companyMerger from '../helpers/products/company-merger';
 
 

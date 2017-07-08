@@ -9,10 +9,6 @@ import round from '../../../../helpers/math/round';
 import stageHelper from '../../../../helpers/stages';
 
 export default class MainFeature extends Component {
-  state = {
-    tick: 1,
-  };
-
   render({ id, onHireProgrammerClick }) {
     if (!stageHelper.canShowMainFeatureTab()) return '';
 
@@ -201,7 +197,5 @@ export default class MainFeature extends Component {
 
       flux.productActions.addHype(id, hypeModifier);
     }
-
-    // this.setState({ tick: this.state.tick + 1 });
   }
 }

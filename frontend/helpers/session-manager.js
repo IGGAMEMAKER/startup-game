@@ -85,6 +85,7 @@ function setDefaultValues() {
   sessionStorage.saveInStorage('fame', 0);
   sessionStorage.saveInStorage('loan', 0);
   sessionStorage.saveInStorage('rents', []);
+
   logger.debug('saved tasks');
 
   // products

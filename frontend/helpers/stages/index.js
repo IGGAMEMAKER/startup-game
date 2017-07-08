@@ -1,5 +1,7 @@
 import flux from '../../flux';
+
 import c from '../../constants';
+
 import logger from '../logger/logger';
 import * as gameStages from '../../constants/game-stages';
 
@@ -14,6 +16,33 @@ const setStage = (stage) => {
 const isTestMode = true;
 
 logger.shit('need to send stats on game phase change');
+
+function isTest() {
+  // if (isTestMode) return (target, property, descriptor) => true;
+
+  return (target, property, descriptor) => {
+    console.log('executed', target, property, descriptor);
+
+    if (isTestMode) {
+      descriptor.value = () => true;
+      // descriptor.writable = false;
+      // descriptor.get = () => true;
+    }
+    // descriptor = {
+    //   configurable: false, // or true
+    //   enumerable: false, // or true
+    //   value: undefined, // or any other value
+    //   writable: false, // or true
+    //   get: function () { /* return some value here */ },
+    //   set: function (newValue) { /* set the new value of the property */ }
+    // };
+
+    // if (isTestMode) {
+      // console.log('is test mode');
+      // return true;
+    // }
+  }
+}
 
 export default {
   // on mission completed
@@ -106,8 +135,9 @@ export default {
     return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
   },
 
+  @isTest()
   canShowBonusesTab() {
-    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS; // || isTestMode;
   },
 
   canShowTeamTabs() {

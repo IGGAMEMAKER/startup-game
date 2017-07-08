@@ -397,7 +397,6 @@ export default class Product {
     const blog = p.getBlogPower();
     const emails = p.getEmailPower();
     const support = p.getSupportPower();
-    const k = 0.6; // поправочный коэффициент
 
     const marketingModifier = 1 - 0.15 * blog + 0.25 * emails + 0.4 * support; // max total sum = 1
 
