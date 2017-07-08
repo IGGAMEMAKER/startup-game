@@ -31,13 +31,15 @@ const isTest = (target, property, descriptor) => {
 
     // descriptor.value = () => true;
   }
-}
+};
 
-function proceed(stage) {
-  return (target, property, descriptor) => {
-    if (getStage() >= stage) {
-      descriptor.value = () => true;
-    }
+const proceed = (stage) => (target, property, descriptor) => {
+  if (getStage() >= stage) {
+    // descriptor.value = () => true;
+    descriptor.value = () => true;
+    descriptor.enumerable = false;
+    descriptor.configurable = true;
+    descriptor.writable = true;
   }
 }
 
@@ -138,13 +140,13 @@ export default {
   },
 
   @isTest
+  @proceed(gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS)
   canShowBonusesTab() {
     return false;
   },
 
+  @isTest
   canShowTeamTabs() {
-    if (isTestMode) return true;
-
     const s = getStage();
 
     if (s === gameStages.GAME_STAGE_GAME_STARTED) return true;
