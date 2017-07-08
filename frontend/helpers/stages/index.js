@@ -17,30 +17,27 @@ const isTestMode = true;
 
 logger.shit('need to send stats on game phase change');
 
-function isTest() {
-  // if (isTestMode) return (target, property, descriptor) => true;
-
-  return (target, property, descriptor) => {
-    console.log('executed', target, property, descriptor);
-
-    if (isTestMode) {
-      descriptor.value = () => true;
-      // descriptor.writable = false;
-      // descriptor.get = () => true;
-    }
-    // descriptor = {
-    //   configurable: false, // or true
-    //   enumerable: false, // or true
-    //   value: undefined, // or any other value
-    //   writable: false, // or true
-    //   get: function () { /* return some value here */ },
-    //   set: function (newValue) { /* set the new value of the property */ }
+const isTest = (target, property, descriptor) => {
+  logger.debug('isTest ?11', property);
+  if (isTestMode) {
+    // descriptor.get = function () {
+    //   return true;
     // };
 
-    // if (isTestMode) {
-      // console.log('is test mode');
-      // return true;
-    // }
+    descriptor.value = () => true;
+    descriptor.enumerable = false;
+    descriptor.configurable = true;
+    descriptor.writable = true;
+
+    // descriptor.value = () => true;
+  }
+}
+
+function proceed(stage) {
+  return (target, property, descriptor) => {
+    if (getStage() >= stage) {
+      descriptor.value = () => true;
+    }
   }
 }
 
@@ -105,39 +102,44 @@ export default {
     return getStage() === gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
   },
 
-
   // can show some tabs region
+
+  @isTest
   canShowHypothesisTab() {
-    return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS || isTestMode;
+    return getStage() >= gameStages.GAME_STAGE_INVITED_FIRST_CLIENTS;
   },
-
+  @isTest
   canShowUpperTabInMenu() {
-    return getStage() >= gameStages.GAME_STAGE_IMPROVED_ANALYTICS || isTestMode;
+    return getStage() >= gameStages.GAME_STAGE_IMPROVED_ANALYTICS;
   },
-
+  @isTest
   canShowMetricsTab() {
-    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS || isTestMode;
+    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
   },
-
+  @isTest
   canShowMainFeatureTab() {
-    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS || isTestMode;
+    return getStage() >= gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS;
   },
 
+  @isTest
   canShowPaymentsTab() {
-    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
   },
 
+  @isTest
   canShowCompetitorsTab() {
-    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
   },
 
+  @isTest
   canShowClientsTab() {
-    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS || isTestMode;
+    return false;
+    // return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS;
   },
 
-  @isTest()
+  @isTest
   canShowBonusesTab() {
-    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS; // || isTestMode;
+    return false;
   },
 
   canShowTeamTabs() {
@@ -152,15 +154,18 @@ export default {
     return true;
   },
 
+  @isTest
   canShowAdTab() {
-    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER || isTestMode;
+    return getStage() >= gameStages.GAME_STAGE_HIRED_FIRST_WORKER;
   },
 
+  @isTest
   canShowSegments() {
-    return this.canShowCompetitorsTab();
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS
   },
 
+  @isTest
   canShowChurnFeatures() {
-    return this.canShowCompetitorsTab();
+    return getStage() >= gameStages.GAME_STAGE_GOT_RATING_SEVEN_PLUS
   }
 };

@@ -39,6 +39,10 @@ const computeTasks = (tasks) => {
   scheduleActions.removeTasks(finishing); // and we need to set new inProgress task
 };
 
+const checkRents = day => {
+
+};
+
 const run = () => {
   scheduleActions.increaseDay();
 
@@ -82,6 +86,7 @@ const run = () => {
 
       // we exclude one company from list, so ... sum of hypes decreases by current company
       const hypeDiscount = transformations[i].hypeValue;
+
       transformations.forEach((t, j) => {
         if (j !== i) {
           const currentHypeShare = t.hypeValue / (sumOfHypes - hypeDiscount);
@@ -93,19 +98,16 @@ const run = () => {
 
     products
       .forEach((p, i) => {
-        const id = i;
         const clients = transformations[i].increase;
+        const churn = transformations[i].decrease; // productStore.getDisloyalClients(id);
 
-        const churn = transformations[i].decrease;
-        // const churn = productStore.getDisloyalClients(id);
+        productActions.testHypothesis(i);
+        productActions.addClients(i, clients);
+        productActions.removeClients(i, churn);
 
+        const damping = productStore.getHypeDampingValue(i);
 
-        productActions.testHypothesis(id);
-        productActions.addClients(id, clients);
-        productActions.removeClients(id, churn);
-
-        const damping = productStore.getHypeDampingValue(id);
-        productActions.loseMonthlyHype(id, damping);
+        productActions.loseMonthlyHype(i, damping);
       });
 
     const difference = moneyCalculator.saldo();
@@ -131,9 +133,8 @@ const run = () => {
 
     const programmingSupportPoints = productStore.getProgrammingSupportCost(companyId);
     const marketingSupportPoints = productStore.getMarketingSupportCost(companyId);
+
     logger.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js');
-
-
     logger.shit('compute penalties and bonuses for point production');
 
     programmingPoints -= programmingSupportPoints;
@@ -150,15 +151,9 @@ const run = () => {
     const refreshRents = [];
     const rents = productStore.getRents();
 
-    // logger.debug('rents', rents, 'game.js');
-
-
     rents
       .forEach((r, i) => {
-        // logger.debug('check rent', r, day);
-
         if (r.until <= day) {
-          // logger.debug('expiration!!', r);
           refreshRents.push(i);
         }
       });
