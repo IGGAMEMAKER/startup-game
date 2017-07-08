@@ -13,10 +13,10 @@ export default class AdvertPlannerPanel extends Component {
     const money = flux.productStore.getMoney();
 
     const ads = [
-      { clients: 200, text: 'Повысить HYPE на 200 очков', mp: 100 },
-      { clients: 1000, text: 'Повысить HYPE на 1000 очков', mp: 500 },
-      { clients: 10000, text: 'Повысить HYPE на 10000 очков', mp: 1750 }
-    ].map((c, i) => Object.assign({}, c, { campaignCost: Math.ceil(c.clients * costPerClient) } ));
+      { hype: 200, text: 'Заметка в тематическом блоге', mp: 100 },
+      { hype: 1000, text: 'Провести конкурс', mp: 500 },
+      { hype: 10000, text: 'Вирусное видео', mp: 1750 }
+    ].map((c, i) => Object.assign({}, c, { campaignCost: Math.ceil(c.hype * costPerClient) } ));
 
     const list = ads.map(this.renderAdvert(money, id)).reverse();
 
@@ -30,7 +30,7 @@ export default class AdvertPlannerPanel extends Component {
   }
 
   renderAdvert = (money, id) => a => {
-    const { clients, text, mp, campaignCost } = a;
+    const { hype, text, mp, campaignCost } = a;
 
     const disabled = !flux.productStore.enoughMarketingPoints(mp) || money < campaignCost;
 
@@ -43,14 +43,14 @@ export default class AdvertPlannerPanel extends Component {
 
     return (
       <li>
-        {text}
+        {text} (+{hype}HYPE)
         <br />
-        <div>Стоимость рекламной кампании: {campaignCost}$ и {mp}MP </div>
+        <div>Стоимость: {campaignCost}$ и {mp}MP </div>
         <div>{error}</div>
         <UI.Button
-          item={`start-campaign ${clients}`}
+          item={`start-campaign ${hype}`}
           text="Начать рекламную кампанию"
-          onClick={() => this.startAdCampaign(id, clients, campaignCost, mp)}
+          onClick={() => this.startAdCampaign(id, hype, campaignCost, mp)}
           disabled={disabled}
           primary
         />

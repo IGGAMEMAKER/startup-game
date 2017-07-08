@@ -87,7 +87,7 @@ export default {
       virality: 0.3, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
       price: 10,
       CAC: 1 * cacModifier(), // customer acquisition cost
-      marketSize: 50000 * marketModifier(),
+      marketSize: 100000 * marketModifier(),
       mvp: {
         pp: 100,
         mp: 100

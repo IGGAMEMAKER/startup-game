@@ -340,6 +340,9 @@ class ProductStore extends EventEmitter {
   getCompanyCost(id) {
     return _products[id].getCompanyCost();
   }
+  getCompanyCostStructured(id) {
+    return _products[id].getCompanyCostStructured();
+  }
 
   enforceFeaturesByRentedOnes(offer: Array<Number>, rented: Array<Rent>) {
     const list = offer.map(v => v);
@@ -642,101 +645,12 @@ class ProductStore extends EventEmitter {
     return _products[id].getMarketingSupportCost();
   }
 
-  getMarketingFeatureList(idea) {
-    return [
-      {
-        name: 'blog', shortDescription: 'Блог проекта',
-        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-        points: { marketing: 150 },
-        support: { marketing: 50 }
-      },
-      {
-        name: 'support', shortDescription: 'Техподдержка',
-        description: 'Техподдержка снижает отток клиентов на 15%',
-        points: { marketing: 50, programming: 100 },
-        support: { marketing: 50 }
-      },
-      {
-        name: 'blogII', shortDescription: 'Улучшенный блог проекта',
-        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-        points: { marketing: 150 },
-        support: { marketing: 150 }
-      },
-      {
-        name: 'supportII', shortDescription: 'Улучшенная техподдержка',
-        description: 'Техподдержка снижает отток клиентов на 15%',
-        points: { marketing: 50, programming: 100 },
-        support: { marketing: 50 }
-      },
-      {
-        name: 'emails', shortDescription: 'Рассылка электронной почты',
-        description: 'Рассылка электронной почти снижает отток клиентов на 5%',
-        points: { marketing: 50, programming: 100 },
-        support: { programming: 20 }
-      },
-      {
-        name: 'blogIII', shortDescription: 'Улучшенный блог проекта II',
-        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
-        points: { marketing: 150 },
-        support: { marketing: 150 }
-      },
-      {
-        name: 'supportIII', shortDescription: 'Улучшенная техподдержка II',
-        description: 'Техподдержка снижает отток клиентов на 15%. ',
-        points: { marketing: 50, programming: 100 },
-        support: { marketing: 50 }
-      }
-      // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
-      //   points: { marketing: 50, programming: 100 }, time: 7 }
-    ];
-    // ].map(computeFeatureCost(cost));
+  getMarketingFeatureList(id, idea) {
+    return _products[id].getMarketingFeatureList(idea);
   };
 
-  getHypothesisAnalyticsFeatures(idea) {
-    return [
-      { name: 'feedback', shortDescription: 'Форма для комментариев',
-        description: 'Общение с вашими клиентами позволяет улучшить ваш продукт. +300XP/мес',
-        points: { programming: 50, marketing: 0 }, bonus: 300
-      },
-      { name: 'webvisor', shortDescription: 'Вебвизор',
-        description: 'Позволяет просматривать действия пользователей. +200XP/мес',
-        points: { programming: 150, marketing: 0 }, bonus: 200
-      },
-      { name: 'AB', shortDescription: 'A/B тестирование',
-        description: 'Позволяет тестировать несколько вариантов проекта. +400XP/мес',
-        points: { programming: 175, marketing: 0 }, bonus: 400
-      },
-      { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей',
-        description: '+500XP/мес',
-        points: { programming: 250, marketing: 0 }, bonus: 500
-      },
-      { name: 'segmentingII', shortDescription: 'Автоматическое сегментирование пользователей II',
-        description: '+600XP/мес',
-        points: { programming: 500, marketing: 0 }, bonus: 600
-      }
-    ];
-  };
-
-  getAnalyticFeatures(idea) {
-    return [
-      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
-      //   points: { programming: 50, marketing: 0 }
-      // },
-      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
-      //   points: { programming: 50, marketing: 0 }
-      // },
-      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
-      //   points: { programming: 150, marketing: 100 }
-      // },
-
-      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-      //   points: { programming: 50, marketing: 0 }
-      // },
-      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
-        points: { programming: 50, marketing: 0 }
-      }
-    ];
-    // ].map(computeFeatureCost(cost));
+  getHypothesisAnalyticsFeatures(id, idea) {
+    return _products[id].getHypothesisAnalyticsFeatures(idea);
   };
 
   getPaymentFeatures(id, idea) {

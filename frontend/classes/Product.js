@@ -130,6 +130,10 @@ export default class Product {
     return companyCostComputer.compute(this);
   }
 
+  getCompanyCostStructured() {
+    return companyCostComputer.structured(this);
+  }
+
   static getRating(p: Product, features, segmentId) {
     if (!segmentId) segmentId = 0;
 
@@ -388,19 +392,19 @@ export default class Product {
       rating = 3;
     }
 
-    const ratingModifier = Math.min(Math.pow(12 - rating, 1.65));
+    const ratingModifier = Math.min(Math.pow(12 - rating, 3.65), 100);
 
     const blog = p.getBlogPower();
     const emails = p.getEmailPower();
     const support = p.getSupportPower();
     const k = 0.6; // поправочный коэффициент
 
-    const marketingModifier = 0.35 * blog + 0.15 * emails + 0.5 * support; // max total sum = 1
+    const marketingModifier = 1 - 0.15 * blog + 0.25 * emails + 0.4 * support; // max total sum = 1
 
     // 15: r7
     // bad 10-15+
     // good 1-5
-    const churn = ratingModifier * (1 - k * marketingModifier) / 100;
+    const churn = ratingModifier * marketingModifier / 100;
 
     return {
       raw: churn, // 0 - 1
@@ -719,7 +723,8 @@ export default class Product {
     return [
       {
         name: 'blog', shortDescription: 'Блог проекта',
-        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+        description: 'Регулярное ведение блога снижает отток клиентов на 10%' +
+        'и на 25% повышает скачок известности, в случае лидерства в технологии',
         points: { marketing: 150 },
         support: { marketing: 50 }
       },
@@ -731,7 +736,8 @@ export default class Product {
       },
       {
         name: 'blogII', shortDescription: 'Улучшенный блог проекта',
-        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+        description: 'Регулярное ведение блога снижает отток клиентов на 10%' +
+        'и на 25% повышает скачок известности, в случае лидерства в технологии',
         points: { marketing: 150 },
         support: { marketing: 150 }
       },
@@ -749,7 +755,8 @@ export default class Product {
       },
       {
         name: 'blogIII', shortDescription: 'Улучшенный блог проекта II',
-        description: 'Регулярное ведение блога снижает отток клиентов на 10%',
+        description: 'Регулярное ведение блога снижает отток клиентов на 10%' +
+        'и на 50% повышает скачок известности, в случае лидерства в технологии',
         points: { marketing: 150 },
         support: { marketing: 150 }
       },

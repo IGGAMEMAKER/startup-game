@@ -119,7 +119,7 @@ export default class ProductPanel extends Component {
 
     switch (groupType) {
       case 'marketing':
-        featureList = productStore.getMarketingFeatureList(idea);
+        featureList = productStore.getMarketingFeatureList(id, idea);
         break;
 
       case 'payment':
@@ -127,7 +127,7 @@ export default class ProductPanel extends Component {
         break;
 
       case 'analytics':
-        featureList = productStore.getHypothesisAnalyticsFeatures(idea);
+        featureList = productStore.getHypothesisAnalyticsFeatures(id, idea);
         break;
     }
 
@@ -517,10 +517,19 @@ export default class ProductPanel extends Component {
 
       case MODE_COMPETITORS:
         let companyCostTab;
-        const ourCompanyCost = productStore.getCompanyCost(id);
+        const ourCompanyCost = productStore.getCompanyCostStructured(id);
 
         if (stageHelper.canShowCompetitorsTab()) {
-          companyCostTab = <div>Наша рыночная стоимость: {ourCompanyCost}$</div>
+          companyCostTab = <div>
+            <div>
+              Наша рыночная стоимость: {ourCompanyCost.cost}$
+            </div>
+            <div>На нашу стоимость влияет количество клиентов и развитие технологий</div>
+            <ul>
+              <li>От технологий ({ourCompanyCost.technologyPart}%): {ourCompanyCost.technologyValue}$</li>
+              <li>От клиентов ({ourCompanyCost.clientPart}%): {ourCompanyCost.clientValue}$</li>
+            </ul>
+          </div>
         }
 
         body = (

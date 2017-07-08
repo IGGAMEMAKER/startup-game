@@ -1,14 +1,8 @@
 import productDescriptions from './product-descriptions';
 import logger from '../logger/logger';
 
-const compute = (c) => {
+const structured = (c) => {
   // logger.debug('compute cost of company', c);
-  let cost = 10000;
-
-  const featureCost = 15;
-
-  // logger.debug('computeCompanyCost', c);
-
   const defaults = productDescriptions(c.idea);
   const defaultFeatures = defaults.features;
 
@@ -21,22 +15,40 @@ const compute = (c) => {
   defaultFeatures.forEach((f, featureId) => {
     const xp = c.features.offer[featureId];
 
-    totalXP += xp / 1000;
-    featureSum += xp * featureCost;
+    totalXP += xp;
+    featureSum += xp * f.development;
   });
 
+  featureSum *= 50; // 1 PP costs 50$ + 30% for working product
+
   // complexity modifier
-  const complexityModifier = Math.pow(1.01, totalXP);
-  cost += featureSum * complexityModifier;
+  const complexityModifier = Math.pow(1.01, totalXP / 1000);
+
+  const technologyValue = Math.ceil(featureSum * complexityModifier / 1000);
 
   // customers also influence cost
-  cost += c.KPI.clients * defaults.CAC * 1.5;
+  const clientValue = Math.ceil(c.KPI.clients * defaults.CAC * 80);
 
+  const cost = 10000 + technologyValue + clientValue;
 
-  return Math.ceil(cost);
-  // return 1;
+  const technologyPart = Math.floor(technologyValue * 100 / cost);
+  const clientPart = Math.floor(clientValue * 100 / cost);
+
+  return {
+    cost,
+    complexityModifier,
+    clientPart,
+    technologyPart,
+    clientValue,
+    technologyValue,
+  };
+};
+
+const compute = (c) => {
+  return structured(c).cost;
 };
 
 export default {
-  compute
+  compute,
+  structured
 }
