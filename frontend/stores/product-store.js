@@ -63,8 +63,7 @@ type DescribedRent = {
 };
 
 let _rents: Array<Rent> = [
-  { in: 2, out: 0, featureId: 3, price: 1000, until: 420 },
-  // { in: 2, out: 0, featureId: 4 },
+  { in: 2, out: 0, featureId: 3, price: 1000, until: 420 }
 ];
 
 let _employees = [
@@ -124,14 +123,7 @@ let _fame = 0; // nobody knows you
 
 let _loan = 0; // no loans;
 
-let _products: Array<Product> = [
-  // new Product({
-  //   idea: IDEAS.IDEA_WEB_HOSTING,
-  //   name: 'WWWEB HOSTING',
-  //   stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-  //   defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features.map(f => f.data)
-  // })
-];
+let _products: Array<Product> = [];
 
 const initialize = ({ products, rents, money, expenses, points, employees, team, reputation, fame, loan}) => {
   _products = products;
@@ -339,6 +331,7 @@ class ProductStore extends EventEmitter {
   getCompanyCost(id) {
     return _products[id].getCompanyCost();
   }
+
   getCompanyCostStructured(id) {
     return _products[id].getCompanyCostStructured();
   }
@@ -644,16 +637,16 @@ class ProductStore extends EventEmitter {
     return _products[id].getMarketingSupportCost();
   }
 
-  getMarketingFeatureList(id, idea) {
-    return _products[id].getMarketingFeatureList(idea);
+  getMarketingFeatureList(id) {
+    return _products[id].getMarketingFeatureList();
   };
 
-  getHypothesisAnalyticsFeatures(id, idea) {
-    return _products[id].getHypothesisAnalyticsFeatures(idea);
+  getHypothesisAnalyticsFeatures(id) {
+    return _products[id].getHypothesisAnalyticsFeatures();
   };
 
-  getPaymentFeatures(id, idea) {
-    return _products[id].getPaymentFeatures(idea);
+  getPaymentFeatures(id) {
+    return _products[id].getPaymentFeatures();
   };
 
   getTechnicalDebtDescription(debt) {
@@ -726,6 +719,9 @@ class ProductStore extends EventEmitter {
     return _products[id].getHypeValue();
   }
 
+  getBonusesAmount(id) {
+    return _products[id].bonuses;
+  }
 
 
   getNumberOfTechnologiesWhereWeMadeBreakthrough(id) {
@@ -814,7 +810,7 @@ class ProductStore extends EventEmitter {
 
     // logger.debug('isWeAreRetards ?', current, max);
 
-    return current < 0.7 * max;
+    return current < 0.6 * max;
   }
 
   getTechBreakthroughModifierForHype(id, featureId) {
@@ -1096,6 +1092,10 @@ Dispatcher.register((p: PayloadType) => {
       } else {
         change = false;
       }
+      break;
+
+    case c.PRODUCT_ACTIONS_BONUSES_ADD:
+      _products[p.id].bonuses++;
       break;
 
     case c.PLAYER_ACTIONS_SET_TASK:

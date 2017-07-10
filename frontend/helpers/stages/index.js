@@ -34,14 +34,15 @@ const isTest = (target, property, descriptor) => {
 };
 
 const proceed = (stage) => (target, property, descriptor) => {
-  if (getStage() >= stage) {
+  if (getStage() >= stage || isTestMode) {
     // descriptor.value = () => true;
     descriptor.value = () => true;
     descriptor.enumerable = false;
     descriptor.configurable = true;
     descriptor.writable = true;
   }
-}
+};
+
 
 export default {
   // on mission completed

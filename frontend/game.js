@@ -9,13 +9,16 @@ import logger from './helpers/logger/logger';
 import moneyCalculator from './helpers/economics/money-difference';
 import eventGenerator from './helpers/events/event-generator';
 
-import stageHelper from './helpers/stages';
-
 import Product from './classes/Product';
 
-import { isLastDayOfMonth } from './helpers/date';
+import {
+  isLastDayOfMonth,
+  isLastDayOfYear
+} from './helpers/date';
 
-const computeTasks = (tasks) => {
+const computeTasks = () => {
+  const tasks = scheduleStore.getTasks();
+
   const finishing = [];
 
   tasks.forEach((t, taskId) => {
@@ -40,75 +43,101 @@ const computeTasks = (tasks) => {
 };
 
 const checkRents = day => {
+  const refreshRents = [];
+  const rents = productStore.getRents();
 
+  rents
+    .forEach((r, i) => {
+      if (r.until <= day) {
+        refreshRents.push(i);
+      }
+    });
+
+  if (refreshRents.length) productActions.refreshRents(refreshRents);
 };
+
+const calculatePoints = companyId => {
+  // calculate programmer points
+  const programmingPoints = productStore.getMonthlyProgrammerPoints(companyId) - productStore.getProgrammingSupportCost(companyId);
+
+  // calculate marketing points
+  let marketingPoints = productStore.getMonthlyMarketerPoints(companyId) - productStore.getMarketingSupportCost(companyId);
+
+  const points = {
+    programming: programmingPoints,
+    marketing: marketingPoints
+  };
+
+  productActions.increasePoints(points);
+};
+
+const getClientTransformations = () => {
+  const products: Array<Product> = productStore.getProducts();
+
+  const frees = productStore.getFreeClientsBatch();
+
+  const sumOfHypes = products.map((p: Product) => p.getHypeValue()).reduce((p, c) => p + c, 0);
+
+  const transformations: Array = products
+    .map((p: Product, id) =>
+      ({
+        increase: 0,
+        decrease: productStore.getDisloyalClients(id),
+        hypeValue: p.getHypeValue(),
+        hype: p.getHypeValue() / sumOfHypes
+      })
+    );
+
+  products.forEach((p: Product, i) => {
+    const freeHypeShare = transformations[i].hype;
+
+    // add free clients if possible
+    transformations[i].increase += Math.round(frees * freeHypeShare);
+
+    // we exclude one company from list, so ... sum of hypes decreases by current company
+    const hypeDiscount = transformations[i].hypeValue;
+
+    transformations.forEach((t, j) => {
+      if (j !== i) {
+        const currentHypeShare = t.hypeValue / (sumOfHypes - hypeDiscount);
+
+        transformations[i].increase += Math.round(t.decrease * currentHypeShare);
+      }
+    })
+  });
+
+  return transformations;
+};
+
+
 
 const run = () => {
   scheduleActions.increaseDay();
 
   const day = scheduleStore.getDay();
-  const tasks = scheduleStore.getTasks();
-
 
   const products: Array<Product> = productStore.getProducts();
 
   // check tasks for finishing
-  computeTasks(tasks);
+  computeTasks();
 
   // check if it is last day of month (pay day)
   if (isLastDayOfMonth(day)) {
-    if (stageHelper.isFirstHypothesisMission()) {
-      stageHelper.onFirstHypothesisMissionCompleted();
-    }
-
     // calculate client amount change
-
-    const frees = productStore.getFreeClientsBatch();
-    const sumOfHypes = products
-      .map((p: Product) => p.getHypeValue())
-      .reduce((p, c) => p + c, 0);
-
-    const transformations: Array = products
-      .map((p: Product, id) =>
-        ({
-          increase: 0,
-          decrease: productStore.getDisloyalClients(id),
-          hypeValue: p.getHypeValue(),
-          hype: p.getHypeValue() / sumOfHypes
-        })
-      );
-
-    products.forEach((p: Product, i) => {
-      const freeHypeShare = transformations[i].hype;
-
-      // add free clients if possible
-      transformations[i].increase += Math.round(frees * freeHypeShare);
-
-      // we exclude one company from list, so ... sum of hypes decreases by current company
-      const hypeDiscount = transformations[i].hypeValue;
-
-      transformations.forEach((t, j) => {
-        if (j !== i) {
-          const currentHypeShare = t.hypeValue / (sumOfHypes - hypeDiscount);
-
-          transformations[i].increase += Math.round(t.decrease * currentHypeShare);
-        }
-      })
-    });
+    const transformations = getClientTransformations();
 
     products
       .forEach((p, i) => {
         const clients = transformations[i].increase;
-        const churn = transformations[i].decrease; // productStore.getDisloyalClients(id);
-
-        productActions.testHypothesis(i);
-        productActions.addClients(i, clients);
-        productActions.removeClients(i, churn);
-
+        const churn = transformations[i].decrease;
         const damping = productStore.getHypeDampingValue(i);
 
+        productActions.addClients(i, clients);
+        productActions.removeClients(i, churn);
         productActions.loseMonthlyHype(i, damping);
       });
+
+    const moneyBefore = productStore.getMoney();
 
     const difference = moneyCalculator.saldo();
 
@@ -116,51 +145,28 @@ const run = () => {
 
     const money = productStore.getMoney();
 
-    // take loans if necessary
-    if (money < 0) {
+
+    if (money < 0 && moneyBefore < 0) {
       logger.log('money below zero');
-      // productActions.loans.take(-money);
     }
 
     const companyId = 0;
-    // calculate human points
-
-    // calculate programmer points
-    let programmingPoints = productStore.getMonthlyProgrammerPoints(companyId);
-
-    // calculate marketing points
-    let marketingPoints = productStore.getMonthlyMarketerPoints(companyId);
-
-    const programmingSupportPoints = productStore.getProgrammingSupportCost(companyId);
-    const marketingSupportPoints = productStore.getMarketingSupportCost(companyId);
-
     logger.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js');
     logger.shit('compute penalties and bonuses for point production');
 
-    programmingPoints -= programmingSupportPoints;
-    marketingPoints -= marketingSupportPoints;
-
-    const points = {
-      programming: programmingPoints,
-      marketing: marketingPoints
-    };
-
-    productActions.increasePoints(points);
+    // calculate human points
+    calculatePoints(companyId);
 
     // clean expired rents
-    const refreshRents = [];
-    const rents = productStore.getRents();
-
-    rents
-      .forEach((r, i) => {
-        if (r.until <= day) {
-          refreshRents.push(i);
-        }
-      });
-
-    if (refreshRents.length) productActions.refreshRents(refreshRents);
+    checkRents(day);
 
     productActions.updateEmployees();
+  }
+
+  if (isLastDayOfYear(day)) {
+    products.forEach((p, i) => {
+      productActions.addBonus(i);
+    })
   }
 
   // try to make an event
@@ -168,5 +174,5 @@ const run = () => {
 };
 
 export default {
-  run: run,
+  run
 }

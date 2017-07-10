@@ -4,8 +4,6 @@ import * as JOB from '../../constants/job';
 
 import flux from '../../flux';
 
-import skillHelper from '../../helpers/team/skills';
-
 import mvpCreator from '../../components/Game/Product/InitialPanel/mvp-creator';
 
 import messager from '../messages/messager';

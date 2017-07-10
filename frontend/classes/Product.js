@@ -29,6 +29,8 @@ export default class Product {
 
       this.XP = data.XP;
 
+      this.bonuses = data.bonuses;
+
       this.tests = data.tests;
       this.improvements = data.improvements;
 
@@ -85,7 +87,7 @@ export default class Product {
       bonuses: {}
     };
 
-    const clients = isCompetitor ? Math.ceil(random(100, defaults.marketSize / 10)) : 10;
+    const clients = 200;
 
     const KPI = {
       debt: 0, // technical debt. Shows, how fast can you implement new features
@@ -106,6 +108,8 @@ export default class Product {
     this.KPI = KPI;
     this.idea = idea;
     this.name = name;
+
+    this.bonuses = 0;
 
     this.XP = 1900;
 
@@ -398,8 +402,7 @@ export default class Product {
     const emails = p.getEmailPower();
     const support = p.getSupportPower();
 
-    const marketingModifier = 1 - 0.15 * blog + 0.25 * emails + 0.4 * support; // max total sum = 1
-
+    const marketingModifier = 1 - 0.15 * blog - 0.25 * emails - 0.4 * support; // max total sum = 1
     // 15: r7
     // bad 10-15+
     // good 1-5
@@ -515,7 +518,7 @@ export default class Product {
   }
 
   getBaseSupportCost() {
-    return 15;
+    return 0;
   }
 
   getMarketingSupportCost() {
@@ -526,7 +529,7 @@ export default class Product {
 
     const bonus = 1 - this.getBonusModifiers().marketingSupportCost / 100;
 
-    const flatCost = this.getBaseSupportCost() + supportSupportCost + this.getBlogStatusStructured().supportCost;
+    const flatCost = supportSupportCost + this.getBlogStatusStructured().supportCost;
 
     return Math.ceil(flatCost * bonus);
   }
@@ -1071,6 +1074,10 @@ export default class Product {
 
   improveFeatureByPoints(p) {
     this.features[p.featureGroup][p.featureName] = 1;
+
+    if (p.featureGroup === 'bonuses') {
+      this.bonuses--;
+    }
   }
 
   addClients(p) {

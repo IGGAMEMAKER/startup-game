@@ -46,24 +46,18 @@ const MODE_STAFF = 'MODE_STAFF';
 
 export default class ProductPanel extends Component {
   state = {
-    // marketing: true,
-    // payment: true,
-    // analytics: true,
-    // features: true,
-
     mode: MODE_MARKETING
   };
 
   componentWillMount() {}
 
-  getDevelopmentFeatureList(idea) {
+  getDevelopmentFeatureList() {
     return [
       { name: 'backups', description: ''},
       { name: 'clusters', description: ''},
       { name: 'tests', description: ''},
       { name: 'mobiles', description: ''} // ios android apps
     ];
-    // ].map(computeFeatureCost(cost));
   };
 
   setMode = (mode) => {
@@ -72,30 +66,12 @@ export default class ProductPanel extends Component {
     this.setState({ mode });
   };
 
-  haveEnoughPointsToUpgrade = necessaryPoints => {
-    const points = productStore.getPoints();
-
-    const mp = necessaryPoints.mp || 0;
-    const pp = necessaryPoints.pp || 0;
-
-    return points.marketing >= mp && points.programming >= pp;
-  };
-
-  renderHypothesisTab = (id, idea) => {
+  renderHypothesisTab = (id) => {
     if (!stageHelper.canShowHypothesisTab()) return '';
 
     const improvements = productStore.getImprovementChances(id);
 
-    const improveTab = this.plainifySameTypeFeatures(id, idea, 'analytics', 'Блок аналитики полностью улучшен!');
-
-    const hypothesisPoints = productStore.getHypothesisPoints(id);
-
-
-    let errorDescription = '';
-    if (!this.haveEnoughPointsToUpgrade(hypothesisPoints)) {
-      errorDescription = 'У вас не хватает MP или PP. ' +
-        'Возможно вам стоит нанять больше сотрудников или подождать до следующего месяца';
-    }
+    const improveTab = this.plainifySameTypeFeatures(id, 'analytics', 'Блок аналитики полностью улучшен!');
 
     return (
       <div>
@@ -114,20 +90,20 @@ export default class ProductPanel extends Component {
   };
 
 
-  plainifySameTypeFeatures(id, idea, groupType, onImprovedPhrase) {
+  plainifySameTypeFeatures(id, groupType, onImprovedPhrase) {
     let featureList;
 
     switch (groupType) {
       case 'marketing':
-        featureList = productStore.getMarketingFeatureList(id, idea);
+        featureList = productStore.getMarketingFeatureList(id);
         break;
 
       case 'payment':
-        featureList = productStore.getPaymentFeatures(id, idea);
+        featureList = productStore.getPaymentFeatures(id);
         break;
 
       case 'analytics':
-        featureList = productStore.getHypothesisAnalyticsFeatures(id, idea);
+        featureList = productStore.getHypothesisAnalyticsFeatures(id);
         break;
     }
 
@@ -142,15 +118,11 @@ export default class ProductPanel extends Component {
 
     let feature = featureList.filter(f => f.name === unlockedFeature);
 
-    if (groupType === 'payment' && stageHelper.isInstallPaymentModuleMission()) {
-      return feature.map(this.renderFeature(groupType, id, idea, stageHelper.onInstallPaymentModuleMissionCompleted));
-    } else {
-      return feature.map(this.renderFeature(groupType, id, idea));
-    }
+    return feature.map(this.renderFeature(groupType, id));
   }
 
-  renderPaymentTab = (id, idea) => {
-    const payment = this.plainifySameTypeFeatures(id, idea, 'payment', 'Блок монетизации полностью улучшен!');
+  renderPaymentTab = (id) => {
+    const payment = this.plainifySameTypeFeatures(id, 'payment', 'Блок монетизации полностью улучшен!');
 
     const isOpened = productStore.canShowPayPercentageMetric(id);
     const conversion = productStore.getConversionRate(id).pretty;
@@ -189,8 +161,6 @@ export default class ProductPanel extends Component {
   }
 
   renderClientTab = (id, product) => {
-    const { idea } = product;
-
     const churn = productStore.getChurnRate(id).pretty;
     const disloyalClients = productStore.getDisloyalClients(id);
 
@@ -200,7 +170,7 @@ export default class ProductPanel extends Component {
 
     let churnFeatures = '';
     if (stageHelper.canShowChurnFeatures()) {
-      const marketing = this.plainifySameTypeFeatures(id, idea, 'marketing', 'Блок маркетинга полностью улучшен!');
+      const marketing = this.plainifySameTypeFeatures(id, 'marketing', 'Блок маркетинга полностью улучшен!');
 
       churnFeatures = <div className="featureGroupDescriptionWrapper">
         <div className="featureGroupBody">{marketing}</div>
@@ -227,7 +197,6 @@ export default class ProductPanel extends Component {
       <div className={support.decrease ? '' : 'hide'}>
         <div>Ежемесячная стоимость поддержки: {support.decrease}MP</div>
         <ul className="offset-mid">
-          <li>Базовые затраты: {support.detailed.base}MP</li>
           <li>Затраты на блог: {support.detailed.blog}MP</li>
           <li>Затраты на техподдержку: {support.detailed.support}MP</li>
         </ul>
@@ -304,6 +273,7 @@ export default class ProductPanel extends Component {
 
   renderBonusesTab(id) {
     const hypeDampingStructured = productStore.getHypeDampingStructured(id);
+    const bonusesAmount = productStore.getBonusesAmount(id);
 
     const {
       blogRange,
@@ -330,7 +300,7 @@ export default class ProductPanel extends Component {
           <li style={`color: ${techStyleColor}`}>Технологическое лидерство: {tech}%</li>
         </ul>
       </div>
-      <Bonuses productId={id} />
+      <Bonuses productId={id} bonusesAmount={bonusesAmount} />
     </div>;
   }
 
@@ -354,7 +324,7 @@ export default class ProductPanel extends Component {
     return <div>Стоимость поддержки (ежемесячно) - {mp} {pp} {money}</div>;
   };
 
-  renderFeature = (featureGroup, id, idea, onUpgraded) => (feature, i) => {
+  renderFeature = (featureGroup, id, onUpgraded) => (feature, i) => {
     const featureName = feature.name;
 
     const key = `feature${featureGroup}${featureName}${i}`;
@@ -367,8 +337,6 @@ export default class ProductPanel extends Component {
     const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
 
     const upgradeFeature = event => {
-      // logger.debug('upgradeFeature', id, featureGroup, featureName, mp, pp);
-
       if (enoughPointsToUpgrade) {
         productActions.spendPoints(pp, mp);
         productActions.improveFeatureByPoints(id, featureGroup, featureName);
@@ -481,7 +449,6 @@ export default class ProductPanel extends Component {
 
   render({ product, gamePhase }, state) {
     const { mode } = state;
-    const { idea } = product;
 
     const id = 0;
     logger.shit('develop-panel.js fix productID id=0'); // TODO FIX PRODUCT ID=0
@@ -489,7 +456,7 @@ export default class ProductPanel extends Component {
     let body = '';
     switch (mode) {
       case MODE_PAYMENTS:
-        body = this.renderPaymentTab(id, idea);
+        body = this.renderPaymentTab(id);
         break;
 
       case MODE_MARKETING:
@@ -545,7 +512,7 @@ export default class ProductPanel extends Component {
         break;
 
       default:
-        body = this.renderHypothesisTab(id, idea, product);
+        body = this.renderHypothesisTab(id);
         break;
     }
 

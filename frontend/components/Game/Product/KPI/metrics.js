@@ -60,9 +60,9 @@ export default class Metrics extends Component {
     let ratingTab;
     canShowRatingTab = true;
     if (canShowRatingTab) {
+        // <span className="metric-link" onClick={onRatingPressed}>Улучшить</span>
       ratingTab = <li>
         <b>Рейтинг: <ColoredRating rating={rating} />/10</b>
-        <span className="metric-link" onClick={onRatingPressed}>Улучшить</span>
       </li>
     } else {
       ratingTab = <li><b>Рейтинг: ???</b></li>;
@@ -99,9 +99,9 @@ export default class Metrics extends Component {
     let clientsTab;
     canShowClientsTab = true;
     if (canShowClientsTab) {
+        // <span className="metric-link" onClick={onClientsPressed}>Привлечь клиентов</span>
       clientsTab = <li>
         <b>Клиенты: {clients}</b>
-        <span className="metric-link" onClick={onClientsPressed}>Привлечь клиентов</span>
       </li>
     }
 
@@ -109,9 +109,9 @@ export default class Metrics extends Component {
     canShowIncomeTab = true;
     if (canShowIncomeTab) {
       if (stageHelper.canShowPaymentsTab()) {
+          // <span className="metric-link" onClick={onPaymentsPressed}>Повысить</span>
         incomeTab = <li>
           <b>Ежемесячный доход: {income}$</b>
-          <span className="metric-link" onClick={onPaymentsPressed}>Повысить</span>
         </li>
       }
     }
@@ -125,8 +125,8 @@ export default class Metrics extends Component {
     expertiseTab = '';
 
     let hypeTab = <li>
-        <b>HYPE: {hype}</b>
-      </li>;
+      <b>HYPE: {hype}</b>
+    </li>;
 
     return (
       <div>

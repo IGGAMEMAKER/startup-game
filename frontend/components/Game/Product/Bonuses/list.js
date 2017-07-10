@@ -1,7 +1,8 @@
 import { h, Component } from 'preact';
 
 type PropsType = {
-  productId: Number
+  productId: Number,
+  bonusesAmount: Number
 };
 
 import Bonus from './index';
@@ -37,7 +38,7 @@ export default class BonusesList extends Component {
           description={b.description}
           bonus={b.bonus}
           costDescription={b.costDescription}
-          canPick
+          canPick={this.props.bonusesAmount > 0}
           onPickBonus={() => { this.onPick(this.props.productId, b.name) }}
         />
       </div>
@@ -51,9 +52,15 @@ export default class BonusesList extends Component {
 
     const names = flux.productStore.getBonuses(props.productId).map(b => <div>{b}</div>);
 
+    const canPickPhrase = props.bonusesAmount ?
+      `Доступно бонусов: ${props.bonusesAmount}`
+      :
+      'Дождитесь окончания года, чтобы получить бонус';
+
     return (
       <div>
         <div>Организационные бонусы</div>
+        <div>{canPickPhrase}</div>
         <div>{names}</div>
         <div>{list}</div>
       </div>

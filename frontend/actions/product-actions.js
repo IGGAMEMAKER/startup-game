@@ -66,6 +66,12 @@ export default {
       featureName
     })
   },
+  addBonus(id) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_BONUSES_ADD,
+      id
+    })
+  },
   pickBonus(id, bonusName) {
     logger.shit('this function is same to improveFeatureByPoints()');
 
