@@ -447,6 +447,21 @@ export default class ProductPanel extends Component {
     );
   };
 
+  renderOurCostStructured(id) {
+    if (!stageHelper.canShowCompetitorsTab()) return '';
+
+    const ourCompanyCost = productStore.getCompanyCostStructured(id);
+
+    return <div>
+      <div>Наша рыночная стоимость: {ourCompanyCost.cost}$</div>
+      <div>На нашу стоимость влияет количество клиентов и развитие технологий</div>
+      <ul>
+        <li>От технологий ({ourCompanyCost.technologyPart}%): {ourCompanyCost.technologyValue}$</li>
+        <li>От клиентов ({ourCompanyCost.clientPart}%): {ourCompanyCost.clientValue}$</li>
+      </ul>
+    </div>
+  }
+
   render({ product, gamePhase }, state) {
     const { mode } = state;
 
@@ -483,32 +498,16 @@ export default class ProductPanel extends Component {
         break;
 
       case MODE_COMPETITORS:
-        let companyCostTab;
-        const ourCompanyCost = productStore.getCompanyCostStructured(id);
-
-        if (stageHelper.canShowCompetitorsTab()) {
-          companyCostTab = <div>
-            <div>
-              Наша рыночная стоимость: {ourCompanyCost.cost}$
-            </div>
-            <div>На нашу стоимость влияет количество клиентов и развитие технологий</div>
-            <ul>
-              <li>От технологий ({ourCompanyCost.technologyPart}%): {ourCompanyCost.technologyValue}$</li>
-              <li>От клиентов ({ourCompanyCost.clientPart}%): {ourCompanyCost.clientValue}$</li>
-            </ul>
-          </div>
-        }
-
         body = (
           <div>
-            {companyCostTab}
+            {this.renderOurCostStructured(id)}
             <Competitors id={id} />
           </div>
         );
         break;
 
       case MODE_BONUSES:
-        body = this.renderBonusesTab(id, product);
+        body = this.renderBonusesTab(id);
         break;
 
       default:
@@ -530,4 +529,3 @@ export default class ProductPanel extends Component {
     );
   }
 }
-
