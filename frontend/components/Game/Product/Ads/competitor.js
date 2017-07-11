@@ -190,7 +190,7 @@ export default class Competitor extends Component {
     const hasEnoughMoney = money >= c.cost;
 
     const hypeChangePhrase = c.hypeDamping < 0 ? c.hypeDamping : `+${c.hypeDamping}`;
-    //
+
     return (
       <div className={background}>
         <div className="offset-min">{companyTitle}</div>
@@ -198,6 +198,7 @@ export default class Competitor extends Component {
         <br />
 
         <div className="offset-min">Рейтинг: {c.rating}</div>
+        <div className="offset-mid">Стиль развития: {c.style}</div>
         <div className="offset-mid">Клиенты: {c.clients} человек</div>
         <div className="offset-mid">Технологии</div>
         <div className="offset-mid"><ul>{this.renderFeatureList(c, i, rents, ourCompany)}</ul></div>

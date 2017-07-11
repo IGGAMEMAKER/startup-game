@@ -68,7 +68,7 @@ export default class AdvertPlannerPanel extends Component {
 
     flux.productActions.addHype(id, hype);
 
-    flux.productActions.increaseMoney(-cost);
+    flux.productActions.increaseMoney(-cost, id);
     flux.productActions.spendPoints(0, mp);
   };
 };

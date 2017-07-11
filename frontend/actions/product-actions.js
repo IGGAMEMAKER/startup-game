@@ -136,16 +136,16 @@ export default {
 
 
 
-  increaseMoney: (amount) => {
+  increaseMoney: (amount, id) => {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_INCREASE_MONEY,
-      amount
+      amount, id
     })
   },
-  decreaseMoney: (amount) => {
+  decreaseMoney: (amount, id) => {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_INCREASE_MONEY,
-      amount: -amount
+      amount: -amount, id
     })
   },
   hireWorker: (player, i) => {
@@ -206,6 +206,7 @@ export default {
       mp
     })
   },
+
   setTaskForPerson: (task, index) => {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_SET_TASK,

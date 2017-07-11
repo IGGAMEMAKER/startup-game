@@ -17,6 +17,7 @@ const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes',
   'Best Hosting', 'Tech-Labs', 'Gingerbeard', 'Mercury', 'Phantom', 'Modern', 'Unnamed'];
 
 import * as BONUSES from '../constants/bonuses';
+import * as MANAGEMENT_STYLES from '../constants/company-styles';
 
 export default class Product {
   constructor(data, createFromObject) {
@@ -35,10 +36,12 @@ export default class Product {
       this.improvements = data.improvements;
 
       this.owner = data.owner;
+      this.style = data.style;
 
       this.defaultFeatures = data.defaultFeatures;
 
       this._points = data._points;
+      this._money = data._money;
 
       // this.rentedFeatures = data.rentedFeatures;
 
@@ -111,9 +114,10 @@ export default class Product {
     this.idea = idea;
     this.name = name;
 
-    this.bonuses = 0;
+    this.bonuses = 1;
 
-    this._points = { programming: 0, marketing: 0 };
+    this._points = { programming: 100500, marketing: 100500 };
+    this._money = 15000;
 
 
     this.XP = 1900;
@@ -122,6 +126,17 @@ export default class Product {
     this.improvements = 1;
 
     this.owner = !isCompetitor;
+
+    let styleFactor = random(0, 1);
+    if (styleFactor < 0.5) {
+      this.style = MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
+    } else if (styleFactor < 0.8) {
+      this.style = MANAGEMENT_STYLES.COMPANY_STYLE_SEGMENT_ORIENTED;
+    } else {
+      this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
+    }
+
+    if (!isCompetitor) this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
 
     this.defaultFeatures = defaultFeatures;
     // this.rentedFeatures = [].fill(null, defaultFeatures.length); //

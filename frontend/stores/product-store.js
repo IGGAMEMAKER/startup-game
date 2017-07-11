@@ -192,7 +192,7 @@ class ProductStore extends EventEmitter {
 
 
   getMoney(id) {
-    return Math.floor(_money);
+    return Math.floor(_products[id]._money);
   }
 
   getExpenses() {
@@ -929,6 +929,7 @@ class ProductStore extends EventEmitter {
 
         return {
           rating,
+          style: p.style,
           clients: p.KPI.clients,
           name: p.name,
           features: offer,
@@ -1057,7 +1058,19 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PLAYER_ACTIONS_INCREASE_MONEY:
-      _money += p.amount;
+      _products[p.id || 0]._money += p.amount;
+      break;
+
+    case c.PLAYER_ACTIONS_INCREASE_POINTS:
+      logger.shit('|| 0 in PLAYER_ACTIONS_INCREASE_POINTS pr store');
+      _products[p.id || 0]._points.marketing += p.points.marketing;
+      _products[p.id || 0]._points.programming += p.points.programming;
+      break;
+
+    case c.PLAYER_ACTIONS_DECREASE_POINTS:
+      logger.shit('|| 0 in PLAYER_ACTIONS_DECREASE_POINTS pr store');
+      _products[p.id || 0]._points.marketing -= p.mp;
+      _products[p.id || 0]._points.programming -= p.pp;
       break;
 
     case c.PLAYER_ACTIONS_EXPENSES_ADD:
@@ -1072,7 +1085,7 @@ Dispatcher.register((p: PayloadType) => {
       logger.shit('LOAN SIZE MUST BASE ON YOUR INCOME!!!. stores product-store.js');
 
       const repay = 1.3;
-      _money += p.amount;
+      _products[p.id || 0]._money += p.amount;
       _loan += p.amount * repay;
 
       _expenses.push({
@@ -1100,18 +1113,6 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PLAYER_ACTIONS_SET_TASK:
       _team[p.index].task = p.task;
-      break;
-
-    case c.PLAYER_ACTIONS_INCREASE_POINTS:
-      logger.shit('|| 0 in PLAYER_ACTIONS_INCREASE_POINTS pr store');
-      _products[p.id || 0]._points.marketing += p.points.marketing;
-      _products[p.id || 0]._points.programming += p.points.programming;
-      break;
-
-    case c.PLAYER_ACTIONS_DECREASE_POINTS:
-      logger.shit('|| 0 in PLAYER_ACTIONS_DECREASE_POINTS pr store');
-      _products[p.id || 0]._points.marketing -= p.mp;
-      _products[p.id || 0]._points.programming -= p.pp;
       break;
 
     case c.PLAYER_ACTIONS_HIRE_WORKER:

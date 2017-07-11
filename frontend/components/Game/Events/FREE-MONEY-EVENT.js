@@ -6,6 +6,8 @@ import Button from '../../Shared/Button';
 import productActions from '../../../actions/product-actions';
 import messageActions from '../../../actions/message-actions';
 
+import logger from '../../../helpers/logger/logger';
+
 export default class FreeMoneyEvent extends Component {
   render() {
     const { props } = this;
@@ -14,7 +16,9 @@ export default class FreeMoneyEvent extends Component {
     const money = data.money;
 
     const onClick = () => {
-      productActions.increaseMoney(money);
+      logger.shit('FREE-MONEY-EVENT.js Id=0');
+
+      productActions.increaseMoney(money, 0);
       messageActions.closeEvent(id);
       props.onclose();
     };
