@@ -20,9 +20,11 @@ export default class Menu extends Component {
   }
 
   getPlayerInfoFromStore = () => {
+    logger.shit('getPlayerInfoFromStore in game/Menu id=0');
+
     this.setState({
-      money: productStore.getMoney(),
-      points: productStore.getPoints()
+      money: productStore.getMoney(0),
+      points: productStore.getPoints(0)
     })
   };
 

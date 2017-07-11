@@ -38,6 +38,8 @@ export default class Product {
 
       this.defaultFeatures = data.defaultFeatures;
 
+      this._points = data._points;
+
       // this.rentedFeatures = data.rentedFeatures;
 
       return;
@@ -110,6 +112,9 @@ export default class Product {
     this.name = name;
 
     this.bonuses = 0;
+
+    this._points = { programming: 0, marketing: 0 };
+
 
     this.XP = 1900;
 

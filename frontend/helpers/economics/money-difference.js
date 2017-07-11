@@ -2,8 +2,8 @@ import productStore from '../../stores/product-store';
 
 import * as EXPENSES from '../../constants/expenses';
 
-const calculate = () => {
-  const ourCompanyId = 0;
+const calculate = (id) => {
+  const ourCompanyId = id ? id : 0;
   const products = productStore.getOurProducts();
 
   // check income
@@ -57,5 +57,5 @@ const calculate = () => {
 export default {
   structured: calculate,
 
-  saldo: () => Math.floor(calculate().saldo)
+  saldo: (id) => Math.floor(calculate(id).saldo)
 }

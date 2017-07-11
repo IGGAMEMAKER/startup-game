@@ -10,7 +10,7 @@ import logger from '../../../../helpers/logger/logger';
 export default class AdvertPlannerPanel extends Component {
   render({ id }) {
     const costPerClient = flux.productStore.getCostPerClient(id);
-    const money = flux.productStore.getMoney();
+    const money = flux.productStore.getMoney(id);
 
     const ads = [
       { hype: 200, text: 'Заметка в тематическом блоге', mp: 100 },
@@ -32,13 +32,15 @@ export default class AdvertPlannerPanel extends Component {
   renderAdvert = (money, id) => a => {
     const { hype, text, mp, campaignCost } = a;
 
-    const disabled = !flux.productStore.enoughMarketingPoints(mp) || money < campaignCost;
+    let disabled = true;
 
     let error;
     if (money < campaignCost) {
       error = `Нужно больше золота! На вашем счету: ${money}$, а нужно ${campaignCost}$`;
-    } else if (disabled) {
+    } else if (!flux.productStore.enoughMarketingPoints(mp, id)) {
       error = 'У вас не хватает маркетинговых очков';
+    } else {
+      disabled = false;
     }
 
     return (
@@ -59,16 +61,14 @@ export default class AdvertPlannerPanel extends Component {
     )
   };
 
-  startAdCampaign = (id, amountOfUsers, cost, mp) => {
-    if (flux.productStore.getMoney() >= cost) {
-      if (stageHelper.isFirstAdCampaignMission()) {
-        stageHelper.onFirstAdCampaignMissionCompleted();
-      }
-
-      flux.productActions.addHype(id, amountOfUsers);
-
-      flux.productActions.increaseMoney(-cost);
-      flux.productActions.spendPoints(0, mp);
+  startAdCampaign = (id, hype, cost, mp) => {
+    if (stageHelper.isFirstAdCampaignMission()) {
+      stageHelper.onFirstAdCampaignMissionCompleted();
     }
+
+    flux.productActions.addHype(id, hype);
+
+    flux.productActions.increaseMoney(-cost);
+    flux.productActions.spendPoints(0, mp);
   };
 };

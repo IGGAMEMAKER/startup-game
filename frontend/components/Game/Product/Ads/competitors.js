@@ -20,7 +20,7 @@ export default class Competitors extends Component {
   }
 
   render({ id }) {
-    const money = flux.productStore.getMoney();
+    const money = flux.productStore.getMoney(id);
 
     const competitors = flux.productStore.getCompetitorsList(id);
 

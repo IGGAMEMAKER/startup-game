@@ -125,12 +125,11 @@ let _loan = 0; // no loans;
 
 let _products: Array<Product> = [];
 
-const initialize = ({ products, rents, money, expenses, points, employees, team, reputation, fame, loan}) => {
+const initialize = ({ products, rents, money, expenses, employees, team, reputation, fame, loan}) => {
   _products = products;
 
   _money = money;
   _expenses = expenses;
-  _points = points;
   _employees = employees;
   _team = team;
   _reputation = reputation;
@@ -192,7 +191,7 @@ class ProductStore extends EventEmitter {
 
 
 
-  getMoney() {
+  getMoney(id) {
     return Math.floor(_money);
   }
 
@@ -221,16 +220,18 @@ class ProductStore extends EventEmitter {
     });
   };
 
-  getPoints() {
-    return _points;
+  getPoints(id) {
+    return _products[id]._points;
   }
 
-  enoughMarketingPoints(mp) {
-    return _points.marketing >= mp;
+  enoughMarketingPoints(mp, id) {
+    logger.debug('enough points', id, _products);
+    return _products[id]._points.marketing >= mp;
   }
 
-  enoughProgrammingPoints(pp) {
-    return _points.programming >= pp;
+  enoughProgrammingPoints(pp, id) {
+    logger.debug('enough points', id, _products);
+    return _products[id]._points.programming >= pp;
   }
 
   getTeam() {
@@ -257,7 +258,6 @@ class ProductStore extends EventEmitter {
     return {
       money: _money,
       expenses: _expenses,
-      points: _points,
       employees: _employees,
       team: _team,
       reputation: _reputation,
@@ -1103,13 +1103,15 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PLAYER_ACTIONS_INCREASE_POINTS:
-      _points.marketing += p.points.marketing;
-      _points.programming += p.points.programming;
+      logger.shit('|| 0 in PLAYER_ACTIONS_INCREASE_POINTS pr store');
+      _products[p.id || 0]._points.marketing += p.points.marketing;
+      _products[p.id || 0]._points.programming += p.points.programming;
       break;
 
     case c.PLAYER_ACTIONS_DECREASE_POINTS:
-      _points.marketing -= p.mp;
-      _points.programming -= p.pp;
+      logger.shit('|| 0 in PLAYER_ACTIONS_DECREASE_POINTS pr store');
+      _products[p.id || 0]._points.marketing -= p.mp;
+      _products[p.id || 0]._points.programming -= p.pp;
       break;
 
     case c.PLAYER_ACTIONS_HIRE_WORKER:
@@ -1118,16 +1120,12 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PLAYER_ACTIONS_FIRE_WORKER:
-      logger.debug('PLAYER_ACTIONS_FIRE_WORKER', p);
-
       _money -= _team[p.i].salary.money;
       _team.splice(p.i, 1);
       break;
 
     case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
       _employees.push(p.player);
-      // logger.debug(_employees, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
-      // logger.debug(p.player, c.PLAYER_ACTIONS_EMPLOYEE_ADD);
       break;
 
     case c.PLAYER_ACTIONS_UPDATE_EMPLOYEES:

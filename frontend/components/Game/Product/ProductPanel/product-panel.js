@@ -325,6 +325,9 @@ export default class ProductPanel extends Component {
   };
 
   renderFeature = (featureGroup, id, onUpgraded) => (feature, i) => {
+    logger.shit('hardcoded companyId=0 in renderFeature in product-panel');
+
+    const companyId = 0;
     const featureName = feature.name;
 
     const key = `feature${featureGroup}${featureName}${i}`;
@@ -332,7 +335,7 @@ export default class ProductPanel extends Component {
     const standardPoints = feature.points || {};
     const mp = standardPoints.marketing || 0;
     const pp = standardPoints.programming || 0;
-    const points = productStore.getPoints();
+    const points = productStore.getPoints(companyId);
 
     const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
 

@@ -13,33 +13,33 @@ const getCurrentDefaultFeatures = (idea) => {
 };
 
 const create = (i, basePoints, idea) => {
-  const points = productStore.getPoints();
+  // const points = productStore.getPoints();
+  //
+  // // basePoints must be an array
+  // logger.shit('WRITE proper basePoints array in mvp-creator.js');
+  // basePoints = [
+  //   { name: 'programming', amount: 100 },
+  //   { name: 'marketing', amount: 100 }
+  // ];
+  //
+  // let hasEnoughPoints = true;
+  // basePoints.forEach(p => {
+  //   if (points[p.name] < p.amount) hasEnoughPoints = false;
+  // });
+  //
+  // if (hasEnoughPoints) {
+  // we can make prototype
+  logger.shit('WRITE proper randomizer in mvp-creator.js');
 
-  // basePoints must be an array
-  logger.shit('WRITE proper basePoints array in mvp-creator.js');
-  basePoints = [
-    { name: 'programming', amount: 100 },
-    { name: 'marketing', amount: 100 }
-  ];
+  const p = new Product({ idea, name: 'WWWEB HOSTING', defaultFeatures: getCurrentDefaultFeatures(idea) });
 
-  let hasEnoughPoints = true;
-  basePoints.forEach(p => {
-    if (points[p.name] < p.amount) hasEnoughPoints = false;
-  });
+  // productActions.spendPoints(basePoints[1].amount, basePoints[0].amount);
+  productActions.setInitialProductSettings(i, p.features, p.KPI);
 
-  if (hasEnoughPoints) {
-    // we can make prototype
-    logger.shit('WRITE proper randomizer in mvp-creator.js');
-
-    const p = new Product({ idea, name: 'WWWEB HOSTING', defaultFeatures: getCurrentDefaultFeatures(idea) });
-
-    productActions.spendPoints(basePoints[1].amount, basePoints[0].amount);
-    productActions.setInitialProductSettings(i, p.features, p.KPI);
-
-    createCompetitorCompany(idea);
-    createCompetitorCompany(idea);
-    createCompetitorCompany(idea);
-  }
+  createCompetitorCompany(idea);
+  createCompetitorCompany(idea);
+  createCompetitorCompany(idea);
+  // }
 };
 
 const createCompetitorCompany = (idea) => {

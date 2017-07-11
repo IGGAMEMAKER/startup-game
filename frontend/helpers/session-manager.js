@@ -144,6 +144,8 @@ function setDefaultValues() {
       }].map(f => f.data)
   });
 
+  logger.debug(product);
+
   sessionStorage.saveInStorage('products', [product]);
 }
 
@@ -162,8 +164,6 @@ function restartGame() {
 
   stats.saveAction('restartGame', {});
 }
-
-// restartGame();
 
 function saveProductStorageData({ products, rents, money, expenses, points, employees, team, reputation, fame, loan }) {
   saveToStorage('products', products);
@@ -192,31 +192,21 @@ function getProductStorageData() {
 
   try {
     money = Number.parseInt(getFromStorage('money'));
-    logger.debug('got money');
+    logger.debug('got money', money);
 
-    let raw = getFromStorage('rents');
-    logger.debug('raw rents', raw);
-    // if (!raw) raw = "[]";
-    rents = Array.from(JSON.parse(raw));
+    rents = Array.from(JSON.parse(getFromStorage('rents')));
 
     expenses = Array.from(JSON.parse(getFromStorage('expenses')));
-    logger.debug('got expenses');
 
     points = JSON.parse(getFromStorage('points'));
-    logger.debug('got points');
+    logger.debug('got points', points);
 
     employees = Array.from(JSON.parse(getFromStorage('employees')));
-    logger.debug('got employees');
-
 
     team = Array.from(JSON.parse(getFromStorage('team')));
-    logger.debug('got team');
 
     reputation = Number.parseInt(getFromStorage('reputation'));
-    logger.debug('got rep');
-
     fame = Number.parseInt(getFromStorage('fame'));
-    logger.debug('got fame');
 
     loan = Number.parseInt(getFromStorage('loan'));
     logger.debug('got loan');
@@ -224,8 +214,11 @@ function getProductStorageData() {
     logger.debug('products needed');
 
     const data = getFromStorage('products');
+    logger.debug('getFromStorage products raw', data);
 
     products = Array.from(JSON.parse(data)).map(p => new Product(p, true));
+
+    logger.debug('products', products);
   } catch (ex) {
     logger.error('error in getProductStorageData', ex);
   }
@@ -263,6 +256,9 @@ function saveScheduleStorageData({ tasks, day, gamePhase }) {
 function getMessageStorageData() {
   return getFromStorage('messages');
 }
+
+restartGame();
+
 
 export default {
   getProductStorageData,

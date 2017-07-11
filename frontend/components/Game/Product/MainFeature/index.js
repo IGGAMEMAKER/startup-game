@@ -141,7 +141,7 @@ export default class MainFeature extends Component {
 
     const pp = flux.productStore.getMainFeatureUpgradeCost(id, featureId);
 
-    const enoughPPs = flux.productStore.enoughProgrammingPoints(pp);
+    const enoughPPs = flux.productStore.enoughProgrammingPoints(pp, id);
 
     const disabled = !enoughPPs;
 

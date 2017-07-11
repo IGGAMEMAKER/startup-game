@@ -118,6 +118,7 @@ export default {
   },
   loseMonthlyHype(id, hypeDamping) {
     // hypeDamping MUST BE NEGATIVE!!
+    logger.shit('loseMonthlyHype: hypeDamping must be negative');
 
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE,
@@ -178,17 +179,19 @@ export default {
     })
   },
 
-  increasePoints(points) {
+  increasePoints(points, id) {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_INCREASE_POINTS,
-      points
+      points,
+      id
     })
   },
-  spendPoints(pp, mp) {
+  spendPoints(pp, mp, id) {
     Dispatcher.dispatch({
       type: ACTIONS.PLAYER_ACTIONS_DECREASE_POINTS,
       pp,
-      mp
+      mp,
+      id
     })
   },
   buyProgrammingPoints: pp => {

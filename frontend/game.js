@@ -68,7 +68,7 @@ const calculatePoints = companyId => {
     marketing: marketingPoints
   };
 
-  productActions.increasePoints(points);
+  productActions.increasePoints(points, companyId);
 };
 
 const getClientTransformations = () => {
@@ -137,25 +137,26 @@ const run = () => {
         productActions.loseMonthlyHype(i, damping);
       });
 
-    const moneyBefore = productStore.getMoney();
+    products
+      .forEach((p, i) => {
+        const moneyBefore = productStore.getMoney(i);
 
-    const difference = moneyCalculator.saldo();
+        const difference = moneyCalculator.saldo(i);
 
-    productActions.increaseMoney(difference);
+        productActions.increaseMoney(difference, i);
 
-    const money = productStore.getMoney();
+        const money = productStore.getMoney(i);
 
 
-    if (money < 0 && moneyBefore < 0) {
-      logger.log('money below zero');
-    }
+        if (money < 0 && moneyBefore < 0) {
+          logger.log('money below zero companyId=', i);
+        }
 
-    const companyId = 0;
-    logger.shit('need proper index, NOT ZERO in: productStore.getProgrammingSupportCost(0); in game.js');
-    logger.shit('compute penalties and bonuses for point production');
+        logger.shit('compute penalties and bonuses for point production');
 
-    // calculate human points
-    calculatePoints(companyId);
+        // calculate human points
+        calculatePoints(i);
+      });
 
     // clean expired rents
     checkRents(day);

@@ -9,6 +9,7 @@ import Expenses from '../Player/Expenses';
 
 import round from '../../../helpers/math/round';
 
+import logger from '../../../helpers/logger/logger';
 
 type PropsType = {};
 
@@ -20,28 +21,24 @@ export default class Economics extends Component {
   };
 
   componentWillMount() {
-    this.pickProducts();
-    this.pickMoney();
+    this.pickData();
 
-    productStore.addChangeListener(this.pickMoney);
-    productStore.addChangeListener(this.pickProducts);
+    productStore.addChangeListener(this.pickData);
   }
 
-  pickProducts = () => {
+  pickData = () => {
+    logger.shit('id=0 in components/Game/Economics/Economics');
+
     this.setState({
+      money: productStore.getMoney(0),
+      basicExpenses: productStore.getExpenses(),
       products: productStore.getOurProducts()
     })
   };
 
-  pickMoney = () => {
-    this.setState({
-      money: productStore.getMoney(),
-      basicExpenses: productStore.getExpenses(),
-    })
-  };
+  renderIncome() {
+    logger.shit('getRentIncomes(0) in renderIncome Economics/Economics');
 
-  renderIncome = state => {
-    // {JSON.stringify(state.income)}
     const productIncome = moneyCalculator.structured().byProductIncome
       .filter(p => p.income > 0)
       .map(p => (<div>{p.name} : {Math.floor(p.income)}$</div>));
@@ -72,6 +69,8 @@ export default class Economics extends Component {
     const basicExpenses = state.basicExpenses;
     const teamExpenses = moneyCalculator.structured().teamExpenses;
     const rentExpenses = productStore.getRentExpenses(0).incomingRents;
+    logger.shit('getRentExpenses(0) in renderExpenses Economics/Economics');
+
 
     return <div>
       <Expenses
