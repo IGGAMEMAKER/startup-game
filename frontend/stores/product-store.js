@@ -125,10 +125,9 @@ let _loan = 0; // no loans;
 
 let _products: Array<Product> = [];
 
-const initialize = ({ products, rents, money, expenses, employees, team, reputation, fame, loan}) => {
+const initialize = ({ products, rents, expenses, employees, team, reputation, fame, loan}) => {
   _products = products;
 
-  _money = money;
   _expenses = expenses;
   _employees = employees;
   _team = team;
@@ -225,12 +224,12 @@ class ProductStore extends EventEmitter {
   }
 
   enoughMarketingPoints(mp, id) {
-    logger.debug('enough points', id, _products);
+    // logger.debug('enough points', id, _products);
     return _products[id]._points.marketing >= mp;
   }
 
   enoughProgrammingPoints(pp, id) {
-    logger.debug('enough points', id, _products);
+    // logger.debug('enough points', id, _products);
     return _products[id]._points.programming >= pp;
   }
 
@@ -256,7 +255,6 @@ class ProductStore extends EventEmitter {
 
   static getStoreData() {
     return {
-      money: _money,
       expenses: _expenses,
       employees: _employees,
       team: _team,
@@ -321,6 +319,7 @@ class ProductStore extends EventEmitter {
   }
 
   isOurProduct(p) {
+    // logger.debug('isOurProduct', p);
     return p.owner;
   }
 
@@ -936,7 +935,8 @@ class ProductStore extends EventEmitter {
           cost: p.getCompanyCost(),
           id,
           hype: p.getHypeValue(),
-          hypeDamping: this.getHypeDampingValue(id)
+          hypeDamping: this.getHypeDampingValue(id),
+          company: p
         }
       })
       .sort((a, b) => b.hype - a.hype);

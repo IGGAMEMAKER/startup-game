@@ -9,11 +9,14 @@ import logger from './helpers/logger/logger';
 import moneyCalculator from './helpers/economics/money-difference';
 import eventGenerator from './helpers/events/event-generator';
 
+import * as MANAGEMENT_STYLES from './constants/company-styles';
+
 import Product from './classes/Product';
 
 import {
   isLastDayOfMonth,
-  isLastDayOfYear
+  isLastDayOfYear,
+  isUsualDay
 } from './helpers/date';
 
 const computeTasks = () => {
@@ -167,6 +170,21 @@ const run = () => {
   if (isLastDayOfYear(day)) {
     products.forEach((p, i) => {
       productActions.addBonus(i);
+    })
+  }
+
+  if (isUsualDay(day)) {
+    products.forEach((p, i) => {
+      if (i !== 0) {
+        const cost = productStore.getMainFeatureUpgradeCost(i, 3);
+        if (productStore.enoughProgrammingPoints(cost, i)) {
+          productActions.spendPoints(cost, 0, i);
+          productActions.improveFeature(i, 'offer', 3, 10000, 1000);
+        }
+        // if (p.style === MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED) {
+        //
+        // }
+      }
     })
   }
 

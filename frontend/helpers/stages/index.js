@@ -18,7 +18,7 @@ const isTestMode = true;
 logger.shit('need to send stats on game phase change');
 
 const isTest = (target, property, descriptor) => {
-  logger.debug('isTest ?11', property);
+  // logger.debug('isTest ?11', property);
   if (isTestMode) {
     // descriptor.get = function () {
     //   return true;

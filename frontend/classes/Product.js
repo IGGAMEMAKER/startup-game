@@ -116,7 +116,7 @@ export default class Product {
 
     this.bonuses = 1;
 
-    this._points = { programming: 100500, marketing: 100500 };
+    this._points = { programming: 500, marketing: 500 };
     this._money = 15000;
 
 

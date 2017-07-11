@@ -179,27 +179,27 @@ function saveProductStorageData({ products, rents, money, expenses, points, empl
 }
 
 function getProductStorageData() {
-  let money: Number;
   let expenses: Array;
-  let points: Object;
+
   let employees: Array;
   let team: Array;
+  let loan: Number;
+
   let reputation: Number;
   let fame: Number;
-  let loan: Number;
   let rents: Array;
   let products: Array<Product>;
 
   try {
-    money = Number.parseInt(getFromStorage('money'));
-    logger.debug('got money', money);
+    // money = Number.parseInt(getFromStorage('money'));
+    // logger.debug('got money', money);
 
     rents = Array.from(JSON.parse(getFromStorage('rents')));
 
     expenses = Array.from(JSON.parse(getFromStorage('expenses')));
 
-    points = JSON.parse(getFromStorage('points'));
-    logger.debug('got points', points);
+    // points = JSON.parse(getFromStorage('points'));
+    // logger.debug('got points', points);
 
     employees = Array.from(JSON.parse(getFromStorage('employees')));
 
@@ -224,9 +224,9 @@ function getProductStorageData() {
   }
 
   return {
-    money,
+    // money,
     expenses,
-    points,
+    // points,
     employees,
     team,
     reputation,
@@ -257,7 +257,7 @@ function getMessageStorageData() {
   return getFromStorage('messages');
 }
 
-restartGame();
+// restartGame();
 
 
 export default {

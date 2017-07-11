@@ -204,6 +204,8 @@ export default class Competitor extends Component {
         <div className="offset-mid"><ul>{this.renderFeatureList(c, i, rents, ourCompany)}</ul></div>
         <div className="offset-mid">Рыночная стоимость: {c.cost}$</div>
 
+        <div>{JSON.stringify(c)}</div>
+
         <div className={`offset-mid ${buyingCompanyButtonVisible}`}>
           <UI.Button
             text={`Купить компанию "${c.name}"`}
