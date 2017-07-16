@@ -146,29 +146,28 @@ export default class MainFeature extends Component {
     const disabled = !enoughPPs;
 
     const currentMinified = minify(current);
-    const maxMinified = minify(max);
 
     return <div key={key}>
-      <div>
-        <div>{leaderInTechPhrase}</div>
-        <span>{userOrientedFeatureName} ({currentMinified}/{maxMinified}lvl)</span>
-        <div style="width: 300px;">
-          {this.renderProgressBar(current, product, max)}
+      <div className="content-block">
+        <div>
+          <div>{leaderInTechPhrase}</div>
+          <span>{userOrientedFeatureName} {currentMinified}lvl</span>
+        </div>
+        <br />
+        <div className="featureDescription">{description}</div>
+        <div>{this.renderSegmentRatingImprovementList(segments, id, featureId)}</div>
+        <div className="hypothesis-wrapper">
+          <div>{this.renderUpgradeCostModifierBonus(id, featureId)}</div>
+          <div>{this.renderHypeIncreaseValue(id, featureId)}</div>
+          <UI.Button
+            disabled={disabled}
+            onClick={() => { this.improveFeature(id, featureId, max, pp) }}
+            text={`Улучшить за ${pp}PP`}
+            primary
+          />
         </div>
       </div>
-      <br />
-      <div className="featureDescription">{description}</div>
-      <div>{this.renderSegmentRatingImprovementList(segments, id, featureId)}</div>
-      <div className="hypothesis-wrapper">
-        <div>{this.renderUpgradeCostModifierBonus(id, featureId)}</div>
-        <div>{this.renderHypeIncreaseValue(id, featureId)}</div>
-        <UI.Button
-          disabled={disabled}
-          onClick={() => { this.improveFeature(id, featureId, max, pp) }}
-          text={`Улучшить за ${pp}PP`}
-          primary
-        />
-      </div>
+
       <br />
       <hr color="white" />
     </div>

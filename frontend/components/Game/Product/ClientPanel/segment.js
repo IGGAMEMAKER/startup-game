@@ -39,11 +39,9 @@ export default class Segment extends Component {
       const unmet = requirementsValidator.unmetRequirements
         .map((u, uId) => {
           return <li key={`unmet-${productId}-${uId}`}>
-            {u.name}: Нужно {u.need}XP (на данный момент: {u.now})
+            {u.name}: {Math.ceil(u.need / 1000)}lvl
           </li>
         });
-
-      // <div>{JSON.stringify(requirementsValidator)}</div>
 
       requirementTab = (
         <div>

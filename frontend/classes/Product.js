@@ -747,7 +747,7 @@ export default class Product {
         name: 'blog', shortDescription: 'Блог проекта',
         description: 'Регулярное ведение блога снижает отток клиентов на 10%' +
         'и на 25% повышает скачок известности, в случае лидерства в технологии',
-        points: { marketing: 150 },
+        points: { marketing: 50 },
         support: { marketing: 50 }
       },
       {
@@ -779,8 +779,8 @@ export default class Product {
         name: 'blogIII', shortDescription: 'Улучшенный блог проекта II',
         description: 'Регулярное ведение блога снижает отток клиентов на 10%' +
         'и на 50% повышает скачок известности, в случае лидерства в технологии',
-        points: { marketing: 150 },
-        support: { marketing: 150 }
+        points: { marketing: 250 },
+        support: { marketing: 250 }
       },
       {
         name: 'supportIII', shortDescription: 'Улучшенная техподдержка II',

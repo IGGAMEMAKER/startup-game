@@ -190,6 +190,7 @@ export default class Competitor extends Component {
     const hasEnoughMoney = money >= c.cost;
 
     const hypeChangePhrase = c.hypeDamping < 0 ? c.hypeDamping : `+${c.hypeDamping}`;
+    // <div>{JSON.stringify(c)}</div>
 
     return (
       <div className={background}>
@@ -204,7 +205,6 @@ export default class Competitor extends Component {
         <div className="offset-mid"><ul>{this.renderFeatureList(c, i, rents, ourCompany)}</ul></div>
         <div className="offset-mid">Рыночная стоимость: {c.cost}$</div>
 
-        <div>{JSON.stringify(c)}</div>
 
         <div className={`offset-mid ${buyingCompanyButtonVisible}`}>
           <UI.Button

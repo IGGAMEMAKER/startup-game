@@ -324,10 +324,7 @@ export default class ProductPanel extends Component {
     return <div>Стоимость поддержки (ежемесячно) - {mp} {pp} {money}</div>;
   };
 
-  renderFeature = (featureGroup, id, onUpgraded) => (feature, i) => {
-    logger.shit('hardcoded companyId=0 in renderFeature in product-panel');
-
-    const companyId = 0;
+  renderFeature = (featureGroup, id) => (feature, i) => {
     const featureName = feature.name;
 
     const key = `feature${featureGroup}${featureName}${i}`;
@@ -335,23 +332,13 @@ export default class ProductPanel extends Component {
     const standardPoints = feature.points || {};
     const mp = standardPoints.marketing || 0;
     const pp = standardPoints.programming || 0;
-    const points = productStore.getPoints(companyId);
+    const points = productStore.getPoints(id);
 
     const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
 
     const upgradeFeature = event => {
-      if (enoughPointsToUpgrade) {
-        productActions.spendPoints(pp, mp);
-        productActions.improveFeatureByPoints(id, featureGroup, featureName);
-
-        if (featureGroup === 'analytics' && stageHelper.isInstallPrimitiveAnalyticsMission()) {
-          stageHelper.onInstallPrimitiveAnalyticsMissionCompleted();
-        }
-
-        if (onUpgraded) {
-          onUpgraded();
-        }
-      }
+      productActions.spendPoints(pp, mp);
+      productActions.improveFeatureByPoints(id, featureGroup, featureName);
     };
 
     const description = feature.description || '';
