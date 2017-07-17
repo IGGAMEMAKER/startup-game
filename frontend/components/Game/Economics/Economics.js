@@ -51,7 +51,6 @@ export default class Economics extends Component {
       <div>
         <h4>Доходы</h4>
         <br />
-        <div>Фриланс: 2000$</div>
         <div>{productIncome}</div>
         <div>Аренда технологий</div>
         <div>

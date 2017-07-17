@@ -75,41 +75,7 @@ const calculatePoints = companyId => {
 };
 
 const getClientTransformations = () => {
-  const products: Array<Product> = productStore.getProducts();
-
-  const frees = productStore.getFreeClientsBatch();
-
-  const sumOfHypes = products.map((p: Product) => p.getHypeValue()).reduce((p, c) => p + c, 0);
-
-  const transformations: Array = products
-    .map((p: Product, id) =>
-      ({
-        increase: 0,
-        decrease: productStore.getDisloyalClients(id),
-        hypeValue: p.getHypeValue(),
-        hype: p.getHypeValue() / sumOfHypes
-      })
-    );
-
-  products.forEach((p: Product, i) => {
-    const freeHypeShare = transformations[i].hype;
-
-    // add free clients if possible
-    transformations[i].increase += Math.round(frees * freeHypeShare);
-
-    // we exclude one company from list, so ... sum of hypes decreases by current company
-    const hypeDiscount = transformations[i].hypeValue;
-
-    transformations.forEach((t, j) => {
-      if (j !== i) {
-        const currentHypeShare = t.hypeValue / (sumOfHypes - hypeDiscount);
-
-        transformations[i].increase += Math.round(t.decrease * currentHypeShare);
-      }
-    })
-  });
-
-  return transformations;
+  return productStore.getClientTransformations();
 };
 
 
@@ -181,9 +147,6 @@ const run = () => {
           productActions.spendPoints(cost, 0, i);
           productActions.improveFeature(i, 'offer', 3, 10000, 1000);
         }
-        // if (p.style === MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED) {
-        //
-        // }
       }
     })
   }

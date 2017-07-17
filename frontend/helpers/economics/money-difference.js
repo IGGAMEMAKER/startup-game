@@ -7,7 +7,7 @@ const calculate = (id) => {
   const products = productStore.getOurProducts();
 
   // check income
-  const jobIncome = 2000;
+  const jobIncome = 0;
 
   const rentIncome = productStore.getRentIncomes(ourCompanyId);
   const rentExpense = productStore.getRentExpenses(ourCompanyId);

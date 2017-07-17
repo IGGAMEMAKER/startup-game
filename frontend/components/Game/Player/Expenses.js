@@ -52,13 +52,13 @@ export default class Expenses extends Component {
       .map(r => (<li>Аренда технологии "{r.techName}" у компании "{r.senderName}" за {r.price}$</li>) );
 
 
+        // <div className="offset-mid">
+        //   <h5>Базовые расходы</h5>
+        //   {basicExpenses.length ? basicExpenses.map(renderBasicExpense) : `0$`}
+        // </div>
     return (
       <div>
         <h4>Расходы</h4>
-        <div className="offset-mid">
-          <h5>Базовые расходы</h5>
-          {basicExpenses.length ? basicExpenses.map(renderBasicExpense) : `0$`}
-        </div>
         <div className="offset-mid">
           <h5>Расходы на содержание команды</h5>
           <div>{teamExpenses}$</div>

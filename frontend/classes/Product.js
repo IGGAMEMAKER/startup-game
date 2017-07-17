@@ -117,7 +117,7 @@ export default class Product {
     this.bonuses = 1;
 
     this._points = { programming: 500, marketing: 500 };
-    this._money = 15000;
+    this._money = 45000;
 
 
     this.XP = 1900;
@@ -842,7 +842,7 @@ export default class Product {
 
   getPaymentFeatures(idea) {
     const technicalDebtModifier = this.getTechnicalDebtModifier();
-    const up = points => Math.ceil(points * technicalDebtModifier);
+    const up = points => points; // Math.ceil(points * technicalDebtModifier);
 
     return [
       {

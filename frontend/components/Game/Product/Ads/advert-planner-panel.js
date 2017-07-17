@@ -12,13 +12,15 @@ export default class AdvertPlannerPanel extends Component {
     const costPerClient = flux.productStore.getCostPerClient(id);
     const money = flux.productStore.getMoney(id);
 
+    const willGetClientsWithoutAd = flux.productStore.getClientTransformations()[id].increase;
+
     const ads = [
       { hype: 200, text: 'Заметка в тематическом блоге', mp: 100 },
       { hype: 1000, text: 'Провести конкурс', mp: 500 },
       { hype: 10000, text: 'Вирусное видео', mp: 1750 }
     ].map((c, i) => Object.assign({}, c, { campaignCost: Math.ceil(c.hype * costPerClient) } ));
 
-    const list = ads.map(this.renderAdvert(money, id)).reverse();
+    const list = ads.map(this.renderAdvert(money, id, willGetClientsWithoutAd)).reverse();
 
     return (
       <div>
@@ -29,7 +31,7 @@ export default class AdvertPlannerPanel extends Component {
     );
   }
 
-  renderAdvert = (money, id) => a => {
+  renderAdvert = (money, id, currentIncrease) => a => {
     const { hype, text, mp, campaignCost } = a;
 
     let disabled = true;
@@ -43,11 +45,17 @@ export default class AdvertPlannerPanel extends Component {
       disabled = false;
     }
 
+    // const benefit = flux.productStore.getClientTransformations(id, hype)[id].increase - currentIncrease;
+    const benefit = JSON.stringify(flux.productStore.getClientTransformations(id, hype)[id]);
+
     return (
       <li>
         {text} (+{hype}HYPE)
         <br />
         <div>Стоимость: {campaignCost}$ и {mp}MP </div>
+        <div>Мы привлечём на {benefit} клиентов больше в следующем месяце</div>
+        <div>{JSON.stringify(flux.productStore.getClientTransformations(id, hype)[id])}</div>
+        <div>{JSON.stringify(flux.productStore.getClientTransformations()[id])}</div>
         <div>{error}</div>
         <UI.Button
           item={`start-campaign ${hype}`}

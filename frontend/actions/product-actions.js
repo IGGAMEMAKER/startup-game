@@ -4,11 +4,6 @@ import logger from '../helpers/logger/logger';
 
 import productStore from '../stores/product-store';
 
-function getRandomRange(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-
 export default {
   improveFeature(id, featureGroup, featureName, max, XP) {
     Dispatcher.dispatch({
@@ -26,38 +21,31 @@ export default {
       list: ids.reverse()
     })
   },
-  improveMainFeature(id, featureId, max, XP) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE,
-      id,
-      featureId,
-      value: XP || 1000,
-      max
-    })
-  },
+
   buyCompany(buyerId, sellerId) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_COMPANY_BUY,
       buyerId, sellerId
     })
   },
+
   rentTech(sender, acceptor, featureId, price, until) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_TECHNOLOGY_RENT,
       sender, acceptor, featureId, price, until
     })
   },
-  testHypothesis(id) {
-    const range = productStore.getImprovementChances(id);
-
-    const xp = range.middle; // Math.floor(getRandomRange(range.min, range.max));
-
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
-      id,
-      value: xp
-    })
-  },
+  // testHypothesis(id) {
+  //   const range = productStore.getImprovementChances(id);
+  //
+  //   const xp = range.middle; // Math.floor(getRandomRange(range.min, range.max));
+  //
+  //   Dispatcher.dispatch({
+  //     type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
+  //     id,
+  //     value: xp
+  //   })
+  // },
   improveFeatureByPoints(id, featureGroup, featureName) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,

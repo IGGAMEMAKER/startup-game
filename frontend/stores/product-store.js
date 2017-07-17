@@ -512,6 +512,80 @@ class ProductStore extends EventEmitter {
     return _products[id].isPaymentEnabled(segmentId);
   }
 
+  getNextFeature(id, groupType, featureList) {
+    let unlockedFeature = '';
+    featureList.forEach(f => {
+      if (!productStore.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
+        unlockedFeature = f.name;
+      }
+    });
+
+    if (!unlockedFeature) return null;
+
+    return featureList.find(f => f.name === unlockedFeature);
+  }
+
+  getNearestMarketingFeature(id) {
+    return this.getNextFeature(id, 'marketing', productStore.getMarketingFeatureList(id));
+  }
+
+  getNearestPaymentFeature(id) {
+    return this.getNextFeature(id, 'payment', productStore.getPaymentFeatures(id));
+  }
+
+  getClientTransformations(onHypeIncreaseId, onHypeIncreaseAmount = 0) {
+    const products: Array<Product> = this.getProducts();
+
+    const frees = this.getFreeClientsBatch();
+
+    const sumOfHypes = products
+      .map((p: Product, id) => {
+        const value = p.getHypeValue();
+
+        if (id === onHypeIncreaseId) {
+          return value + onHypeIncreaseAmount;
+        }
+
+        return value;
+      })
+      .reduce((p, c) => p + c, 0);
+
+    const transformations: Array = products
+      .map((p: Product, id) => {
+        let hypeValue = p.getHypeValue();
+
+        if (id === onHypeIncreaseId) hypeValue += onHypeIncreaseAmount;
+          return {
+            increase: 0,
+            decrease: this.getDisloyalClients(id),
+            hypeValue,
+            hype: hypeValue / sumOfHypes,
+            clients: this.getClients(id)
+          };
+        }
+      );
+
+    products.forEach((p: Product, i) => {
+      const freeHypeShare = transformations[i].hype;
+
+      // add free clients if possible
+      transformations[i].increase += Math.round(frees * freeHypeShare);
+
+      // we exclude one company from list, so ... sum of hypes decreases by current company
+      const hypeDiscount = transformations[i].hypeValue;
+
+      transformations.forEach((t, j) => {
+        if (j !== i) {
+          const currentHypeShare = t.hypeValue / (sumOfHypes - hypeDiscount);
+
+          transformations[i].increase += Math.round(t.decrease * currentHypeShare);
+        }
+      })
+    });
+
+    return transformations;
+  }
+
   getSegmentIncome(id, segId) {
     // rating 10 - 0.05
     const conversion = this.getConversionRate(id, segId).raw * this.isPaymentEnabled(id, segId);
@@ -939,7 +1013,7 @@ class ProductStore extends EventEmitter {
           company: p
         }
       })
-      .sort((a, b) => b.hype - a.hype);
+      .sort((a, b) => b.cost - a.cost);
   }
 }
 
@@ -990,10 +1064,6 @@ Dispatcher.register((p: PayloadType) => {
           p.setMainFeatureDefaults(upgradedDefaults);
           // arr[i].setMainFeatureDefaults(upgradedDefaults);
         });
-      break;
-
-    case c.PRODUCT_ACTIONS_IMPROVE_MAIN_FEATURE:
-      _products[id].improveMainFeature(p);
       break;
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:

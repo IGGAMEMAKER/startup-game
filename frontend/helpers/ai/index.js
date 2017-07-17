@@ -31,7 +31,21 @@ export default function (products: Array<Product>, id) {
   priorities[0] = isMoneyCollapsing(product) ? 1 / (Math.pow(1 + timeUntilMoneyCollapse(product), 3)) : baseValue;
   priorities[1] = isMPCollapsing(product) ? 1 / (Math.pow(1 + timeUntilMPCollapse(product), 3)) : baseValue;
   priorities[2] = isPPCollapsing(product) ? 1 / (Math.pow(1 + timeUntilPPCollapse(product), 3)) : baseValue;
-  
+
   const actions = [];
-  
+
+  actions.push({
+    moneyDelta: 1000,
+    mpDelta: -15,
+    ppDelta: 0,
+    cb: () => {
+      
+    }
+  });
+  // improve main features
+  // improve payments
+  // improve marketing block
+  // ad campaign
+  // pick bonus
+  // rent techs
 }

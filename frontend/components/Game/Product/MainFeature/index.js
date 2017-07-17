@@ -65,7 +65,7 @@ export default class MainFeature extends Component {
 
     let openedInfluence = false;
 
-    const segmentRatingImprovementList = segments
+    return segments
       .map((s) => {
         const rating = s.rating[featureId];
 
@@ -78,8 +78,6 @@ export default class MainFeature extends Component {
 
         return <li>Рейтинг у группы "{s.userOrientedName}" повысится на {normalisedRatingDelta}</li>;
       });
-
-    return segmentRatingImprovementList;
   }
 
   renderUpgradeCostModifierBonus(id, featureId) {
@@ -145,13 +143,11 @@ export default class MainFeature extends Component {
 
     const disabled = !enoughPPs;
 
-    const currentMinified = minify(current);
-
     return <div key={key}>
       <div className="content-block">
         <div>
           <div>{leaderInTechPhrase}</div>
-          <span>{userOrientedFeatureName} {currentMinified}lvl</span>
+          <span>{userOrientedFeatureName} {minify(current)}lvl</span>
         </div>
         <br />
         <div className="featureDescription">{description}</div>
@@ -178,18 +174,6 @@ export default class MainFeature extends Component {
 
     flux.productActions.spendPoints(pp, 0);
     flux.productActions.improveFeature(id, 'offer', featureId, max, 1000);
-
-    if (stageHelper.isFirstFeatureMission()) {
-      stageHelper.onFirstFeatureUpgradeMissionCompleted()
-    }
-
-    if (stageHelper.isPaymentRatingMission()) {
-      const rating = flux.productStore.getRating(id);
-
-      if (rating >= 7) {
-        stageHelper.onPaymentRatingMissionCompleted();
-      }
-    }
 
     if (willResultBreakthrough) {
       const hypeModifier = flux.productStore.getTechBreakthroughModifierForHype(id, featureId);

@@ -89,25 +89,16 @@ export default class ProductPanel extends Component {
     )
   };
 
-
   plainifySameTypeFeatures(id, groupType, onImprovedPhrase) {
     let featureList;
 
     switch (groupType) {
-      case 'marketing':
-        featureList = productStore.getMarketingFeatureList(id);
-        break;
-
-      case 'payment':
-        featureList = productStore.getPaymentFeatures(id);
-        break;
-
-      case 'analytics':
-        featureList = productStore.getHypothesisAnalyticsFeatures(id);
-        break;
+      case 'marketing': featureList = productStore.getMarketingFeatureList(id); break;
+      case 'payment':   featureList = productStore.getPaymentFeatures(id); break;
+      case 'analytics': featureList = productStore.getHypothesisAnalyticsFeatures(id); break;
     }
 
-    let unlockedFeature;
+    let unlockedFeature = '';
     featureList.forEach(f => {
       if (!productStore.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
         unlockedFeature = f.name;
@@ -116,9 +107,9 @@ export default class ProductPanel extends Component {
 
     if (!unlockedFeature) return onImprovedPhrase;
 
-    let feature = featureList.filter(f => f.name === unlockedFeature);
+    const feature = featureList.find(f => f.name === unlockedFeature);
 
-    return feature.map(this.renderFeature(groupType, id));
+    return this.renderFeature(groupType, id, feature);
   }
 
   renderPaymentTab = (id) => {
@@ -213,10 +204,42 @@ export default class ProductPanel extends Component {
       <br />
     </div>;
 
+    const transformations = productStore.getClientTransformations()
+      .map((t, i) => Object.assign({}, t, { name: productStore.getName(i) }))
+      .sort((t1, t2) => t2.hypeValue - t1.hypeValue)
+      .map((t, i) => {
+        return <tr>
+          <td>{t.name}</td>
+          <td>{t.hypeValue}</td>
+          <td>{t.clients}</td>
+          <td>{t.increase}</td>
+          <td>{t.decrease}</td>
+          <td>{t.increase > t.decrease ? '+' : ''}{t.increase - t.decrease}</td>
+        </tr>
+      });
+
+    let hypeTab = <table>
+      <thead>
+      <tr>
+        <th>Имя компании</th>
+        <th>Hype</th>
+        <th>Клиенты</th>
+        <th>Приток клиентов</th>
+        <th>Отток клиентов</th>
+        <th>Разница</th>
+      </tr>
+      </thead>
+      <tbody>
+      {transformations}
+      </tbody>
+    </table>;
+    // let hypeTab = JSON.stringify(transformations);
+
     return (
       <div>
         <div className="featureGroupTitle">Маркетинг</div>
         {supportCostTab}
+        {hypeTab}
         {adTab}
         {clientTab}
       </div>
@@ -324,29 +347,29 @@ export default class ProductPanel extends Component {
     return <div>Стоимость поддержки (ежемесячно) - {mp} {pp} {money}</div>;
   };
 
-  renderFeature = (featureGroup, id) => (feature, i) => {
+  renderFeature = (featureGroup, id, feature) => {
     const featureName = feature.name;
 
-    const key = `feature${featureGroup}${featureName}${i}`;
+    const key = `feature-${featureGroup}-${featureName}`;
 
-    const standardPoints = feature.points || {};
+    const standardPoints = feature.points;
     const mp = standardPoints.marketing || 0;
     const pp = standardPoints.programming || 0;
     const points = productStore.getPoints(id);
 
     const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
 
-    const upgradeFeature = event => {
-      productActions.spendPoints(pp, mp);
-      productActions.improveFeatureByPoints(id, featureGroup, featureName);
-    };
 
     const description = feature.description || '';
-
     const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
 
     const mpColors = points.marketing < mp ? "noPoints": "enoughPoints";
     const ppColors = points.programming < pp ? "noPoints": "enoughPoints";
+
+    const upgradeFeature = () => {
+      productActions.spendPoints(pp, mp);
+      productActions.improveFeatureByPoints(id, featureGroup, featureName);
+    };
 
     return (
       <div key={key}>
@@ -418,7 +441,11 @@ export default class ProductPanel extends Component {
 
     let bonuses;
     if (stageHelper.canShowBonusesTab()) {
-      bonuses = this.renderNavbar(MODE_BONUSES, 'Бонусы');
+      logger.shit('hardcoded id=0, canShowBonusesTab');
+
+      const amount = productStore.getBonusesAmount(0);
+
+      bonuses = this.renderNavbar(MODE_BONUSES, `Бонусы${amount > 0 ? ` (${amount})`: ''}`);
     }
 
     let staff;
