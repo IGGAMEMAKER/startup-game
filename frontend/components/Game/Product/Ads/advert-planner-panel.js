@@ -45,17 +45,17 @@ export default class AdvertPlannerPanel extends Component {
       disabled = false;
     }
 
-    // const benefit = flux.productStore.getClientTransformations(id, hype)[id].increase - currentIncrease;
-    const benefit = JSON.stringify(flux.productStore.getClientTransformations(id, hype)[id]);
+    const benefit = flux.productStore.getClientTransformations(id, hype)[id].increase - currentIncrease;
+    // const benefit = JSON.stringify(flux.productStore.getClientTransformations(id, hype)[id]);
 
+        // <div>{JSON.stringify(flux.productStore.getClientTransformations(id, hype)[id])}</div>
+        // <div>{JSON.stringify(flux.productStore.getClientTransformations()[id])}</div>
     return (
       <li>
         {text} (+{hype}HYPE)
         <br />
         <div>Стоимость: {campaignCost}$ и {mp}MP </div>
         <div>Мы привлечём на {benefit} клиентов больше в следующем месяце</div>
-        <div>{JSON.stringify(flux.productStore.getClientTransformations(id, hype)[id])}</div>
-        <div>{JSON.stringify(flux.productStore.getClientTransformations()[id])}</div>
         <div>{error}</div>
         <UI.Button
           item={`start-campaign ${hype}`}

@@ -66,7 +66,7 @@ export default class MainFeature extends Component {
     let openedInfluence = false;
 
     return segments
-      .map((s) => {
+      .map((s, segId) => {
         const rating = s.rating[featureId];
 
         if (rating === 0) return '';
@@ -76,7 +76,9 @@ export default class MainFeature extends Component {
 
         openedInfluence = true;
 
-        return <li>Рейтинг у группы "{s.userOrientedName}" повысится на {normalisedRatingDelta}</li>;
+        const incomeIncrease = flux.productStore.getSegmentIncomeIncreasingOnRatingUpgrade(id, normalisedRatingDelta, segId);
+
+        return <li>Рейтинг у группы "{s.userOrientedName}" повысится на {normalisedRatingDelta} (+{incomeIncrease}$/мес)</li>;
       });
   }
 

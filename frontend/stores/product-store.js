@@ -469,7 +469,23 @@ class ProductStore extends EventEmitter {
     return _rents.find(r => r.out === id);
   }
 
+  getSegmentIncomeIncreasingOnRatingUpgrade(id, ratingDifference, segmentId) {
+    if (this.isPaymentEnabled(id, segmentId) === 0) return 0;
 
+    const rating = ratingDifference;
+    const utility = this.getProductUtility(id);
+
+    const paymentModifier = this.getPaymentModifier(id);
+
+    let conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
+
+    const clients = this.getClients(id, segmentId);
+    const price = this.getProductPrice(id, segmentId);
+
+    const payments = conversion * clients;
+
+    return Math.floor(payments * price * (1 + _products[id].getSegmentPaymentBonus(segmentId) / 100));
+  }
 
   getProductUtility(id) {
     return _products[id].getProductUtility();
@@ -555,15 +571,15 @@ class ProductStore extends EventEmitter {
         let hypeValue = p.getHypeValue();
 
         if (id === onHypeIncreaseId) hypeValue += onHypeIncreaseAmount;
-          return {
-            increase: 0,
-            decrease: this.getDisloyalClients(id),
-            hypeValue,
-            hype: hypeValue / sumOfHypes,
-            clients: this.getClients(id)
-          };
-        }
-      );
+
+        return {
+          increase: 0,
+          decrease: this.getDisloyalClients(id),
+          hypeValue,
+          hype: hypeValue / sumOfHypes,
+          clients: this.getClients(id)
+        };
+      });
 
     products.forEach((p: Product, i) => {
       const freeHypeShare = transformations[i].hype;
@@ -587,8 +603,14 @@ class ProductStore extends EventEmitter {
   }
 
   getSegmentIncome(id, segId) {
+    if (!this.isPaymentEnabled(id, segId)) return 0;
+
+    if (!this.requirementsOKforSegment(id, segId).valid) return 0;
+
+    if (!this.clientsEnoughToFormSegment(id, segId)) return 0;
+
     // rating 10 - 0.05
-    const conversion = this.getConversionRate(id, segId).raw * this.isPaymentEnabled(id, segId);
+    const conversion = this.getConversionRate(id, segId).raw;
 
     const clients = this.getClients(id, segId);
     const price = this.getProductPrice(id, segId);
@@ -601,6 +623,7 @@ class ProductStore extends EventEmitter {
   getProductIncome(id) {
     // return _products[id].getProductIncome();
 
+    // const segments = this.getAvailableSegments(id); // this.getSegments(id);
     const segments = this.getSegments(id);
 
     return segments
@@ -771,6 +794,10 @@ class ProductStore extends EventEmitter {
   getAvailableSegments(id) {
     return _products[id].getAvailableSegments();
   }
+
+  // isSegmentAvailable(id, segId) {
+  //   return _products[id].isSegmentAvailable()
+  // }
 
   getMarketShare(id) {
     return _products[id].getMarketShare();

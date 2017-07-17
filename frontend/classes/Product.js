@@ -978,6 +978,10 @@ export default class Product {
     return this.getClients(segId) > 100;
   }
 
+  isSegmentAvailable(s, segId) {
+
+  }
+
   getAvailableSegments() {
     const value = this.getSegments()
       .filter((s, segId) => this.requirementsOKforSegment(segId).valid && this.clientsEnoughToFormSegment(segId));
