@@ -116,7 +116,7 @@ export default class Product {
 
     this.bonuses = 1;
 
-    this._points = { programming: 500, marketing: 1500 };
+    this._points = { programming: 111500, marketing: 1500 };
     this._money = 45000;
 
 
@@ -420,23 +420,19 @@ export default class Product {
     // rating = 3. modif = 85.... rating = 10. modif = 15
     const ratingModifier = 15 + (10 - rating) * 10;
 
-    const blog = p.getBlogPower();
-    const emails = p.getEmailPower();
-    const support = p.getSupportPower();
+    const blog = p.getBlogPower() * 0.15 * 0.8;
+    const emails = p.getEmailPower() * 0.25 * 0.8;
+    const support = p.getSupportPower() * 0.4 * 0.8;
 
-    const marketingModifier = 1 - 0.15 * blog - 0.25 * emails - 0.4 * support; // max total sum = 1
-    // 15: r7
-    // bad 10-15+
-    // good 1-5
-    const churn = ratingModifier * marketingModifier / 100;
+    let churn = ratingModifier / 100 - (blog + emails + support);
+    if (churn < 0.15) churn = 0.15;
 
     return {
       rating: ratingModifier,
       churn,
-      blog: 0.15 * blog * 0.8,
-      emails: 0.25 * emails * 0.8,
-      support: 0.4 * support * 0.8,
-      marketingModifier
+      blog,
+      emails,
+      support,
     }
   }
 
