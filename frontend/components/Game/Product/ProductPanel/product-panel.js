@@ -153,6 +153,7 @@ export default class ProductPanel extends Component {
 
   renderClientTab = (id, product) => {
     const churn = productStore.getChurnRate(id).pretty;
+    const churnStructured = productStore.getChurnRateStructured(id);
     const disloyalClients = productStore.getDisloyalClients(id);
 
     const market = productStore.getMarketShare(id);
@@ -175,6 +176,10 @@ export default class ProductPanel extends Component {
         <div>Наши клиенты: {market.clients}</div>
         <br />
         <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
+        <div>От рейтинга: {churnStructured.rating}%</div>
+        <div>От блога: -{Math.floor(churnStructured.blog * 100)}%</div>
+        <div>От техподдержки: -{Math.floor(churnStructured.support * 100)}%</div>
+        <div>От почты: -{Math.floor(churnStructured.emails * 100)}%</div>
         {churnFeatures}
         <br />
       </div>

@@ -433,6 +433,13 @@ class ProductStore extends EventEmitter {
     return Math.floor(p.getClients() * Product.getChurnRate(rating, p).raw);
   }
 
+  getChurnRateStructured(id) {
+    const p = _products[id];
+    const rating = this.getRating(id);
+
+    return Product.getChurnRateStructured(rating, p)
+  }
+
   getMainFeatureQualityByFeatureId(id, featureId) {
     return _products[id].getMainFeatureQualityByFeatureId(featureId);
   }

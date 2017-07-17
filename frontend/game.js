@@ -97,17 +97,6 @@ const run = () => {
 
     products
       .forEach((p, i) => {
-        const clients = transformations[i].increase;
-        const churn = transformations[i].decrease;
-        const damping = productStore.getHypeDampingValue(i);
-
-        productActions.addClients(i, clients);
-        productActions.removeClients(i, churn);
-        productActions.loseMonthlyHype(i, damping);
-      });
-
-    products
-      .forEach((p, i) => {
         const moneyBefore = productStore.getMoney(i);
 
         const difference = moneyCalculator.saldo(i);
@@ -126,6 +115,18 @@ const run = () => {
         // calculate human points
         calculatePoints(i);
       });
+
+    products
+      .forEach((p, i) => {
+        const clients = transformations[i].increase;
+        const churn = transformations[i].decrease;
+        const damping = productStore.getHypeDampingValue(i);
+
+        productActions.addClients(i, clients);
+        productActions.removeClients(i, churn);
+        productActions.loseMonthlyHype(i, damping);
+      });
+
 
     // clean expired rents
     checkRents(day);

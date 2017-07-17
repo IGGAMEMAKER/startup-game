@@ -31,12 +31,10 @@ export default class Competitors extends Component {
     logger.shit('competitors.js hardcoded isCompetitor check: c.id != 0');
 
     const rentList = rents
-      .map(r => (
-          <div>
-            {r.senderName} => {r.acceptorName} технология {r.techName}
-            (до {flux.scheduleStore.getGameFormattedDay(r.until)}, {r.price}$ ежемесячно)
-          </div>
-        )
+      .map(r =>
+        <div>
+          {r.senderName} => {r.acceptorName} технология {r.techName} (до {flux.scheduleStore.getGameFormattedDay(r.until)}, {r.price}$ ежемесячно)
+        </div>
       );
 
     const competitorList = competitors.map((c, i) =>

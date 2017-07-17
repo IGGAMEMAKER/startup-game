@@ -116,7 +116,7 @@ export default class Product {
 
     this.bonuses = 1;
 
-    this._points = { programming: 500, marketing: 500 };
+    this._points = { programming: 500, marketing: 1500 };
     this._money = 45000;
 
 
@@ -409,14 +409,16 @@ export default class Product {
     return 0;
   }
 
-  static getChurnRate(rating, p: Product) {
+  static getChurnRateStructured(rating, p: Product) {
     // return answer in partitions 0-1
 
     if (rating < 3) {
       rating = 3;
     }
 
-    const ratingModifier = Math.min(Math.pow(12 - rating, 3.65), 100);
+    // const ratingModifier = Math.min(Math.pow(12 - rating, 3.65), 100);
+    // rating = 3. modif = 85.... rating = 10. modif = 15
+    const ratingModifier = 15 + (10 - rating) * 10;
 
     const blog = p.getBlogPower();
     const emails = p.getEmailPower();
@@ -427,6 +429,19 @@ export default class Product {
     // bad 10-15+
     // good 1-5
     const churn = ratingModifier * marketingModifier / 100;
+
+    return {
+      rating: ratingModifier,
+      churn,
+      blog: 0.15 * blog * 0.8,
+      emails: 0.25 * emails * 0.8,
+      support: 0.4 * support * 0.8,
+      marketingModifier
+    }
+  }
+
+  static getChurnRate(rating, p: Product) {
+    const churn = Product.getChurnRateStructured(rating, p).churn;
 
     return {
       raw: churn, // 0 - 1
@@ -745,49 +760,61 @@ export default class Product {
     return [
       {
         name: 'blog', shortDescription: 'Блог проекта',
-        description: 'Регулярное ведение блога снижает отток клиентов на 10%' +
-        'и на 25% повышает скачок известности, в случае лидерства в технологии',
-        points: { marketing: 50 },
-        support: { marketing: 50 }
+        description: 'Регулярное ведение блога снижает отток клиентов на 3%' +
+        ' и на 25% повышает скачок известности, в случае лидерства в технологии',
+        points: { marketing: 25 },
+        support: { marketing: 25 }
       },
       {
         name: 'support', shortDescription: 'Техподдержка',
-        description: 'Техподдержка снижает отток клиентов на 15%',
+        description: 'Техподдержка снижает отток клиентов на 8%',
         points: { marketing: 50, programming: 100 },
-        support: { marketing: 50 }
+        support: { marketing: 35 }
       },
       {
         name: 'blogII', shortDescription: 'Улучшенный блог проекта',
-        description: 'Регулярное ведение блога снижает отток клиентов на 10%' +
+        description: 'Регулярное ведение блога снижает отток клиентов на 3%' +
         'и на 25% повышает скачок известности, в случае лидерства в технологии',
         points: { marketing: 150 },
-        support: { marketing: 150 }
+        support: { marketing: 75 }
       },
       {
         name: 'supportII', shortDescription: 'Улучшенная техподдержка',
-        description: 'Техподдержка снижает отток клиентов на 15%',
+        description: 'Техподдержка снижает отток клиентов на 8%',
         points: { marketing: 50, programming: 100 },
         support: { marketing: 50 }
       },
       {
-        name: 'emails', shortDescription: 'Рассылка электронной почты',
+        name: 'email', shortDescription: 'Рассылка электронной почты',
         description: 'Рассылка электронной почти снижает отток клиентов на 5%',
         points: { marketing: 50, programming: 100 },
         support: { programming: 20 }
       },
       {
         name: 'blogIII', shortDescription: 'Улучшенный блог проекта II',
-        description: 'Регулярное ведение блога снижает отток клиентов на 10%' +
+        description: 'Регулярное ведение блога снижает отток клиентов на 6%' +
         'и на 50% повышает скачок известности, в случае лидерства в технологии',
         points: { marketing: 250 },
         support: { marketing: 250 }
       },
       {
         name: 'supportIII', shortDescription: 'Улучшенная техподдержка II',
-        description: 'Техподдержка снижает отток клиентов на 15%. ',
+        description: 'Техподдержка снижает отток клиентов на 16%. ',
         points: { marketing: 50, programming: 100 },
-        support: { marketing: 50 }
-      }
+        support: { marketing: 75 }
+      },
+      {
+        name: 'emailII', shortDescription: 'Улучшенная рассылка электронной почты',
+        description: 'Рассылка электронной почти снижает отток клиентов на 5%',
+        points: { marketing: 150, programming: 100 },
+        support: { programming: 70 }
+      },
+      {
+        name: 'emailIII', shortDescription: 'Улучшенная рассылка электронной почты II',
+        description: 'Рассылка электронной почти снижает отток клиентов на 10%',
+        points: { marketing: 150, programming: 100 },
+        support: { programming: 95 }
+      },
       // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
       //   points: { marketing: 50, programming: 100 }, time: 7 }
     ];
