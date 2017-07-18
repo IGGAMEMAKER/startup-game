@@ -98,7 +98,7 @@ export default class MainFeature extends Component {
     if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
       const hypeModifier = flux.productStore.getTechBreakthroughModifierForHype(id, featureId);
 
-      if (hypeModifier) return `Наша известность увеличится! +${hypeModifier} HYPE`;
+      // if (hypeModifier) return `Наша известность увеличится! +${hypeModifier} HYPE`;
     }
 
     return '';

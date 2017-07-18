@@ -168,7 +168,7 @@ export default class ProductPanel extends Component {
         <div className="featureGroupBody">{marketing}</div>
       </div>
     }
-
+    //
     let clientTab;
     if (stageHelper.canShowAdTab()) {
       clientTab = <div className="content-block">
@@ -176,10 +176,10 @@ export default class ProductPanel extends Component {
         <div>Наши клиенты: {market.clients}</div>
         <br />
         <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
-        <div>От рейтинга: {churnStructured.rating}%</div>
-        <div>От блога: -{Math.floor(churnStructured.blog * 100)}%</div>
-        <div>От техподдержки: -{Math.floor(churnStructured.support * 100)}%</div>
-        <div>От почты: -{Math.floor(churnStructured.emails * 100)}%</div>
+        <ul>
+          <li>От рейтинга: {churnStructured.rating}%</li>
+          <li>От блока маркетинга: -{Math.floor(churnStructured.marketing * 100)}%</li>
+        </ul>
         {churnFeatures}
         <br />
       </div>

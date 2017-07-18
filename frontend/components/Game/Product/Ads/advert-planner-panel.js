@@ -46,6 +46,11 @@ export default class AdvertPlannerPanel extends Component {
     }
 
     const benefit = flux.productStore.getClientTransformations(id, hype)[id].increase - currentIncrease;
+
+    const clients = flux.productStore.getClients(id);
+    const income = Math.floor(benefit * flux.productStore.getProductIncome(id) / clients);
+
+
     // const benefit = JSON.stringify(flux.productStore.getClientTransformations(id, hype)[id]);
 
         // <div>{JSON.stringify(flux.productStore.getClientTransformations(id, hype)[id])}</div>
@@ -55,7 +60,7 @@ export default class AdvertPlannerPanel extends Component {
         {text} (+{hype}HYPE)
         <br />
         <div>Стоимость: {campaignCost}$ и {mp}MP </div>
-        <div>Мы привлечём на {benefit} клиентов больше в следующем месяце</div>
+        <div>Мы привлечём на {benefit} клиентов больше в следующем месяце (+{income}$)</div>
         <div>{error}</div>
         <UI.Button
           item={`start-campaign ${hype}`}

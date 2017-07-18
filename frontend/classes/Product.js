@@ -116,7 +116,7 @@ export default class Product {
 
     this.bonuses = 1;
 
-    this._points = { programming: 111500, marketing: 1500 };
+    this._points = { programming: 500, marketing: 500 };
     this._money = 45000;
 
 
@@ -418,17 +418,25 @@ export default class Product {
 
     // const ratingModifier = Math.min(Math.pow(12 - rating, 3.65), 100);
     // rating = 3. modif = 85.... rating = 10. modif = 15
+    const min = 15;
+    const max = 85;
+
     const ratingModifier = 15 + (10 - rating) * 10;
+    // const ratingModifier = min + (max - min) * (10 - rating) / 10;
+
 
     const blog = p.getBlogPower() * 0.15 * 0.8;
     const emails = p.getEmailPower() * 0.25 * 0.8;
     const support = p.getSupportPower() * 0.4 * 0.8;
 
-    let churn = ratingModifier / 100 - (blog + emails + support);
-    if (churn < 0.15) churn = 0.15;
+    const marketing = blog + emails + support;
+
+    let churn = Math.max(ratingModifier / 100 - marketing, 0.05);
+    // if (churn < 0.05) churn = 0.05;
 
     return {
       rating: ratingModifier,
+      marketing,
       churn,
       blog,
       emails,
@@ -770,7 +778,7 @@ export default class Product {
       {
         name: 'blogII', shortDescription: 'Улучшенный блог проекта',
         description: 'Регулярное ведение блога снижает отток клиентов на 3%' +
-        'и на 25% повышает скачок известности, в случае лидерства в технологии',
+        ' и на 25% повышает скачок известности, в случае лидерства в технологии',
         points: { marketing: 150 },
         support: { marketing: 75 }
       },
@@ -789,13 +797,13 @@ export default class Product {
       {
         name: 'blogIII', shortDescription: 'Улучшенный блог проекта II',
         description: 'Регулярное ведение блога снижает отток клиентов на 6%' +
-        'и на 50% повышает скачок известности, в случае лидерства в технологии',
+        ' и на 50% повышает скачок известности, в случае лидерства в технологии',
         points: { marketing: 250 },
         support: { marketing: 250 }
       },
       {
         name: 'supportIII', shortDescription: 'Улучшенная техподдержка II',
-        description: 'Техподдержка снижает отток клиентов на 16%. ',
+        description: 'Техподдержка снижает отток клиентов на 16%',
         points: { marketing: 50, programming: 100 },
         support: { marketing: 75 }
       },
@@ -810,9 +818,7 @@ export default class Product {
         description: 'Рассылка электронной почти снижает отток клиентов на 10%',
         points: { marketing: 150, programming: 100 },
         support: { programming: 95 }
-      },
-      // { name: 'referralProgram', shortDescription: 'Реферальная программа', description: 'Реферальная программа повышает виральность проекта на 30%',
-      //   points: { marketing: 50, programming: 100 }, time: 7 }
+      }
     ];
   };
 

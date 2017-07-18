@@ -1047,7 +1047,7 @@ class ProductStore extends EventEmitter {
           company: p
         }
       })
-      .sort((a, b) => b.cost - a.cost);
+      // .sort((a, b) => b.cost - a.cost);
   }
 }
 

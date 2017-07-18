@@ -531,6 +531,8 @@ textarea {
 
 .product-menu-toggler.active {
   color: var(--active-menu-item-color);
+  border-bottom-width: 6px;
+  border-bottom-style: solid;
 }
 
 .product-panel-body {
