@@ -119,7 +119,7 @@ export default class Product {
 
     this.bonuses = 1;
 
-    this._points = { programming: 500, marketing: 500 };
+    this._points = { programming: 14500, marketing: 500 };
     this._money = 45000;
 
 
@@ -161,12 +161,15 @@ export default class Product {
     return companyCostComputer.structured(this);
   }
 
-  static getRating(p: Product, features, marketId) {
+  static getRating(p: Product, features, marketId, improvement = null) {
     if (!marketId) marketId = 0;
 
     const maxValues = p.defaultFeatures;
     const marketInfluences = p.getMarketInfoById(marketId).rating;
 
+    if (improvement) {
+      features[improvement.featureId] += 1000;
+    }
 
     return round(computeRating(features, maxValues, marketInfluences));
   }
@@ -304,11 +307,11 @@ export default class Product {
       return 0.25;
     }
 
-    if (payments.mockBuying) {
-      return 1;
-    }
+    // if (payments.mockBuying) {
+    //   return 1;
+    // }
 
-    return 0;
+    return 0.1;
   }
 
   getProductPrice(segId) {
@@ -324,6 +327,7 @@ export default class Product {
   }
 
   isPaymentEnabled(segmentId) {
+    return 1;
     const payments = this.getFeatures('payment');
     // mockBuying
     // basicPricing
@@ -860,14 +864,14 @@ export default class Product {
     const up = points => points; // Math.ceil(points * technicalDebtModifier);
 
     return [
-      {
-        name: 'mockBuying', shortDescription: 'Тестовая покупка',
-        description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
-        points: { programming: up(50), marketing: 0 }
-      },
+      // {
+      //   name: 'mockBuying', shortDescription: 'Тестовая покупка',
+      //   description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
+      //   points: { programming: up(50), marketing: 0 }
+      // },
       {
         name: 'basicPricing', shortDescription: 'Единый тарифный план I',
-        description: 'Единая цена для всех клиентов. Мы начинаем извлекать доходы с продукта',
+        description: 'Единая цена для всех клиентов. Наши доходы возрастают на 15%',
         points: { programming: up(150), marketing: 0 }
       },
       {

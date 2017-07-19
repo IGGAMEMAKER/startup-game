@@ -394,13 +394,13 @@ class ProductStore extends EventEmitter {
     return _rents.find(r => r.featureId === featureId && ((r.in === acceptor && r.out === sender) || (r.out === acceptor && r.in === sender)));
   }
 
-  getRating(id, marketId) {
+  getRating(id, marketId, improvement = null) {
     if (!marketId) marketId = 0;
 
     const rented = this.incomingRentList(id);
     const features = this.enforceFeaturesByRentedOnes(_products[id].features.offer, rented);
 
-    return Product.getRating(_products[id], features, marketId);
+    return Product.getRating(_products[id], features, marketId, improvement);
   }
 
   getClients(id, segmentId) {
@@ -521,24 +521,47 @@ class ProductStore extends EventEmitter {
     return this.getNextFeature(id, 'payment', productStore.getPaymentFeatures(id));
   }
 
+  getBenefitOnFeatureImprove(id, featureId) {
+    return Math.floor(this.getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, 1000));
+  }
+
   getMarkets(id) {
     return productDescriptions(_products[id].idea).markets;
   }
 
-  getMarketIncome = (id) => (market, marketId) => {
+  getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
+    if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) return 0;
+
+    const now = this.getMarketIncome(id, marketId, null);
+
+    const willBe = this.getMarketIncome(id, marketId, { featureId, value });
+
+    return willBe - now;
+  }
+
+  getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
+    return this.getMarkets(id)
+      .map((m, marketId) => {
+        return this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value)
+      })
+      .reduce((p, c) => p + c, 0);
+  }
+
+  getMarketIncome = (id, marketId, improvement) => {
     if (!this.isPaymentEnabled(id, 0)) return 0;
 
     if (!this.requirementsOKforMarket(id, marketId)) return 0;
+
+    const market = this.getMarkets(id)[marketId];
+
+    logger.shit('compute rating of product with id=id by marketId', market, marketId);
 
     logger.shit('influenceOnMarket is based on our marketing activities, ' +
       'market settings (this market is main for us), and other players on this market');
 
     const influenceOnMarket = 1;
 
-    const rating = this.getRating(id, marketId);
-    logger.shit('compute rating of product with id=id by marketId', market, marketId);
-
-    logger.debug('getMarketIncome', rating, marketId, market);
+    const rating = this.getRating(id, marketId, improvement);
 
     const paymentModifier = this.getPaymentModifier(id);
     const conversion = rating * paymentModifier / 100; // max = 0.1
@@ -552,10 +575,10 @@ class ProductStore extends EventEmitter {
     const markets = this.getMarkets(id);
 
     const income = markets
-      .map(this.getMarketIncome(id))
+      .map((m, i) => this.getMarketIncome(id, i, null))
       .reduce((p, c) => p + c, 0);
 
-    logger.debug('income=', income);
+    // logger.debug('income=', income);
 
     return income;
   }

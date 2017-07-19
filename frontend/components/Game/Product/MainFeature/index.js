@@ -60,28 +60,6 @@ export default class MainFeature extends Component {
     </div>
   }
 
-  // renderSegmentRatingImprovementList(segments, id, featureId) {
-  //   if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) return '';
-  //
-  //   let openedInfluence = false;
-  //
-  //   return segments
-  //     .map((s, segId) => {
-  //       const rating = s.rating[featureId];
-  //
-  //       if (rating === 0) return '';
-  //
-  //       const defaultQuality = flux.productStore.getCurrentMainFeatureDefaultsById(id)[featureId];
-  //       const normalisedRatingDelta = round(rating * 1000 / defaultQuality);
-  //
-  //       openedInfluence = true;
-  //
-  //       const incomeIncrease = flux.productStore.getSegmentIncomeIncreasingOnRatingUpgrade(id, normalisedRatingDelta, segId);
-  //
-  //       return <li>Рейтинг у группы "{s.userOrientedName}" повысится на {normalisedRatingDelta} (+{incomeIncrease}$/мес)</li>;
-  //     });
-  // }
-
   renderUpgradeCostModifierBonus(id, featureId) {
     if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
       return `Мы задаём новые тренды, но это даётся нелегко. Стоимость улучшения повышается`;
@@ -137,6 +115,13 @@ export default class MainFeature extends Component {
 
     // <div>{this.renderSegmentRatingImprovementList(segments, id, featureId)}</div>
 
+    const benefit = flux.productStore.getBenefitOnFeatureImprove(id, featureId);
+
+    const profitPhrase = benefit ?
+      <div>Мы заработаем на {benefit}$ больше в этом месяце</div>
+      :
+      <div>Мы усилим наше лидерство на рынке, но изменение дохода непредсказуемо</div>;
+
     return <div key={key}>
       <div className="content-block">
         <div>
@@ -146,6 +131,7 @@ export default class MainFeature extends Component {
         <br />
         <div className="featureDescription">{description}</div>
         <div className="hypothesis-wrapper">
+          {profitPhrase}
           <div>{this.renderUpgradeCostModifierBonus(id, featureId)}</div>
           <UI.Button
             disabled={disabled}
