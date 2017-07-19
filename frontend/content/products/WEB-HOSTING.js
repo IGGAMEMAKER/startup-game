@@ -99,30 +99,36 @@ export default {
       support: {
         pp: 40
       },
-      segments: [
+      markets: [
         {
           name: 'solo developer',
           userOrientedName: 'Программисты',
-          percentage: 90,
+          clients: 90000,
           price: 8,
           rating: [0, 2.5, 1.5, 6, 0],
-          requirements: [0, 0, 0, 0, 0]
+          requirements: [0, 0, 0, 0, 0],
+          marketingBaseCost: 100,
+          levelsOfInfluence: 7
         },
         {
           name: 'small startups',
           userOrientedName: 'Стартапы',
-          percentage: 7,
+          clients: 7000,
           price: 50,
           rating: [0, 1.5, 1.5, 6.5, 0.5],
-          requirements: [0, 0, 0, 80, 0]
+          requirements: [0, 0, 0, 80, 0],
+          marketingBaseCost: 100,
+          levelsOfInfluence: 7
         },
         {
           name: 'middle business',
           userOrientedName: 'Малый бизнес',
-          percentage: 3,
+          clients: 3000,
           price: 150,
           rating: [0.5, 1.5, 1, 0, 7],
-          requirements: [75, 0, 0, 0, 95]
+          requirements: [75, 0, 0, 0, 95],
+          marketingBaseCost: 100,
+          levelsOfInfluence: 7
         }
       ]
     }

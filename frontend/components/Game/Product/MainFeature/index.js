@@ -13,7 +13,7 @@ export default class MainFeature extends Component {
     if (!stageHelper.canShowMainFeatureTab()) return '';
 
     const product = flux.productStore.getProduct(id);
-    const availableSegments = flux.productStore.getAvailableSegments(id);
+    const availableSegments = null; // flux.productStore.getAvailableSegments(id);
     const defaults = flux.productStore.getDefaults(id);
 
     const featureList = defaults.features
@@ -60,27 +60,27 @@ export default class MainFeature extends Component {
     </div>
   }
 
-  renderSegmentRatingImprovementList(segments, id, featureId) {
-    if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) return '';
-
-    let openedInfluence = false;
-
-    return segments
-      .map((s, segId) => {
-        const rating = s.rating[featureId];
-
-        if (rating === 0) return '';
-
-        const defaultQuality = flux.productStore.getCurrentMainFeatureDefaultsById(id)[featureId];
-        const normalisedRatingDelta = round(rating * 1000 / defaultQuality);
-
-        openedInfluence = true;
-
-        const incomeIncrease = flux.productStore.getSegmentIncomeIncreasingOnRatingUpgrade(id, normalisedRatingDelta, segId);
-
-        return <li>Рейтинг у группы "{s.userOrientedName}" повысится на {normalisedRatingDelta} (+{incomeIncrease}$/мес)</li>;
-      });
-  }
+  // renderSegmentRatingImprovementList(segments, id, featureId) {
+  //   if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) return '';
+  //
+  //   let openedInfluence = false;
+  //
+  //   return segments
+  //     .map((s, segId) => {
+  //       const rating = s.rating[featureId];
+  //
+  //       if (rating === 0) return '';
+  //
+  //       const defaultQuality = flux.productStore.getCurrentMainFeatureDefaultsById(id)[featureId];
+  //       const normalisedRatingDelta = round(rating * 1000 / defaultQuality);
+  //
+  //       openedInfluence = true;
+  //
+  //       const incomeIncrease = flux.productStore.getSegmentIncomeIncreasingOnRatingUpgrade(id, normalisedRatingDelta, segId);
+  //
+  //       return <li>Рейтинг у группы "{s.userOrientedName}" повысится на {normalisedRatingDelta} (+{incomeIncrease}$/мес)</li>;
+  //     });
+  // }
 
   renderUpgradeCostModifierBonus(id, featureId) {
     if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
@@ -89,16 +89,6 @@ export default class MainFeature extends Component {
 
     if (flux.productStore.isWeAreRetards(id, featureId)) {
       return `Мы отстаём от конкурентов, поэтому копируем всё у них. Стоимость улучшения снижена`;
-    }
-
-    return '';
-  }
-
-  renderHypeIncreaseValue(id, featureId) {
-    if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
-      const hypeModifier = flux.productStore.getTechBreakthroughModifierForHype(id, featureId);
-
-      // if (hypeModifier) return `Наша известность увеличится! +${hypeModifier} HYPE`;
     }
 
     return '';
@@ -145,6 +135,8 @@ export default class MainFeature extends Component {
 
     const disabled = !enoughPPs;
 
+    // <div>{this.renderSegmentRatingImprovementList(segments, id, featureId)}</div>
+
     return <div key={key}>
       <div className="content-block">
         <div>
@@ -153,10 +145,8 @@ export default class MainFeature extends Component {
         </div>
         <br />
         <div className="featureDescription">{description}</div>
-        <div>{this.renderSegmentRatingImprovementList(segments, id, featureId)}</div>
         <div className="hypothesis-wrapper">
           <div>{this.renderUpgradeCostModifierBonus(id, featureId)}</div>
-          <div>{this.renderHypeIncreaseValue(id, featureId)}</div>
           <UI.Button
             disabled={disabled}
             onClick={() => { this.improveFeature(id, featureId, max, pp) }}
@@ -172,15 +162,7 @@ export default class MainFeature extends Component {
   };
 
   improveFeature(id, featureId, max, pp) {
-    const willResultBreakthrough = flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId);
-
     flux.productActions.spendPoints(pp, 0);
     flux.productActions.improveFeature(id, 'offer', featureId, max, 1000);
-
-    if (willResultBreakthrough) {
-      const hypeModifier = flux.productStore.getTechBreakthroughModifierForHype(id, featureId);
-
-      flux.productActions.addHype(id, hypeModifier);
-    }
   }
 }

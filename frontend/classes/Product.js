@@ -7,6 +7,9 @@ import percentify from '../helpers/math/percentify';
 
 import computeRating from '../helpers/products/compute-rating';
 
+import { DefaultDescription } from '../constants/products/types/product-description';
+
+
 import companyCostComputer from '../helpers/products/compute-company-cost';
 
 import * as balance from '../constants/balance';
@@ -158,14 +161,14 @@ export default class Product {
     return companyCostComputer.structured(this);
   }
 
-  static getRating(p: Product, features, segmentId) {
-    if (!segmentId) segmentId = 0;
+  static getRating(p: Product, features, marketId) {
+    if (!marketId) marketId = 0;
 
     const maxValues = p.defaultFeatures;
-    const segmentalInfluences = p.getSegmentById(segmentId).rating;
+    const marketInfluences = p.getMarketInfoById(marketId).rating;
 
 
-    return round(computeRating(features, maxValues, segmentalInfluences));
+    return round(computeRating(features, maxValues, marketInfluences));
   }
 
   getClients(segmentId) {
@@ -198,26 +201,27 @@ export default class Product {
   }
 
   getMainFeatureQualityByFeatureId(featureId) {
-    const value = this.features.offer[featureId];
-
-    return value; // round(value / feature.data);
+    return this.features.offer[featureId];
   }
 
   getPrettyFeatureNameByFeatureId(featureId){
     return this.getDefaults().features[featureId].shortDescription;
   }
 
-  requirementsOKforSegment(segmentId) {
-    const { segments } = this.getDefaults();
-    const segment = segments[segmentId];
-    const requirements = segment.requirements;
+  getMaxMainFeatureQuality(featureId) {
+    return this.getDefaults().features[featureId].data;
+  }
+
+  requirementsOKforMarket(marketId) {
+    const market = this.getMarketByMarketId(marketId);
+    const requirements = market.requirements;
 
     let valid = true;
 
     let unmetRequirements = [];
 
     requirements.forEach((r, featureId) => {
-      const max = this.getDefaults().features[featureId].data;
+      const max = this.getMaxMainFeatureQuality(featureId);
 
       const featureQuality = this.getMainFeatureQualityByFeatureId(featureId);
       const need = max * r / 100;
@@ -264,7 +268,7 @@ export default class Product {
     return value;
   }
 
-  getDefaults() {
+  getDefaults(): DefaultDescription {
     return productDescriptions(this.idea);
   }
 
@@ -326,8 +330,6 @@ export default class Product {
     // segmentedPricing
 
     logger.shit('requirements for segment');
-
-    if (!this.requirementsOKforSegment(segmentId).valid) return 0;
 
     if (payments.basicPricing) {
       return 1;
@@ -424,15 +426,15 @@ export default class Product {
     const ratingModifier = 15 + (10 - rating) * 10;
     // const ratingModifier = min + (max - min) * (10 - rating) / 10;
 
+    const marketingInfluence = 0.8;
 
-    const blog = p.getBlogPower() * 0.15 * 0.8;
-    const emails = p.getEmailPower() * 0.25 * 0.8;
-    const support = p.getSupportPower() * 0.4 * 0.8;
+    const blog = p.getBlogPower() * 0.15 * marketingInfluence;
+    const emails = p.getEmailPower() * 0.25 * marketingInfluence;
+    const support = p.getSupportPower() * 0.4 * marketingInfluence;
 
     const marketing = blog + emails + support;
 
-    let churn = Math.max(ratingModifier / 100 - marketing, 0.05);
-    // if (churn < 0.05) churn = 0.05;
+    const churn = Math.max(ratingModifier / 100 - marketing, 0.05);
 
     return {
       rating: ratingModifier,
@@ -440,7 +442,7 @@ export default class Product {
       churn,
       blog,
       emails,
-      support,
+      support
     }
   }
 
@@ -680,21 +682,6 @@ export default class Product {
       })
     }
 
-    // improvedPaymentsOfSegment
-    const amountOfSegments = this.getSegments().length;
-
-    for (let i = 0; i < amountOfSegments; i++) {
-      let segmentName = this.getSegmentBySegmentId(i).userOrientedName;
-
-      array.push({
-        name: `improvedPaymentsOfSegment${i}`,
-        title: `Наша главные клиенты: "${segmentName}"`,
-        bonus: `Доход от группы "${segmentName}" увеличивается в 1.5 раза`,
-        description: `Мы, как никто другие, понимаем, что именно нужно нашим 
-        главным клиентам. ${segmentName} точно знают, что мы их не подведём.`,
-      })
-    }
-
     return array
   }
 
@@ -870,7 +857,6 @@ export default class Product {
   };
 
   getPaymentFeatures(idea) {
-    const technicalDebtModifier = this.getTechnicalDebtModifier();
     const up = points => points; // Math.ceil(points * technicalDebtModifier);
 
     return [
@@ -932,9 +918,7 @@ export default class Product {
     const webvisor = analytics.webvisor;
     const segmenting = analytics.segmenting;
 
-    // const analyticsChance = this.getAnalyticsValueForFeatureCreating(i);
     const clientModifier = this.getClientAnalyticsModifier();
-    // const chance = analyticsChance * clientModifier.modifier; // h.baseChance +
 
 
     const basicBonus = 100;
@@ -991,8 +975,16 @@ export default class Product {
     return this.getDefaults().segments;
   }
 
-  getSegmentById(segId) {
-    return this.getSegments()[segId];
+  getMarkets() {
+    return this.getDefaults().markets;
+  }
+
+  getMarketByMarketId(marketId) {
+    return this.getMarkets()[marketId];
+  }
+
+  getMarketInfoById(segId) {
+    return this.getMarkets()[segId];
   }
 
   getDescriptionOfProduct() {
@@ -1018,17 +1010,6 @@ export default class Product {
     // logger.debug('getAvailableSegments', value);
 
     return value;
-  }
-
-  getMarketShare() {
-    const clients = this.getClients();
-    const marketSize = this.getDefaults().marketSize;
-
-    return {
-      share: percentify(clients / marketSize),
-      clients,
-      marketSize
-    }
   }
 
   getTestsAmount() {

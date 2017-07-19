@@ -1,30 +1,9 @@
 import * as IDEAS from '../../constants/products/ideas';
 
+import { DefaultDescription } from '../../constants/products/types/product-description';
+
 import webStudio from '../../content/products/WEB-STUDIO';
 import webHosting from '../../content/products/WEB-HOSTING';
-
-type FeatureType = {
-  name: String,
-  influence: Number,
-  description: String,
-  shortDescription: String,
-  data: Number,
-  time: Number
-};
-
-type DefaultDescription = {
-  description: String,
-  features: Array<FeatureType>,
-  utility: Number,
-  virality: Number,
-  price: Number,
-  CAC: Number,
-  marketSize: Number,
-  mvp: Object,
-  hypothesis: Object,
-  support: Object,
-  segments: Array
-};
 
 export default function (idea): DefaultDescription {
   switch (idea) {

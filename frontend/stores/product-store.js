@@ -12,12 +12,12 @@ import * as JOB from '../constants/job';
 
 import Product from '../classes/Product';
 
+import { DefaultDescription } from '../constants/products/types/product-description';
+
 
 import productDescriptions from '../helpers/products/product-descriptions';
 
 import sessionManager from '../helpers/session-manager';
-
-import mapper from '../helpers/math/mapper';
 
 import companyMerger from '../helpers/products/company-merger';
 
@@ -155,14 +155,11 @@ const getCurrentMainFeatureDefaultsByIdea = (idea) => {
 
     return max;
   });
-
-  // const suitableId = products.findIndex((p, i) => p.idea === idea);
-  // return this.getUpgradedMaxDefaultFeatureValueList(suitableId);
 };
 
 const getCurrentMainFeatureDefaultsById = (id) => {
   const p = _products[id];
-  // logger.debug('getCurrentMainFeatureDefaultsById', p, _products, id);
+
   const idea = p.getIdea();
 
   return getCurrentMainFeatureDefaultsByIdea(idea);
@@ -397,13 +394,13 @@ class ProductStore extends EventEmitter {
     return _rents.find(r => r.featureId === featureId && ((r.in === acceptor && r.out === sender) || (r.out === acceptor && r.in === sender)));
   }
 
-  getRating(id, segmentId) {
-    if (!segmentId) segmentId = 0;
+  getRating(id, marketId) {
+    if (!marketId) marketId = 0;
 
     const rented = this.incomingRentList(id);
     const features = this.enforceFeaturesByRentedOnes(_products[id].features.offer, rented);
 
-    return Product.getRating(_products[id], features, segmentId);
+    return Product.getRating(_products[id], features, marketId);
   }
 
   getClients(id, segmentId) {
@@ -426,20 +423,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getNewClients();
   }
 
-  getDisloyalClients(id) {
-    const p = _products[id];
-    const rating = this.getRating(id);
-
-    return Math.floor(p.getClients() * Product.getChurnRate(rating, p).raw);
-  }
-
-  getChurnRateStructured(id) {
-    const p = _products[id];
-    const rating = this.getRating(id);
-
-    return Product.getChurnRateStructured(rating, p)
-  }
-
   getMainFeatureQualityByFeatureId(id, featureId) {
     return _products[id].getMainFeatureQualityByFeatureId(featureId);
   }
@@ -448,15 +431,15 @@ class ProductStore extends EventEmitter {
     return _products[id].getPrettyFeatureNameByFeatureId(featureId);
   }
 
-  requirementsOKforSegment(id, segmentId) {
-    return _products[id].requirementsOKforSegment(segmentId);
+  requirementsOKforMarket(id, marketId) {
+    return _products[id].requirementsOKforMarket(marketId);
   }
 
   getAnalyticsValueForFeatureCreating(id) {
     return _products[id].getAnalyticsValueForFeatureCreating();
   }
 
-  getDefaults(id) {
+  getDefaults(id): DefaultDescription {
     return _products[id].getDefaults();
   }
 
@@ -474,24 +457,6 @@ class ProductStore extends EventEmitter {
 
   hasOutgoingRents(id) {
     return _rents.find(r => r.out === id);
-  }
-
-  getSegmentIncomeIncreasingOnRatingUpgrade(id, ratingDifference, segmentId) {
-    if (this.isPaymentEnabled(id, segmentId) === 0) return 0;
-
-    const rating = ratingDifference;
-    const utility = this.getProductUtility(id);
-
-    const paymentModifier = this.getPaymentModifier(id);
-
-    let conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
-
-    const clients = this.getClients(id, segmentId);
-    const price = this.getProductPrice(id, segmentId);
-
-    const payments = conversion * clients;
-
-    return Math.floor(payments * price * (1 + _products[id].getSegmentPaymentBonus(segmentId) / 100));
   }
 
   getProductUtility(id) {
@@ -556,86 +521,43 @@ class ProductStore extends EventEmitter {
     return this.getNextFeature(id, 'payment', productStore.getPaymentFeatures(id));
   }
 
-  getClientTransformations(onHypeIncreaseId, onHypeIncreaseAmount = 0) {
-    const products: Array<Product> = this.getProducts();
-
-    const frees = this.getFreeClientsBatch();
-
-    const sumOfHypes = products
-      .map((p: Product, id) => {
-        const value = p.getHypeValue();
-
-        if (id === onHypeIncreaseId) {
-          return value + onHypeIncreaseAmount;
-        }
-
-        return value;
-      })
-      .reduce((p, c) => p + c, 0);
-
-    const transformations: Array = products
-      .map((p: Product, id) => {
-        let hypeValue = p.getHypeValue();
-
-        if (id === onHypeIncreaseId) hypeValue += onHypeIncreaseAmount;
-
-        return {
-          increase: 0,
-          decrease: this.getDisloyalClients(id),
-          hypeValue,
-          hype: hypeValue / sumOfHypes,
-          clients: this.getClients(id)
-        };
-      });
-
-    products.forEach((p: Product, i) => {
-      const freeHypeShare = transformations[i].hype;
-
-      // add free clients if possible
-      transformations[i].increase += Math.round(frees * freeHypeShare);
-
-      // we exclude one company from list, so ... sum of hypes decreases by current company
-      const hypeDiscount = transformations[i].hypeValue;
-
-      transformations.forEach((t, j) => {
-        if (j !== i) {
-          const currentHypeShare = t.hypeValue / (sumOfHypes - hypeDiscount);
-
-          transformations[i].increase += Math.round(t.decrease * currentHypeShare);
-        }
-      })
-    });
-
-    return transformations;
+  getMarkets(id) {
+    return productDescriptions(_products[id].idea).markets;
   }
 
-  getSegmentIncome(id, segId) {
-    if (!this.isPaymentEnabled(id, segId)) return 0;
+  getMarketIncome = (id) => (market, marketId) => {
+    if (!this.isPaymentEnabled(id, 0)) return 0;
 
-    if (!this.requirementsOKforSegment(id, segId).valid) return 0;
+    if (!this.requirementsOKforMarket(id, marketId)) return 0;
 
-    if (!this.clientsEnoughToFormSegment(id, segId)) return 0;
+    logger.shit('influenceOnMarket is based on our marketing activities, ' +
+      'market settings (this market is main for us), and other players on this market');
 
-    // rating 10 - 0.05
-    const conversion = this.getConversionRate(id, segId).raw;
+    const influenceOnMarket = 1;
 
-    const clients = this.getClients(id, segId);
-    const price = this.getProductPrice(id, segId);
+    const rating = this.getRating(id, marketId);
+    logger.shit('compute rating of product with id=id by marketId', market, marketId);
 
-    const payments = conversion * clients;
+    logger.debug('getMarketIncome', rating, marketId, market);
 
-    return payments * price * (1 + _products[id].getSegmentPaymentBonus(segId) / 100);
-  }
+    const paymentModifier = this.getPaymentModifier(id);
+    const conversion = rating * paymentModifier / 100; // max = 0.1
+
+    const ppc = market.price * conversion;
+
+    return market.clients * ppc * influenceOnMarket;
+  };
 
   getProductIncome(id) {
-    // return _products[id].getProductIncome();
+    const markets = this.getMarkets(id);
 
-    // const segments = this.getAvailableSegments(id); // this.getSegments(id);
-    const segments = this.getSegments(id);
-
-    return segments
-      .map((s, segId) => this.getSegmentIncome(id, segId))
+    const income = markets
+      .map(this.getMarketIncome(id))
       .reduce((p, c) => p + c, 0);
+
+    logger.debug('income=', income);
+
+    return income;
   }
 
   getIdea(id) {
@@ -664,12 +586,6 @@ class ProductStore extends EventEmitter {
 
   getMarketingSupportCostPerClientForSupportFeature(id) {
     return _products[id].getMarketingSupportCostPerClientForSupportFeature();
-  }
-
-  getChurnRate(id) {
-    const p = _products[id];
-
-    return Product.getChurnRate(this.getRating(id), p); //_products[id].getChurnRate();
   }
 
   getProductBlogCost(id) {
@@ -752,16 +668,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getPaymentFeatures();
   };
 
-  getTechnicalDebtDescription(debt) {
-    if (debt < 10) {
-      return `Всё хорошо`;
-    } else if (debt < 50) {
-      return `Программисты начинают плакать`;
-    } else {
-      return `Ты мразь и п**ор, программисты ненавидят тебя!! Отрефакторь этот шлак!`;
-    }
-  };
-
   getImprovementChances(id) {
     return _products[id].getImprovementChances()
   }
@@ -778,36 +684,12 @@ class ProductStore extends EventEmitter {
     return _products[id].getHypothesisPoints();
   }
 
-  getSegments(id) {
-    return _products[id].getSegments();
-  }
-
-  getSegmentById(id, segId) {
-    return _products[id].getSegmentById(segId);
-  }
-
   getDescriptionOfProduct(id) {
     return _products[id].getDescriptionOfProduct();
   }
 
   canShowPayPercentageMetric(id) {
     return _products[id].canShowPayPercentageMetric();
-  }
-
-  clientsEnoughToFormSegment(id, segId) {
-    return _products[id].clientsEnoughToFormSegment(segId);
-  }
-
-  getAvailableSegments(id) {
-    return _products[id].getAvailableSegments();
-  }
-
-  // isSegmentAvailable(id, segId) {
-  //   return _products[id].isSegmentAvailable()
-  // }
-
-  getMarketShare(id) {
-    return _products[id].getMarketShare();
   }
 
   getTestsAmount(id) {
@@ -822,10 +704,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getTechnologyComplexityModifier();
   }
 
-  getHypeValue(id) {
-    return _products[id].getHypeValue();
-  }
-
   getBonusesAmount(id) {
     return _products[id].bonuses;
   }
@@ -835,50 +713,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getNumberOfTechnologiesWhereWeMadeBreakthrough();
   }
 
-  getHypeDampingValue(id) {
-    const current = this.getHypeValue(id);
-
-    const data = this.getHypeDampingStructured(id);
-
-    const v = Math.floor(current * data.percent / 100);
-
-    return -v;
-  }
-
-  getHypeDampingStructured(id) {
-    const numberOfTechnologiesWhereWeMadeBreakthrough = this.getNumberOfTechnologiesWhereWeMadeBreakthrough(id);
-    const p = _products[id];
-
-    const blogPower = p.getBlogHypeModifier();
-    const rating = this.getRating(id);
-
-    const blogRange = [0, 40];
-    const churnRange = [10, 50];
-    const techRange = [0, 25];
-
-    const blog = Math.floor(mapper(blogPower, 0, 1, blogRange[0], blogRange[1]));
-    const churn = Math.ceil(mapper(10 - rating, 0, 10, churnRange[0], churnRange[1]));
-
-
-    const maxNumberOfTechnologies = productDescriptions(p.idea).features.length;
-    const tech = Math.floor(mapper(numberOfTechnologiesWhereWeMadeBreakthrough, 0, maxNumberOfTechnologies, techRange[0], techRange[1]));
-
-    const base = 90;
-    const percent = Math.min(base - blog - tech + churn, 100);
-
-    return {
-      blogRange,
-      churnRange,
-      techRange,
-      base,
-      blog: -blog,
-      tech: -tech,
-      churn,
-      percent,
-      clientModifier: this.getClients(id) / 1000
-    }
-  }
-
 
   getTechnicalDebtModifier(id) {
     return _products[id].getTechnicalDebtModifier();
@@ -886,20 +720,6 @@ class ProductStore extends EventEmitter {
 
   idHelper(p, i) {
     return { id: i, p };
-  }
-
-  getFreeClientsBatch() {
-    const marketSize = _products[0].getMarketShare().marketSize;
-
-    const currentSumOfUsers = _products.map((p, i) => p.getClients()).reduce((p, c) => p + c, 0);
-
-    const value = marketSize - currentSumOfUsers;
-
-    if (value <= 0) return 0;
-
-    if (value > 2000) return 2000;
-
-    return value;
   }
 
   isUpgradeWillResultTechBreakthrough(id, featureId) {
@@ -918,10 +738,6 @@ class ProductStore extends EventEmitter {
     // logger.debug('isWeAreRetards ?', current, max);
 
     return current < 0.6 * max;
-  }
-
-  getTechBreakthroughModifierForHype(id, featureId) {
-    return _products[id].getTechBreakthroughModifierForHype()
   }
 
   getBonusModifiers(id) {
@@ -976,10 +792,6 @@ class ProductStore extends EventEmitter {
   }
 
   getCurrentMainFeatureDefaultsById(id) {
-    // logger.debug('getCurrentMainFeatureDefaultsById in class', id);
-    // const idea = this.getIdea(id);
-
-    // return getCurrentMainFeatureDefaultsByIdea(idea);
     return getCurrentMainFeatureDefaultsById(id);
   }
 
@@ -1013,7 +825,7 @@ class ProductStore extends EventEmitter {
     return getCurrentMainFeatureDefaultsByIdea(idea);
   }
 
-  getCompetitorsList(id) {
+  getCompetitorsList() {
     logger.shit('getCompetitorsList shows ALL COMPANIES with different ideas! ' +
       'You need an opportunity to toggle between all/same idea companies');
 
@@ -1046,7 +858,7 @@ class ProductStore extends EventEmitter {
           hypeDamping: this.getHypeDampingValue(id),
           company: p
         }
-      })
+      });
       // .sort((a, b) => b.cost - a.cost);
   }
 }

@@ -138,26 +138,7 @@ export default class ProductPanel extends Component {
     )
   };
 
-  renderSegmentTab(id) {
-    if (!stageHelper.canShowSegments()) return '';
-
-    const segmentList = productStore.getSegments(id).map((s, i) => <Segment productId={id} segment={s} id={i} />);
-
-    return (
-      <div>
-        <div className="client-segment-header">Группы пользователей</div>
-        <div>{segmentList}</div>
-      </div>
-    )
-  }
-
   renderClientTab = (id, product) => {
-    const churn = productStore.getChurnRate(id).pretty;
-    const churnStructured = productStore.getChurnRateStructured(id);
-    const disloyalClients = productStore.getDisloyalClients(id);
-
-    const market = productStore.getMarketShare(id);
-
     const adTab = this.renderAdTab(id, product);
 
     let churnFeatures = '';
@@ -168,21 +149,21 @@ export default class ProductPanel extends Component {
         <div className="featureGroupBody">{marketing}</div>
       </div>
     }
-    //
-    let clientTab;
+
+    let clientTab = churnFeatures;
     if (stageHelper.canShowAdTab()) {
-      clientTab = <div className="content-block">
-        <div className="featureGroupTitle">Работа с клиентами</div>
-        <div>Наши клиенты: {market.clients}</div>
-        <br />
-        <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
-        <ul>
-          <li>От рейтинга: {churnStructured.rating}%</li>
-          <li>От блока маркетинга: -{Math.floor(churnStructured.marketing * 100)}%</li>
-        </ul>
-        {churnFeatures}
-        <br />
-      </div>
+      // clientTab = <div className="content-block">
+      //   <div className="featureGroupTitle">Работа с клиентами</div>
+      //   <div>Наши клиенты: {market.clients}</div>
+      //   <br />
+      //   <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
+      //   <ul>
+      //     <li>От рейтинга: {churnStructured.rating}%</li>
+      //     <li>От блока маркетинга: -{Math.floor(churnStructured.marketing * 100)}%</li>
+      //   </ul>
+      //   {churnFeatures}
+      //   <br />
+      // </div>
     }
 
     const support = pointSaldoHelper.marketing();
@@ -209,36 +190,37 @@ export default class ProductPanel extends Component {
       <br />
     </div>;
 
-    const transformations = productStore.getClientTransformations()
-      .map((t, i) => Object.assign({}, t, { name: productStore.getName(i) }))
-      .sort((t1, t2) => t2.hypeValue - t1.hypeValue)
-      .map((t, i) => {
-        return <tr>
-          <td>{t.name}</td>
-          <td>{t.hypeValue}</td>
-          <td>{t.clients}</td>
-          <td>{t.increase}</td>
-          <td>{t.decrease}</td>
-          <td>{t.increase > t.decrease ? '+' : ''}{t.increase - t.decrease}</td>
-        </tr>
-      });
+    // const transformations = productStore.getClientTransformations()
+    //   .map((t, i) => Object.assign({}, t, { name: productStore.getName(i) }))
+    //   .sort((t1, t2) => t2.hypeValue - t1.hypeValue)
+    //   .map((t, i) => {
+    //     return <tr>
+    //       <td>{t.name}</td>
+    //       <td>{t.hypeValue}</td>
+    //       <td>{t.clients}</td>
+    //       <td>{t.increase}</td>
+    //       <td>{t.decrease}</td>
+    //       <td>{t.increase > t.decrease ? '+' : ''}{t.increase - t.decrease}</td>
+    //     </tr>
+    //   });
 
-    let hypeTab = <table>
-      <thead>
-      <tr>
-        <th>Имя компании</th>
-        <th>Hype</th>
-        <th>Клиенты</th>
-        <th>Приток клиентов</th>
-        <th>Отток клиентов</th>
-        <th>Разница</th>
-      </tr>
-      </thead>
-      <tbody>
-      {transformations}
-      </tbody>
-    </table>;
+    // let hypeTab = <table>
+    //   <thead>
+    //   <tr>
+    //     <th>Имя компании</th>
+    //     <th>Hype</th>
+    //     <th>Клиенты</th>
+    //     <th>Приток клиентов</th>
+    //     <th>Отток клиентов</th>
+    //     <th>Разница</th>
+    //   </tr>
+    //   </thead>
+    //   <tbody>
+    //   {transformations}
+    //   </tbody>
+    // </table>;
     // let hypeTab = JSON.stringify(transformations);
+    let hypeTab = '';
 
     return (
       <div>
@@ -254,11 +236,11 @@ export default class ProductPanel extends Component {
   renderAdTab = (id, product) => {
     if (!stageHelper.canShowAdTab()) return '';
 
+        // <AdsPanel product={product} id={id} />
     return (
       <div>
         <br />
         <b>Рекламная кампания</b>
-        <AdsPanel product={product} id={id} />
         <br />
       </div>
     );
@@ -300,34 +282,9 @@ export default class ProductPanel extends Component {
   }
 
   renderBonusesTab(id) {
-    const hypeDampingStructured = productStore.getHypeDampingStructured(id);
     const bonusesAmount = productStore.getBonusesAmount(id);
 
-    const {
-      blogRange,
-      churnRange,
-      techRange,
-      base,
-      blog,
-      tech,
-      churn,
-      percent
-    } = hypeDampingStructured;
-
-    const blogStyleColor = coloringRange.ranged(-blog, blogRange[0], blogRange[1]);
-    const techStyleColor = coloringRange.ranged(-tech, techRange[0], techRange[1]);
-    const churnStyleColor = coloringRange.ranged(churn, churnRange[1], churnRange[0]);
-
     return <div>
-      <div className="content-block">
-        <div>Ежемесячное снижение известности (HYPE): {percent}%</div>
-        <ul>
-          <li>Базовое значение: {base}%</li>
-          <li style={`color: ${blogStyleColor}`}>От блога: {blog}%</li>
-          <li style={`color: ${churnStyleColor}`}>От рейтинга: {churn}%</li>
-          <li style={`color: ${techStyleColor}`}>Технологическое лидерство: {tech}%</li>
-        </ul>
-      </div>
       <Bonuses productId={id} bonusesAmount={bonusesAmount} />
     </div>;
   }
@@ -515,7 +472,6 @@ export default class ProductPanel extends Component {
             product={product}
             onHireProgrammerClick={() => this.setMode(MODE_STAFF)}
           />
-          {this.renderSegmentTab(id)}
         </div>;
         break;
 
