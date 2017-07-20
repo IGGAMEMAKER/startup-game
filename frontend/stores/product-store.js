@@ -127,8 +127,9 @@ let _products: Array<Product> = [];
 
 let _markets = [];
 
-const initialize = ({ products, rents, expenses, employees, team, reputation, fame, loan}) => {
+const initialize = ({ markets, products, rents, expenses, employees, team, reputation, fame, loan}) => {
   _products = products;
+  _markets = markets;
 
   _expenses = expenses;
   _employees = employees;
@@ -261,7 +262,8 @@ class ProductStore extends EventEmitter {
       fame: _fame,
       loan: _loan,
       products: _products,
-      rents: _rents
+      rents: _rents,
+      markets: _markets
     }
   }
 
@@ -550,6 +552,26 @@ class ProductStore extends EventEmitter {
   }
 
   getMarketInfluenceOfCompany(id, marketId) {
+    const yourLevel = this.getMarketLevelOfCompany(id, marketId);
+
+    return yourLevel / this.getMaxMarketLevel(id, marketId);
+  }
+
+  getMarketLevels(id, marketId) {
+    const yourLevel = this.getMarketLevelOfCompany(id, marketId);
+    const maxLevel = this.getMaxMarketLevel(id, marketId);
+
+    return {
+      current: yourLevel,
+      max: maxLevel
+    }
+  }
+
+  getMaxMarketLevel(id, marketId) {
+    return this.getMarkets(id)[marketId].levels;
+  }
+
+  getMarketLevelOfCompany(id, marketId) {
     const marketRecord = _markets.find(m => m.companyId === id && m.marketId === marketId);
 
     if (marketRecord) return marketRecord.level;
@@ -574,7 +596,7 @@ class ProductStore extends EventEmitter {
     const rating = this.getRating(id, marketId, improvement);
 
     const paymentModifier = this.getPaymentModifier(id);
-    const conversion = rating * paymentModifier / 100; // max = 0.1
+    const conversion = rating * paymentModifier; // max = 0.1
 
     const ppc = market.price * conversion;
 

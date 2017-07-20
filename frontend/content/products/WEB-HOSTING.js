@@ -109,7 +109,7 @@ export default {
           requirements: [0, 0, 0, 0, 0],
           marketingBaseCost: 1000,
           marketingActivityBaseCost: 50,
-          levelsOfInfluence: 7
+          levels: 7
         },
         {
           name: 'small startups',
@@ -120,7 +120,7 @@ export default {
           requirements: [0, 0, 0, 80, 0],
           marketingBaseCost: 100,
           marketingActivityBaseCost: 50,
-          levelsOfInfluence: 7
+          levels: 7
         },
         {
           name: 'middle business',
@@ -131,7 +131,7 @@ export default {
           requirements: [75, 0, 0, 0, 95],
           marketingBaseCost: 10,
           marketingActivityBaseCost: 50,
-          levelsOfInfluence: 7
+          levels: 7
         }
       ]
     }

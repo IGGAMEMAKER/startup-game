@@ -89,6 +89,8 @@ function setDefaultValues() {
   logger.debug('saved tasks');
 
   // products
+  sessionStorage.saveInStorage('markets', []);
+
   const product = new Product({
     idea: IDEAS.IDEA_WEB_HOSTING,
     name: 'WWWEB HOSTING',
@@ -165,7 +167,8 @@ function restartGame() {
   stats.saveAction('restartGame', {});
 }
 
-function saveProductStorageData({ products, rents, money, expenses, points, employees, team, reputation, fame, loan }) {
+function saveProductStorageData({ markets, products, rents, money, expenses, points, employees, team, reputation, fame, loan }) {
+  saveToStorage('markets', markets);
   saveToStorage('products', products);
   saveToStorage('money', money);
   saveToStorage('expenses', expenses);
@@ -189,11 +192,13 @@ function getProductStorageData() {
   let fame: Number;
   let rents: Array;
   let products: Array<Product>;
+  let markets: Array;
 
   try {
     // money = Number.parseInt(getFromStorage('money'));
     // logger.debug('got money', money);
 
+    markets = Array.from(JSON.parse(getFromStorage('markets')));
     rents = Array.from(JSON.parse(getFromStorage('rents')));
 
     expenses = Array.from(JSON.parse(getFromStorage('expenses')));
@@ -233,7 +238,8 @@ function getProductStorageData() {
     fame,
     loan,
     rents,
-    products
+    products,
+    markets
   };
 }
 

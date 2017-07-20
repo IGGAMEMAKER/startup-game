@@ -44,30 +44,54 @@ export default class Market extends Component {
       )
     }
 
-    const disabled = pointModification.marketing().diff < marketingBaseCost;
+    const canIncreaseInfluence = pointModification.marketing().diff >= marketingBaseCost;
+
+    const isAvailableToLeaveMarket = flux.productStore.getMarketInfluenceOfCompany(id, marketId);
+
+    const levels = flux.productStore.getMarketLevels(id, marketId);
+
+    const reachedHighestLevel = levels.current === levels.max;
 
     const paymentTab = <div>
       <div>Стоимость поддержки (ежемесячно): {marketingBaseCost}MP</div>
-      <UI.Button
-        text="Усилить влияние"
-        primary
-        disabled={disabled}
-        onClick={() => flux.productActions.increaseInfluenceOnMarket(id, marketId)}
-      />
-      <UI.Button
-        text="Уйти с рынка"
-        primary
-        onClick={() => flux.productActions.decreaseInfluenceOnMarket(id, marketId)}
-      />
+      {
+        reachedHighestLevel ? ''
+          :
+          <UI.Button
+            text="Усилить влияние"
+            primary
+            disabled={!canIncreaseInfluence}
+            onClick={() => flux.productActions.increaseInfluenceOnMarket(id, marketId)}
+          />
+
+      }
+      <br />
+      {
+        isAvailableToLeaveMarket
+          ?
+          <UI.Button
+            text="Уйти с рынка"
+            cancel
+            onClick={() => flux.productActions.decreaseInfluenceOnMarket(id, marketId)}
+          />
+          :
+          ''
+      }
     </div>;
 
     return <div className="content-block">
       <div className="client-market-item">
         <div>Канал №{marketId + 1}: {userOrientedName}</div>
         <div className="offset-mid">
-          <div>Клиенты: {clients} человек</div>
+          <div>Объём рынка: {clients * price}$</div>
           <div className="offset-mid">
-            <div>Платёжеспособность: {price}$</div>
+            {
+              isAvailableToLeaveMarket
+                ?
+                <div>Текущее влияние: {levels.current}/{levels.max}</div>
+                :
+                <div></div>
+            }
             <div>{requirementTab}</div>
             <div>{paymentTab}</div>
           </div>

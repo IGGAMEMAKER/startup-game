@@ -93,7 +93,7 @@ const run = () => {
   // check if it is last day of month (pay day)
   if (isLastDayOfMonth(day)) {
     // calculate client amount change
-    const transformations = getClientTransformations();
+    // const transformations = getClientTransformations();
 
     products
       .forEach((p, i) => {
@@ -116,16 +116,16 @@ const run = () => {
         calculatePoints(i);
       });
 
-    products
-      .forEach((p, i) => {
-        const clients = transformations[i].increase;
-        const churn = transformations[i].decrease;
-        const damping = productStore.getHypeDampingValue(i);
-
-        productActions.addClients(i, clients);
-        productActions.removeClients(i, churn);
-        productActions.loseMonthlyHype(i, damping);
-      });
+    // products
+    //   .forEach((p, i) => {
+    //     const clients = transformations[i].increase;
+    //     const churn = transformations[i].decrease;
+    //     const damping = productStore.getHypeDampingValue(i);
+    //
+    //     productActions.addClients(i, clients);
+    //     productActions.removeClients(i, churn);
+    //     productActions.loseMonthlyHype(i, damping);
+    //   });
 
 
     // clean expired rents

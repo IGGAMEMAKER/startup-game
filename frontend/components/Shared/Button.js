@@ -30,6 +30,10 @@ export default class Button extends Component {
       className = 'btn-link';
     }
 
+    if (props.cancel) {
+      className = 'btn-danger';
+    }
+
     return (
       <div>
         <button {...props} className={`btn ${className}`}>{props.text}</button>
