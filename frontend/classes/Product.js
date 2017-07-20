@@ -996,6 +996,7 @@ export default class Product {
   }
 
   canShowPayPercentageMetric() {
+    return true;
     return this.getFeatureStatus('payment', 'mockBuying')
   }
 

@@ -3,32 +3,23 @@ import flux from '../../../../flux';
 
 import ColoredRating from '../KPI/colored-rating';
 
-export default class Market extends Component {
-  renderMarket(id, userOrientedName, clients, price, requirementTab) {
-    return (
-      <div className="client-market-item">
-        <div>Группа №{id + 1}: {userOrientedName}</div>
-        <div className="offset-mid">
-          <div>Клиенты: {clients} человек</div>
-          <div className="offset-mid">
-            <div>Платёжеспособность: {price}$</div>
-            <div>{requirementTab}</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+import UI from '../../../UI';
 
-  render({ productId, market, id }) {
-    const { name, userOrientedName, clients, price, rating, requirements } = market;
+import pointModification from '../../../../helpers/points/modification';
+
+export default class Market extends Component {
+  render({ marketId, market, id }) {
+    const { name, userOrientedName, clients, price, requirements, marketingBaseCost,
+      levelsOfInfluence, marketingActivityBaseCost } = market;
 
     let requirementTab = '';
-    const requirementsValidator = flux.productStore.requirementsOKforMarket(productId, id);
+    const requirementsValidator = flux.productStore.requirementsOKforMarket(id, marketId);
 
-    const currentRating = flux.productStore.getRating(productId, id);
+    const currentRating = flux.productStore.getRating(id, marketId);
 
     if (requirementsValidator.valid) {
-      const income = Math.floor(flux.productStore.getMarketIncome(productId, id));
+      const income = flux.productStore.getMarketIncome(id, marketId);
+
       requirementTab = (
         <div>
           <div>Рейтинг: <ColoredRating rating={currentRating} /></div>
@@ -38,7 +29,7 @@ export default class Market extends Component {
     } else {
       const unmet = requirementsValidator.unmetRequirements
         .map((u, uId) => {
-          return <li key={`unmet-${productId}-${uId}`}>
+          return <li key={`unmet-${id}-${uId}`}>
             {u.name}: {Math.ceil(u.need / 1000)}lvl
           </li>
         });
@@ -53,16 +44,35 @@ export default class Market extends Component {
       )
     }
 
-    // <div>Требования: {JSON.stringify(requirements)}</div>
-    // <div>Приоритеты: {JSON.stringify(rating)}</div>
-    const clients = flux.productStore.getClients(productId, id);
-    const priorities = flux.productStore.getMarketedPriorities(productId, id)
-      .filter(s => s.rating > 0)
-      .map(s => s.feature)
-      .join(', ');
+    const disabled = pointModification.marketing().diff < marketingBaseCost;
 
-    if (clients < 100) return this.renderMarket(id, userOrientedName, '???', '???', 'Приведите больше клиентов, чтобы открыть эту группу');
+    const paymentTab = <div>
+      <div>Стоимость поддержки (ежемесячно): {marketingBaseCost}MP</div>
+      <UI.Button
+        text="Усилить влияние"
+        primary
+        disabled={disabled}
+        onClick={() => flux.productActions.increaseInfluenceOnMarket(id, marketId)}
+      />
+      <UI.Button
+        text="Уйти с рынка"
+        primary
+        onClick={() => flux.productActions.decreaseInfluenceOnMarket(id, marketId)}
+      />
+    </div>;
 
-    return this.renderMarket(id, userOrientedName, clients, price, requirementTab);
+    return <div className="content-block">
+      <div className="client-market-item">
+        <div>Канал №{marketId + 1}: {userOrientedName}</div>
+        <div className="offset-mid">
+          <div>Клиенты: {clients} человек</div>
+          <div className="offset-mid">
+            <div>Платёжеспособность: {price}$</div>
+            <div>{requirementTab}</div>
+            <div>{paymentTab}</div>
+          </div>
+        </div>
+      </div>
+    </div>
   }
 }

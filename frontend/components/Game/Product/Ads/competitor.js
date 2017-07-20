@@ -189,13 +189,13 @@ export default class Competitor extends Component {
 
     const hasEnoughMoney = money >= c.cost;
 
-    const hypeChangePhrase = c.hypeDamping < 0 ? c.hypeDamping : `+${c.hypeDamping}`;
+    // const hypeChangePhrase = c.hypeDamping < 0 ? c.hypeDamping : `+${c.hypeDamping}`;
     // <div>{JSON.stringify(c)}</div>
 
+        // <div className="offset-min">Известность (HYPE): {c.hype} ({hypeChangePhrase} ежемесячно)</div>
     return (
       <div className={background}>
         <div className="offset-min">{companyTitle}</div>
-        <div className="offset-min">Известность (HYPE): {c.hype} ({hypeChangePhrase} ежемесячно)</div>
         <br />
 
         <div className="offset-min">Рейтинг: {c.rating}</div>

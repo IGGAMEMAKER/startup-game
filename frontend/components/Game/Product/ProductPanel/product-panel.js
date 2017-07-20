@@ -18,19 +18,16 @@ import productActions from '../../../../actions/product-actions';
 
 import logger from '../../../../helpers/logger/logger';
 
-import AdsPanel from '../Ads/advert-planner-panel';
 import MainFeatureTab from '../MainFeature';
 
 import stageHelper from '../../../../helpers/stages';
 
 import Competitors from '../Ads/competitors';
-import Segment from '../ClientPanel/segment';
 
 import stats from '../../../../stats';
 
-import Product from '../../../../classes/Product';
 
-import coloringRange from '../../../../helpers/coloring-range';
+import Market from '../../Product/Markets/market';
 
 
 const MODE_RATING = 'MODE_RATING';
@@ -123,13 +120,13 @@ export default class ProductPanel extends Component {
     const makeImprovementPhrase = 'Установите фичу "Тестовая покупка"';
     const payAbilityPhrase = `Платёжеспособность: ${isOpened ? `${payAbility}%` : makeImprovementPhrase}`;
 
+            // <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
     return (
       <div>
-        <div className="content-block">
+        <div className="">
           <div className="featureGroupTitle">Монетизация</div>
           <div className="featureGroupDescriptionWrapper">
             <div>{payAbilityPhrase}</div>
-            <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
             <div className="featureGroupBody">{payment}</div>
           </div>
         </div>
@@ -139,8 +136,6 @@ export default class ProductPanel extends Component {
   };
 
   renderClientTab = (id, product) => {
-    const adTab = this.renderAdTab(id, product);
-
     let churnFeatures = '';
     if (stageHelper.canShowChurnFeatures()) {
       const marketing = this.plainifySameTypeFeatures(id, 'marketing', 'Блок маркетинга полностью улучшен!');
@@ -151,20 +146,6 @@ export default class ProductPanel extends Component {
     }
 
     let clientTab = churnFeatures;
-    if (stageHelper.canShowAdTab()) {
-      // clientTab = <div className="content-block">
-      //   <div className="featureGroupTitle">Работа с клиентами</div>
-      //   <div>Наши клиенты: {market.clients}</div>
-      //   <br />
-      //   <div>Каждый месяц мы теряем {disloyalClients} клиентов (отток: {churn}%)</div>
-      //   <ul>
-      //     <li>От рейтинга: {churnStructured.rating}%</li>
-      //     <li>От блока маркетинга: -{Math.floor(churnStructured.marketing * 100)}%</li>
-      //   </ul>
-      //   {churnFeatures}
-      //   <br />
-      // </div>
-    }
 
     const support = pointSaldoHelper.marketing();
     let supportCostTab;
@@ -190,44 +171,17 @@ export default class ProductPanel extends Component {
       <br />
     </div>;
 
-    // const transformations = productStore.getClientTransformations()
-    //   .map((t, i) => Object.assign({}, t, { name: productStore.getName(i) }))
-    //   .sort((t1, t2) => t2.hypeValue - t1.hypeValue)
-    //   .map((t, i) => {
-    //     return <tr>
-    //       <td>{t.name}</td>
-    //       <td>{t.hypeValue}</td>
-    //       <td>{t.clients}</td>
-    //       <td>{t.increase}</td>
-    //       <td>{t.decrease}</td>
-    //       <td>{t.increase > t.decrease ? '+' : ''}{t.increase - t.decrease}</td>
-    //     </tr>
-    //   });
-
-    // let hypeTab = <table>
-    //   <thead>
-    //   <tr>
-    //     <th>Имя компании</th>
-    //     <th>Hype</th>
-    //     <th>Клиенты</th>
-    //     <th>Приток клиентов</th>
-    //     <th>Отток клиентов</th>
-    //     <th>Разница</th>
-    //   </tr>
-    //   </thead>
-    //   <tbody>
-    //   {transformations}
-    //   </tbody>
-    // </table>;
-    // let hypeTab = JSON.stringify(transformations);
     let hypeTab = '';
+
+    let marketsTab = productStore.getMarkets(id)
+      .map((m, mId) => <Market id={id} marketId={mId} market={m} />);
 
     return (
       <div>
         <div className="featureGroupTitle">Маркетинг</div>
         {supportCostTab}
         {hypeTab}
-        {adTab}
+        {marketsTab}
         {clientTab}
       </div>
     );
@@ -236,7 +190,7 @@ export default class ProductPanel extends Component {
   renderAdTab = (id, product) => {
     if (!stageHelper.canShowAdTab()) return '';
 
-        // <AdsPanel product={product} id={id} />
+        // <AdsPanel product={product} id={id} />S
     return (
       <div>
         <br />
@@ -306,7 +260,7 @@ export default class ProductPanel extends Component {
       return <div></div>;
     }
 
-    return <div>Стоимость поддержки (ежемесячно) - {mp} {pp} {money}</div>;
+    return <div>Стоимость поддержки - {mp} {pp} {money}</div>;
   };
 
   renderFeature = (featureGroup, id, feature) => {
@@ -334,7 +288,7 @@ export default class ProductPanel extends Component {
     };
 
     return (
-      <div key={key}>
+      <div key={key} className="content-block">
         {userOrientedFeatureName}
         <br />
         <div className="featureDescription">
@@ -342,7 +296,7 @@ export default class ProductPanel extends Component {
           <br />
           <div>
             <div>
-              Стоимость улучшения - &nbsp;
+              <span>Стоимость улучшения - &nbsp;</span>
               {mp > 0 ? <span className={mpColors}>{mp}MP&nbsp;</span> : ''}
               {pp > 0 ? <span className={ppColors}>{pp}PP</span> : ''}
             </div>

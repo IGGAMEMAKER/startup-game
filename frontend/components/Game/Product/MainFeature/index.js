@@ -142,7 +142,6 @@ export default class MainFeature extends Component {
         </div>
       </div>
 
-      <br />
       <hr color="white" />
     </div>
   };

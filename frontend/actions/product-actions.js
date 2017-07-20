@@ -22,6 +22,20 @@ export default {
     })
   },
 
+  increaseInfluenceOnMarket(id, marketId) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_INFLUENCE_INCREASE,
+      id, marketId
+    })
+  },
+
+  decreaseInfluenceOnMarket(id, marketId) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_INFLUENCE_DECREASE,
+      id, marketId
+    })
+  },
+
   buyCompany(buyerId, sellerId) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_COMPANY_BUY,

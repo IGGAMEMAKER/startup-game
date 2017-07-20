@@ -107,7 +107,8 @@ export default {
           price: 8,
           rating: [0, 2.5, 1.5, 6, 0],
           requirements: [0, 0, 0, 0, 0],
-          marketingBaseCost: 100,
+          marketingBaseCost: 1000,
+          marketingActivityBaseCost: 50,
           levelsOfInfluence: 7
         },
         {
@@ -118,6 +119,7 @@ export default {
           rating: [0, 1.5, 1.5, 6.5, 0.5],
           requirements: [0, 0, 0, 80, 0],
           marketingBaseCost: 100,
+          marketingActivityBaseCost: 50,
           levelsOfInfluence: 7
         },
         {
@@ -127,7 +129,8 @@ export default {
           price: 150,
           rating: [0.5, 1.5, 1, 0, 7],
           requirements: [75, 0, 0, 0, 95],
-          marketingBaseCost: 100,
+          marketingBaseCost: 10,
+          marketingActivityBaseCost: 50,
           levelsOfInfluence: 7
         }
       ]

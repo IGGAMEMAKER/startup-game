@@ -125,6 +125,8 @@ let _loan = 0; // no loans;
 
 let _products: Array<Product> = [];
 
+let _markets = [];
+
 const initialize = ({ products, rents, expenses, employees, team, reputation, fame, loan}) => {
   _products = products;
 
@@ -547,10 +549,18 @@ class ProductStore extends EventEmitter {
       .reduce((p, c) => p + c, 0);
   }
 
+  getMarketInfluenceOfCompany(id, marketId) {
+    const marketRecord = _markets.find(m => m.companyId === id && m.marketId === marketId);
+
+    if (marketRecord) return marketRecord.level;
+
+    return 0;
+  }
+
   getMarketIncome = (id, marketId, improvement) => {
     if (!this.isPaymentEnabled(id, 0)) return 0;
 
-    if (!this.requirementsOKforMarket(id, marketId)) return 0;
+    if (!this.requirementsOKforMarket(id, marketId).valid) return 0;
 
     const market = this.getMarkets(id)[marketId];
 
@@ -559,7 +569,7 @@ class ProductStore extends EventEmitter {
     logger.shit('influenceOnMarket is based on our marketing activities, ' +
       'market settings (this market is main for us), and other players on this market');
 
-    const influenceOnMarket = 1;
+    const influenceOnMarket = this.getMarketInfluenceOfCompany(id, marketId);
 
     const rating = this.getRating(id, marketId, improvement);
 
@@ -568,7 +578,7 @@ class ProductStore extends EventEmitter {
 
     const ppc = market.price * conversion;
 
-    return market.clients * ppc * influenceOnMarket;
+    return Math.floor(market.clients * ppc * influenceOnMarket);
   };
 
   getProductIncome(id) {
@@ -878,7 +888,7 @@ class ProductStore extends EventEmitter {
           cost: p.getCompanyCost(),
           id,
           hype: p.getHypeValue(),
-          hypeDamping: this.getHypeDampingValue(id),
+          // hypeDamping: this.getHypeDampingValue(id),
           company: p
         }
       });
@@ -949,6 +959,24 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
       _products[id].loseMonthlyHype(p.hypeDamping);
+      break;
+
+    case c.PRODUCT_ACTIONS_MARKETS_INFLUENCE_INCREASE:
+      let index = _markets.findIndex((m, i) => m.companyId === p.id && m.marketId === p.marketId);
+
+      if (index >= 0) {
+        _markets[index].level++;
+      } else {
+        _markets.push({ companyId: p.id, marketId: p.marketId, level: 1 });
+      }
+      break;
+
+    case c.PRODUCT_ACTIONS_MARKETS_INFLUENCE_DECREASE:
+      index = _markets.findIndex((m, i) => m.companyId === p.id && m.marketId === p.marketId);
+
+      if (index >= 0) {
+        _markets.splice(index, 1)
+      }
       break;
 
     case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
