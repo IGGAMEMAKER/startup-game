@@ -8,9 +8,21 @@ import UI from '../../../UI';
 import pointModification from '../../../../helpers/points/modification';
 
 export default class Market extends Component {
+  renderIncreaseInfluenceButton(id, marketId, marketingBaseCost) {
+    if (!flux.productStore.isCanIncreaseMarketLevel(id, marketId)) return '';
+
+    const canIncreaseInfluence = pointModification.marketing().diff >= marketingBaseCost;
+
+    return <UI.Button
+      text="Усилить влияние"
+      primary
+      disabled={!canIncreaseInfluence}
+      onClick={() => flux.productActions.increaseInfluenceOnMarket(id, marketId)}
+    />
+  }
+
   render({ marketId, market, id }) {
-    const { name, userOrientedName, clients, price, requirements, marketingBaseCost,
-      levelsOfInfluence, marketingActivityBaseCost } = market;
+    const { name, userOrientedName, clients, price, requirements } = market;
 
     let requirementTab = '';
     const requirementsValidator = flux.productStore.requirementsOKforMarket(id, marketId);
@@ -44,40 +56,53 @@ export default class Market extends Component {
       )
     }
 
-    const canIncreaseInfluence = pointModification.marketing().diff >= marketingBaseCost;
+    const marketingBaseCost = 10;
 
-    const isAvailableToLeaveMarket = flux.productStore.getMarketInfluenceOfCompany(id, marketId);
+    let leaveMarketButton;
+    const isAvailableToLeaveMarket = flux.productStore.isAvailableToLeaveMarket(id, marketId);
 
-    const levels = flux.productStore.getMarketLevels(id, marketId);
-
-    const reachedHighestLevel = levels.current === levels.max;
+    if (isAvailableToLeaveMarket) {
+      leaveMarketButton = <UI.Button
+        text="Уйти с рынка"
+        cancel
+        onClick={() => flux.productActions.decreaseInfluenceOnMarket(id, marketId)}
+      />
+    }
 
     const paymentTab = <div>
       <div>Стоимость поддержки (ежемесячно): {marketingBaseCost}MP</div>
-      {
-        reachedHighestLevel ? ''
-          :
-          <UI.Button
-            text="Усилить влияние"
-            primary
-            disabled={!canIncreaseInfluence}
-            onClick={() => flux.productActions.increaseInfluenceOnMarket(id, marketId)}
-          />
-
-      }
+      {this.renderIncreaseInfluenceButton(id, marketId, marketingBaseCost)}
       <br />
-      {
-        isAvailableToLeaveMarket
-          ?
-          <UI.Button
-            text="Уйти с рынка"
-            cancel
-            onClick={() => flux.productActions.decreaseInfluenceOnMarket(id, marketId)}
-          />
-          :
-          ''
-      }
+      {leaveMarketButton}
     </div>;
+
+    // return <div>{marketId}</div>
+
+
+    let competitorsTab;
+    const powerList = flux.productStore.getPowerListOnMarket(marketId);
+
+    if (powerList.length) {
+      // competitorsTab = JSON.stringify(powerList);
+      competitorsTab = <div>
+        <table>
+          <thead>
+            <th>Компания</th>
+            <th>Влияние</th>
+          </thead>
+          <tbody>
+            {powerList.map(c =>
+              <tr>
+                <td>{c.name}</td>
+                <td>{c.power}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>;
+    } else {
+      competitorsTab = <div className="positive">Рынок свободен, мы можем занять его без особых усилий!</div>
+    }
 
     return <div className="content-block">
       <div className="client-market-item">
@@ -85,15 +110,10 @@ export default class Market extends Component {
         <div className="offset-mid">
           <div>Объём рынка: {clients * price}$</div>
           <div className="offset-mid">
-            {
-              isAvailableToLeaveMarket
-                ?
-                <div>Текущее влияние: {levels.current}/{levels.max}</div>
-                :
-                <div></div>
-            }
             <div>{requirementTab}</div>
             <div>{paymentTab}</div>
+
+            <div>{competitorsTab}</div>
           </div>
         </div>
       </div>

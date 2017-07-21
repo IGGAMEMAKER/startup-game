@@ -171,18 +171,15 @@ export default class ProductPanel extends Component {
       <br />
     </div>;
 
-    let hypeTab = '';
-
     let marketsTab = productStore.getMarkets(id)
       .map((m, mId) => <Market id={id} marketId={mId} market={m} />);
 
+        // {clientTab}
     return (
       <div>
         <div className="featureGroupTitle">Маркетинг</div>
         {supportCostTab}
-        {hypeTab}
         {marketsTab}
-        {clientTab}
       </div>
     );
   };
@@ -457,6 +454,7 @@ export default class ProductPanel extends Component {
         <div className="product-panel-body">
           {body}
         </div>
+        {menu}
       </div>
     );
   }

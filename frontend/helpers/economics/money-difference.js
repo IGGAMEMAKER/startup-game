@@ -16,6 +16,8 @@ const calculate = (id) => {
       .map((p, i) => productStore.getProductIncome(i))
       .reduce((p, c) => p + c, 0) + rentIncome.sum;
 
+
+
   // check expenses
   const nonProductExpenses = productStore.getExpenses()
     .filter(e => e.type !== EXPENSES.EXPENSES_LOAN)

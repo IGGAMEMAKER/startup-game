@@ -101,37 +101,34 @@ export default {
       },
       markets: [
         {
+          id: 0,
           name: 'solo developer',
           userOrientedName: 'Программисты',
           clients: 90000,
           price: 8,
           rating: [0, 2.5, 1.5, 6, 0],
           requirements: [0, 0, 0, 0, 0],
-          marketingBaseCost: 1000,
-          marketingActivityBaseCost: 50,
-          levels: 7
+          levels: [1000, 1500, 2250]
         },
         {
+          id: 1,
           name: 'small startups',
           userOrientedName: 'Стартапы',
           clients: 7000,
           price: 50,
           rating: [0, 1.5, 1.5, 6.5, 0.5],
           requirements: [0, 0, 0, 80, 0],
-          marketingBaseCost: 100,
-          marketingActivityBaseCost: 50,
-          levels: 7
+          levels: [100, 250, 450]
         },
         {
+          id: 2,
           name: 'middle business',
           userOrientedName: 'Малый бизнес',
           clients: 3000,
           price: 150,
           rating: [0.5, 1.5, 1, 0, 7],
           requirements: [75, 0, 0, 0, 95],
-          marketingBaseCost: 10,
-          marketingActivityBaseCost: 50,
-          levels: 7
+          levels: [10, 25, 45]
         }
       ]
     }

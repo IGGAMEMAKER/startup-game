@@ -525,6 +525,8 @@ class ProductStore extends EventEmitter {
     return this.getNextFeature(id, 'payment', productStore.getPaymentFeatures(id));
   }
 
+
+
   getBenefitOnFeatureImprove(id, featureId) {
     return Math.floor(this.getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, 1000));
   }
@@ -551,32 +553,79 @@ class ProductStore extends EventEmitter {
       .reduce((p, c) => p + c, 0);
   }
 
-  getMarketInfluenceOfCompany(id, marketId) {
-    const yourLevel = this.getMarketLevelOfCompany(id, marketId);
+  getPowerListOnMarket(marketId) {
+    const marketRecords = _markets.filter(m => m.marketId === marketId);
 
-    return yourLevel / this.getMaxMarketLevel(id, marketId);
+    const influences = marketRecords
+      .map(({ companyId, marketId }) => {
+        const influence = this.getPowerOfCompanyOnMarket(companyId, marketId);
+
+        // const income = this.getMarketIncome(companyId, marketId);
+
+        const name = this.getName(companyId);
+
+        return {
+          name,
+          power: influence,
+          companyId
+        };
+      });
+
+    return influences.sort((a, b) => b.influence - a.influence);
   }
 
-  getMarketLevels(id, marketId) {
-    const yourLevel = this.getMarketLevelOfCompany(id, marketId);
-    const maxLevel = this.getMaxMarketLevel(id, marketId);
+  getMarketInfo(id, marketId) {
+    return this.getDefaults(id).markets[marketId];
+  }
 
-    return {
-      current: yourLevel,
-      max: maxLevel
-    }
+  getMarketInfluenceOfCompany(id, marketId) {
+    const powers = this.getPowerListOnMarket(marketId);
+
+    const power = powers.find(c => c.companyId === id).power;
+
+    const sum = powers.map(p => p.power).reduce((p, c) => p + c, 0);
+
+    logger.debug('getMarketInfluenceOfCompany', id, marketId, power, sum, powers);
+
+    return power / sum;
   }
 
   getMaxMarketLevel(id, marketId) {
-    return this.getMarkets(id)[marketId].levels;
+    return this.getMarkets(id)[marketId].levels.length;
+  }
+
+  isHaveInfluenceOnMarket(id, marketId) {
+    return _markets.find(m => m.companyId === id && m.marketId === marketId);
+  }
+
+  isAvailableToLeaveMarket(id, marketId) {
+    return this.isHaveInfluenceOnMarket(id, marketId);
+  }
+
+  getBaseMarketingInfluence(id, marketId) {
+    const level = _markets.find(m => m.companyId === id && m.marketId === marketId).level;
+
+    return this.getMarketInfo(id, marketId).levels[level];
+  }
+
+  getPowerOfCompanyOnMarket(id, marketId) {
+    return this.getBaseMarketingInfluence(id, marketId);
   }
 
   getMarketLevelOfCompany(id, marketId) {
-    const marketRecord = _markets.find(m => m.companyId === id && m.marketId === marketId);
+    const record = _markets.find(m => m.companyId === id && m.marketId === marketId);
 
-    if (marketRecord) return marketRecord.level;
+    if (record) return record.level;
 
-    return 0;
+    logger.debug(id, marketId, 'getMarketLevelOfCompany', _markets);
+
+    return -1;
+  }
+
+  isCanIncreaseMarketLevel(id, marketId) {
+    if (!this.requirementsOKforMarket(id, marketId).valid) return false;
+
+    return this.getMarketLevelOfCompany(id, marketId) < this.getMaxMarketLevel(id, marketId) - 1;
   }
 
   getMarketIncome = (id, marketId, improvement) => {
@@ -584,19 +633,16 @@ class ProductStore extends EventEmitter {
 
     if (!this.requirementsOKforMarket(id, marketId).valid) return 0;
 
+    if (!this.isHaveInfluenceOnMarket(id, marketId)) return 0;
+
     const market = this.getMarkets(id)[marketId];
-
-    logger.shit('compute rating of product with id=id by marketId', market, marketId);
-
-    logger.shit('influenceOnMarket is based on our marketing activities, ' +
-      'market settings (this market is main for us), and other players on this market');
 
     const influenceOnMarket = this.getMarketInfluenceOfCompany(id, marketId);
 
     const rating = this.getRating(id, marketId, improvement);
 
     const paymentModifier = this.getPaymentModifier(id);
-    const conversion = rating * paymentModifier; // max = 0.1
+    const conversion = rating * paymentModifier / 10; // max = 0.1
 
     const ppc = market.price * conversion;
 
@@ -604,15 +650,14 @@ class ProductStore extends EventEmitter {
   };
 
   getProductIncome(id) {
-    const markets = this.getMarkets(id);
+    const records = _markets
+      .filter(m => m.companyId === id);
 
-    const income = markets
-      .map((m, i) => this.getMarketIncome(id, i, null))
+    if (!records.length) return 0;
+
+    return records
+      .map((m, i) => this.getMarketIncome(id, m.marketId, null))
       .reduce((p, c) => p + c, 0);
-
-    // logger.debug('income=', income);
-
-    return income;
   }
 
   getIdea(id) {
@@ -989,7 +1034,7 @@ Dispatcher.register((p: PayloadType) => {
       if (index >= 0) {
         _markets[index].level++;
       } else {
-        _markets.push({ companyId: p.id, marketId: p.marketId, level: 1 });
+        _markets.push({ companyId: p.id, marketId: p.marketId, level: 0 });
       }
       break;
 
