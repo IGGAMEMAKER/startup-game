@@ -23,10 +23,12 @@ export default {
   },
 
   increaseInfluenceOnMarket(id, marketId) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_INFLUENCE_INCREASE,
-      id, marketId
-    })
+    if (productStore.isCanIncreaseMarketLevel(id, marketId)) {
+      Dispatcher.dispatch({
+        type: ACTIONS.PRODUCT_ACTIONS_MARKETS_INFLUENCE_INCREASE,
+        id, marketId
+      })
+    }
   },
 
   decreaseInfluenceOnMarket(id, marketId) {

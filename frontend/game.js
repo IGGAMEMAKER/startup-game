@@ -132,10 +132,15 @@ const run = () => {
     products.forEach((p, i) => {
       if (i !== 0) {
         const cost = productStore.getMainFeatureUpgradeCost(i, 3);
+
         if (productStore.enoughProgrammingPoints(cost, i)) {
           productActions.spendPoints(cost, 0, i);
           productActions.improveFeature(i, 'offer', 3, 10000, 1000);
         }
+
+        productActions.increaseInfluenceOnMarket(i, 0);
+        productActions.increaseInfluenceOnMarket(i, 1);
+        productActions.increaseInfluenceOnMarket(i, 2);
       }
     })
   }

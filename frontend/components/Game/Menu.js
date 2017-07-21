@@ -79,10 +79,28 @@ export default class Menu extends Component {
     // {day}.{month}.{year + 2016}
     //       <div>{new Date(year + 2016, month, day).toLocaleDateString()}</div>
     //       <div>Год: {year + 2016} Месяц: {month} День: {day}</div>
+
+    const shortenValue = value => {
+      const abs = Math.abs(value);
+
+      if (abs < 1000) return value;
+
+      if (abs < 1000000) return `${Math.floor(value / 1000)}k`;
+
+      if (abs < 1000000000) return `${Math.floor(value / 1000000)}M`;
+
+      if (abs < 1000000000000) return `${Math.floor(value / 1000000000)}B`;
+
+      return `tons of money!`;
+    };
+
+    let moneyPhrase = shortenValue(state.money);
+    let moneyDifferencePhrase = shortenValue(moneyDifference);
+
     return <div>
       <div>
         <div className="navigation">
-          <div className={moneyIndication}>${state.money} ({moneyDifference}$)</div>
+          <div className={moneyIndication}>${moneyPhrase} ({moneyDifferencePhrase}$)</div>
         </div>
         <div className="navigation">
           <div>{day + 1}.{month + 1}.{year + 2016}</div>

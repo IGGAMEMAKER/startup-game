@@ -247,6 +247,9 @@ textarea {
   color: var(--negative);
 }
 
+.negative-factor {
+  color: var(--negative);
+}
 
 .modal-head {
   color: var(--modalMainText);

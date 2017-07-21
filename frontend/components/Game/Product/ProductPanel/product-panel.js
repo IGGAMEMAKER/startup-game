@@ -113,9 +113,9 @@ export default class ProductPanel extends Component {
     const payment = this.plainifySameTypeFeatures(id, 'payment', 'Блок монетизации полностью улучшен!');
 
     const isOpened = productStore.canShowPayPercentageMetric(id);
-    const conversion = productStore.getConversionRate(id).pretty;
+    const conversion = productStore.getPaymentModifier(id);
 
-    const payAbility = Math.ceil(conversion * 10);
+    const payAbility = conversion * 100;
 
     const makeImprovementPhrase = 'Установите фичу "Тестовая покупка"';
     const payAbilityPhrase = `Платёжеспособность: ${isOpened ? `${payAbility}%` : makeImprovementPhrase}`;

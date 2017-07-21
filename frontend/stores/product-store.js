@@ -471,27 +471,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getPaymentModifier();
   }
 
-  getConversionRate(id, segmentId) {
-    const rating = this.getRating(id, segmentId);
-    const utility = this.getProductUtility(id);
-
-    const paymentModifier = this.getPaymentModifier(id);
-
-    let conversion = utility * rating * paymentModifier / 1000; // rating 10 - 0.05
-
-    let raw;
-    let pretty;
-    if (conversion < 0 || conversion > 15) {
-      logger.error(`invalid conversion value ${conversion}`);
-      conversion = 0;
-    }
-
-    raw = conversion;
-    pretty = percentify(conversion);
-
-    return { raw, pretty };
-  }
-
   getProductPrice(id, segId) {
     return _products[id].getProductPrice(segId);
   }
@@ -556,9 +535,12 @@ class ProductStore extends EventEmitter {
   getPowerListOnMarket(marketId) {
     const marketRecords = _markets.filter(m => m.marketId === marketId);
 
+    let sum = 0;
     const influences = marketRecords
       .map(({ companyId, marketId }) => {
-        const influence = this.getPowerOfCompanyOnMarket(companyId, marketId);
+        const power = this.getPowerOfCompanyOnMarket(companyId, marketId);
+
+        sum += power;
 
         // const income = this.getMarketIncome(companyId, marketId);
 
@@ -566,12 +548,14 @@ class ProductStore extends EventEmitter {
 
         return {
           name,
-          power: influence,
+          power,
           companyId
         };
       });
 
-    return influences.sort((a, b) => b.influence - a.influence);
+    return influences
+      .map(m => Object.assign({}, m, { share: percentify(m.power / sum) }))
+      .sort((a, b) => b.power - a.power);
   }
 
   getMarketInfo(id, marketId) {
@@ -585,13 +569,7 @@ class ProductStore extends EventEmitter {
 
     const sum = powers.map(p => p.power).reduce((p, c) => p + c, 0);
 
-    logger.debug('getMarketInfluenceOfCompany', id, marketId, power, sum, powers);
-
     return power / sum;
-  }
-
-  getMaxMarketLevel(id, marketId) {
-    return this.getMarkets(id)[marketId].levels.length;
   }
 
   isHaveInfluenceOnMarket(id, marketId) {
@@ -622,10 +600,28 @@ class ProductStore extends EventEmitter {
     return -1;
   }
 
+  getNextInfluenceMarketingCost(id, marketId) {
+    if (!this.isCanIncreaseMarketLevel(id, marketId)) return 0;
+
+    const level = this.getMarketLevelOfCompany(id, marketId);
+
+    return this.getMarketInfo(id, marketId).levels[level + 1];
+  }
+
+  getCurrentInfluenceMarketingCost(id, marketId) {
+    if (!this.isAvailableToLeaveMarket(id, marketId)) return 0;
+
+    const level = this.getMarketLevelOfCompany(id, marketId);
+
+    return this.getMarketInfo(id, marketId).levels[level];
+  }
+
   isCanIncreaseMarketLevel(id, marketId) {
     if (!this.requirementsOKforMarket(id, marketId).valid) return false;
 
-    return this.getMarketLevelOfCompany(id, marketId) < this.getMaxMarketLevel(id, marketId) - 1;
+    const max = this.getMarkets(id)[marketId].levels.length - 1;
+
+    return this.getMarketLevelOfCompany(id, marketId) < max;
   }
 
   getMarketIncome = (id, marketId, improvement) => {
@@ -642,6 +638,7 @@ class ProductStore extends EventEmitter {
     const rating = this.getRating(id, marketId, improvement);
 
     const paymentModifier = this.getPaymentModifier(id);
+
     const conversion = rating * paymentModifier / 10; // max = 0.1
 
     const ppc = market.price * conversion;
@@ -659,6 +656,7 @@ class ProductStore extends EventEmitter {
       .map((m, i) => this.getMarketIncome(id, m.marketId, null))
       .reduce((p, c) => p + c, 0);
   }
+
 
   getIdea(id) {
     return _products[id].getIdea();

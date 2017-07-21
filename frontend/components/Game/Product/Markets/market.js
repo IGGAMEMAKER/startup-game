@@ -48,7 +48,7 @@ export default class Market extends Component {
 
       requirementTab = (
         <div>
-          <div>! Требования</div>
+          <div className="negative-factor">! Требования</div>
           <ul>
             {unmet}
           </ul>
@@ -56,7 +56,8 @@ export default class Market extends Component {
       )
     }
 
-    const marketingBaseCost = 10;
+    const currentSupportCost = flux.productStore.getCurrentInfluenceMarketingCost(id, marketId);
+    const increasedCost = flux.productStore.getNextInfluenceMarketingCost(id, marketId);
 
     let leaveMarketButton;
     const isAvailableToLeaveMarket = flux.productStore.isAvailableToLeaveMarket(id, marketId);
@@ -70,8 +71,9 @@ export default class Market extends Component {
     }
 
     const paymentTab = <div>
-      <div>Стоимость поддержки (ежемесячно): {marketingBaseCost}MP</div>
-      {this.renderIncreaseInfluenceButton(id, marketId, marketingBaseCost)}
+      <div>Стоимость поддержки (ежемесячно): {currentSupportCost}MP</div>
+      <div>Стоимость поддержки после улучшения (ежемесячно): {increasedCost}MP</div>
+      {this.renderIncreaseInfluenceButton(id, marketId, increasedCost)}
       <br />
       {leaveMarketButton}
     </div>;
@@ -85,18 +87,16 @@ export default class Market extends Component {
     if (powerList.length) {
       // competitorsTab = JSON.stringify(powerList);
       competitorsTab = <div>
-        <table>
+        <br />
+        <div>Участники рынка</div>
+        <table className="table bordered-table">
           <thead>
             <th>Компания</th>
             <th>Влияние</th>
+            <th>Доля, %</th>
           </thead>
           <tbody>
-            {powerList.map(c =>
-              <tr>
-                <td>{c.name}</td>
-                <td>{c.power}</td>
-              </tr>
-            )}
+            {powerList.map(c => <tr><td>{c.name}</td><td>{c.power}</td><td>{c.share}</td></tr>)}
           </tbody>
         </table>
       </div>;
