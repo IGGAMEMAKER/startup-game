@@ -193,14 +193,13 @@ export default class Competitor extends Component {
     // <div>{JSON.stringify(c)}</div>
 
         // <div className="offset-min">Известность (HYPE): {c.hype} ({hypeChangePhrase} ежемесячно)</div>
+        // <div className="offset-min">Рейтинг: {c.rating}</div>
     return (
       <div className={background}>
         <div className="offset-min">{companyTitle}</div>
         <br />
 
-        <div className="offset-min">Рейтинг: {c.rating}</div>
         <div className="offset-mid">Стиль развития: {c.style}</div>
-        <div className="offset-mid">Клиенты: {c.clients} человек</div>
         <div className="offset-mid">Технологии</div>
         <div className="offset-mid"><ul>{this.renderFeatureList(c, i, rents, ourCompany)}</ul></div>
         <div className="offset-mid">Рыночная стоимость: {c.cost}$</div>

@@ -20,10 +20,12 @@ const monthlyMarketingPointsDifferenceStructured = (id = 0) => {
   const decrease = flux.productStore.getMarketingSupportCost(id);
   const increase = flux.productStore.getMonthlyMarketerPoints(id);
 
+
   return {
     increase,
     decrease,
     detailed: {
+      markets: flux.productStore.getOurMarketsSupportCostList(id),
       blog: flux.productStore.getBlogStatusStructured(id).supportCost,
       support: flux.productStore.getMarketingSupportTechTotalCost(id),
       base: flux.productStore.getBaseSupportCost()

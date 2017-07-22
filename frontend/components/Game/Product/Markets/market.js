@@ -8,17 +8,25 @@ import UI from '../../../UI';
 import pointModification from '../../../../helpers/points/modification';
 
 export default class Market extends Component {
-  renderIncreaseInfluenceButton(id, marketId, marketingBaseCost) {
+  renderIncreaseInfluenceButton(id, marketId, increasingSupportCost, increasedCost) {
     if (!flux.productStore.isCanIncreaseMarketLevel(id, marketId)) return '';
 
-    const canIncreaseInfluence = pointModification.marketing().diff >= marketingBaseCost;
+    const canIncreaseInfluence = pointModification.marketing().diff >= increasingSupportCost;
 
-    return <UI.Button
-      text="Усилить влияние"
-      primary
-      disabled={!canIncreaseInfluence}
-      onClick={() => flux.productActions.increaseInfluenceOnMarket(id, marketId)}
-    />
+    const benefit = <div>
+      Мы заработаем на {flux.productStore.getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId)}$ больше в этом месяце
+    </div>;
+
+    return <div>
+      <div>Стоимость поддержки после улучшения (ежемесячно): {increasedCost}MP</div>
+      {benefit}
+      <UI.Button
+        text="Усилить влияние"
+        primary
+        disabled={!canIncreaseInfluence}
+        onClick={() => flux.productActions.increaseInfluenceOnMarket(id, marketId)}
+      />
+    </div>
   }
 
   render({ marketId, market, id }) {
@@ -67,13 +75,12 @@ export default class Market extends Component {
         text="Уйти с рынка"
         cancel
         onClick={() => flux.productActions.decreaseInfluenceOnMarket(id, marketId)}
-      />
+      />;
     }
 
     const paymentTab = <div>
       <div>Стоимость поддержки (ежемесячно): {currentSupportCost}MP</div>
-      <div>Стоимость поддержки после улучшения (ежемесячно): {increasedCost}MP</div>
-      {this.renderIncreaseInfluenceButton(id, marketId, increasedCost)}
+      {this.renderIncreaseInfluenceButton(id, marketId, increasedCost - currentSupportCost, increasedCost)}
       <br />
       {leaveMarketButton}
     </div>;
@@ -91,12 +98,12 @@ export default class Market extends Component {
         <div>Участники рынка</div>
         <table className="table bordered-table">
           <thead>
-            <th>Компания</th>
-            <th>Влияние</th>
-            <th>Доля, %</th>
+          <th>Компания</th>
+          <th>Влияние</th>
+          <th>Доля, %</th>
           </thead>
           <tbody>
-            {powerList.map(c => <tr><td>{c.name}</td><td>{c.power}</td><td>{c.share}</td></tr>)}
+          {powerList.map(c => <tr><td>{c.name}</td><td>{c.power}</td><td>{c.share}</td></tr>)}
           </tbody>
         </table>
       </div>;

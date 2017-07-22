@@ -150,13 +150,19 @@ export default class ProductPanel extends Component {
     const support = pointSaldoHelper.marketing();
     let supportCostTab;
 
+
+    // <li>Затраты на блог: {support.detailed.blog}MP</li>
+    // <li>Затраты на техподдержку: {support.detailed.support}MP</li>
+
+    const influences = support.detailed.markets
+      .map(c => <li>Влияние на рынке {c.name}: {c.cost}MP</li>);
+
     supportCostTab = <div>
       <div>Наши маркетологи производят: {support.increase}MP в месяц</div>
       <div className={support.decrease ? '' : 'hide'}>
         <div>Ежемесячная стоимость поддержки: {support.decrease}MP</div>
         <ul className="offset-mid">
-          <li>Затраты на блог: {support.detailed.blog}MP</li>
-          <li>Затраты на техподдержку: {support.detailed.support}MP</li>
+          {influences}
         </ul>
       </div>
 

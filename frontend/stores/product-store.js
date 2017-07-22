@@ -532,24 +532,47 @@ class ProductStore extends EventEmitter {
       .reduce((p, c) => p + c, 0);
   }
 
+  getBestOpportunityForMarketInfluenceIncreasing(id) {
+    const markets = this.getMarkets(id);
+
+    // search for free markets
+
+    // if there are no free markets
+    // search markets with lowest influence cost
+
+    // meet requirements?
+
+    let canImproveInfluence = true;
+    let marketId = 2;
+
+    return {
+      canImproveInfluence,
+      marketId,
+
+    }
+  }
+
+  getPowerOfCompanyOnMarket(id, marketId) {
+    logger.shit('need to count edicts, market-oriented features, campaigns');
+
+    return this.getBaseMarketingInfluence(id, marketId);
+  }
+
   getPowerListOnMarket(marketId) {
     const marketRecords = _markets.filter(m => m.marketId === marketId);
 
     let sum = 0;
     const influences = marketRecords
       .map(({ companyId, marketId }) => {
-        const power = this.getPowerOfCompanyOnMarket(companyId, marketId);
+        let power = this.getPowerOfCompanyOnMarket(companyId, marketId);
 
         sum += power;
 
-        // const income = this.getMarketIncome(companyId, marketId);
-
-        const name = this.getName(companyId);
-
         return {
-          name,
+          name: this.getName(companyId),
           power,
-          companyId
+          companyId,
+          marketId
         };
       });
 
@@ -567,9 +590,57 @@ class ProductStore extends EventEmitter {
 
     const power = powers.find(c => c.companyId === id).power;
 
-    const sum = powers.map(p => p.power).reduce((p, c) => p + c, 0);
+    let sum = powers.map(p => p.power).reduce((p, c) => p + c, 0);
 
     return power / sum;
+  }
+
+  getMarketSize(id, marketId) {
+    const { price, clients } = this.getMarkets(id)[marketId];
+
+    return price * clients;
+  }
+
+  calculateMarketIncome(id, marketId, improvement, influenceOnMarket) {
+    const rating = this.getRating(id, marketId, improvement);
+
+    const paymentModifier = this.getPaymentModifier(id);
+
+    const efficiency = rating * paymentModifier / 10;
+
+    return Math.floor(this.getMarketSize(id, marketId) * efficiency * influenceOnMarket);
+  }
+
+  isMarketFree(marketId) {
+    return -1 === _markets.findIndex(m => m.marketId === marketId);
+  }
+
+  getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId) {
+    if (this.isHaveInfluenceOnMarket(id, marketId)) {
+      const powerIncreaseMultiplier = this.getNextInfluenceMarketingCost(id, marketId) / this.getCurrentInfluenceMarketingCost(id, marketId);
+
+      const powers = this.getPowerListOnMarket(marketId);
+
+      const index = powers.findIndex(p => p.companyId === id);
+
+      const prevShare = powers[index].share;
+      powers[index].share = prevShare * powerIncreaseMultiplier;
+
+      const shares = powers.map(p => p.share).reduce((p, c) => p + c, 0);
+
+      const nextShare = powers[index].share * 100 / shares;
+
+      const income = this.getMarketIncome(id, marketId) * (nextShare / prevShare - 1);
+
+      logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', id, marketId, powerIncreaseMultiplier, powers);
+      logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', index, shares, prevShare, nextShare);
+      return Math.floor(income);
+    } else if (this.isMarketFree(marketId)) {
+      return this.calculateMarketIncome(id, marketId, null, 1);
+    } else {
+      // market is not free, and we are trying entering it
+      return 555;
+    }
   }
 
   isHaveInfluenceOnMarket(id, marketId) {
@@ -586,18 +657,12 @@ class ProductStore extends EventEmitter {
     return this.getMarketInfo(id, marketId).levels[level];
   }
 
-  getPowerOfCompanyOnMarket(id, marketId) {
-    return this.getBaseMarketingInfluence(id, marketId);
-  }
+  getCurrentInfluenceMarketingCost(id, marketId) {
+    if (!this.isAvailableToLeaveMarket(id, marketId)) return 0;
 
-  getMarketLevelOfCompany(id, marketId) {
-    const record = _markets.find(m => m.companyId === id && m.marketId === marketId);
+    const level = this.getMarketLevelOfCompany(id, marketId);
 
-    if (record) return record.level;
-
-    logger.debug(id, marketId, 'getMarketLevelOfCompany', _markets);
-
-    return -1;
+    return this.getMarketInfo(id, marketId).levels[level];
   }
 
   getNextInfluenceMarketingCost(id, marketId) {
@@ -608,12 +673,12 @@ class ProductStore extends EventEmitter {
     return this.getMarketInfo(id, marketId).levels[level + 1];
   }
 
-  getCurrentInfluenceMarketingCost(id, marketId) {
-    if (!this.isAvailableToLeaveMarket(id, marketId)) return 0;
+  getMarketLevelOfCompany(id, marketId) {
+    const record = _markets.find(m => m.companyId === id && m.marketId === marketId);
 
-    const level = this.getMarketLevelOfCompany(id, marketId);
+    if (record) return record.level;
 
-    return this.getMarketInfo(id, marketId).levels[level];
+    return -1;
   }
 
   isCanIncreaseMarketLevel(id, marketId) {
@@ -625,25 +690,13 @@ class ProductStore extends EventEmitter {
   }
 
   getMarketIncome = (id, marketId, improvement) => {
-    if (!this.isPaymentEnabled(id, 0)) return 0;
-
     if (!this.requirementsOKforMarket(id, marketId).valid) return 0;
 
     if (!this.isHaveInfluenceOnMarket(id, marketId)) return 0;
 
-    const market = this.getMarkets(id)[marketId];
-
     const influenceOnMarket = this.getMarketInfluenceOfCompany(id, marketId);
 
-    const rating = this.getRating(id, marketId, improvement);
-
-    const paymentModifier = this.getPaymentModifier(id);
-
-    const conversion = rating * paymentModifier / 10; // max = 0.1
-
-    const ppc = market.price * conversion;
-
-    return Math.floor(market.clients * ppc * influenceOnMarket);
+    return this.calculateMarketIncome(id, marketId, improvement, influenceOnMarket);
   };
 
   getProductIncome(id) {
@@ -750,8 +803,24 @@ class ProductStore extends EventEmitter {
     return _products[id].getBaseSupportCost();
   }
 
+  getOurMarketsSupportCostList(id) {
+    const getMarketName = (marketId) => {
+      return this.getMarkets(id)[marketId].name;
+    };
+
+    return _markets
+      .filter(m => m.companyId === id)
+      .map(m => {
+        return {
+          cost: this.getCurrentInfluenceMarketingCost(id, m.marketId),
+          name: getMarketName(m.marketId)
+        }
+      })
+  }
+
   getMarketingSupportCost(id) {
-    return _products[id].getMarketingSupportCost();
+    return this.getOurMarketsSupportCostList(id).map(item => item.cost).reduce((p, c) => p + c, 0);
+    // return _products[id].getMarketingSupportCost();
   }
 
   getMarketingFeatureList(id) {
