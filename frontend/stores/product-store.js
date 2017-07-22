@@ -632,14 +632,22 @@ class ProductStore extends EventEmitter {
 
       const income = this.getMarketIncome(id, marketId) * (nextShare / prevShare - 1);
 
-      logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', id, marketId, powerIncreaseMultiplier, powers);
-      logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', index, shares, prevShare, nextShare);
+      // logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', id, marketId, powerIncreaseMultiplier, powers);
+      // logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', index, shares, prevShare, nextShare);
       return Math.floor(income);
     } else if (this.isMarketFree(marketId)) {
       return this.calculateMarketIncome(id, marketId, null, 1);
     } else {
       // market is not free, and we are trying entering it
-      return 555;
+      logger.shit('count edicts too!');
+
+      const powers = this.getPowerListOnMarket(marketId);
+
+      const newPower = this.getNextInfluenceMarketingCost(id, marketId);
+
+      const shares = powers.map(p => p.power).reduce((p, c) => p + c, 0) + newPower;
+
+      return this.calculateMarketIncome(id, marketId, null, newPower / shares);
     }
   }
 

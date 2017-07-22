@@ -85,8 +85,6 @@ export default class Market extends Component {
       {leaveMarketButton}
     </div>;
 
-    // return <div>{marketId}</div>
-
 
     let competitorsTab;
     const powerList = flux.productStore.getPowerListOnMarket(marketId);
