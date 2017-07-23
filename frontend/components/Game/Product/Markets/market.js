@@ -18,14 +18,15 @@ export default class Market extends Component {
     </div>;
 
     return <div>
-      <div>Стоимость поддержки после улучшения (ежемесячно): {increasedCost}MP</div>
-      {benefit}
+      <br />
       <UI.Button
         text="Усилить влияние"
         primary
         disabled={!canIncreaseInfluence}
         onClick={() => flux.productActions.increaseInfluenceOnMarket(id, marketId)}
       />
+      <div>Стоимость поддержки после улучшения (ежемесячно): {increasedCost}MP</div>
+      {benefit}
     </div>
   }
 

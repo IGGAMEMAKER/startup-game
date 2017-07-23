@@ -568,6 +568,7 @@ export default class Product {
 
   getMarketingSupportCost() {
     logger.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
+    return this.getBonusModifiers().marketingSupportCost;
     // const blogSupportCost = this.getBlogPower(id);
 
     const supportSupportCost = this.getMarketingSupportTechTotalCost();

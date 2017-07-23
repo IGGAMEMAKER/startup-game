@@ -7,6 +7,17 @@ export type FeatureType = {
   time: Number
 };
 
+export type MarketDescription = {
+  id: Number,
+  name: String,
+  userOrientedName: String,
+  clients: Number,
+  price: Number,
+  rating: Array<Number>,
+  requirements: Array<Number>,
+  levels: Array<Number>
+};
+
 export type DefaultDescription = {
   description: String,
   features: Array<FeatureType>,

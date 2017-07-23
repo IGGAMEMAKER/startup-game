@@ -12,7 +12,7 @@ import * as JOB from '../constants/job';
 
 import Product from '../classes/Product';
 
-import { DefaultDescription } from '../constants/products/types/product-description';
+import { DefaultDescription, MarketDescription } from '../constants/products/types/product-description';
 
 
 import productDescriptions from '../helpers/products/product-descriptions';
@@ -60,6 +60,12 @@ type DescribedRent = {
   acceptorName: String,
   senderValue: Number,
   techName: String
+};
+
+type MarketRecord = {
+  companyId: Number,
+  marketId: Number,
+  level: Number,
 };
 
 let _rents: Array<Rent> = [
@@ -125,7 +131,7 @@ let _loan = 0; // no loans;
 
 let _products: Array<Product> = [];
 
-let _markets = [];
+let _markets: Array<MarketRecord> = [];
 
 const initialize = ({ markets, products, rents, expenses, employees, team, reputation, fame, loan}) => {
   _products = products;
@@ -510,7 +516,7 @@ class ProductStore extends EventEmitter {
     return Math.floor(this.getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, 1000));
   }
 
-  getMarkets(id) {
+  getMarkets(id): Array<MarketDescription> {
     return productDescriptions(_products[id].idea).markets;
   }
 
@@ -530,26 +536,6 @@ class ProductStore extends EventEmitter {
         return this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value)
       })
       .reduce((p, c) => p + c, 0);
-  }
-
-  getBestOpportunityForMarketInfluenceIncreasing(id) {
-    const markets = this.getMarkets(id);
-
-    // search for free markets
-
-    // if there are no free markets
-    // search markets with lowest influence cost
-
-    // meet requirements?
-
-    let canImproveInfluence = true;
-    let marketId = 2;
-
-    return {
-      canImproveInfluence,
-      marketId,
-
-    }
   }
 
   getPowerOfCompanyOnMarket(id, marketId) {
@@ -689,6 +675,85 @@ class ProductStore extends EventEmitter {
     return -1;
   }
 
+  getMonthlyMPChange(id) {
+    return this.getMonthlyMarketerPoints(id) - this.getMarketingSupportCost(id);
+  }
+
+  isMaxLevelReached(id, marketId) {
+    const max = this.getMarkets(id)[marketId].levels.length;
+    const current = this.getMarketLevelOfCompany(id, marketId);
+
+    return maxLevel === current;
+  }
+
+  isFreeMarket(marketId) {
+    return _markets.filter(m => m.marketId === marketId).length
+  }
+
+  getMarketingAnalysis(id) {
+    const markets = this.getMarkets(id);
+
+    markets.map(m => {
+      let cost, enoughPoints, benefitOnLevelUp, isFreeMarket;
+      isFreeMarket = this.isFreeMarket(m.id);
+
+      const requirementsOk = this.requirementsOKforMarket(id, m.id).valid;
+
+      const isMaxLevelReached = this.isMaxLevelReached(id, m.id);
+
+      if (isMaxLevelReached) {
+        cost = 0;
+        enoughPoints = true;
+        benefitOnLevelUp = 0;
+      } else {
+        cost = this.getNextInfluenceMarketingCost(id, m.id) - this.getCurrentInfluenceMarketingCost(id, m.id);
+        enoughPoints = this.getMonthlyMPChange(id) >= cost;
+        benefitOnLevelUp = this.getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, m.id);
+      }
+
+      const canIncreaseInfluence = requirementsOk && !isMaxLevelReached && enoughPoints;
+
+      return {
+        cost,
+        isMaxLevelReached,
+        requirementsOk,
+        benefitOnLevelUp,
+        enoughPoints,
+        isFreeMarket,
+        canIncreaseInfluence
+      }
+    })
+  }
+
+
+  getBestOpportunityForMarketInfluenceIncreasing(id) {
+    const markets = this.getMarketingAnalysis(id);
+
+    // search for free markets
+    const freeMarketIndex = markets.findIndex(m => m.isFreeMarket && m.canIncreaseInfluence);
+
+    if (freeMarketIndex >= 0) {
+      return {
+        canImproveInfluence: true,
+        marketId: freeMarketIndex
+      }
+    }
+
+    // if there are no free markets
+    // search markets with lowest influence cost
+    
+
+    // meet requirements?
+
+    let canImproveInfluence = true;
+    let marketId = 2;
+
+    return {
+      canImproveInfluence,
+      marketId
+    }
+  }
+
   isCanIncreaseMarketLevel(id, marketId) {
     if (!this.requirementsOKforMarket(id, marketId).valid) return false;
 
@@ -717,6 +782,7 @@ class ProductStore extends EventEmitter {
       .map((m, i) => this.getMarketIncome(id, m.marketId, null))
       .reduce((p, c) => p + c, 0);
   }
+
 
 
   getIdea(id) {
@@ -827,7 +893,9 @@ class ProductStore extends EventEmitter {
   }
 
   getMarketingSupportCost(id) {
-    return this.getOurMarketsSupportCostList(id).map(item => item.cost).reduce((p, c) => p + c, 0);
+    const baseCost = this.getOurMarketsSupportCostList(id).map(item => item.cost).reduce((p, c) => p + c, 0);
+
+    return Math.ceil(baseCost * (1 - _products[id].getMarketingSupportCost() / 100));
     // return _products[id].getMarketingSupportCost();
   }
 
