@@ -9,6 +9,8 @@ import logger from './helpers/logger/logger';
 import moneyCalculator from './helpers/economics/money-difference';
 import eventGenerator from './helpers/events/event-generator';
 
+import bot from './helpers/ai/';
+
 import * as MANAGEMENT_STYLES from './constants/company-styles';
 
 import Product from './classes/Product';
@@ -74,11 +76,6 @@ const calculatePoints = companyId => {
   productActions.increasePoints(points, companyId);
 };
 
-const getClientTransformations = () => {
-  return productStore.getClientTransformations();
-};
-
-
 
 const run = () => {
   scheduleActions.increaseDay();
@@ -92,9 +89,6 @@ const run = () => {
 
   // check if it is last day of month (pay day)
   if (isLastDayOfMonth(day)) {
-    // calculate client amount change
-    // const transformations = getClientTransformations();
-
     products
       .forEach((p, i) => {
         const moneyBefore = productStore.getMoney(i);
@@ -131,16 +125,7 @@ const run = () => {
   if (isUsualDay(day)) {
     products.forEach((p, i) => {
       if (i !== 0) {
-        const cost = productStore.getMainFeatureUpgradeCost(i, 3);
-
-        if (productStore.enoughProgrammingPoints(cost, i)) {
-          productActions.spendPoints(cost, 0, i);
-          productActions.improveFeature(i, 'offer', 3, 10000, 1000);
-        }
-
-        productActions.increaseInfluenceOnMarket(i, 0);
-        productActions.increaseInfluenceOnMarket(i, 1);
-        productActions.increaseInfluenceOnMarket(i, 2);
+        bot.run(i);
       }
     })
   }

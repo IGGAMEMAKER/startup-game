@@ -720,7 +720,8 @@ class ProductStore extends EventEmitter {
         benefitOnLevelUp,
         enoughPoints,
         isFreeMarket,
-        canIncreaseInfluence
+        canIncreaseInfluence,
+        marketId: m.id
       }
     })
   }
@@ -741,7 +742,7 @@ class ProductStore extends EventEmitter {
 
     // if there are no free markets
     // search markets with lowest influence cost
-    
+
 
     // meet requirements?
 

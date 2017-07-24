@@ -1,4 +1,6 @@
 import Product from '../../classes/Product';
+import productStore from '../../stores/product-store';
+import productActions from '../../actions/product-actions';
 
 const timeUntilMoneyCollapse = (p) => { return 0; };
 const isMoneyCollapsing = (p) => false;
@@ -15,8 +17,21 @@ const needsPP = () => { return 100 };
 
 const getIncomeOf = product => 2000;
 
-export default function (products: Array<Product>, id) {
-  const product: Product = products[id];
+function run (id) {
+  const product: Product = productStore.getProduct(id);
+
+  const cost = productStore.getMainFeatureUpgradeCost(id, 3);
+
+  if (productStore.enoughProgrammingPoints(cost, id)) {
+    productActions.spendPoints(cost, 0, id);
+    productActions.improveFeature(id, 'offer', 3, 10000, 1000);
+  }
+
+  productActions.increaseInfluenceOnMarket(id, 0);
+  productActions.increaseInfluenceOnMarket(id, 1);
+  productActions.increaseInfluenceOnMarket(id, 2);
+
+  return;
 
   const baseValue = 0.5;
 
@@ -39,7 +54,7 @@ export default function (products: Array<Product>, id) {
     mpDelta: -15,
     ppDelta: 0,
     cb: () => {
-      
+
     }
   });
   // improve main features
@@ -49,3 +64,7 @@ export default function (products: Array<Product>, id) {
   // pick bonus
   // rent techs
 }
+
+export default {
+  run
+};
