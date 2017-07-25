@@ -52,15 +52,25 @@ function run (id) {
   };
 
   const upgradeMarket = (id, mId) => {
-    logger.debug(`company ${id}: trying to upgrade market ${mId}`);
+    // logger.debug(`company ${id}: trying to upgrade market ${mId}`);
 
-    const cost = 500;
+    const currentSupportCost = productStore.getCurrentInfluenceMarketingCost(id, mId);
+    const increasedCost = productStore.getNextInfluenceMarketingCost(id, mId);
 
-    productActions.increaseInfluenceOnMarket(id, mId);
+    const mpChange = productStore.getPointModificationStructured(id).marketing().diff;
+    const cost = increasedCost - currentSupportCost;
 
-    const companyName = productStore.getName(id);
-    const marketName = productStore.getMarketName(id, mId);
-    // messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_MARKETS_INFLUENCE_INCREASED, { id, mId, companyName, marketName })
+    logger.debug(`company ${id}: trying to upgrade market ${mId}. their mpChange is: `, mpChange, `. While cost is: ${cost}.`, currentSupportCost, increasedCost);
+
+
+    if (mpChange > cost) {
+      productActions.increaseInfluenceOngMarket(id, mId);
+
+      const companyName = productStore.getName(id);
+      const marketName = productStore.getMarketName(id, mId);
+
+      messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_MARKETS_INFLUENCE_INCREASED, { id, mId, companyName, marketName })
+    }
   };
 
   const features = productStore.getDefaults(id).features;

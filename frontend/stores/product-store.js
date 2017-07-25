@@ -6,6 +6,8 @@ import logger from '../helpers/logger/logger';
 
 import percentify from '../helpers/math/percentify';
 
+import companyCostHelper from '../helpers/products/compute-company-cost';
+
 import * as PRODUCT_STAGES from '../constants/products/product-stages';
 import * as EXPENSES from '../constants/expenses';
 import * as JOB from '../constants/job';
@@ -339,10 +341,12 @@ class ProductStore extends EventEmitter {
   }
 
   getCompanyCost(id) {
+    return companyCostHelper.compute(_products[id], this.getProductIncome(id), 0);
     return _products[id].getCompanyCost();
   }
 
   getCompanyCostStructured(id) {
+    return companyCostHelper.structured(_products[id], this.getProductIncome(id), 0);
     return _products[id].getCompanyCostStructured();
   }
 
@@ -1158,12 +1162,12 @@ class ProductStore extends EventEmitter {
           clients: p.KPI.clients,
           name: p.name,
           features: offer,
-          cost: p.getCompanyCost(),
+          cost: this.getCompanyCost(id),
           id,
           hype: p.getHypeValue(),
           company: p,
           income: this.getProductIncome(id),
-          expenses: this.getProductExpenses(id),
+          expenses: this.getProductExpenses(id)
         }
       });
       // .sort((a, b) => b.cost - a.cost);

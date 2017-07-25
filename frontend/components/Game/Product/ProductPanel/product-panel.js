@@ -391,7 +391,7 @@ export default class ProductPanel extends Component {
       <div>На нашу стоимость влияет количество клиентов и развитие технологий</div>
       <ul>
         <li>От технологий ({ourCompanyCost.technologyPart}%): {ourCompanyCost.technologyValue}$</li>
-        <li>От клиентов ({ourCompanyCost.clientPart}%): {ourCompanyCost.clientValue}$</li>
+        <li>От доходов ({ourCompanyCost.economicPart}%): {ourCompanyCost.economicValue}$</li>
       </ul>
     </div>
   }

@@ -33,6 +33,8 @@ export default class Modal extends Component {
     let body = this.renderModalBody(message, 0, props.onclose);
         // {JSON.stringify(message)}
 
+    if (!body) return <div></div>;
+
     return (
       <div className="messageTab">{body}</div>
     );

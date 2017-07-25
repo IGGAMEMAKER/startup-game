@@ -1,7 +1,7 @@
 import productDescriptions from './product-descriptions';
 import logger from '../logger/logger';
 
-const structured = (c) => {
+const structured = (c, income, expense) => {
   // logger.debug('compute cost of company', c);
   const defaults = productDescriptions(c.idea);
   const defaultFeatures = defaults.features;
@@ -28,24 +28,30 @@ const structured = (c) => {
 
   // customers also influence cost
   const clientValue = Math.ceil(c.KPI.clients * defaults.CAC * 80);
+  const economicValue = Math.ceil(income * 24);
 
-  const cost = 10000 + technologyValue + clientValue;
+  const cost = 10000 + technologyValue + clientValue + economicValue;
 
   const technologyPart = Math.floor(technologyValue * 100 / cost);
   const clientPart = Math.floor(clientValue * 100 / cost);
+  const economicPart = Math.floor(income * 100 / cost);
+
 
   return {
     cost,
     complexityModifier,
+
     clientPart,
     technologyPart,
+    economicPart,
     clientValue,
     technologyValue,
+    economicValue
   };
 };
 
-const compute = (c) => {
-  return structured(c).cost;
+const compute = (c, income, expense) => {
+  return structured(c, income, expense).cost;
 };
 
 export default {
