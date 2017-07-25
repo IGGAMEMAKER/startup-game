@@ -38,6 +38,9 @@ export default class Modal extends Component {
       case NOTIFICATIONS.NOTIFICATION_FEATURE_UPGRADED:
         body = <div>Компания "{data.companyName}" улучшает технологию "{data.featureName}"</div>;
         break;
+      case NOTIFICATIONS.NOTIFICATION_FEATURE_TECH_LEADER:
+        body = <div>Компания "{data.companyName}" становится лидером в технологии "{data.featureName}"!</div>;
+        break;
       case NOTIFICATIONS.NOTIFICATION_MARKETS_INFLUENCE_INCREASED:
         body = <div>Компания "{data.companyName}" усиливает влияние на рынке "{data.marketName}"! Наши доходы снизились</div>;
         break;
@@ -46,8 +49,10 @@ export default class Modal extends Component {
         break;
     }
 
+    // сообщений: {state.messages.length}
+
     return (
-      <div className="">сообщений: {state.messages.length} {body}</div>
+      <div className="">{body}</div>
     );
   }
 }

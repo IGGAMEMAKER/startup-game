@@ -37,13 +37,17 @@ function run (id) {
     const cost = productStore.getMainFeatureUpgradeCost(id, fId);
 
     if (productStore.enoughProgrammingPoints(cost, id)) {
+      const upgradeWillResultLeadership = productStore.isUpgradeWillResultTechBreakthrough(id, fId);
       productActions.spendPoints(cost, 0, id);
       productActions.improveFeature(id, 'offer', fId, 10000, 1000);
 
 
       const companyName = productStore.getName(id);
       const featureName = productStore.getPrettyFeatureNameByFeatureId(id, fId);
-      messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_FEATURE_UPGRADED, { id, fId, companyName, featureName })
+
+      if (upgradeWillResultLeadership) {
+        messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_FEATURE_TECH_LEADER, { id, fId, companyName, featureName })
+      }
     }
   };
 
