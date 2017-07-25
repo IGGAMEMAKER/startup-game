@@ -11,8 +11,6 @@ import eventGenerator from './helpers/events/event-generator';
 
 import bot from './helpers/ai/';
 
-import * as MANAGEMENT_STYLES from './constants/company-styles';
-
 import Product from './classes/Product';
 
 import {

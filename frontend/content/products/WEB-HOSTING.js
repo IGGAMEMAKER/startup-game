@@ -40,7 +40,8 @@ export default {
           shortDescription: 'Масштабируемость',
           data: timeModifier(5000),
           time: 20,
-          development: 70
+          development: 70,
+          id: 0
         },
         {
           name: 'website',
@@ -49,7 +50,8 @@ export default {
           shortDescription: 'Веб-сайт',
           data: timeModifier(15000),
           time: 30,
-          development: 30
+          development: 30,
+          id: 1
         },
         // { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 },
         // { name: 'reliability', influence: 3, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 },
@@ -60,7 +62,8 @@ export default {
           shortDescription: 'Техподдержка',
           data: timeModifier(5000),
           time: 30,
-          development: 100
+          development: 100,
+          id: 2
         },
         {
           name: 'VPS',
@@ -70,7 +73,8 @@ export default {
           data: timeModifier(7000),
           time: 30,
           shareable: true,
-          development: 75
+          development: 75,
+          id: 3
         },
         {
           name: 'VDS',
@@ -80,7 +84,8 @@ export default {
           data: timeModifier(15000),
           time: 30,
           shareable: true,
-          development: 135
+          development: 135,
+          id: 4
         }
       ],
       utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments

@@ -133,7 +133,7 @@ let _products: Array<Product> = [];
 
 let _markets: Array<MarketRecord> = [];
 
-const initialize = ({ markets, products, rents, expenses, employees, team, reputation, fame, loan}) => {
+const initialize = ({ markets, products, rents, expenses, employees, team, reputation, fame, loan }) => {
   _products = products;
   _markets = markets;
 
@@ -683,18 +683,22 @@ class ProductStore extends EventEmitter {
     const max = this.getMarkets(id)[marketId].levels.length;
     const current = this.getMarketLevelOfCompany(id, marketId);
 
-    return maxLevel === current;
+    return max === current;
   }
 
   isFreeMarket(marketId) {
     return _markets.filter(m => m.marketId === marketId).length
   }
 
+  getShareableFeatureIdList(id) {
+    return this.getDefaults(id).features.filter((f, fId) => this.isShareableFeature(id, fId)).map((f, fId) => f.id)
+  }
+
   getMarketingAnalysis(id) {
     const markets = this.getMarkets(id);
 
-    markets.map(m => {
-      let cost, enoughPoints, benefitOnLevelUp, isFreeMarket;
+    return markets.map(m => {
+      let cost, enoughMPs, benefitOnLevelUp, isFreeMarket;
       isFreeMarket = this.isFreeMarket(m.id);
 
       const requirementsOk = this.requirementsOKforMarket(id, m.id).valid;
@@ -703,25 +707,32 @@ class ProductStore extends EventEmitter {
 
       if (isMaxLevelReached) {
         cost = 0;
-        enoughPoints = true;
+        enoughMPs = true;
         benefitOnLevelUp = 0;
       } else {
         cost = this.getNextInfluenceMarketingCost(id, m.id) - this.getCurrentInfluenceMarketingCost(id, m.id);
-        enoughPoints = this.getMonthlyMPChange(id) >= cost;
+        enoughMPs = this.getMonthlyMPChange(id) >= cost;
         benefitOnLevelUp = this.getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, m.id);
       }
 
-      const canIncreaseInfluence = requirementsOk && !isMaxLevelReached && enoughPoints;
+      const canIncreaseInfluence = requirementsOk && !isMaxLevelReached && enoughMPs;
+
+      let ROI = 0;
+      if (cost) {
+        ROI = benefitOnLevelUp / cost;
+      }
 
       return {
-        cost,
+        canIncreaseInfluence,
         isMaxLevelReached,
         requirementsOk,
-        benefitOnLevelUp,
-        enoughPoints,
+        enoughMPs,
         isFreeMarket,
-        canIncreaseInfluence,
-        marketId: m.id
+        cost,
+        benefitOnLevelUp,
+        ROI,
+        marketId: m.id,
+
       }
     })
   }

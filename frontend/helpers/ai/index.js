@@ -2,6 +2,8 @@ import Product from '../../classes/Product';
 import productStore from '../../stores/product-store';
 import productActions from '../../actions/product-actions';
 
+import logger from '../../helpers/logger/logger';
+
 const timeUntilMoneyCollapse = (p) => { return 0; };
 const isMoneyCollapsing = (p) => false;
 
@@ -17,19 +19,116 @@ const needsPP = () => { return 100 };
 
 const getIncomeOf = product => 2000;
 
+import * as MANAGEMENT_STYLES from '../../constants/company-styles';
+
+
 function run (id) {
+  // upgrade features
   const product: Product = productStore.getProduct(id);
 
-  const cost = productStore.getMainFeatureUpgradeCost(id, 3);
+  const upgradeFeature = (id, fId) => {
+    logger.debug(`company ${id}: trying to upgrade feature ${fId}`);
+    if (fId < 0) return;
 
-  if (productStore.enoughProgrammingPoints(cost, id)) {
-    productActions.spendPoints(cost, 0, id);
-    productActions.improveFeature(id, 'offer', 3, 10000, 1000);
+    const cost = productStore.getMainFeatureUpgradeCost(id, fId);
+
+    if (productStore.enoughProgrammingPoints(cost, id)) {
+      productActions.spendPoints(cost, 0, id);
+      productActions.improveFeature(id, 'offer', fId, 10000, 1000);
+    }
+  };
+
+  const upgradeMarket = (id, mId) => {
+    logger.debug(`company ${id}: trying to upgrade market ${mId}`);
+
+    productActions.increaseInfluenceOnMarket(id, mId);
+  };
+
+  const features = productStore.getDefaults(id).features;
+
+  const isBalancedCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED || product.style === MANAGEMENT_STYLES.COMPANY_STYLE_SEGMENT_ORIENTED;
+  const isTechnologicalCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
+
+  let sumOfProbabilities = 0;
+  const featureProbabilities = [];
+  const featuresChecked = features.map(f => {
+    let probability = 10;
+
+    if (f.shareable && isTechnologicalCompany) {
+      probability = 100;
+    }
+
+    if (!f.shareable && isBalancedCompany) {
+      probability = 100;
+    }
+
+
+    featureProbabilities.push({
+      fId: f.id,
+      probability,
+      min: sumOfProbabilities,
+      max: sumOfProbabilities + probability
+    });
+
+    sumOfProbabilities += probability;
+
+    return f;
+  });
+
+  const value = Math.floor(Math.random(0, 1) * sumOfProbabilities);
+
+  const willUpgradeId = featureProbabilities.findIndex(f => f.min < value && f.max >= value);
+
+  upgradeFeature(id, willUpgradeId);
+
+
+  // upgrade payments block
+
+
+
+
+
+
+  // get more influence on markets
+  const analysedMarkets = productStore.getMarketingAnalysis(id);
+
+  let hasMaxLevelOnAllMarkets = true;
+
+  const nonUpgradeableMarkets = analysedMarkets.filter(m => !m.canIncreaseInfluence);
+  const upgradeableMarkets = analysedMarkets.filter(m => m.canIncreaseInfluence);
+
+  if (upgradeableMarkets.length) {
+    // there are markets, where we can improve influence
+    const competitiveMarkets = upgradeableMarkets.sort((a, b) => b.ROI - a.ROI);
+
+    upgradeMarket(id, competitiveMarkets[0].marketId);
+  } else {
+    // nonUpgradeableMarkets.filter()
   }
 
-  productActions.increaseInfluenceOnMarket(id, 0);
-  productActions.increaseInfluenceOnMarket(id, 1);
-  productActions.increaseInfluenceOnMarket(id, 2);
+  // analysedMarkets.forEach(m => {
+  //   const mId = m.marketId;
+  //   if (!m.isMaxLevelReached) hasMaxLevelOnAllMarkets = false;
+  //
+  //   if (m.canIncreaseInfluence) {
+  //     if (m.isFreeMarket) {
+  //       frees.push({ mId });
+  //
+  //       upgradedInfluence = true;
+  //     }
+  //
+  //
+  //   } else {
+  //
+  //   }
+  // });
+
+
+  // pick bonuses
+
+  // productActions.increaseInfluenceOnMarket(id, 0);
+  // productActions.increaseInfluenceOnMarket(id, 1);
+  // productActions.increaseInfluenceOnMarket(id, 2);
 
   return;
 
