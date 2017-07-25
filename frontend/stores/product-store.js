@@ -225,6 +225,10 @@ class ProductStore extends EventEmitter {
     });
   };
 
+  getMarketName(id, mId) {
+    return this.getMarkets(id)[mId].name;
+  }
+
   getPoints(id) {
     return _products[id]._points;
   }
@@ -1110,8 +1114,8 @@ class ProductStore extends EventEmitter {
           cost: p.getCompanyCost(),
           id,
           hype: p.getHypeValue(),
-          // hypeDamping: this.getHypeDampingValue(id),
-          company: p
+          company: p,
+          income: this.getProductIncome(id)
         }
       });
       // .sort((a, b) => b.cost - a.cost);

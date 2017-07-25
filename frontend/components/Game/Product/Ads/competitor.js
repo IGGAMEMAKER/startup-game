@@ -203,6 +203,7 @@ export default class Competitor extends Component {
         <div className="offset-mid">Технологии</div>
         <div className="offset-mid"><ul>{this.renderFeatureList(c, i, rents, ourCompany)}</ul></div>
         <div className="offset-mid">Рыночная стоимость: {c.cost}$</div>
+        <div className="offset-mid">Доходы: {c.income}$</div>
 
 
         <div className={`offset-mid ${buyingCompanyButtonVisible}`}>

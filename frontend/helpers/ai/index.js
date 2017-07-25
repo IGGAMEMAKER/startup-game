@@ -21,6 +21,10 @@ const getIncomeOf = product => 2000;
 
 import * as MANAGEMENT_STYLES from '../../constants/company-styles';
 
+import * as NOTIFICATIONS from '../../constants/notifications';
+
+import messageActions from '../../actions/message-actions';
+
 
 function run (id) {
   // upgrade features
@@ -35,13 +39,22 @@ function run (id) {
     if (productStore.enoughProgrammingPoints(cost, id)) {
       productActions.spendPoints(cost, 0, id);
       productActions.improveFeature(id, 'offer', fId, 10000, 1000);
+
+
+      const companyName = productStore.getName(id);
+      const featureName = productStore.getPrettyFeatureNameByFeatureId(id, fId);
+      messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_FEATURE_UPGRADED, { id, fId, companyName, featureName })
     }
   };
 
   const upgradeMarket = (id, mId) => {
     logger.debug(`company ${id}: trying to upgrade market ${mId}`);
-
+    
     productActions.increaseInfluenceOnMarket(id, mId);
+
+    const companyName = productStore.getName(id);
+    const marketName = productStore.getMarketName(id, mId);
+    messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_MARKETS_INFLUENCE_INCREASED, { id, mId, companyName, marketName })
   };
 
   const features = productStore.getDefaults(id).features;

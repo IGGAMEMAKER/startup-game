@@ -26,6 +26,7 @@ export default {
 
   addNotification: (eventType, data) => {
     const obj = Object.assign({}, data, { type: eventType });
+    logger.debug('notification', eventType, data);
 
     Dispatcher.dispatch({
       type: ACTIONS.GAME_EVENT_ADD,
