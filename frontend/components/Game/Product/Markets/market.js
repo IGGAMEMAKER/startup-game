@@ -5,13 +5,11 @@ import ColoredRating from '../KPI/colored-rating';
 
 import UI from '../../../UI';
 
-import pointModification from '../../../../helpers/points/modification';
-
 export default class Market extends Component {
   renderIncreaseInfluenceButton(id, marketId, increasingSupportCost, increasedCost) {
     if (!flux.productStore.isCanIncreaseMarketLevel(id, marketId)) return '';
 
-    const canIncreaseInfluence = pointModification.marketing().diff >= increasingSupportCost;
+    const canIncreaseInfluence = flux.productStore.getPointModificationStructured(id).marketing().diff >= increasingSupportCost;
 
     const benefit = <div>
       Мы заработаем на {flux.productStore.getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId)}$ больше в этом месяце

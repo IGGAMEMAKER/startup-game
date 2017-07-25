@@ -69,6 +69,10 @@ class ScheduleStore extends EventEmitter {
     return _messages.filter(m => !m.isModal);
   }
 
+  getNotifications() {
+    return this.getPlainMessages().reverse();
+  }
+
   initialize(messages) {
     _messages = messages;
   }

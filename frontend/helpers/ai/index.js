@@ -49,12 +49,14 @@ function run (id) {
 
   const upgradeMarket = (id, mId) => {
     logger.debug(`company ${id}: trying to upgrade market ${mId}`);
-    
+
+    const cost = 500;
+
     productActions.increaseInfluenceOnMarket(id, mId);
 
     const companyName = productStore.getName(id);
     const marketName = productStore.getMarketName(id, mId);
-    messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_MARKETS_INFLUENCE_INCREASED, { id, mId, companyName, marketName })
+    // messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_MARKETS_INFLUENCE_INCREASED, { id, mId, companyName, marketName })
   };
 
   const features = productStore.getDefaults(id).features;
@@ -96,9 +98,17 @@ function run (id) {
 
 
   // upgrade payments block
+  if (isBalancedCompany && Math.random() < 1 / 30 / 2) {
+    const paymentFeature = productStore.getNearestPaymentFeature(id);
+    logger.debug('payments nearest', id, paymentFeature);
 
+    if (paymentFeature && paymentFeature.canUpgrade) {
+      productActions.improveFeatureByPoints(id, 'payment', paymentFeature.name);
+      const { points } = paymentFeature;
 
-
+      productActions.spendPoints(points.programming, points.marketing, id);
+    }
+  }
 
 
 

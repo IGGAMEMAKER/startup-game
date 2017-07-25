@@ -11,8 +11,6 @@ import Bonuses from '../../Product/Bonuses/list';
 import Metrics from '../KPI/metrics';
 import UI from '../../../UI';
 
-import pointSaldoHelper from '../../../../helpers/points/modification';
-
 import productStore from '../../../../stores/product-store';
 import productActions from '../../../../actions/product-actions';
 
@@ -147,7 +145,7 @@ export default class ProductPanel extends Component {
 
     let clientTab = churnFeatures;
 
-    const support = pointSaldoHelper.marketing();
+    const support = productStore.getPointModificationStructured(id).marketing();
     let supportCostTab;
 
 

@@ -496,22 +496,28 @@ class ProductStore extends EventEmitter {
   getNextFeature(id, groupType, featureList) {
     let unlockedFeature = '';
     featureList.forEach(f => {
-      if (!productStore.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
+      if (!this.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
         unlockedFeature = f.name;
       }
     });
 
     if (!unlockedFeature) return null;
 
-    return featureList.find(f => f.name === unlockedFeature);
+    let f = featureList.find(f => f.name === unlockedFeature);
+
+    return Object.assign({}, f, { canUpgrade: this.enoughMarketingPoints(f.points.marketing, id) && this.enoughProgrammingPoints(f.points.programming, id) })
+  }
+
+  enoughPointsToUpgradeFeature(id, featureGroup, featureName) {
+
   }
 
   getNearestMarketingFeature(id) {
-    return this.getNextFeature(id, 'marketing', productStore.getMarketingFeatureList(id));
+    return this.getNextFeature(id, 'marketing', this.getMarketingFeatureList(id));
   }
 
   getNearestPaymentFeature(id) {
-    return this.getNextFeature(id, 'payment', productStore.getPaymentFeatures(id));
+    return this.getNextFeature(id, 'payment', this.getPaymentFeatures(id));
   }
 
 
@@ -603,6 +609,47 @@ class ProductStore extends EventEmitter {
 
   isMarketFree(marketId) {
     return -1 === _markets.findIndex(m => m.marketId === marketId);
+  }
+
+  getPointModificationStructured(id) {
+    const monthlyProgrammingPointsDifferenceStructured = (id = 0) => {
+      logger.shit('getProgrammingSupportCost with zero index... ' +
+        'we need real ID of our product!! /helpers/points/modification.js');
+
+      const decrease = this.getProgrammingSupportCost(id);
+      const increase = this.getMonthlyProgrammerPoints(id);
+
+      return {
+        increase,
+        decrease,
+        needToHireWorker: decrease > increase,
+        diff: Math.abs(decrease - increase)
+      }
+    };
+
+    const monthlyMarketingPointsDifferenceStructured = (id = 0) => {
+      const decrease = this.getMarketingSupportCost(id);
+      const increase = this.getMonthlyMarketerPoints(id);
+
+
+      return {
+        increase,
+        decrease,
+        detailed: {
+          markets: this.getOurMarketsSupportCostList(id),
+          blog: this.getBlogStatusStructured(id).supportCost,
+          support: this.getMarketingSupportTechTotalCost(id),
+          base: this.getBaseSupportCost()
+        },
+        needToHireWorker: decrease > increase,
+        diff: Math.abs(decrease - increase)
+      }
+    };
+
+    return {
+      programming: () => monthlyProgrammingPointsDifferenceStructured(id),
+      marketing: () => monthlyMarketingPointsDifferenceStructured(id)
+    }
   }
 
   getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId) {
@@ -1115,7 +1162,8 @@ class ProductStore extends EventEmitter {
           id,
           hype: p.getHypeValue(),
           company: p,
-          income: this.getProductIncome(id)
+          income: this.getProductIncome(id),
+          expenses: this.getProductExpenses(id),
         }
       });
       // .sort((a, b) => b.cost - a.cost);

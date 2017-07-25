@@ -2,7 +2,6 @@ import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
 import moneyCalculator from '../../helpers/economics/money-difference';
-import pointCalculator from '../../helpers/points/modification';
 
 import productStore from '../../stores/product-store';
 
@@ -45,6 +44,8 @@ export default class Menu extends Component {
   render(props, state) {
     if (!stageHelper.canShowUpperTabInMenu()) return <div></div>;
 
+    const id = 0;
+
     const {
       pause,
       pauseGame,
@@ -68,8 +69,8 @@ export default class Menu extends Component {
     const moneyDifference = isMakingIncome ? `+${saldoValue}` : saldoValue;
 
 
-    const mpIndication = pointCalculator.marketing().needToHireWorker ? negative : positive;
-    const ppIndication = pointCalculator.programming().needToHireWorker ? negative : positive;
+    const mpIndication = productStore.getPointModificationStructured(id).marketing().needToHireWorker ? negative : positive;
+    const ppIndication = productStore.getPointModificationStructured(id).programming().needToHireWorker ? negative : positive;
 
 
     const year = Math.floor(props.day / 360);

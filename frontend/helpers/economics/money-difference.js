@@ -9,8 +9,8 @@ const calculate = (id) => {
   // check income
   const jobIncome = 0;
 
-  const rentIncome = productStore.getRentIncomes(ourCompanyId);
-  const rentExpense = productStore.getRentExpenses(ourCompanyId);
+  const rentIncome = productStore.getRentIncomes(id);
+  const rentExpense = productStore.getRentExpenses(id);
 
   const income = jobIncome + products
       .map((p, i) => productStore.getProductIncome(i))

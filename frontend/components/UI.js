@@ -1,5 +1,6 @@
 import Button from './Shared/Button';
 import Modal from './Shared/Modal';
+import Notification from './Shared/Notification';
 import Range from './Shared/Range';
 import Select from './Shared/Select';
 import arrows from './Shared/arrows';
@@ -14,6 +15,7 @@ const icons = {
 export default {
   Button,
   Modal,
+  Notification,
   Select,
   Range,
   symbols: arrows,

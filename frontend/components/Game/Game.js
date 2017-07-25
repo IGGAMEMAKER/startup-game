@@ -109,7 +109,7 @@ export default class Game extends Component {
       return <Tutorial />;
     }
 
-    const MessageTab = <div className="bottom-fixed">MessageTab</div>;
+    // const MessageTab = <div className="bottom-fixed">MessageTab</div>;
 
     return (
       <div className="body-background">
@@ -128,8 +128,11 @@ export default class Game extends Component {
           <br />
           <hr />
           <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
-          <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
-          {MessageTab}
+          <br />
+          <br />
+          <div className="bottom-fixed">
+            <UI.Notification />
+          </div>
         </div>
       </div>
     );
