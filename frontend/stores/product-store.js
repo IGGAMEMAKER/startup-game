@@ -909,6 +909,10 @@ class ProductStore extends EventEmitter {
     return _products[id].getFeatureStatus('bonuses', bonusName);
   }
 
+  getAvailableBonuses(id) {
+    return _products[id].getAvailableBonuses();
+  }
+
   getBonuses(id) {
     return Object.keys(_products[id].features.bonuses);
   }

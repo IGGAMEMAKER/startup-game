@@ -21,13 +21,13 @@ export default class BonusesList extends Component {
   }
 
   renderBonus = (b) => {
-    const isPicked = flux.productStore.getBonusStatus(this.props.productId, b.name);
-
-    if (isPicked) {
-      if (b.childs) return b.childs.map(this.renderBonus);
-
-      return '';
-    }
+    // const isPicked = flux.productStore.getBonusStatus(this.props.productId, b.name);
+    //
+    // if (isPicked) {
+    //   if (b.childs) return b.childs.map(this.renderBonus);
+    //
+    //   return '';
+    // }
 
     return (
       <div key={b.name}>
@@ -46,7 +46,8 @@ export default class BonusesList extends Component {
   render(props: PropsType) {
     logger.shit('write boolean checks, for bonus picking availability! you cannot take them all');
 
-    const list = flux.productStore.getBonusesList(props.productId).map(this.renderBonus);
+    // const list = flux.productStore.getBonusesList(props.productId).map(this.renderBonus);
+    const list = flux.productStore.getAvailableBonuses(props.productId).map(this.renderBonus);
 
     const names = flux.productStore.getBonuses(props.productId).map(b => <div>{b}</div>);
 

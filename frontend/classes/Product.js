@@ -585,6 +585,31 @@ export default class Product {
     return Math.ceil(flatCost * bonus);
   }
 
+  getAvailableBonuses(): Array {
+    const list = this.getBonusesList();
+    logger.debug('getAvailable bonuses Product.js', list);
+
+    const newList = [];
+
+    const checkBonus = (b) => {
+      const isPicked = this.getFeatureStatus('bonuses', b.name);
+
+      if (isPicked) {
+        if (b.childs) {
+          b.childs.forEach(checkBonus);
+        }
+
+        return;
+      }
+
+      newList.push(b);
+    };
+
+    list.forEach(checkBonus);
+
+    return newList;
+  }
+
   getBonusesList(): Array {
     const chain = (root, childs) => {
       root.childs = childs;

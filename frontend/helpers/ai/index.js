@@ -138,7 +138,9 @@ function run (id) {
 
   // pick bonuses
   if (productStore.getBonusesAmount(id)) {
+    const bonuses = productStore.getBonusesList(id);
 
+    logger.debug('wanna pick bonus', id, bonuses);
   }
 
   return;

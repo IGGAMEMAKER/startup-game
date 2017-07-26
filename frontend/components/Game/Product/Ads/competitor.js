@@ -18,7 +18,7 @@ export default class Competitor extends Component {
     const ourCompanyId = 0;
 
     const getRentPrice = (level, f, featureId) => {
-      logger.debug('getRentPrice', level, f, featureId);
+      // logger.debug('getRentPrice', level, f, featureId);
 
       return Math.ceil(this.convertXPtoLvl(level) * 2000 / 12);
     };

@@ -409,6 +409,17 @@ textarea {
   padding: 10px;
 }
 
+
+.pulse {
+
+}
+
+@keyframes pulse {
+  0%, 100% {opacity:0;}
+  50% {opacity:1;}
+}
+
+
 .worker-button {
   float: left;
   margin-right: 15px;
