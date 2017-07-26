@@ -32,36 +32,9 @@ export default class Market extends Component {
     const { name, userOrientedName, clients, price, requirements } = market;
 
     let requirementTab = '';
-    const requirementsValidator = flux.productStore.requirementsOKforMarket(id, marketId);
 
     const currentRating = flux.productStore.getRating(id, marketId);
 
-    if (requirementsValidator.valid) {
-      const income = flux.productStore.getMarketIncome(id, marketId);
-
-      requirementTab = (
-        <div>
-          <div>Рейтинг: <ColoredRating rating={currentRating} /></div>
-          <div>Доход: {income}$</div>
-        </div>
-      )
-    } else {
-      const unmet = requirementsValidator.unmetRequirements
-        .map((u, uId) => {
-          return <li key={`unmet-${id}-${uId}`}>
-            {u.name}: {Math.ceil(u.need / 1000)}lvl
-          </li>
-        });
-
-      requirementTab = (
-        <div>
-          <div className="negative-factor">! Требования</div>
-          <ul>
-            {unmet}
-          </ul>
-        </div>
-      )
-    }
 
     const currentSupportCost = flux.productStore.getCurrentInfluenceMarketingCost(id, marketId);
     const increasedCost = flux.productStore.getNextInfluenceMarketingCost(id, marketId);
@@ -70,11 +43,20 @@ export default class Market extends Component {
     const isAvailableToLeaveMarket = flux.productStore.isAvailableToLeaveMarket(id, marketId);
 
     if (isAvailableToLeaveMarket) {
+      const income = flux.productStore.getMarketIncome(id, marketId);
+
       leaveMarketButton = <UI.Button
         text="Уйти с рынка"
         cancel
         onClick={() => flux.productActions.decreaseInfluenceOnMarket(id, marketId)}
       />;
+
+      requirementTab = (
+        <div>
+          <div>Рейтинг: <ColoredRating rating={currentRating} /></div>
+          <div>Доход: {income}$</div>
+        </div>
+      );
     }
 
     const paymentTab = <div>

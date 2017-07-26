@@ -405,6 +405,8 @@ textarea {
 .bottom-fixed {
   bottom: 0;
   z-index: 4;
+  border-top: #12908d solid 1px;
+  padding: 10px;
 }
 
 .worker-button {

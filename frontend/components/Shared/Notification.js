@@ -44,22 +44,22 @@ export default class Modal extends Component {
 
     switch (message.type) {
       case NOTIFICATIONS.NOTIFICATION_FEATURE_UPGRADED:
-        body = <div>Компания "{data.companyName}" улучшает технологию "{data.featureName}"</div>;
+        body = <span>Компания "{data.companyName}" улучшает технологию "{data.featureName}"</span>;
         break;
       case NOTIFICATIONS.NOTIFICATION_FEATURE_TECH_LEADER:
-        body = <div>Компания "{data.companyName}" становится лидером в технологии "{data.featureName}"!</div>;
+        body = <span>Компания "{data.companyName}" становится лидером в технологии "{data.featureName}"!</span>;
         break;
       case NOTIFICATIONS.NOTIFICATION_MARKETS_INFLUENCE_INCREASED:
-        body = <div>Компания "{data.companyName}" усиливает влияние на рынке "{data.marketName}"! Наши доходы снизились</div>;
+        body = <span>Компания "{data.companyName}" усиливает влияние на рынке "{data.marketName}"! Наши доходы снизились</span>;
         break;
       case NOTIFICATIONS.NOTIFICATION_RENT_EXPIRED:
-        body = <div>Окончание срока аренды: Компания "{JSON.stringify(data)}"</div>;
+        body = <span>Окончание срока аренды: Компания "{JSON.stringify(data)}"</span>;
         break;
       case NOTIFICATIONS.NOTIFICATION_PAYMENTS_UPGRADED:
-        body = <div>Компания "{data.companyName}" повышает свои доходы за счёт улучшения блока монетизации</div>;
+        body = <span>Компания "{data.companyName}" повышает свои доходы за счёт улучшения блока монетизации</span>;
         break;
       case NOTIFICATIONS.NOTIFICATION_COMPETITORS_ADD:
-        body = <div>У нас появился новый конкурент: "{data.name}"!</div>;
+        body = <span>У нас появился новый конкурент: компания "{data.name}"!</span>;
         break;
       default:
         body = JSON.stringify(message);
@@ -69,7 +69,10 @@ export default class Modal extends Component {
     // сообщений: {state.messages.length}
 
     return (
-      <div className={bold}>{body}</div>
+      <div className={bold}>
+        <span className="">Новости :</span>
+        {body}
+      </div>
     );
   }
 }
