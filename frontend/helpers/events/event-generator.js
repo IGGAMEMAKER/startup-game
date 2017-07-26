@@ -42,7 +42,7 @@ const emit = (day) => {
     //   messageActions.addGameEvent(rnd, { points });
     //   break;
     case GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE:
-      if (day % 4 === 0 && productStore.getProducts().length < 16 && day > 100) {
+      if (day % 2 === 0 && productStore.getProducts().length < 16 && day > 100) {
         const p = mvpCreator.createCompetitorCompany(productStore.getIdea(0));
 
         messageActions.addNotification(NOTIFICATION.NOTIFICATION_COMPETITORS_ADD, p);

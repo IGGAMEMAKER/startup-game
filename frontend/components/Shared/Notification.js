@@ -70,7 +70,7 @@ export default class Modal extends Component {
 
     return (
       <div className={bold}>
-        <span className="">Новости :</span>
+        <span className="">Новости : </span>
         {body}
       </div>
     );

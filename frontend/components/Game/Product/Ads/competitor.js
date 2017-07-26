@@ -17,13 +17,23 @@ export default class Competitor extends Component {
   renderFeatureList(c, productId, rents: Array, ourCompany) {
     const ourCompanyId = 0;
 
+    const getRentPrice = (level, f, featureId) => {
+      logger.debug('getRentPrice', level, f, featureId);
+
+      return Math.ceil(this.convertXPtoLvl(level) * 2000 / 12);
+    };
+
     return c.features.map((f, featureId) => {
       let error;
       let differencePhrase = '';
 
-      const difference = this.convertXPtoLvl(ourCompany.features.offer[featureId] - f.value);
+      const ourLevel = ourCompany.features.offer[featureId];
+      const competitorLevel = f.value;
+
+      const difference = this.convertXPtoLvl(ourLevel - competitorLevel);
 
       if (productStore.isShareableFeature(productId, featureId)) {
+        let price;
         let canRentTech = 'hide';
 
         let sender;
@@ -85,7 +95,9 @@ export default class Competitor extends Component {
           symbol = UI.symbols.triangle.up;
           symbolColor = "positive";
 
-          rentPhrase = "Сдать технологию в аренду на год";
+          price = getRentPrice(ourLevel, f, featureId);
+
+          rentPhrase = `Сдать технологию в аренду на год (${price}$/мес)`;
           level = `+${difference}`;
 
           // we have incoming rent contract with another company
@@ -113,7 +125,9 @@ export default class Competitor extends Component {
           symbol = UI.symbols.triangle.down;
           symbolColor = "negative";
 
-          rentPhrase = "Арендовать технологию на год";
+          price = getRentPrice(competitorLevel, f, featureId);
+
+          rentPhrase = `Арендовать технологию на год (${price}$/мес)`;
           level = difference;
 
           if (rentStatus.weCanAccept) {
@@ -142,7 +156,6 @@ export default class Competitor extends Component {
 
         error = '';
 
-        let price = 1000;
         let until = scheduleStore.getNextYear();
 
         differencePhrase = (
@@ -173,8 +186,6 @@ export default class Competitor extends Component {
   }
 
   render({ rating, c, i, isCompetitor, onBuyCompany, rents, money }) {
-    // logger.debug('render competitor', c);
-
     const ourCompany = productStore.getProduct(0);
 
     let background = 'competitor competeable';
@@ -189,11 +200,6 @@ export default class Competitor extends Component {
 
     const hasEnoughMoney = money >= c.cost;
 
-    // const hypeChangePhrase = c.hypeDamping < 0 ? c.hypeDamping : `+${c.hypeDamping}`;
-    // <div>{JSON.stringify(c)}</div>
-
-        // <div className="offset-min">Известность (HYPE): {c.hype} ({hypeChangePhrase} ежемесячно)</div>
-        // <div className="offset-min">Рейтинг: {c.rating}</div>
     return (
       <div className={background}>
         <div className="offset-min">{companyTitle}</div>
