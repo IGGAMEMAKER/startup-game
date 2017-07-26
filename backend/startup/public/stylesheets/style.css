@@ -253,7 +253,13 @@ textarea {
 
 .modal-head {
   color: var(--modalMainText);
+  padding: 15vh;
 }
+
+.bold {
+  font-weight: 600;
+}
+
 
 .button1 {
   min-width: 280px;
@@ -398,6 +404,7 @@ textarea {
 
 .bottom-fixed {
   bottom: 0;
+  z-index: 4px;
 }
 
 .worker-button {

@@ -14,8 +14,6 @@ import flux from '../../../../flux';
 import UI from '../../../UI';
 
 export default class BonusesList extends Component {
-  componentWillMount() {}
-
   onPick(productId, bonusName) {
     logger.debug('pick bonus', bonusName);
 

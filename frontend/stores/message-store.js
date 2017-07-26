@@ -44,6 +44,8 @@ let _messages = [
   // }
 ];
 
+let _notifications = [];
+
 class ScheduleStore extends EventEmitter {
   addChangeListener(cb:Function) {
     this.addListener(EC, cb);
@@ -66,7 +68,7 @@ class ScheduleStore extends EventEmitter {
   }
 
   getPlainMessages() {
-    return _messages.filter(m => !m.isModal);
+    return _notifications;
   }
 
   getNotifications() {
@@ -119,6 +121,9 @@ Dispatcher.register((p: PayloadType) => {
       break;
     case c.GAME_EVENT_CLOSE_TAB:
       close(p.id);
+      break;
+    case c.NOTIFICATION_ADD:
+      _notifications.push(p.message);
       break;
     default:
       break;

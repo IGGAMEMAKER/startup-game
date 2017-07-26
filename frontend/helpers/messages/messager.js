@@ -1,11 +1,11 @@
-import flux from '../../flux';
+import messageActions from '../../actions/message-actions';
 
 const addModalMessage = (eType, obj) => {
-  flux.messageActions.addGameEvent(eType, obj, true);
+  messageActions.addGameEvent(eType, obj, true);
 };
 
 const addPlainMessage = (eType, obj) => {
-  flux.messageActions.addGameEvent(eType, obj, false);
+  messageActions.addNotification(eType, obj);
 };
 
 export default {

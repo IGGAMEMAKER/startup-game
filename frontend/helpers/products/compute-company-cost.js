@@ -34,7 +34,7 @@ const structured = (c, income, expense) => {
 
   const technologyPart = Math.floor(technologyValue * 100 / cost);
   const clientPart = Math.floor(clientValue * 100 / cost);
-  const economicPart = Math.floor(income * 100 / cost);
+  const economicPart = Math.floor(economicValue * 100 / cost);
 
 
   return {

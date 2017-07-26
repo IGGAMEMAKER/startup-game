@@ -28,7 +28,7 @@ export default (message, id, onClose) => {
     break;
   }
 
-  return '';
+  // return '';
 
   return <div>render modal body {JSON.stringify(message)}</div>
 };

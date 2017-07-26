@@ -89,7 +89,7 @@ export default class Game extends Component {
   componentWillMount() {
     this.initialize();
 
-    flux.productStore.addChangeListener(this.getProductsFromStore);
+    // flux.productStore.addChangeListener(this.getProductsFromStore);
     flux.productStore.addChangeListener(this.getProductsFromStore);
     flux.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
     flux.messageStore.addChangeListener(this.getMessages);
@@ -108,8 +108,6 @@ export default class Game extends Component {
     if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) {
       return <Tutorial />;
     }
-
-    // const MessageTab = <div className="bottom-fixed">MessageTab</div>;
 
     return (
       <div className="body-background">

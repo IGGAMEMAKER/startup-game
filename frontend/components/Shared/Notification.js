@@ -34,6 +34,14 @@ export default class Modal extends Component {
 
     const { data } = message;
 
+    let companyName = `Компания "${data.companyName}"`;
+
+    let bold = '';
+
+    if (data.id === 0) {
+      bold = 'bold';
+    }
+
     switch (message.type) {
       case NOTIFICATIONS.NOTIFICATION_FEATURE_UPGRADED:
         body = <div>Компания "{data.companyName}" улучшает технологию "{data.featureName}"</div>;
@@ -44,6 +52,15 @@ export default class Modal extends Component {
       case NOTIFICATIONS.NOTIFICATION_MARKETS_INFLUENCE_INCREASED:
         body = <div>Компания "{data.companyName}" усиливает влияние на рынке "{data.marketName}"! Наши доходы снизились</div>;
         break;
+      case NOTIFICATIONS.NOTIFICATION_RENT_EXPIRED:
+        body = <div>Окончание срока аренды: Компания "{JSON.stringify(data)}"</div>;
+        break;
+      case NOTIFICATIONS.NOTIFICATION_PAYMENTS_UPGRADED:
+        body = <div>Компания "{data.companyName}" повышает свои доходы за счёт улучшения блока монетизации</div>;
+        break;
+      case NOTIFICATIONS.NOTIFICATION_COMPETITORS_ADD:
+        body = <div>У нас появился новый конкурент: "{data.name}"!</div>;
+        break;
       default:
         body = JSON.stringify(message);
         break;
@@ -52,7 +69,7 @@ export default class Modal extends Component {
     // сообщений: {state.messages.length}
 
     return (
-      <div className="">{body}</div>
+      <div className={bold}>{body}</div>
     );
   }
 }

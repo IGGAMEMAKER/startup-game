@@ -25,7 +25,6 @@ export default class Modal extends Component {
   renderModalBody = renderModal;
 
   render(props, state) {
-
     if (!state.drawable) return <div></div>;
 
     const message = state.messages[0];
@@ -35,8 +34,7 @@ export default class Modal extends Component {
 
     if (!body) return <div></div>;
 
-    return (
-      <div className="messageTab">{body}</div>
-    );
+
+    return <div className="messageTab">{body}</div>;
   }
 }

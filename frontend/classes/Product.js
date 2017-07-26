@@ -216,6 +216,11 @@ export default class Product {
   }
 
   requirementsOKforMarket(marketId) {
+    return {
+      valid: true,
+      unmetRequirements: []
+    };
+
     const market = this.getMarketByMarketId(marketId);
     const requirements = market.requirements;
 
@@ -1007,15 +1012,6 @@ export default class Product {
 
   isSegmentAvailable(s, segId) {
 
-  }
-
-  getAvailableSegments() {
-    const value = this.getSegments()
-      .filter((s, segId) => this.requirementsOKforSegment(segId).valid && this.clientsEnoughToFormSegment(segId));
-
-    // logger.debug('getAvailableSegments', value);
-
-    return value;
   }
 
   getTestsAmount() {

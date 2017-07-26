@@ -450,6 +450,7 @@ class ProductStore extends EventEmitter {
   }
 
   requirementsOKforMarket(id, marketId) {
+    // return true;
     return _products[id].requirementsOKforMarket(marketId);
   }
 

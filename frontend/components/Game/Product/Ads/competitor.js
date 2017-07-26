@@ -173,7 +173,7 @@ export default class Competitor extends Component {
   }
 
   render({ rating, c, i, isCompetitor, onBuyCompany, rents, money }) {
-    logger.debug('render competitor', c);
+    // logger.debug('render competitor', c);
 
     const ourCompany = productStore.getProduct(0);
 

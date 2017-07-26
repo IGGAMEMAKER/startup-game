@@ -4,6 +4,8 @@ import scheduleStore from './stores/schedule-store';
 import productActions from './actions/product-actions';
 import scheduleActions from './actions/schedule-actions';
 
+import messageActions from './actions/message-actions';
+
 import logger from './helpers/logger/logger';
 
 import moneyCalculator from './helpers/economics/money-difference';
@@ -18,6 +20,8 @@ import {
   isLastDayOfYear,
   isUsualDay
 } from './helpers/date';
+
+import * as NOTIFICATIONS from './constants/notifications';
 
 const computeTasks = () => {
   const tasks = scheduleStore.getTasks();
@@ -53,10 +57,13 @@ const checkRents = day => {
     .forEach((r, i) => {
       if (r.until <= day) {
         refreshRents.push(i);
+        messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_RENT_EXPIRED, { r, i });
       }
     });
 
-  if (refreshRents.length) productActions.refreshRents(refreshRents);
+  if (refreshRents.length) {
+    productActions.refreshRents(refreshRents);
+  }
 };
 
 const calculatePoints = companyId => {

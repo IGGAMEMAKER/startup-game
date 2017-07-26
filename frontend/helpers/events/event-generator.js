@@ -1,33 +1,33 @@
 import random from '../math/random';
 import * as GAME_EVENTS from '../../constants/events';
-import * as JOB from '../../constants/job';
 
 import flux from '../../flux';
 
 import mvpCreator from '../../components/Game/Product/InitialPanel/mvp-creator';
 
-import messager from '../messages/messager';
+import messageActions from '../../actions/message-actions';
 
 import logger from '../../helpers/logger/logger';
 
 import workerGenerator from '../team/create-random-worker';
 
+import * as NOTIFICATION from '../../constants/notifications';
+
 const emit = (day) => {
   if (day === 45) {
     let money = Math.ceil(random(2000, 15000));
 
-    messager.addModalMessage(GAME_EVENTS.GAME_EVENT_FREE_MONEY, { money });
+    messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_MONEY, { money }, true);
     return;
   }
 
   if (day === 100) {
     let points = Math.ceil(random(50, 275));
-    messager.addModalMessage(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points });
+    messageActions.addGameEvent(GAME_EVENTS.GAME_EVENT_FREE_POINTS, { points });
     return;
   }
 
   const rnd = Math.floor(random(0, 50));
-  // return;
   switch (rnd) {
     // case GAME_EVENTS.GAME_EVENT_FREE_MONEY:
     //   let money = Math.ceil(random(2000, 15000));
@@ -39,14 +39,10 @@ const emit = (day) => {
     //   flux.messageActions.addGameEvent(rnd, { points });
     //   break;
     case GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE:
-      if (day % 2 === 0 && flux.productStore.getProducts().length < 8) {
+      if (day % 4 === 0 && flux.productStore.getProducts().length < 16 && day > 100) {
         const p = mvpCreator.createCompetitorCompany(flux.productStore.getIdea(0));
 
-        if (day > 100 && day < 250) {
-          messager.addPlainMessage(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p });
-        } else if (day >= 250) {
-          messager.addPlainMessage(GAME_EVENTS.GAME_EVENT_COMPETITOR_CREATE, { p });
-        }
+        messageActions.addNotification(NOTIFICATION.NOTIFICATION_COMPETITORS_ADD, p);
       }
       break;
     case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
