@@ -8,6 +8,8 @@ import * as MANAGEMENT_STYLES from '../../constants/company-styles';
 
 import * as NOTIFICATIONS from '../../constants/notifications';
 
+import * as BONUSES from '../../constants/bonuses';
+
 import messageActions from '../../actions/message-actions';
 
 const upgradeFeature = (id, fId) => {
@@ -54,6 +56,12 @@ const upgradeMarket = (id, mId) => {
   }
 };
 
+const pickBonus = (id, name) => {
+  productActions.pickBonus(id, name);
+
+  logger.debug('pickBonus', id, name);
+};
+
 function run (id) {
   // upgrade features
   const performAction = Math.random();
@@ -93,7 +101,7 @@ function run (id) {
     return f;
   });
 
-  const value = Math.floor(Math.random(0, 1) * sumOfProbabilities);
+  let value = Math.floor(Math.random(0, 1) * sumOfProbabilities);
 
   const willUpgradeId = featureProbabilities.findIndex(f => f.min < value && f.max >= value);
 
@@ -102,7 +110,7 @@ function run (id) {
 
   // upgrade payments block
   // isBalancedCompany &&
-  if (Math.random() < 7 / 30) {
+  if (Math.random() < 10 / 30) {
     const paymentFeature = productStore.getNearestPaymentFeature(id);
 
     if (paymentFeature && paymentFeature.canUpgrade) {
@@ -138,9 +146,63 @@ function run (id) {
 
   // pick bonuses
   if (productStore.getBonusesAmount(id)) {
-    const bonuses = productStore.getBonusesList(id);
+    const bonuses = productStore.getAvailableBonuses(id);
 
-    logger.debug('wanna pick bonus', id, bonuses);
+    sumOfProbabilities = 0;
+
+    const probabilities = bonuses.map(b => {
+      let probability = 10;
+
+      if (isTechnologicalCompany) {
+        switch (b.name) {
+          case BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER:
+          case BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II:
+          case BONUSES.BONUSES_PROGRAMMER_SUPPORT_COST_MODIFIER:
+          case BONUSES.BONUSES_TECHNOLOGY_LEADER_MODIFIER:
+            probability = 100;
+            break;
+          default:
+            if (b.type === 'lowerDevelopmentCostOfFeature' && productStore.isShareableFeature(id, b.featureId)) {
+              probability = 100;
+            }
+            break;
+        }
+      }
+
+      if (isBalancedCompany) {
+        switch (b.name) {
+          case BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER:
+          case BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER_II:
+          case BONUSES.BONUSES_MARKETER_SUPPORT_COST_MODIFIER:
+          case BONUSES.BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER:
+            probability = 100;
+            break;
+          default:
+            if (b.type === 'lowerDevelopmentCostOfFeature' && !productStore.isShareableFeature(id, b.featureId)) {
+              probability = 100;
+            }
+            break;
+        }
+      }
+
+      const obj = {
+        name: b.name,
+        probability,
+        min: sumOfProbabilities,
+        max: sumOfProbabilities + probability
+      };
+
+      sumOfProbabilities += probability;
+
+      return obj;
+    });
+
+
+    value = Math.floor(Math.random(0, 1) * sumOfProbabilities);
+
+    const willPickBonusId = probabilities.findIndex(f => f.min < value && f.max >= value);
+
+    pickBonus(id, probabilities[willPickBonusId].name);
   }
 
   return;

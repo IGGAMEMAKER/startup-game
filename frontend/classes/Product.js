@@ -587,7 +587,6 @@ export default class Product {
 
   getAvailableBonuses(): Array {
     const list = this.getBonusesList();
-    logger.debug('getAvailable bonuses Product.js', list);
 
     const newList = [];
 
@@ -709,6 +708,8 @@ export default class Product {
 
       array.push({
         name: `lowerDevelopmentCostOfFeature${i}`,
+        type: 'lowerDevelopmentCostOfFeature',
+        featureId: i,
         title: `Наша сила в технологии "${featureName}"`,
         bonus: `Снижение стоимости улучшения технологии "${featureName}" на 50%`,
         description: `Как известно, ключ всех побед состоит в правильной 
