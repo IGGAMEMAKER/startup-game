@@ -214,16 +214,11 @@ function getProductStorageData() {
     fame = Number.parseInt(getFromStorage('fame'));
 
     loan = Number.parseInt(getFromStorage('loan'));
-    logger.debug('got loan');
-
-    logger.debug('products needed');
 
     const data = getFromStorage('products');
-    logger.debug('getFromStorage products raw', data);
 
     products = Array.from(JSON.parse(data)).map(p => new Product(p, true));
 
-    logger.debug('products', products);
   } catch (ex) {
     logger.error('error in getProductStorageData', ex);
   }

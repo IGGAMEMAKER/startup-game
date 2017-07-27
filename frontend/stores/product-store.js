@@ -196,11 +196,11 @@ const clearPartnershipOf = (id, marketId) => {
   if (index >= 0) {
     const partnerId = _markets[index].partnerId;
 
-    if (partnerId) {
-      _markets[partnerId].partnerId = null;
+    if (partnerId >= 0) {
+      _markets[partnerId].partnerId = -1;
     }
 
-    _markets[index].partnerId = null;
+    _markets[index].partnerId = -1;
   }
 };
 
@@ -584,8 +584,8 @@ class ProductStore extends EventEmitter {
     const record = this.getMarketRecord(id, marketId);
 
     let partnershipBonus = 0;
-    if (record && record.partnerId) {
-      logger.debug('getPowerOfCompanyOnMarket', id, marketId, base, record);
+    if (record && record.partnerId >= 0) {
+      // logger.debug('getPowerOfCompanyOnMarket', id, marketId, base, record);
       partnershipBonus = this.getBaseMarketingInfluence(record.partnerId, marketId) * 0.3;
     }
 
@@ -1303,7 +1303,7 @@ Dispatcher.register((p: PayloadType) => {
       if (index >= 0) {
         _markets[index].level++;
       } else {
-        _markets.push({ companyId: p.id, marketId: p.marketId, level: 0, partnerId: null });
+        _markets.push({ companyId: p.id, marketId: p.marketId, level: 0, partnerId: -1 });
       }
       break;
 
@@ -1311,6 +1311,7 @@ Dispatcher.register((p: PayloadType) => {
       index = getMarketRecordIndex(p.id, p.marketId);
 
       if (index >= 0) {
+        clearPartnershipOf(p.id, p.marketId);
         _markets.splice(index, 1)
       }
       break;
@@ -1333,6 +1334,8 @@ Dispatcher.register((p: PayloadType) => {
 
       const record1 = getMarketRecordIndex(c1, p.marketId);
       const record2 = getMarketRecordIndex(c2, p.marketId);
+
+      logger.debug(_markets, c1, c2, record1, record2);
 
       clearPartnershipOf(c1, p.marketId);
       clearPartnershipOf(c2, p.marketId);
