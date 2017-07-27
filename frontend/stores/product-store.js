@@ -1329,13 +1329,20 @@ Dispatcher.register((p: PayloadType) => {
       }
       break;
 
+    case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_REVOKE:
+      let c1 = p.c1;
+      let c2 = p.c2;
+
+      clearPartnershipOf(c1, p.marketId);
+      clearPartnershipOf(c2, p.marketId);
+      break;
+
     case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_OFFER:
-      const { c1, c2 } = p;
+      c1 = p.c1;
+      c2 = p.c2;
 
       const record1 = getMarketRecordIndex(c1, p.marketId);
       const record2 = getMarketRecordIndex(c2, p.marketId);
-
-      logger.debug(_markets, c1, c2, record1, record2);
 
       clearPartnershipOf(c1, p.marketId);
       clearPartnershipOf(c2, p.marketId);

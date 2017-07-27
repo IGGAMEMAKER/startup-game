@@ -44,6 +44,12 @@ export default {
       c1, c2, marketId
     })
   },
+  revokePartnership(c1, c2, marketId) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_REVOKE,
+      c1, c2, marketId
+    })
+  },
 
   decreaseInfluenceOnMarket(id, marketId) {
     Dispatcher.dispatch({
