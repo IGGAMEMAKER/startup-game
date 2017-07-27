@@ -92,7 +92,7 @@ export default class Market extends Component {
           companyClass = 'partner-company';
         }
 
-        if (hasPartnershipWithUs || c.companyId === id) {
+        if (hasPartnershipWithUs || c.companyId === id || !isAvailableToLeaveMarket) {
           sendPartnershipButton = '';
         }
 

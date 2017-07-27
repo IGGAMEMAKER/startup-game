@@ -581,7 +581,15 @@ class ProductStore extends EventEmitter {
 
     const mainMarketBonus = this.isMainMarket(id, marketId) ? 1.2 : 1;
 
-    return base * mainMarketBonus;
+    const record = this.getMarketRecord(id, marketId);
+
+    let partnershipBonus = 0;
+    if (record && record.partnerId) {
+      logger.debug('getPowerOfCompanyOnMarket', id, marketId, base, record);
+      partnershipBonus = this.getBaseMarketingInfluence(record.partnerId, marketId) * 0.3;
+    }
+
+    return base * mainMarketBonus + partnershipBonus;
   }
 
   getPowerListOnMarket(marketId) {
