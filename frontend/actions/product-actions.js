@@ -31,6 +31,13 @@ export default {
     }
   },
 
+  setAsMainMarket(id, marketId) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_SET_AS_MAIN,
+      id, marketId
+    })
+  },
+
   decreaseInfluenceOnMarket(id, marketId) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_MARKETS_INFLUENCE_DECREASE,

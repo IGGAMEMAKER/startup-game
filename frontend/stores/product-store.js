@@ -182,6 +182,13 @@ function isMercenary(worker) {
 
 const sum = (arr) => arr.reduce((p, c) => p + c, 0);
 
+const getMarketRecordIndex = (id, marketId) => {
+  return _markets.findIndex((m, i) => m.companyId === id && m.marketId === marketId);
+};
+
+const getCurrentMainMarket = (id) => {
+  return _markets.findIndex((m, i) => m.companyId === id && m.isMainMarket);
+};
 
 class ProductStore extends EventEmitter {
   addChangeListener(cb: Function) {
@@ -556,7 +563,11 @@ class ProductStore extends EventEmitter {
   getPowerOfCompanyOnMarket(id, marketId) {
     logger.shit('need to count edicts, market-oriented features, campaigns');
 
-    return this.getBaseMarketingInfluence(id, marketId);
+    const base = this.getBaseMarketingInfluence(id, marketId);
+
+    const mainMarketBonus = this.isMainMarket(id, marketId) ? 1.2 : 1;
+
+    return base * mainMarketBonus;
   }
 
   getPowerListOnMarket(marketId) {
@@ -925,6 +936,18 @@ class ProductStore extends EventEmitter {
     return _products[id].getCostPerClient();
   }
 
+  getMarketRecord(id, marketId) {
+    return _markets.find(m => m.marketId === marketId && m.companyId === id);
+  }
+
+  isMainMarket(id, marketId) {
+    const record = this.getMarketRecord(id, marketId);
+
+    if (!record) return false;
+
+    return record.isMainMarket;
+  }
+
   getRatingForMetricsTab(id) {
     return this.getRating(id);
   }
@@ -1245,7 +1268,7 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_INFLUENCE_INCREASE:
-      let index = _markets.findIndex((m, i) => m.companyId === p.id && m.marketId === p.marketId);
+      let index = getMarketRecordIndex(p.id, p.marketId);
 
       if (index >= 0) {
         _markets[index].level++;
@@ -1255,10 +1278,23 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_INFLUENCE_DECREASE:
-      index = _markets.findIndex((m, i) => m.companyId === p.id && m.marketId === p.marketId);
+      index = getMarketRecordIndex(p.id, p.marketId);
 
       if (index >= 0) {
         _markets.splice(index, 1)
+      }
+      break;
+
+    case c.PRODUCT_ACTIONS_MARKETS_SET_AS_MAIN:
+      const currentIndex = getCurrentMainMarket(p.id);
+
+      if (currentIndex >= 0) {
+        _markets[currentIndex].isMainMarket = false;
+      }
+
+      index = getMarketRecordIndex(p.id, p.marketId);
+      if (index >= 0) {
+        _markets[index].isMainMarket = true;
       }
       break;
 
