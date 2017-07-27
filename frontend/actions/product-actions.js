@@ -38,6 +38,13 @@ export default {
     })
   },
 
+  offerPartnership(c1, c2, marketId) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_OFFER,
+      c1, c2, marketId
+    })
+  },
+
   decreaseInfluenceOnMarket(id, marketId) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_MARKETS_INFLUENCE_DECREASE,

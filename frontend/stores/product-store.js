@@ -190,6 +190,20 @@ const getCurrentMainMarket = (id) => {
   return _markets.findIndex((m, i) => m.companyId === id && m.isMainMarket);
 };
 
+const clearPartnershipOf = (id, marketId) => {
+  const index = getMarketRecordIndex(id, marketId);
+
+  if (index >= 0) {
+    const partnerId = _markets[index].partnerId;
+
+    if (partnerId) {
+      _markets[partnerId].partnerId = null;
+    }
+
+    _markets[index].partnerId = null;
+  }
+};
+
 class ProductStore extends EventEmitter {
   addChangeListener(cb: Function) {
     this.addListener(EC, cb);
@@ -591,6 +605,14 @@ class ProductStore extends EventEmitter {
     return influences
       .map(m => Object.assign({}, m, { share: percentify(m.power / sum) }))
       .sort((a, b) => b.power - a.power);
+  }
+
+  isPartneredOnMarket(c1, c2, marketId) {
+    const record = this.getMarketRecord(c1, marketId);
+
+    if (!record) return false;
+
+    return record.partnerId === c2;
   }
 
   getMarketInfo(id, marketId) {
@@ -1273,7 +1295,7 @@ Dispatcher.register((p: PayloadType) => {
       if (index >= 0) {
         _markets[index].level++;
       } else {
-        _markets.push({ companyId: p.id, marketId: p.marketId, level: 0 });
+        _markets.push({ companyId: p.id, marketId: p.marketId, level: 0, partnerId: null });
       }
       break;
 
@@ -1296,6 +1318,19 @@ Dispatcher.register((p: PayloadType) => {
       if (index >= 0) {
         _markets[index].isMainMarket = true;
       }
+      break;
+
+    case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_OFFER:
+      const { c1, c2 } = p;
+
+      const record1 = getMarketRecordIndex(c1, p.marketId);
+      const record2 = getMarketRecordIndex(c2, p.marketId);
+
+      clearPartnershipOf(c1, p.marketId);
+      clearPartnershipOf(c2, p.marketId);
+
+      _markets[record1].partnerId = c2;
+      _markets[record2].partnerId = c1;
       break;
 
     case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:

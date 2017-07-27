@@ -16,6 +16,7 @@
   --active-menu-item-color: red;
 
   --info: rgba(0, 0, 200, 0.3);
+  --partner-company: #893BFF;
 
   /*--modalMainText: black;*/
   --modalMainText: white;
@@ -419,7 +420,6 @@ textarea {
   50% {opacity:1;}
 }
 
-
 .worker-button {
   float: left;
   margin-right: 15px;
@@ -490,6 +490,20 @@ textarea {
 
 .competitor.uncompeteable {
   background-color: var(--light-red)
+}
+
+
+.our-company {
+  background-color: var(--light-green);
+}
+
+.partner-company {
+  background-color: var(--partner-company);
+}
+
+.partnership-button-area {
+  display: inline-block;
+  float: right;
 }
 
 .initial-tab-wrapper {

@@ -70,7 +70,38 @@ export default class Market extends Component {
 
 
     let competitorsTab;
-    const powerList = productStore.getPowerListOnMarket(marketId);
+    const powerList = productStore.getPowerListOnMarket(marketId)
+      .map(c => {
+        let companyClass;
+
+        if (c.companyId === id) {
+          companyClass = 'our-company';
+        }
+
+        let sendPartnershipButton = <div className="partnership-button-area">
+          <UI.Button
+            link
+            text="Стать партнёрами"
+            onClick={() => {productActions.offerPartnership(id, c.companyId, marketId)}}
+          />
+        </div>;
+
+        const hasPartnershipWithUs = productStore.isPartneredOnMarket(id, c.companyId, marketId);
+
+        if (hasPartnershipWithUs) {
+          companyClass = 'partner-company';
+        }
+
+        if (hasPartnershipWithUs || c.companyId === id) {
+          sendPartnershipButton = '';
+        }
+
+        return <tr className={companyClass}>
+          <td>{c.name} {sendPartnershipButton}</td>
+          <td>{c.power}</td>
+          <td>{c.share}</td>
+        </tr>
+      });
 
     if (powerList.length) {
       // competitorsTab = JSON.stringify(powerList);
@@ -84,7 +115,7 @@ export default class Market extends Component {
           <th>Доля, %</th>
           </thead>
           <tbody>
-          {powerList.map(c => <tr><td>{c.name}</td><td>{c.power}</td><td>{c.share}</td></tr>)}
+          {powerList}
           </tbody>
         </table>
       </div>;

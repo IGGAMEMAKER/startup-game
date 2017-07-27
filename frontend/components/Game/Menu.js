@@ -97,6 +97,7 @@ export default class Menu extends Component {
 
     let moneyPhrase = shortenValue(state.money);
     let moneyDifferencePhrase = shortenValue(moneyDifference);
+    if (moneyDifference > 0) moneyDifferencePhrase = `+${moneyDifferencePhrase}`;
 
     return <div>
       <div>
