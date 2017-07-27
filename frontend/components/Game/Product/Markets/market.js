@@ -95,9 +95,9 @@ export default class Market extends Component {
         if (c.companyId === id || !isAvailableToLeaveMarket) {
           sendPartnershipButton = '';
         } else if (hasPartnershipWithUs) {
-          sendPartnershipButton = <div className="partnership-button-area">
+          sendPartnershipButton = <div className="partnership-button-area revoke">
             <UI.Button
-              link
+              red
               text="Разорвать партнёрство"
               onClick={() => {productActions.revokePartnership(id, c.companyId, marketId)}}
             />

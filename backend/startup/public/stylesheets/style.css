@@ -16,6 +16,7 @@
   --active-menu-item-color: red;
 
   --info: rgba(0, 0, 200, 0.3);
+  /*--partner-company: rgba(137, 59, 255, 0.92);*/
   --partner-company: #893BFF;
 
   /*--modalMainText: black;*/
@@ -504,6 +505,10 @@ textarea {
 .partnership-button-area {
   display: inline-block;
   float: right;
+}
+
+.partnership-button-area.revoke {
+  color: whitesmoke;
 }
 
 .initial-tab-wrapper {
