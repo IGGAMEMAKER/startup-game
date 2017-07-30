@@ -105,63 +105,36 @@ export default class ProductPanel extends Component {
     return this.renderFeature(groupType, id, feature);
   }
 
-  renderPaymentTab = (id) => {
-    const payment = this.plainifySameTypeFeatures(id, 'payment', 'Блок монетизации полностью улучшен!');
-
-    const isOpened = productStore.canShowPayPercentageMetric(id);
-    const conversion = productStore.getPaymentModifier(id);
-
-    const payAbility = conversion * 100;
-
-    const makeImprovementPhrase = 'Установите фичу "Тестовая покупка"';
-    const payAbilityPhrase = `Платёжеспособность: ${isOpened ? `${payAbility}%` : makeImprovementPhrase}`;
-
-    return (
-      <div>
-        <div className="">
-          <div className="featureGroupTitle">Монетизация</div>
-          <div className="featureGroupDescriptionWrapper">
-            <div>{payAbilityPhrase}</div>
-            <div className="featureGroupBody">{payment}</div>
-          </div>
-        </div>
-        <Economics />
-      </div>
-    )
-  };
-
-  renderClientTab = (id) => {
+  renderMarketingTab = (id) => {
     const support = productStore.getPointModificationStructured(id).marketing();
 
     const influences = support.detailed.markets
       .map(c => <li>Влияние на рынке {c.name}: {c.cost}MP</li>);
-
-    const supportCostTab = <div>
-      <div>Наши маркетологи производят: {support.increase}MP в месяц</div>
-      <div className={support.decrease ? '' : 'hide'}>
-        <div>Ежемесячная стоимость поддержки: {support.decrease}MP</div>
-        <ul className="offset-mid">
-          {influences}
-        </ul>
-      </div>
-
-      <div className={support.needToHireWorker ? '' : 'hide'}>
-        <div className="alert alert-danger">
-          <strong>Наши маркетологи не справляются с нагрузкой</strong>
-          <div>(мы теряем {support.diff}MP ежемесячно)</div>
-          <br />
-          <UI.Button secondary text="Нанять маркетолога" onClick={() => this.setMode(MODE_STAFF)} />
-        </div>
-      </div>
-      <br />
-    </div>;
 
     let marketsTab = productStore.getMarkets(id)
       .map((m, mId) => <Market id={id} marketId={mId} market={m} />);
 
     return <div>
       <div className="featureGroupTitle">Маркетинг</div>
-      {supportCostTab}
+
+      <div>
+        <div>Наши маркетологи производят: {support.increase}MP в месяц</div>
+        <div className={support.decrease ? '' : 'hide'}>
+          <div>Ежемесячная стоимость поддержки: {support.decrease}MP</div>
+          <ul className="offset-mid">{influences}</ul>
+        </div>
+
+        <div className={support.needToHireWorker ? '' : 'hide'}>
+          <div className="alert alert-danger">
+            <strong>Наши маркетологи не справляются с нагрузкой</strong>
+            <div>(мы теряем {support.diff}MP ежемесячно)</div>
+            <br />
+            <UI.Button secondary text="Нанять маркетолога" onClick={() => this.setMode(MODE_STAFF)} />
+          </div>
+        </div>
+        <br />
+      </div>
+
       {marketsTab}
     </div>;
   };
@@ -169,17 +142,18 @@ export default class ProductPanel extends Component {
   renderMetrics = (id, product) => {
     if (!stageHelper.canShowMetricsTab()) return '';
 
-    return (
+    return <div>
+      <br />
       <div>
-        <div>
-          <b>Развитие продукта "{product.name}"</b>
-          <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
-        </div>
-        <br />
+        <b>Развитие продукта "{product.name}"</b>
+        <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
+      </div>
+      <br />
+      <div className="content-block">
         <b>Основные показатели продукта</b>
         <Metrics id={id} />
       </div>
-    );
+    </div>;
   };
 
   renderStaffPanel() {
@@ -343,15 +317,13 @@ export default class ProductPanel extends Component {
   }
 
   render({ product, gamePhase }, state) {
-    const { mode } = state;
-
     const id = 0;
     logger.shit('develop-panel.js fix productID id=0'); // TODO FIX PRODUCT ID=0
 
     let body = '';
-    switch (mode) {
+    switch (state.mode) {
       case MODE_MARKETING:
-        body = this.renderClientTab(id, product);
+        body = this.renderMarketingTab(id);
         break;
 
       case MODE_STAFF:

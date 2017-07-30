@@ -531,11 +531,9 @@ class ProductStore extends EventEmitter {
 
     let f = featureList.find(f => f.name === unlockedFeature);
 
-    return Object.assign({}, f, { canUpgrade: this.enoughMarketingPoints(f.points.marketing, id) && this.enoughProgrammingPoints(f.points.programming, id) })
-  }
+    const canUpgrade = this.enoughMarketingPoints(f.points.marketing, id) && this.enoughProgrammingPoints(f.points.programming, id);
 
-  enoughPointsToUpgradeFeature(id, featureGroup, featureName) {
-
+    return Object.assign({}, f, { canUpgrade })
   }
 
   getNearestMarketingFeature(id) {
@@ -568,9 +566,7 @@ class ProductStore extends EventEmitter {
 
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
     return this.getMarkets(id)
-      .map((m, marketId) => {
-        return this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value)
-      })
+      .map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
       .reduce((p, c) => p + c, 0);
   }
 
@@ -1100,8 +1096,6 @@ class ProductStore extends EventEmitter {
     const current = this.getMainFeatureQualityByFeatureId(id, featureId);
     const max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
 
-    // logger.debug('isUpgradeWillResultTechBreakthrough ?', current, max);
-
     return current + 1000 > max;
   }
 
@@ -1109,13 +1103,15 @@ class ProductStore extends EventEmitter {
     const current = this.getMainFeatureQualityByFeatureId(id, featureId);
     const max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
 
-    // logger.debug('isWeAreRetards ?', current, max);
-
     return current < 0.6 * max;
   }
 
   getBonusModifiers(id) {
     return _products[id].getBonusModifiers();
+  }
+
+  getBaseFeatureDevelopmentCost(id, featureId) {
+    return productDescriptions(this.getIdea(id)).features[featureId].development;
   }
 
   getMainFeatureUpgradeCost(id, featureId) {
@@ -1138,7 +1134,7 @@ class ProductStore extends EventEmitter {
 
     modifier *= specificFeatureModifier;
 
-    return Math.ceil(productDescriptions(this.getIdea(id)).features[featureId].development * modifier);
+    return Math.ceil(this.getBaseFeatureDevelopmentCost(id, featureId) * modifier);
   }
 
   getLeaderInTech(id, featureId) {

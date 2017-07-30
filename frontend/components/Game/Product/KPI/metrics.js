@@ -52,9 +52,9 @@ export default class Metrics extends Component {
               <b>Расходы: {shortenValue(data.expenses)}$</b>
             </li>
             <ul>
+              <li>Команда: {shortenValue(teamExpenses)}$</li>
               <li>Аренда технологий: {shortenValue(incomingRentsIncome)}$</li>
               <ul>{rentList}</ul>
-              <li>Команда: {shortenValue(teamExpenses)}$</li>
             </ul>
           </ul>
         </div>

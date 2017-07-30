@@ -13,9 +13,7 @@ export default class Market extends Component {
 
     const canIncreaseInfluence = productStore.getPointModificationStructured(id).marketing().diff >= increasingSupportCost;
 
-    const benefit = <div>
-      Мы заработаем на {productStore.getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId)}$ больше в этом месяце
-    </div>;
+    const benefit = productStore.getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId);
 
     return <div>
       <br />
@@ -26,94 +24,55 @@ export default class Market extends Component {
         onClick={() => productActions.increaseInfluenceOnMarket(id, marketId)}
       />
       <div>Стоимость поддержки после улучшения (ежемесячно): {increasedCost}MP</div>
-      {benefit}
+      <div>Мы заработаем на {benefit}$ больше в этом месяце</div>
     </div>
   }
 
-  render({ marketId, market, id }) {
-    const { userOrientedName, clients, price } = market;
-
-    let requirementTab = '';
-
-    const currentRating = productStore.getRating(id, marketId);
-
-
-    const currentSupportCost = productStore.getCurrentInfluenceMarketingCost(id, marketId);
-    const increasedCost = productStore.getNextInfluenceMarketingCost(id, marketId);
-
-    let leaveMarketButton;
-    const isAvailableToLeaveMarket = productStore.isAvailableToLeaveMarket(id, marketId);
-
-    if (isAvailableToLeaveMarket) {
-      const income = productStore.getMarketIncome(id, marketId);
-
-      leaveMarketButton = <UI.Button
-        text="Уйти с рынка"
-        cancel
-        onClick={() => productActions.decreaseInfluenceOnMarket(id, marketId)}
-      />;
-
-      requirementTab = (
-        <div>
-          <div>Рейтинг: <ColoredRating rating={currentRating} /></div>
-          <div>Доход: {income}$</div>
-          <div>Стоимость поддержки (ежемесячно): {currentSupportCost}MP</div>
-        </div>
-      );
-    }
-
-    const paymentTab = <div>
-      {this.renderIncreaseInfluenceButton(id, marketId, increasedCost - currentSupportCost, increasedCost)}
-      <br />
-      {leaveMarketButton}
-    </div>;
-
-
-    let competitorsTab;
+  renderMarketCompetitors(id, marketId, isAvailableToLeaveMarket) {
     const powerList = productStore.getPowerListOnMarket(marketId)
       .map(c => {
         let companyClass;
+        let switchPartnershipStatusButton;
+
+        const hasPartnershipWithUs = productStore.isPartneredOnMarket(id, c.companyId, marketId);
 
         if (c.companyId === id) {
           companyClass = 'our-company';
         }
-
-        let sendPartnershipButton = <div className="partnership-button-area">
-          <UI.Button
-            link
-            text="Стать партнёрами"
-            onClick={() => { productActions.offerPartnership(id, c.companyId, marketId) }}
-          />
-        </div>;
-
-        const hasPartnershipWithUs = productStore.isPartneredOnMarket(id, c.companyId, marketId);
 
         if (hasPartnershipWithUs) {
           companyClass = 'partner-company';
         }
 
         if (c.companyId === id || !isAvailableToLeaveMarket) {
-          sendPartnershipButton = '';
         } else if (hasPartnershipWithUs) {
-          sendPartnershipButton = <div className="partnership-button-area revoke">
+          switchPartnershipStatusButton = <div className="partnership-button-area revoke">
             <UI.Button
-              red
+              default
               text="Разорвать партнёрство"
               onClick={() => { productActions.revokePartnership(id, c.companyId, marketId) }}
+            />
+          </div>;
+        } else {
+          switchPartnershipStatusButton = <div className="partnership-button-area">
+            <UI.Button
+              link
+              text="Стать партнёрами"
+              onClick={() => { productActions.offerPartnership(id, c.companyId, marketId) }}
             />
           </div>;
         }
 
         return <tr className={companyClass}>
-          <td>{c.name} {sendPartnershipButton}</td>
+          <td>{c.name} {switchPartnershipStatusButton}</td>
           <td>{c.power}</td>
           <td>{c.share}</td>
         </tr>
       });
 
+
     if (powerList.length) {
-      // competitorsTab = JSON.stringify(powerList);
-      competitorsTab = <div>
+      return <div>
         <br />
         <div>Участники рынка</div>
         <table className="table bordered-table">
@@ -127,18 +86,50 @@ export default class Market extends Component {
           </tbody>
         </table>
       </div>;
-    } else {
-      competitorsTab = <div className="positive">Рынок свободен, мы можем занять его без особых усилий!</div>
     }
 
-    const isMainMarket = productStore.isMainMarket(id, marketId);
+    return <div className="positive">Рынок свободен, мы можем занять его без особых усилий!</div>
+  }
 
-    let setAsMainMarketButton;
-    if (isAvailableToLeaveMarket && !isMainMarket) {
-      setAsMainMarketButton = <div>
-        <div><UI.Button link text="Сделать этот рынок приоритетным" onClick={() => productActions.setAsMainMarket(id, marketId)} /></div>
-        <span className="offset-mid">Это усилит наше влияние на 20%</span>
+  render({ marketId, market, id }) {
+    const { userOrientedName, clients, price } = market;
+
+    let requirementTab, leaveMarketButton, setAsMainMarketButton;
+
+    const increasedCost = productStore.getNextInfluenceMarketingCost(id, marketId);
+    const currentSupportCost = productStore.getCurrentInfluenceMarketingCost(id, marketId);
+
+    const isAvailableToLeaveMarket = productStore.isAvailableToLeaveMarket(id, marketId);
+
+
+    if (isAvailableToLeaveMarket) {
+      const currentRating = <ColoredRating rating={productStore.getRating(id, marketId)} />;
+      const income = productStore.getMarketIncome(id, marketId);
+
+      requirementTab = <div>
+        <div>Рейтинг: {currentRating}</div>
+        <div>Доход: {income}$</div>
+        <div>Стоимость поддержки (ежемесячно): {currentSupportCost}MP</div>
       </div>;
+
+      leaveMarketButton = <UI.Button
+        cancel
+        text="Уйти с рынка"
+        onClick={() => productActions.decreaseInfluenceOnMarket(id, marketId)}
+      />;
+
+      if (!productStore.isMainMarket(id, marketId)) {
+        setAsMainMarketButton = <div>
+          <div>
+            <UI.Button
+              link
+              text="Сделать этот рынок приоритетным"
+              onClick={() => productActions.setAsMainMarket(id, marketId)}
+            />
+          </div>
+          <span className="offset-mid">Это усилит наше влияние на 20%</span>
+        </div>;
+      }
     }
 
     return <div className="content-block">
@@ -148,9 +139,16 @@ export default class Market extends Component {
           <div>Объём рынка: {clients * price}$</div>
           <div className="offset-mid">
             <div>{requirementTab}</div>
-            <div>{paymentTab}</div>
 
-            <div>{competitorsTab}</div>
+            <div>
+              <div>
+                {this.renderIncreaseInfluenceButton(id, marketId, increasedCost - currentSupportCost, increasedCost)}
+                <br />
+                {leaveMarketButton}
+              </div>
+            </div>
+
+            <div>{this.renderMarketCompetitors(id, marketId, isAvailableToLeaveMarket)}</div>
           </div>
         </div>
       </div>

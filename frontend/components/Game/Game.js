@@ -91,7 +91,6 @@ export default class Game extends Component {
   componentWillMount() {
     this.initialize();
 
-    // flux.productStore.addChangeListener(this.getProductsFromStore);
     flux.productStore.addChangeListener(this.getProductsFromStore);
     flux.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
     flux.messageStore.addChangeListener(this.getMessages);
