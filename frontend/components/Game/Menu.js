@@ -14,47 +14,36 @@ import UI from '../UI';
 import shortenValue from '../../helpers/math/shorten-value';
 
 export default class Menu extends Component {
-  componentWillMount() {
-    this.getPlayerInfoFromStore();
+  componentWillMount() {}
 
-    productStore.addChangeListener(this.getPlayerInfoFromStore);
-  }
-
-  getPlayerInfoFromStore = () => {
-    logger.shit('getPlayerInfoFromStore in game/Menu id=0');
-
-    this.setState({
-      money: productStore.getMoney(0),
-      points: productStore.getPoints(0)
-    })
-  };
-
-  renderSpeedIcons() {
-    return [
+  renderSpeedIcons(setGameSpeed) {
+    const icons = [
       { speed: 1, icon: '>' },
       { speed: 10, icon: '>>>' }
-    ].map(s => (
-      <div className="navigation">
-        <UI.Button
-          text={s.icon}
-          onClick={this.props.setGameSpeed(s.speed)}
-        />
-      </div>
-    ));
+    ];
+
+    return icons.map(s => <div className="navigation">
+      <UI.Button
+        text={s.icon}
+        onClick={setGameSpeed(s.speed)}
+      />
+    </div>
+    );
   }
 
   render(props, state) {
     if (!stageHelper.canShowUpperTabInMenu()) return <div></div>;
 
-    const id = 0;
-
     const {
       pause,
       pauseGame,
-      setGameSpeed
+      money,
+      points,
+      setGameSpeed,
+      id
     } = props;
 
-    const speedIcons = this.renderSpeedIcons();
+    const speedIcons = this.renderSpeedIcons(setGameSpeed);
 
     let pauseOrContinue = '';
     if (!pause) {
@@ -83,7 +72,7 @@ export default class Menu extends Component {
     //       <div>{new Date(year + 2016, month, day).toLocaleDateString()}</div>
     //       <div>Год: {year + 2016} Месяц: {month} День: {day}</div>
 
-    let moneyPhrase = shortenValue(state.money);
+    let moneyPhrase = shortenValue(money);
     let moneyDifferencePhrase = shortenValue(moneyDifference);
     if (moneyDifference > 0) moneyDifferencePhrase = `+${moneyDifferencePhrase}`;
 
@@ -98,10 +87,10 @@ export default class Menu extends Component {
         {speedIcons}
         <div className="navigation">{pauseOrContinue}</div>
         <div className="navigation">
-          <span className={mpIndication}>MP: {state.points.marketing}</span>
+          <span className={mpIndication}>MP: {points.marketing}</span>
         </div>
         <div className="navigation">
-          <span className={ppIndication}>PP: {state.points.programming}</span>
+          <span className={ppIndication}>PP: {points.programming}</span>
         </div>
       </div>
     </div>;

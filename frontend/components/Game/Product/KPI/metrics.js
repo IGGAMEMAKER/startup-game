@@ -9,10 +9,6 @@ import moneyCalculator from '../../../../helpers/economics/money-difference';
 
 import shortenValue from '../../../../helpers/math/shorten-value';
 
-import UI from '../../../UI';
-
-import stageHelper from '../../../../helpers/stages';
-
 export default class Metrics extends Component {
   render({ id }, {}) {
     const income = round(productStore.getProductIncome(id));
@@ -36,7 +32,7 @@ export default class Metrics extends Component {
     const incomingRentsIncome = rentExpenses.map(r => r.price).reduce((p, c) => p + c, 0);
 
     const rentList = rentExpenses
-      .map(r => (<li>Аренда технологии "{r.techName}" у компании "{r.senderName}" за {r.price}$</li>) );
+      .map(r => <li>Аренда технологии "{r.techName}" у компании "{r.senderName}" за {r.price}$</li>);
 
     return (
       <div>

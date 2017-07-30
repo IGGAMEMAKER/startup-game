@@ -31,7 +31,6 @@ import Market from '../../Product/Markets/market';
 const MODE_RATING = 'MODE_RATING';
 const MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
 const MODE_MARKETING = 'MODE_MARKETING';
-const MODE_PAYMENTS = 'MODE_PAYMENTS';
 const MODE_ANALYTICS = 'MODE_ANALYTICS';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 const MODE_COMPETITORS = 'MODE_COMPETITORS';
@@ -131,29 +130,13 @@ export default class ProductPanel extends Component {
     )
   };
 
-  renderClientTab = (id, product) => {
-    let churnFeatures = '';
-    if (stageHelper.canShowChurnFeatures()) {
-      const marketing = this.plainifySameTypeFeatures(id, 'marketing', 'Блок маркетинга полностью улучшен!');
-
-      churnFeatures = <div className="featureGroupDescriptionWrapper">
-        <div className="featureGroupBody">{marketing}</div>
-      </div>
-    }
-
-    let clientTab = churnFeatures;
-
+  renderClientTab = (id) => {
     const support = productStore.getPointModificationStructured(id).marketing();
-    let supportCostTab;
-
-
-    // <li>Затраты на блог: {support.detailed.blog}MP</li>
-    // <li>Затраты на техподдержку: {support.detailed.support}MP</li>
 
     const influences = support.detailed.markets
       .map(c => <li>Влияние на рынке {c.name}: {c.cost}MP</li>);
 
-    supportCostTab = <div>
+    const supportCostTab = <div>
       <div>Наши маркетологи производят: {support.increase}MP в месяц</div>
       <div className={support.decrease ? '' : 'hide'}>
         <div>Ежемесячная стоимость поддержки: {support.decrease}MP</div>
@@ -176,27 +159,11 @@ export default class ProductPanel extends Component {
     let marketsTab = productStore.getMarkets(id)
       .map((m, mId) => <Market id={id} marketId={mId} market={m} />);
 
-        // {clientTab}
-    return (
-      <div>
-        <div className="featureGroupTitle">Маркетинг</div>
-        {supportCostTab}
-        {marketsTab}
-      </div>
-    );
-  };
-
-  renderAdTab = (id, product) => {
-    if (!stageHelper.canShowAdTab()) return '';
-
-        // <AdsPanel product={product} id={id} />S
-    return (
-      <div>
-        <br />
-        <b>Рекламная кампания</b>
-        <br />
-      </div>
-    );
+    return <div>
+      <div className="featureGroupTitle">Маркетинг</div>
+      {supportCostTab}
+      {marketsTab}
+    </div>;
   };
 
   renderMetrics = (id, product) => {
@@ -210,14 +177,7 @@ export default class ProductPanel extends Component {
         </div>
         <br />
         <b>Основные показатели продукта</b>
-        <Metrics
-          product={product}
-          id={id}
-          onRatingPressed={() => this.setMode(MODE_MAIN_FEATURES)}
-          onClientsPressed={() => this.setMode(MODE_MARKETING)}
-          onPaymentsPressed={() => this.setMode(MODE_PAYMENTS)}
-          onExpertisePressed={() => this.setMode(MODE_HYPOTHESIS)}
-        />
+        <Metrics id={id} />
       </div>
     );
   };
@@ -234,10 +194,8 @@ export default class ProductPanel extends Component {
   }
 
   renderBonusesTab(id) {
-    const bonusesAmount = productStore.getBonusesAmount(id);
-
     return <div>
-      <Bonuses productId={id} bonusesAmount={bonusesAmount} />
+      <Bonuses productId={id} bonusesAmount={productStore.getBonusesAmount(id)} />
     </div>;
   }
 
@@ -335,11 +293,6 @@ export default class ProductPanel extends Component {
       improvements = this.renderNavbar(MODE_MAIN_FEATURES, 'Разработка');
     }
 
-    let payments;
-    if (stageHelper.canShowPaymentsTab()) {
-      payments = this.renderNavbar(MODE_PAYMENTS, 'Монетизация');
-    }
-
     let clients;
     // if (stageHelper.canShowClientsTab()) {
     clients = this.renderNavbar(MODE_MARKETING, 'Маркетинг');
@@ -397,10 +350,6 @@ export default class ProductPanel extends Component {
 
     let body = '';
     switch (mode) {
-      case MODE_PAYMENTS:
-        body = this.renderPaymentTab(id);
-        break;
-
       case MODE_MARKETING:
         body = this.renderClientTab(id, product);
         break;
@@ -420,12 +369,10 @@ export default class ProductPanel extends Component {
         break;
 
       case MODE_COMPETITORS:
-        body = (
-          <div>
-            {this.renderOurCostStructured(id)}
-            <Competitors id={id} />
-          </div>
-        );
+        body = <div>
+          {this.renderOurCostStructured(id)}
+          <Competitors id={id} />
+        </div>;
         break;
 
       case MODE_BONUSES:

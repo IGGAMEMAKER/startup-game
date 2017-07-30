@@ -585,7 +585,6 @@ class ProductStore extends EventEmitter {
 
     let partnershipBonus = 0;
     if (record && record.partnerId >= 0) {
-      // logger.debug('getPowerOfCompanyOnMarket', id, marketId, base, record);
       partnershipBonus = this.getBaseMarketingInfluence(record.partnerId, marketId) * 0.3;
     }
 
@@ -598,7 +597,7 @@ class ProductStore extends EventEmitter {
     let sum = 0;
     const influences = marketRecords
       .map(({ companyId, marketId }) => {
-        let power = this.getPowerOfCompanyOnMarket(companyId, marketId);
+        const power = this.getPowerOfCompanyOnMarket(companyId, marketId);
 
         sum += power;
 
@@ -699,6 +698,8 @@ class ProductStore extends EventEmitter {
   }
 
   getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId) {
+    logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', id, marketId);
+
     if (this.isHaveInfluenceOnMarket(id, marketId)) {
       const powerIncreaseMultiplier = this.getNextInfluenceMarketingCost(id, marketId) / this.getCurrentInfluenceMarketingCost(id, marketId);
 
@@ -715,15 +716,11 @@ class ProductStore extends EventEmitter {
 
       const income = this.getMarketIncome(id, marketId) * (nextShare / prevShare - 1);
 
-      // logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', id, marketId, powerIncreaseMultiplier, powers);
-      // logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', index, shares, prevShare, nextShare);
       return Math.floor(income);
     } else if (this.isMarketFree(marketId)) {
       return this.calculateMarketIncome(id, marketId, null, 1);
     } else {
       // market is not free, and we are trying entering it
-      logger.shit('count edicts too!');
-
       const powers = this.getPowerListOnMarket(marketId);
 
       const newPower = this.getNextInfluenceMarketingCost(id, marketId);
@@ -743,7 +740,17 @@ class ProductStore extends EventEmitter {
   }
 
   getBaseMarketingInfluence(id, marketId) {
-    const level = _markets.find(m => m.companyId === id && m.marketId === marketId).level;
+    const record = this.getMarketRecord(id, marketId);
+
+    // logger.debug('getBaseMarketingInfluence', record, id, marketId, _markets);
+
+    if (!record) {
+      logger.error('no record found in getBaseMarketingInfluence(id, marketId)', id, marketId, _markets);
+
+      return 0;
+    }
+
+    const level = record.level;
 
     return this.getMarketInfo(id, marketId).levels[level];
   }
@@ -828,8 +835,7 @@ class ProductStore extends EventEmitter {
         cost,
         benefitOnLevelUp,
         ROI,
-        marketId: m.id,
-
+        marketId: m.id
       }
     })
   }

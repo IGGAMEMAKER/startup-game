@@ -81,7 +81,9 @@ export default class Game extends Component {
 
   getProductsFromStore = () => {
     this.setState({
-      products: flux.productStore.getOurProducts()
+      products: flux.productStore.getOurProducts(),
+      money: flux.productStore.getMoney(0),
+      points: flux.productStore.getPoints(0)
     });
   };
 
@@ -105,9 +107,7 @@ export default class Game extends Component {
   };
 
   render(props: PropsType, state) {
-    if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) {
-      return <Tutorial />;
-    }
+    if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) return <Tutorial />;
 
     return (
       <div className="body-background">
@@ -119,6 +119,9 @@ export default class Game extends Component {
               pauseGame={this.pauseGame}
               setGameSpeed={this.setGameSpeed}
               day={state.day}
+              money={state.money}
+              points={state.points}
+              id={0}
             />
           </div>
           <hr />

@@ -66,7 +66,7 @@ function run (id) {
   // upgrade features
   const performAction = Math.random();
 
-  if (performAction > 5 / 30) return;
+  if (performAction > 10 / 30) return;
 
   const product: Product = productStore.getProduct(id);
 
@@ -110,20 +110,20 @@ function run (id) {
 
   // upgrade payments block
   // isBalancedCompany &&
-  if (Math.random() < 10 / 30) {
-    const paymentFeature = productStore.getNearestPaymentFeature(id);
-
-    if (paymentFeature && paymentFeature.canUpgrade) {
-      productActions.improveFeatureByPoints(id, 'payment', paymentFeature.name);
-      const { points } = paymentFeature;
-
-      productActions.spendPoints(points.programming, points.marketing, id);
-
-      const companyName = productStore.getName(id);
-
-      messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_PAYMENTS_UPGRADED, { id, companyName });
-    }
-  }
+  // if (Math.random() < 10 / 30) {
+  //   const paymentFeature = productStore.getNearestPaymentFeature(id);
+  //
+  //   if (paymentFeature && paymentFeature.canUpgrade) {
+  //     productActions.improveFeatureByPoints(id, 'payment', paymentFeature.name);
+  //     const { points } = paymentFeature;
+  //
+  //     productActions.spendPoints(points.programming, points.marketing, id);
+  //
+  //     const companyName = productStore.getName(id);
+  //
+  //     messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_PAYMENTS_UPGRADED, { id, companyName });
+  //   }
+  // }
 
 
 

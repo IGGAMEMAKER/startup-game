@@ -117,10 +117,11 @@ export default class MainFeature extends Component {
 
     const benefit = flux.productStore.getBenefitOnFeatureImprove(id, featureId);
 
+    // Мы усилим наше лидерство на рынке, но и
     const profitPhrase = benefit ?
       <div>Мы заработаем на {benefit}$ больше в этом месяце</div>
       :
-      <div>Мы усилим наше лидерство на рынке, но изменение дохода непредсказуемо</div>;
+      <div>Изменение дохода непредсказуемо</div>;
 
     return <div key={key}>
       <div className="content-block">
