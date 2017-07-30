@@ -7,13 +7,9 @@ import round from '../../../../helpers/math/round';
 
 import moneyCalculator from '../../../../helpers/economics/money-difference';
 
-import ColoredRating from '../KPI/colored-rating';
+import shortenValue from '../../../../helpers/math/shorten-value';
 
 import UI from '../../../UI';
-
-type PropsType = {};
-
-type StateType = {};
 
 import stageHelper from '../../../../helpers/stages';
 
@@ -25,7 +21,7 @@ export default class Metrics extends Component {
 
     const productIncome = data.byProductIncome
       // .filter(p => p.income > 0)
-      .map(p => <div>{p.name}: {Math.floor(p.income)}$</div>);
+      .map(p => <div>{p.name}: {shortenValue(p.income)}$</div>);
 
     const outgoingRents = productStore.getRentIncomes(id).outgoingRents;
 
@@ -47,20 +43,22 @@ export default class Metrics extends Component {
         <div>
           <ul>
             <li>
-              <b>Ежемесячный доход: {income}$</b>
+              <b>Доходы: {shortenValue(income)}$</b>
             </li>
             <ul>
               <li>{productIncome}</li>
             </ul>
             <ul>
-              <li>Аренда технологий: {outgoingRentsIncome}$</li>
+              <li>Аренда технологий: {shortenValue(outgoingRentsIncome)}$</li>
               <ul>{rentIncomeList}</ul>
             </ul>
-            <li>Ежемесячные расходы: {data.expenses}$</li>
+            <li>
+              <b>Расходы: {shortenValue(data.expenses)}$</b>
+            </li>
             <ul>
-              <li>Аренда технологий: {incomingRentsIncome}$</li>
+              <li>Аренда технологий: {shortenValue(incomingRentsIncome)}$</li>
               <ul>{rentList}</ul>
-              <li>Команда: {teamExpenses}$</li>
+              <li>Команда: {shortenValue(teamExpenses)}$</li>
             </ul>
           </ul>
         </div>
