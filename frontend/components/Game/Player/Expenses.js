@@ -68,7 +68,7 @@ export default class Expenses extends Component {
           <div>{rentList}$</div>
         </div>
       </div>
-    )
+    );
     // <h5>Продуктовые расходы</h5>
         // <div className="offset-mid">
         //   {productExpenses.map(this.renderProductExpense)}

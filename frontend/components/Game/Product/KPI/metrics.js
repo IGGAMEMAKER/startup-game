@@ -5,6 +5,8 @@ import productStore from '../../../../stores/product-store';
 
 import round from '../../../../helpers/math/round';
 
+import moneyCalculator from '../../../../helpers/economics/money-difference';
+
 import ColoredRating from '../KPI/colored-rating';
 
 import UI from '../../../UI';
@@ -16,130 +18,50 @@ type StateType = {};
 import stageHelper from '../../../../helpers/stages';
 
 export default class Metrics extends Component {
-  render({
-    product,
-    id,
-    onRatingPressed,
-    onClientsPressed,
-    onPaymentsPressed,
-    onAdsPressed,
-    onExpertisePressed
-  }, {}) {
-    // const { idea } = product;
-    //
-    // const debt = product.KPI.debt;
-    //
-    // const rating = round(productStore.getRatingForMetricsTab(id));
-    //
-    // let expertise = productStore.getXP(id);
-    // // const churn = percentify(productStore.getChurnRate(id));
-    // const churn = productStore.getChurnRate(id).pretty;
-    // const disloyalClients = productStore.getDisloyalClients(id);
-    // const conversion = productStore.getConversionRate(id).pretty;
-    // const clients = productStore.getClients(id);
+  render({ id }, {}) {
     const income = round(productStore.getProductIncome(id));
 
-    // const hype = productStore.getHypeValue(id);
-    //
-    // const newbies = productStore.getNewClients(id);
-    //
-    // let canShowRatingTab = productStore.getRatingForMetricsTab(id) != 0;
-    // let canShowChurnTab = !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
-    //
-    // let canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'payment', 'mockBuying');
-    // // let canShowPayingPercentage = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
-    // let canShowClientsTab =
-    //   !!productStore.getFeatureStatus(id, 'analytics', 'webvisor') ||
-    //   !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
-    // let canShowNewClientsTab =
-    //   !!productStore.getFeatureStatus(id, 'analytics', 'webvisor') ||
-    //   !!productStore.getFeatureStatus(id, 'analytics', 'segmenting');
-    let canShowIncomeTab = !!productStore.getFeatureStatus(id, 'analytics', 'paymentAnalytics');
-    // //
-    // let ratingTab;
-    // canShowRatingTab = true;
-    // if (canShowRatingTab) {
-    //     // <span className="metric-link" onClick={onRatingPressed}>Улучшить</span>
-    //   ratingTab = <li>
-    //     <b>Рейтинг: <ColoredRating rating={rating} /></b>
-    //   </li>
-    // } else {
-    //   ratingTab = <li><b>Рейтинг: ???</b></li>;
-    // }
-    //
-    // let churnTab;
-    // canShowChurnTab = false;
-    // if (canShowChurnTab) {
-    //   churnTab = <li><b>Отток клиентов: {churn}% ({disloyalClients})</b>
-    //     <span className="metric-link" onClick={onClientsPressed}>Улучшить</span>
-    //   </li>;
-    // }
-    //
-    // let newClientsTab;
-    // if (canShowNewClientsTab) {
-    //   newClientsTab = <li>
-    //     <b>Новые клиенты: {newbies}</b>
-    //   </li>
-    // }
-    //
-    // let payingPercentageTab;
-    // canShowPayingPercentage = false;
-    // // if (canShowPayingPercentage) {
-    // //   payingPercentageTab = <li>
-    // //     <b>Платёжеспособность: {conversion}%</b>
-    // //   </li>;
-    // // } else {
-    // //   payingPercentageTab = <li>
-    // //     <b>Платёжеспособность: ???</b>
-    // //     <span className="metric-link" onClick={onPaymentsPressed}>Разблокировать эту метрику</span>
-    // //   </li>;
-    // // }
-    //
-    // let clientsTab;
-    // canShowClientsTab = true;
-    // if (canShowClientsTab) {
-    //     // <span className="metric-link" onClick={onClientsPressed}>Привлечь клиентов</span>
-    //   clientsTab = <li>
-    //     <b>Клиенты: {clients}</b>
-    //   </li>
-    // }
-    //
-    //
-    // let expertiseTab = <li>
-    //   {UI.icons.XP}
-    //   <b>Экспертиза: {expertise}XP</b>
-    //   <span className="metric-link" onClick={onExpertisePressed}>Повысить</span>
-    // </li>;
-    //
-    // expertiseTab = '';
-    //
-    // let hypeTab = <li>
-    //   <b>HYPE: {hype}</b>
-    // </li>;
+    const data = moneyCalculator.structured(id);
 
-    let incomeTab;
-    canShowIncomeTab = true;
-    if (canShowIncomeTab) {
-      if (stageHelper.canShowPaymentsTab()) {
-          // <span className="metric-link" onClick={onPaymentsPressed}>Повысить</span>
-        incomeTab = <li>
-          <b>Ежемесячный доход: {income}$</b>
-        </li>
-      }
-    }
-    // {ratingTab}
-    // {expertiseTab}
-    // {clientsTab}
-    // {churnTab}
-    //
-    // {hypeTab}
+    const productIncome = data.byProductIncome
+      // .filter(p => p.income > 0)
+      .map(p => <div>{p.name}: {Math.floor(p.income)}$</div>);
+
+    const outgoingRents = productStore.getRentIncomes(id).outgoingRents;
+
+    const outgoingRentsIncome = outgoingRents.map(r => r.price).reduce((p, c) => p + c, 0);
+    const rentIncomeList = outgoingRents
+      .map(r => <li>Аренда технологии "{r.techName}" компанией "{r.acceptorName}" за {r.price}$</li>);
+
+
+    const teamExpenses = data.teamExpenses;
+    const rentExpenses = productStore.getRentExpenses(id).incomingRents;
+
+    const incomingRentsIncome = rentExpenses.map(r => r.price).reduce((p, c) => p + c, 0);
+
+    const rentList = rentExpenses
+      .map(r => (<li>Аренда технологии "{r.techName}" у компании "{r.senderName}" за {r.price}$</li>) );
+
     return (
       <div>
         <div>
           <ul>
-
-
-            {incomeTab}
+            <li>
+              <b>Ежемесячный доход: {income}$</b>
+            </li>
+            <ul>
+              <li>{productIncome}</li>
+            </ul>
+            <ul>
+              <li>Аренда технологий: {outgoingRentsIncome}$</li>
+              <ul>{rentIncomeList}</ul>
+            </ul>
+            <li>Ежемесячные расходы: {data.expenses}$</li>
+            <ul>
+              <li>Аренда технологий: {incomingRentsIncome}$</li>
+              <ul>{rentList}</ul>
+              <li>Команда: {teamExpenses}$</li>
+            </ul>
           </ul>
         </div>
       </div>

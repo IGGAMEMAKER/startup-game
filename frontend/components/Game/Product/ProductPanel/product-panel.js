@@ -30,7 +30,6 @@ import Market from '../../Product/Markets/market';
 
 const MODE_RATING = 'MODE_RATING';
 const MODE_HYPOTHESIS = 'MODE_HYPOTHESIS';
-const MODE_ADS = 'MODE_ADS';
 const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_PAYMENTS = 'MODE_PAYMENTS';
 const MODE_ANALYTICS = 'MODE_ANALYTICS';
@@ -118,7 +117,6 @@ export default class ProductPanel extends Component {
     const makeImprovementPhrase = 'Установите фичу "Тестовая покупка"';
     const payAbilityPhrase = `Платёжеспособность: ${isOpened ? `${payAbility}%` : makeImprovementPhrase}`;
 
-            // <div className="featureGroupDescription">Позволяет повысить доходы с продаж</div>
     return (
       <div>
         <div className="">
@@ -218,7 +216,6 @@ export default class ProductPanel extends Component {
           onRatingPressed={() => this.setMode(MODE_MAIN_FEATURES)}
           onClientsPressed={() => this.setMode(MODE_MARKETING)}
           onPaymentsPressed={() => this.setMode(MODE_PAYMENTS)}
-          onAdsPressed={() => this.setMode(MODE_ADS)}
           onExpertisePressed={() => this.setMode(MODE_HYPOTHESIS)}
         />
       </div>
@@ -343,9 +340,6 @@ export default class ProductPanel extends Component {
       payments = this.renderNavbar(MODE_PAYMENTS, 'Монетизация');
     }
 
-    let ads;
-    ads = this.renderNavbar(MODE_ADS, 'Реклама');
-
     let clients;
     // if (stageHelper.canShowClientsTab()) {
     clients = this.renderNavbar(MODE_MARKETING, 'Маркетинг');
@@ -375,7 +369,6 @@ export default class ProductPanel extends Component {
         {competitors}
         {staff}
         {hypothesis}
-        {payments}
         {bonuses}
       </ul>
     );
@@ -388,7 +381,7 @@ export default class ProductPanel extends Component {
 
     return <div>
       <div>Наша рыночная стоимость: {ourCompanyCost.cost}$</div>
-      <div>На нашу стоимость влияет количество клиентов и развитие технологий</div>
+      <div>На нашу стоимость влияет развитие технологий и наши доходы</div>
       <ul>
         <li>От технологий ({ourCompanyCost.technologyPart}%): {ourCompanyCost.technologyValue}$</li>
         <li>От доходов ({ourCompanyCost.economicPart}%): {ourCompanyCost.economicValue}$</li>
@@ -410,10 +403,6 @@ export default class ProductPanel extends Component {
 
       case MODE_MARKETING:
         body = this.renderClientTab(id, product);
-        break;
-
-      case MODE_ADS:
-        body = this.renderAdTab(id, product);
         break;
 
       case MODE_STAFF:

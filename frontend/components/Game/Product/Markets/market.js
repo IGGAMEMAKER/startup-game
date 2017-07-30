@@ -31,7 +31,7 @@ export default class Market extends Component {
   }
 
   render({ marketId, market, id }) {
-    const { name, userOrientedName, clients, price, requirements } = market;
+    const { userOrientedName, clients, price } = market;
 
     let requirementTab = '';
 
@@ -82,7 +82,7 @@ export default class Market extends Component {
           <UI.Button
             link
             text="Стать партнёрами"
-            onClick={() => {productActions.offerPartnership(id, c.companyId, marketId)}}
+            onClick={() => { productActions.offerPartnership(id, c.companyId, marketId) }}
           />
         </div>;
 
@@ -99,7 +99,7 @@ export default class Market extends Component {
             <UI.Button
               red
               text="Разорвать партнёрство"
-              onClick={() => {productActions.revokePartnership(id, c.companyId, marketId)}}
+              onClick={() => { productActions.revokePartnership(id, c.companyId, marketId) }}
             />
           </div>;
         }

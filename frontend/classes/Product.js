@@ -285,6 +285,7 @@ export default class Product {
   }
 
   getPaymentModifier() {
+    return 1;
     const payments = this.features.payment;
 
     // mockBuying
