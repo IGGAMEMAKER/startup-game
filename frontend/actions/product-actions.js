@@ -5,14 +5,13 @@ import logger from '../helpers/logger/logger';
 import productStore from '../stores/product-store';
 
 export default {
-  improveFeature(id, featureGroup, featureName, max, XP) {
+  improveFeature(id, featureGroup, featureName, XP) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
       id,
       featureGroup,
       featureName,
-      value: XP || 1000,
-      max
+      value: XP || 1000
     })
   },
   refreshRents(ids: Array) {

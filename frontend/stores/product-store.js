@@ -249,7 +249,7 @@ class ProductStore extends EventEmitter {
   };
 
   getMarketName(id, mId) {
-    return this.getMarkets(id)[mId].name;
+    return this.getMarketInfo(id, mId).name;
   }
 
   getPoints(id) {
@@ -257,12 +257,10 @@ class ProductStore extends EventEmitter {
   }
 
   enoughMarketingPoints(mp, id) {
-    // logger.debug('enough points', id, _products);
     return _products[id]._points.marketing >= mp;
   }
 
   enoughProgrammingPoints(pp, id) {
-    // logger.debug('enough points', id, _products);
     return _products[id]._points.programming >= pp;
   }
 
@@ -308,20 +306,6 @@ class ProductStore extends EventEmitter {
     );
   }
 
-  getMaxPossibleFreelanceMarketingPoints() {
-    return Math.floor(_money / JOB.PRICE_OF_ONE_MP)
-  }
-
-  getMaxPossibleFreelanceProgrammingPoints() {
-    return Math.floor(_money / JOB.PRICE_OF_ONE_PP)
-  }
-
-  getMaxPossibleAdClients() {
-    const CLIENT_PRICE = 1;
-
-    return Math.floor(_money / CLIENT_PRICE);
-  }
-
   getProgrammers() {
     return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_PROGRAMMER)
   }
@@ -363,12 +347,10 @@ class ProductStore extends EventEmitter {
 
   getCompanyCost(id) {
     return companyCostHelper.compute(_products[id], this.getProductIncome(id), 0);
-    return _products[id].getCompanyCost();
   }
 
   getCompanyCostStructured(id) {
     return companyCostHelper.structured(_products[id], this.getProductIncome(id), 0);
-    return _products[id].getCompanyCostStructured();
   }
 
   enforceFeaturesByRentedOnes(offer: Array<Number>, rented: Array<Rent>) {
@@ -391,8 +373,7 @@ class ProductStore extends EventEmitter {
   canRentTechFromAtoB(sender, acceptor, featureId) {
     const result = _rents.find(r => r.featureId === featureId && (r.in === acceptor || r.out === acceptor || r.in === sender));
 
-    logger.debug('can rent', sender, acceptor, featureId, result);
-    return !result
+    return !result;
   }
 
   getRentIncomes(id) {
@@ -442,41 +423,12 @@ class ProductStore extends EventEmitter {
     return Product.getRating(_products[id], features, marketId, improvement);
   }
 
-  getClients(id, segmentId) {
-    return _products[id].getClients(segmentId);
-  }
-
-  getSegmentBySegmentId(id, segId) {
-    return _products[id].getSegmentBySegmentId(segId);
-  }
-
-  getHypeDamping(id) {
-    return _products[id].getHypeDamping();
-  }
-
-  getSegmentedPriorities(id, segId) {
-    return _products[id].getSegmentedPriorities(segId);
-  }
-
-  getNewClients(id) {
-    return _products[id].getNewClients();
-  }
-
   getMainFeatureQualityByFeatureId(id, featureId) {
     return _products[id].getMainFeatureQualityByFeatureId(featureId);
   }
 
   getPrettyFeatureNameByFeatureId(id, featureId){
     return _products[id].getPrettyFeatureNameByFeatureId(featureId);
-  }
-
-  requirementsOKforMarket(id, marketId) {
-    // return true;
-    return _products[id].requirementsOKforMarket(marketId);
-  }
-
-  getAnalyticsValueForFeatureCreating(id) {
-    return _products[id].getAnalyticsValueForFeatureCreating();
   }
 
   getDefaults(id): DefaultDescription {
@@ -499,28 +451,17 @@ class ProductStore extends EventEmitter {
     return _rents.find(r => r.out === id);
   }
 
-  getProductUtility(id) {
-    return _products[id].getProductUtility();
-  }
-
   getPaymentModifier(id) {
     return _products[id].getPaymentModifier();
-  }
-
-  getProductPrice(id, segId) {
-    return _products[id].getProductPrice(segId);
   }
 
   getFeatures(id, featureGroup) {
     return _products[id].getFeatures(featureGroup);
   }
 
-  isPaymentEnabled(id, segmentId) {
-    return _products[id].isPaymentEnabled(segmentId);
-  }
-
   getNextFeature(id, groupType, featureList) {
     let unlockedFeature = '';
+
     featureList.forEach(f => {
       if (!this.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
         unlockedFeature = f.name;
@@ -633,7 +574,7 @@ class ProductStore extends EventEmitter {
   }
 
   getMarketSize(id, marketId) {
-    const { price, clients } = this.getMarkets(id)[marketId];
+    const { price, clients } = this.getMarketInfo(id, marketId);
 
     return price * clients;
   }
@@ -677,10 +618,7 @@ class ProductStore extends EventEmitter {
         increase,
         decrease,
         detailed: {
-          markets: this.getOurMarketsSupportCostList(id),
-          blog: this.getBlogStatusStructured(id).supportCost,
-          support: this.getMarketingSupportTechTotalCost(id),
-          base: this.getBaseSupportCost()
+          markets: this.getOurMarketsSupportCostList(id)
         },
         needToHireWorker: decrease > increase,
         diff: Math.abs(decrease - increase)
@@ -738,8 +676,6 @@ class ProductStore extends EventEmitter {
   getBaseMarketingInfluence(id, marketId) {
     const record = this.getMarketRecord(id, marketId);
 
-    // logger.debug('getBaseMarketingInfluence', record, id, marketId, _markets);
-
     if (!record) {
       logger.error('no record found in getBaseMarketingInfluence(id, marketId)', id, marketId, _markets);
 
@@ -780,7 +716,7 @@ class ProductStore extends EventEmitter {
   }
 
   isMaxLevelReached(id, marketId) {
-    const max = this.getMarkets(id)[marketId].levels.length;
+    const max = this.getMarketInfo(id, marketId).levels.length;
     const current = this.getMarketLevelOfCompany(id, marketId);
 
     return max === current;
@@ -798,10 +734,9 @@ class ProductStore extends EventEmitter {
     const markets = this.getMarkets(id);
 
     return markets.map(m => {
-      let cost, enoughMPs, benefitOnLevelUp, isFreeMarket;
-      isFreeMarket = this.isFreeMarket(m.id);
+      let cost, enoughMPs, benefitOnLevelUp;
 
-      const requirementsOk = this.requirementsOKforMarket(id, m.id).valid;
+      let isFreeMarket = this.isFreeMarket(m.id);
 
       const isMaxLevelReached = this.isMaxLevelReached(id, m.id);
 
@@ -815,7 +750,7 @@ class ProductStore extends EventEmitter {
         benefitOnLevelUp = this.getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, m.id);
       }
 
-      const canIncreaseInfluence = requirementsOk && !isMaxLevelReached && enoughMPs;
+      const canIncreaseInfluence = !isMaxLevelReached && enoughMPs;
 
       let ROI = 0;
       if (cost) {
@@ -825,7 +760,6 @@ class ProductStore extends EventEmitter {
       return {
         canIncreaseInfluence,
         isMaxLevelReached,
-        requirementsOk,
         enoughMPs,
         isFreeMarket,
         cost,
@@ -836,46 +770,13 @@ class ProductStore extends EventEmitter {
     })
   }
 
-
-  getBestOpportunityForMarketInfluenceIncreasing(id) {
-    const markets = this.getMarketingAnalysis(id);
-
-    // search for free markets
-    const freeMarketIndex = markets.findIndex(m => m.isFreeMarket && m.canIncreaseInfluence);
-
-    if (freeMarketIndex >= 0) {
-      return {
-        canImproveInfluence: true,
-        marketId: freeMarketIndex
-      }
-    }
-
-    // if there are no free markets
-    // search markets with lowest influence cost
-
-
-    // meet requirements?
-
-    let canImproveInfluence = true;
-    let marketId = 2;
-
-    return {
-      canImproveInfluence,
-      marketId
-    }
-  }
-
   isCanIncreaseMarketLevel(id, marketId) {
-    if (!this.requirementsOKforMarket(id, marketId).valid) return false;
-
-    const max = this.getMarkets(id)[marketId].levels.length - 1;
+    const max = this.getMarketInfo(id, marketId).levels.length - 1;
 
     return this.getMarketLevelOfCompany(id, marketId) < max;
   }
 
   getMarketIncome = (id, marketId, improvement) => {
-    if (!this.requirementsOKforMarket(id, marketId).valid) return 0;
-
     if (!this.isHaveInfluenceOnMarket(id, marketId)) return 0;
 
     const influenceOnMarket = this.getMarketInfluenceOfCompany(id, marketId);
@@ -904,12 +805,9 @@ class ProductStore extends EventEmitter {
     return _products[id].getMarketingFeatures();
   }
 
+
   getBlogPower(id) {
     return _products[id].getBlogPower();
-  }
-
-  getBlogStatusStructured(id) {
-    return _products[id].getBlogStatusStructured();
   }
 
   getSupportPower(id) {
@@ -964,10 +862,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getBonusesList();
   }
 
-  getCostPerClient(id) {
-    return _products[id].getCostPerClient();
-  }
-
   getMarketRecord(id, marketId) {
     return _markets.find(m => m.marketId === marketId && m.companyId === id);
   }
@@ -978,10 +872,6 @@ class ProductStore extends EventEmitter {
     if (!record) return false;
 
     return record.isMainMarket;
-  }
-
-  getRatingForMetricsTab(id) {
-    return this.getRating(id);
   }
 
   getClientAnalyticsModifier(id) {
@@ -996,27 +886,18 @@ class ProductStore extends EventEmitter {
     return _products[id].getProgrammingSupportCost();
   }
 
-  getMarketingSupportTechTotalCost(id) {
-    return _products[id].getMarketingSupportTechTotalCost();
-  }
-
   getBaseSupportCost(id = 0) {
     return _products[id].getBaseSupportCost();
   }
 
   getOurMarketsSupportCostList(id) {
-    const getMarketName = (marketId) => {
-      return this.getMarkets(id)[marketId].name;
-    };
-
     return _markets
       .filter(m => m.companyId === id)
-      .map(m => {
-        return {
+      .map(m => ({
           cost: this.getCurrentInfluenceMarketingCost(id, m.marketId),
-          name: getMarketName(m.marketId)
-        }
-      })
+          name: this.getMarketName(id, m.marketId)
+        })
+      )
   }
 
   getMarketingSupportCost(id) {
@@ -1056,10 +937,6 @@ class ProductStore extends EventEmitter {
 
   getDescriptionOfProduct(id) {
     return _products[id].getDescriptionOfProduct();
-  }
-
-  canShowPayPercentageMetric(id) {
-    return _products[id].canShowPayPercentageMetric();
   }
 
   getTestsAmount(id) {
@@ -1217,20 +1094,19 @@ class ProductStore extends EventEmitter {
           }));
 
         return {
+          id,
           rating,
           style: p.style,
           clients: p.KPI.clients,
           name: p.name,
           features: offer,
           cost: this.getCompanyCost(id),
-          id,
-          hype: p.getHypeValue(),
           company: p,
           income: this.getProductIncome(id),
           expenses: this.getProductExpenses(id)
         }
       });
-      // .sort((a, b) => b.cost - a.cost);
+    // .sort((a, b) => b.cost - a.cost);
   }
 }
 
@@ -1264,22 +1140,16 @@ Dispatcher.register((p: PayloadType) => {
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
       _products[id].improveFeature(p);
 
-      // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
-
       logger.shit('rewrite upgradedDefaults updating in Product.js class. ' +
         'You need updating it only on improve Main Feature actions');
 
       const upgradedDefaults = getCurrentMainFeatureDefaultsById(id);
       const idea = _products[id].getIdea();
 
-      // logger.debug('IMPROVE FEATURE BY POINTS', upgradedDefaults);
-
       _products
         .filter(p => p.idea === idea)
         .forEach((p) => {
-          // logger.debug('upgrading for product', p.name);
           p.setMainFeatureDefaults(upgradedDefaults);
-          // arr[i].setMainFeatureDefaults(upgradedDefaults);
         });
       break;
 
@@ -1287,8 +1157,14 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].improveFeatureByPoints(p);
       break;
 
+
+
     case c.PRODUCT_ACTIONS_CLIENTS_ADD:
       _products[id].addClients(p);
+      break;
+
+    case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
+      _products[id].removeClients(p);
       break;
 
     case c.PRODUCT_ACTIONS_HYPE_ADD:
@@ -1298,6 +1174,8 @@ Dispatcher.register((p: PayloadType) => {
     case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
       _products[id].loseMonthlyHype(p.hypeDamping);
       break;
+
+
 
     case c.PRODUCT_ACTIONS_MARKETS_INFLUENCE_INCREASE:
       let index = getMarketRecordIndex(p.id, p.marketId);
@@ -1314,6 +1192,7 @@ Dispatcher.register((p: PayloadType) => {
 
       if (index >= 0) {
         clearPartnershipOf(p.id, p.marketId);
+
         _markets.splice(index, 1)
       }
       break;
@@ -1353,15 +1232,11 @@ Dispatcher.register((p: PayloadType) => {
       _markets[record2].partnerId = c1;
       break;
 
-    case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
-      _products[id].removeClients(p);
-      break;
-
     case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
-      // { features , KPI, idea, name }
       const competitor: Product = p.p;
-      // _products.push(Object.assign({}, competitor, { XP: 0, stage: PRODUCT_STAGES.PRODUCT_STAGE_NORMAL }));
+
       competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
+
       _products.push(competitor);
       break;
 
@@ -1413,6 +1288,8 @@ Dispatcher.register((p: PayloadType) => {
       _products[p.id || 0]._points.marketing -= p.mp;
       _products[p.id || 0]._points.programming -= p.pp;
       break;
+
+
 
     case c.PLAYER_ACTIONS_EXPENSES_ADD:
       _expenses.push(p.expense);
@@ -1489,6 +1366,7 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     default:
+      change = false;
       break;
   }
 

@@ -72,12 +72,13 @@ function run (id) {
 
   const features = productStore.getDefaults(id).features;
 
-  const isBalancedCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED || product.style === MANAGEMENT_STYLES.COMPANY_STYLE_SEGMENT_ORIENTED;
+  const isBalancedCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
   const isTechnologicalCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
 
   let sumOfProbabilities = 0;
   const featureProbabilities = [];
-  const featuresChecked = features.map(f => {
+
+  features.forEach(f => {
     let probability = 10;
 
     if (f.shareable && isTechnologicalCompany) {
@@ -97,8 +98,6 @@ function run (id) {
     });
 
     sumOfProbabilities += probability;
-
-    return f;
   });
 
   let value = Math.floor(Math.random(0, 1) * sumOfProbabilities);

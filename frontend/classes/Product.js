@@ -16,11 +16,12 @@ import * as balance from '../constants/balance';
 
 import round from '../helpers/math/round';
 
-const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes',
-  'Best Hosting', 'Tech-Labs', 'Gingerbeard', 'Mercury', 'Phantom', 'Modern', 'Unnamed'];
 
 import * as BONUSES from '../constants/bonuses';
 import * as MANAGEMENT_STYLES from '../constants/company-styles';
+
+const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes',
+  'Best Hosting', 'Tech-Labs', 'Gingerbeard', 'Mercury', 'Phantom', 'Modern', 'Unnamed'];
 
 export default class Product {
   constructor(data, createFromObject) {
@@ -131,10 +132,8 @@ export default class Product {
     this.owner = !isCompetitor;
 
     let styleFactor = random(0, 1);
-    if (styleFactor < 0.5) {
+    if (styleFactor < 0.6) {
       this.style = MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
-    } else if (styleFactor < 0.8) {
-      this.style = MANAGEMENT_STYLES.COMPANY_STYLE_SEGMENT_ORIENTED;
     } else {
       this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
     }
@@ -174,35 +173,6 @@ export default class Product {
     return round(computeRating(features, maxValues, marketInfluences));
   }
 
-  getClients(segmentId) {
-    const total =  this.KPI.clients;
-    if (segmentId === undefined || segmentId === null) return total;
-
-    const s = this.getSegmentBySegmentId(segmentId);
-
-    return Math.floor(s.percentage * total / 100);
-  }
-
-  getSegmentBySegmentId(segId) {
-    return this.getSegments()[segId];
-  }
-
-  getSegmentedPriorities(segId) {
-    const segment = this.getSegmentBySegmentId(segId);
-    const features = this.getDefaults().features;
-
-    return segment.rating.map((r, index) => {
-      return {
-        rating: r,
-        feature: features[index].shortDescription
-      }
-    }).sort((s1, s2) => s2.rating - s1.rating);
-  }
-
-  getNewClients() {
-    return this.KPI.newClients;
-  }
-
   getMainFeatureQualityByFeatureId(featureId) {
     return this.features.offer[featureId];
   }
@@ -215,73 +185,8 @@ export default class Product {
     return this.getDefaults().features[featureId].data;
   }
 
-  requirementsOKforMarket(marketId) {
-    return {
-      valid: true,
-      unmetRequirements: []
-    };
-
-    const market = this.getMarketByMarketId(marketId);
-    const requirements = market.requirements;
-
-    let valid = true;
-
-    let unmetRequirements = [];
-
-    requirements.forEach((r, featureId) => {
-      const max = this.getMaxMainFeatureQuality(featureId);
-
-      const featureQuality = this.getMainFeatureQualityByFeatureId(featureId);
-      const need = max * r / 100;
-
-      const met = featureQuality >= need;
-
-      if (!met) {
-        valid = false;
-
-        unmetRequirements.push({
-          name: this.getPrettyFeatureNameByFeatureId(featureId),
-          now: featureQuality,
-          need
-        });
-      }
-      // logger.debug(`feature quality #${featureId}: ${featureQuality}. Requirement is ${met}`)
-    });
-
-    return {
-      valid,
-      unmetRequirements
-    };
-  }
-
-  getAnalyticsValueForFeatureCreating() {
-    // range: 0 - 1
-    // range: 0.1 - 0.4
-    const analytics = this.features.analytics;
-
-    let value = 0;
-
-    const feedback = analytics.feedback;
-    const webvisor = analytics.webvisor;
-    const segmenting = analytics.segmenting;
-
-    if (segmenting) {
-      value = 0.4;
-    } else if (webvisor) {
-      value = 0.3;
-    } else if (feedback) {
-      value = 0.1;
-    }
-
-    return value;
-  }
-
   getDefaults(): DefaultDescription {
     return productDescriptions(this.idea);
-  }
-
-  getProductUtility() {
-    return this.getDefaults().utility;
   }
 
   getPaymentModifier() {
@@ -320,32 +225,8 @@ export default class Product {
     return 0.1;
   }
 
-  getProductPrice(segId) {
-    const defaults = this.getDefaults();
-
-    if (!segId) return defaults.price;
-
-    return defaults.segments[segId].price;
-  }
-
   getFeatures(featureGroup) {
     return this.features[featureGroup];
-  }
-
-  isPaymentEnabled(segmentId) {
-    return 1;
-    const payments = this.getFeatures('payment');
-    // mockBuying
-    // basicPricing
-    // segmentedPricing
-
-    logger.shit('requirements for segment');
-
-    if (payments.basicPricing) {
-      return 1;
-    }
-
-    return 0;
   }
 
   getIdea() {
@@ -356,41 +237,6 @@ export default class Product {
     return this.features.marketing;
   }
 
-  getBlogPower() {
-    return this.getBlogStatusStructured().power;
-  }
-
-  getBlogHypeModifier() {
-    return this.getBlogPower();
-  }
-
-  getBlogStatusStructured() {
-    const marketing = this.getMarketingFeatures();
-    let power = 0;
-    let support = 0;
-
-    const featureCost = name => this.getMarketingFeatureList().filter(f => f.name === name)[0].support.marketing;
-
-    if (marketing.blog) {
-      power = 0.25;
-      support = featureCost('blog')
-    }
-    if (marketing.blogII) {
-      power = 0.5;
-      support = featureCost('blogII')
-    }
-    if (marketing.blogIII) {
-      power = 1;
-      support = featureCost('blogIII')
-    }
-
-    return {
-      power,
-      supportCost: support,
-      financed: true // has enough points
-    }
-  }
-
   getSupportPower() {
     const marketing = this.getMarketingFeatures();
 
@@ -399,92 +245,6 @@ export default class Product {
     if (marketing.support)    return 0.25;
 
     return 0;
-  }
-
-  getEmailPower() {
-    const marketing = this.getMarketingFeatures();
-
-    if (marketing.emailIII) return 1;
-    if (marketing.emailII)  return 0.5;
-    if (marketing.email)    return 0.25;
-
-    return 0;
-  }
-
-  getMarketingSupportCostPerClientForSupportFeature() {
-    const marketing = this.getMarketingFeatures();
-
-    if (marketing.supportIII) return 0.25;
-    if (marketing.supportII)  return 0.5;
-    if (marketing.support)    return 1;
-
-    return 0;
-  }
-
-  static getChurnRateStructured(rating, p: Product) {
-    // return answer in partitions 0-1
-
-    if (rating < 3) {
-      rating = 3;
-    }
-
-    // const ratingModifier = Math.min(Math.pow(12 - rating, 3.65), 100);
-    // rating = 3. modif = 85.... rating = 10. modif = 15
-    const min = 15;
-    const max = 85;
-
-    const ratingModifier = 15 + (10 - rating) * 10;
-    // const ratingModifier = min + (max - min) * (10 - rating) / 10;
-
-    const marketingInfluence = 0.8;
-
-    const blog = p.getBlogPower() * 0.15 * marketingInfluence;
-    const emails = p.getEmailPower() * 0.25 * marketingInfluence;
-    const support = p.getSupportPower() * 0.4 * marketingInfluence;
-
-    const marketing = blog + emails + support;
-
-    const churn = Math.max(ratingModifier / 100 - marketing, 0.05);
-
-    return {
-      rating: ratingModifier,
-      marketing,
-      churn,
-      blog,
-      emails,
-      support
-    }
-  }
-
-  static getChurnRate(rating, p: Product) {
-    const churn = Product.getChurnRateStructured(rating, p).churn;
-
-    return {
-      raw: churn, // 0 - 1
-      pretty: percentify(churn)
-    };
-  }
-
-  getProductBlogCost() {
-    const BASE_BLOG_COST = 1000;
-
-    return this.getMarketingFeatures().blog ? BASE_BLOG_COST : 0;
-  }
-
-  getProductSupportCost() {
-    const marketing = this.getMarketingFeatures();
-
-    const support = marketing.support || 0;
-
-    if (!support) return 0;
-
-    const clients = this.getClients();
-
-    if (clients < 1000)   return 300;
-    if (clients < 10000)  return 500;
-    if (clients < 100000) return 3000;
-
-    return 10000;
   }
 
   getProductExpenses() {
@@ -504,56 +264,6 @@ export default class Product {
     return this.features[featureGroup][featureName] > 0;
   }
 
-  getCostPerClient() {
-    return this.getDefaults().CAC;
-  }
-
-  getClientAnalyticsModifier() {
-    let factor;
-    const clients = this.getClients();
-
-    const CLIENTS_LOT = 10000;
-    const CLIENTS_MID = 1000;
-    const CLIENTS_LOW = 100;
-
-    let clientMin;
-    let clientMax;
-
-    let index;
-
-    if (clients > CLIENTS_LOT) {
-      factor = 4;
-      clientMax = CLIENTS_LOT;
-      clientMin = CLIENTS_LOT;
-      index = 0;
-    } else if (clients > CLIENTS_MID) {
-      factor = 3;
-      clientMax = CLIENTS_LOT;
-      clientMin = CLIENTS_MID;
-      index = 1;
-    } else if (clients > CLIENTS_LOW) {
-      factor = 2.5;
-      clientMax = CLIENTS_MID;
-      clientMin = CLIENTS_LOW;
-      index = 2;
-    } else {
-      factor = 1;
-      clientMax = CLIENTS_LOW;
-      clientMin = 0;
-      index = 3;
-    }
-
-    return {
-      modifier: factor,
-      clientsRange: [CLIENTS_LOT, CLIENTS_MID, CLIENTS_LOW, 1],
-      factors: [1, 0.9, 0.8, 0.3],
-      index,
-      clientMax,
-      clientMin,
-      clients
-    }
-  }
-
   getProgrammingSupportCostModifier() {
     return Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
   }
@@ -564,26 +274,12 @@ export default class Product {
     return Math.ceil(this.getDefaults().support.pp * this.getProgrammingSupportCostModifier() * bonus);
   }
 
-  getMarketingSupportTechTotalCost() {
-    return Math.floor(this.getClients() * this.getMarketingSupportCostPerClientForSupportFeature() / 100 / 5);
-  }
-
   getBaseSupportCost() {
     return 0;
   }
 
   getMarketingSupportCost() {
-    logger.shit('getMarketingSupportCost in prodstore.js is shit: it depends on marketing features enabled');
     return this.getBonusModifiers().marketingSupportCost;
-    // const blogSupportCost = this.getBlogPower(id);
-
-    const supportSupportCost = this.getMarketingSupportTechTotalCost();
-
-    const bonus = 1 - this.getBonusModifiers().marketingSupportCost / 100;
-
-    const flatCost = supportSupportCost + this.getBlogStatusStructured().supportCost;
-
-    return Math.ceil(flatCost * bonus);
   }
 
   getAvailableBonuses(): Array {
@@ -764,16 +460,6 @@ export default class Product {
     };
   }
 
-  getSegmentPaymentBonus(segmentId) {
-    let value = 0;
-
-    if (this.picked(`improvedPaymentsOfSegment${segmentId}`)) {
-      value = 50;
-    }
-
-    return value;
-  }
-
   getSpecificFeatureDevelopmentCostModifier(featureId) {
     let value = 0;
 
@@ -871,28 +557,6 @@ export default class Product {
     ];
   };
 
-  getAnalyticFeatures(idea) {
-    return [
-      // { name: 'feedback', shortDescription: 'Форма для комментариев', description: 'Общение с вашими клиентами позволяет вам улучшить ваш продукт. Повышает шансы при проверке гипотез на 10%',
-      //   points: { programming: 50, marketing: 0 }
-      // },
-      // { name: 'webvisor', shortDescription: 'Вебвизор', description: 'Позволяет просматривать действия пользователей. Повышает шансы при проверке гипотез на 30%',
-      //   points: { programming: 50, marketing: 0 }
-      // },
-      // { name: 'segmenting', shortDescription: 'Автоматическое сегментирование пользователей', description: 'Повышает шансы при проверке гипотез на 40%',
-      //   points: { programming: 150, marketing: 100 }
-      // },
-
-      // { name: 'shareAnalytics', shortDescription: 'Аналитика шеринга', description: 'Открывает метрику "Виральность"',
-      //   points: { programming: 50, marketing: 0 }
-      // },
-      { name: 'paymentAnalytics', shortDescription: 'Аналитика платежей', description: 'Открывает метрику "Платёжеспособность"',
-        points: { programming: 50, marketing: 0 }
-      }
-    ];
-    // ].map(computeFeatureCost(cost));
-  };
-
   getPaymentFeatures(idea) {
     const up = points => points; // Math.ceil(points * technicalDebtModifier);
 
@@ -935,17 +599,6 @@ export default class Product {
     ];
   };
 
-
-  getTechnicalDebtDescription(debt) {
-    if (debt < 10) {
-      return `Всё хорошо`;
-    } else if (debt < 50) {
-      return `Программисты начинают плакать`;
-    } else {
-      return `Ты мразь и п**ор, программисты ненавидят тебя!! Отрефакторь этот шлак!`;
-    }
-  };
-
   getImprovementChances() {
     const analytics = this.features.analytics;
 
@@ -954,8 +607,6 @@ export default class Product {
     const feedback = analytics.feedback;
     const webvisor = analytics.webvisor;
     const segmenting = analytics.segmenting;
-
-    const clientModifier = this.getClientAnalyticsModifier();
 
 
     const basicBonus = 100;
@@ -969,17 +620,13 @@ export default class Product {
 
     let maxXP = bonuses;
 
-    // maxXP *= clientModifier.modifier;
-
     return {
       middle: maxXP,
       maxXPWithoutBonuses: maxXP,
 
       hasWebvisor: webvisor,
       hasFeedback: feedback,
-      hasSegmenting: segmenting,
-
-      clientModifier,
+      hasSegmenting: segmenting
     }
   }
 
@@ -1008,10 +655,6 @@ export default class Product {
     }
   }
 
-  getSegments() {
-    return this.getDefaults().segments;
-  }
-
   getMarkets() {
     return this.getDefaults().markets;
   }
@@ -1028,29 +671,12 @@ export default class Product {
     return this.getDefaults().description;
   }
 
-  canShowPayPercentageMetric() {
-    return true;
-    return this.getFeatureStatus('payment', 'mockBuying')
-  }
-
-  clientsEnoughToFormSegment(segId) {
-    return this.getClients(segId) > 100;
-  }
-
-  isSegmentAvailable(s, segId) {
-
-  }
-
   getTestsAmount() {
     return this.tests;
   }
 
   getImprovementsAmount() {
     return this.improvements;
-  }
-
-  getTechBreakthroughModifierForHype() {
-    return Math.ceil(Math.pow(this.getClients(), 0.5) * this.getBlogPower());
   }
 
   getTechnologyComplexityModifier() {
@@ -1060,10 +686,6 @@ export default class Product {
     logger.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
     return Math.pow(0.15 * tests + 0.6 * improvements, balance.TECHNOLOGY_COST_MODIFIER);
-  }
-
-  getHypeValue() {
-    return this.KPI.hype;
   }
 
   getTechnicalDebtModifier() {
@@ -1116,17 +738,8 @@ export default class Product {
 
   improveFeature(p) {
     let previous = this.features[p.featureGroup][p.featureName] || 0;
-    let sum = previous + p.value;
 
-    const max = p.max;
-
-    this.features[p.featureGroup][p.featureName] = sum; // > max ? max : sum;
-
-    if (sum > max) {
-      logger.shit('need game message, that we became tech leaders! classes/product.js');
-    }
-
-    // this.XP -= p.value;
+    this.features[p.featureGroup][p.featureName] = previous + p.value;
 
     if (this.improvements) {
       this.improvements++;

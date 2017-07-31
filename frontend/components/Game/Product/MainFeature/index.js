@@ -1,10 +1,11 @@
 import { h, Component } from 'preact';
 
-import flux from '../../../../flux';
+import productActions from '../../../../actions/product-actions';
+import productStore from '../../../../stores/product-store';
+
 import UI from '../../../UI';
 
 import logger from '../../../../helpers/logger/logger';
-import round from '../../../../helpers/math/round';
 
 import stageHelper from '../../../../helpers/stages';
 
@@ -12,12 +13,10 @@ export default class MainFeature extends Component {
   render({ id, onHireProgrammerClick }) {
     if (!stageHelper.canShowMainFeatureTab()) return '';
 
-    const product = flux.productStore.getProduct(id);
-    const availableSegments = null; // flux.productStore.getAvailableSegments(id);
-    const defaults = flux.productStore.getDefaults(id);
+    const product = productStore.getProduct(id);
+    const defaults = productStore.getDefaults(id);
 
-    const featureList = defaults.features
-      .map(this.renderMainFeature('offer', product, id, availableSegments, defaults));
+    const featureList = defaults.features.map(this.renderMainFeature('offer', product, id));
 
     return (
       <div>
@@ -25,10 +24,7 @@ export default class MainFeature extends Component {
         {this.renderProgrammingSupportTab(id, onHireProgrammerClick)}
         <br />
         <div className="featureGroupDescriptionWrapper">
-          <div className="featureGroupDescription">
-            Улучшая главные характеристики продукта, вы повышаете его рейтинг,
-            что приводит к снижению оттока клиентов и увеличению доходов с продукта
-          </div>
+          <div className="featureGroupDescription">Улучшая главные характеристики продукта, вы увеличиваете доход с продукта</div>
           <br />
           <div className="featureGroupBody">{featureList}</div>
         </div>
@@ -37,8 +33,8 @@ export default class MainFeature extends Component {
   }
 
   renderProgrammingSupportTab(id, onHireProgrammerClick) {
-    const support = flux.productStore.getProgrammingSupportCost(id);
-    const ppIncrease = flux.productStore.getMonthlyProgrammerPoints(id);
+    const support = productStore.getProgrammingSupportCost(id);
+    const ppIncrease = productStore.getMonthlyProgrammerPoints(id);
 
     let hireProgrammerLink;
 
@@ -61,42 +57,29 @@ export default class MainFeature extends Component {
   }
 
   renderUpgradeCostModifierBonus(id, featureId) {
-    if (flux.productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
+    if (productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
       return `Мы задаём новые тренды, но это даётся нелегко. Стоимость улучшения повышается`;
     }
 
-    if (flux.productStore.isWeAreRetards(id, featureId)) {
+    if (productStore.isWeAreRetards(id, featureId)) {
       return `Мы отстаём от конкурентов, поэтому копируем всё у них. Стоимость улучшения снижена`;
     }
 
     return '';
   }
 
-  renderProgressBar(current, product, max) {
-    const data = [
-      { value: current }
-    ];
-
-    if (product.XP >= 1000) {
-      data.push({ value: 1000, style: 'bg-success' })
-    }
-
-    return <UI.Bar min={0} max={max} data={data} />;
-  }
-
-  renderMainFeature = (featureGroup, product, id, segments, defaults) => (defaultFeature, featureId) => {
+  renderMainFeature = (featureGroup, product, id) => (defaultFeature, featureId) => {
     const featureName = defaultFeature.name;
     const { shortDescription } = defaultFeature;
 
     const current = product.features[featureGroup][featureId] || 0;
-    const max = flux.productStore.getCurrentMainFeatureDefaultsById(id)[featureId]; // defaultFeature.data;
 
 
     const description = defaultFeature.description || '';
     const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
     const key = `feature${featureGroup}${featureName}${featureId}`;
 
-    const leaderInTech = flux.productStore.getLeaderInTech(id, featureId);
+    const leaderInTech = productStore.getLeaderInTech(id, featureId);
 
     const minify = v => {
       return Math.floor(v / 1000);
@@ -107,17 +90,12 @@ export default class MainFeature extends Component {
       leaderInTechPhrase = `Мы лидируем в этой технологии!`;
     }
 
-    const pp = flux.productStore.getMainFeatureUpgradeCost(id, featureId);
+    const pp = productStore.getMainFeatureUpgradeCost(id, featureId);
 
-    const enoughPPs = flux.productStore.enoughProgrammingPoints(pp, id);
+    const enoughPPs = productStore.enoughProgrammingPoints(pp, id);
 
-    const disabled = !enoughPPs;
+    const benefit = productStore.getBenefitOnFeatureImprove(id, featureId);
 
-    // <div>{this.renderSegmentRatingImprovementList(segments, id, featureId)}</div>
-
-    const benefit = flux.productStore.getBenefitOnFeatureImprove(id, featureId);
-
-    // Мы усилим наше лидерство на рынке, но и
     const profitPhrase = benefit ?
       <div>Мы заработаем на {benefit}$ больше в этом месяце</div>
       :
@@ -135,8 +113,8 @@ export default class MainFeature extends Component {
           {profitPhrase}
           <div>{this.renderUpgradeCostModifierBonus(id, featureId)}</div>
           <UI.Button
-            disabled={disabled}
-            onClick={() => { this.improveFeature(id, featureId, max, pp) }}
+            disabled={!enoughPPs}
+            onClick={() => { this.improveFeature(id, featureId, pp) }}
             text={`Улучшить за ${pp}PP`}
             primary
           />
@@ -147,8 +125,9 @@ export default class MainFeature extends Component {
     </div>
   };
 
-  improveFeature(id, featureId, max, pp) {
-    flux.productActions.spendPoints(pp, 0);
-    flux.productActions.improveFeature(id, 'offer', featureId, max, 1000);
+  improveFeature(id, featureId, pp) {
+    productActions.spendPoints(pp, 0);
+
+    productActions.improveFeature(id, 'offer', featureId, 1000);
   }
 }
