@@ -567,9 +567,20 @@ textarea {
   padding: 10px;
 }
 
+.feature-item-secondary-text,.secondary-text {
+  font-weight: 100;
+  font-size: smaller;
+}
+
+.content-title {
+  font-weight: 500;
+  font-size: large;
+}
+
 .product-menu-toggler {
   padding: 10px;
   cursor: pointer;
+  user-select: none;
 }
 
 .product-menu-toggler.active {

@@ -529,9 +529,10 @@ class ProductStore extends EventEmitter {
   }
 
   getPowerListOnMarket(marketId) {
+    let sum = 0;
+
     const marketRecords = _markets.filter(m => m.marketId === marketId);
 
-    let sum = 0;
     const influences = marketRecords
       .map(({ companyId, marketId }) => {
         const power = this.getPowerOfCompanyOnMarket(companyId, marketId);
@@ -568,7 +569,7 @@ class ProductStore extends EventEmitter {
 
     const power = powers.find(c => c.companyId === id).power;
 
-    let sum = powers.map(p => p.power).reduce((p, c) => p + c, 0);
+    const sum = powers.map(p => p.power).reduce((p, c) => p + c, 0);
 
     return power / sum;
   }
@@ -806,9 +807,6 @@ class ProductStore extends EventEmitter {
   }
 
 
-  getBlogPower(id) {
-    return _products[id].getBlogPower();
-  }
 
   getSupportPower(id) {
     return _products[id].getSupportPower();
@@ -820,10 +818,6 @@ class ProductStore extends EventEmitter {
 
   getMarketingSupportCostPerClientForSupportFeature(id) {
     return _products[id].getMarketingSupportCostPerClientForSupportFeature();
-  }
-
-  getProductBlogCost(id) {
-    return _products[id].getProductBlogCost();
   }
 
   getProductSupportCost(id) {

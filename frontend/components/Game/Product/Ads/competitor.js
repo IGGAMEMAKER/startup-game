@@ -7,6 +7,9 @@ import scheduleStore from '../../../../stores/schedule-store';
 
 import productActions from '../../../../actions/product-actions';
 
+import shortenValue from '../../../../helpers/math/shorten-value';
+
+
 import UI from '../../../UI';
 
 export default class Competitor extends Component {
@@ -177,6 +180,7 @@ export default class Competitor extends Component {
           rentStatus.phrase = '';
           differencePhrase = '';
         }
+        differencePhrase = '';
 
         return <li>{f.description}: {this.convertXPtoLvl(f.value)}lvl {differencePhrase}</li>;
       }
@@ -189,16 +193,29 @@ export default class Competitor extends Component {
     const ourCompany = productStore.getProduct(0);
 
     let background = 'competitor competeable';
-    let companyTitle = `"${c.name}"`;
+    let companyTitle = `${c.name} (Это мы)`;
     let buyingCompanyButtonVisible = 'hide';
 
     if (isCompetitor) {
       background = 'competitor uncompeteable';
-      companyTitle = `Компания №${i + 1} - "${c.name}"`;
+      companyTitle = c.name;
       buyingCompanyButtonVisible = 'hide';
     }
 
     const hasEnoughMoney = money >= c.cost;
+
+    const companyCost = shortenValue(c.cost);
+    const companyIncome = shortenValue(c.income);
+
+    return <tr className={background}>
+      <td>
+        <div>{companyTitle}</div>
+        <div className="secondary-text">{c.style}</div>
+      </td>
+      <td>{companyCost}$</td>
+      <td>{companyIncome}$ / мес</td>
+      <td><ul>{this.renderFeatureList(c, i, rents, ourCompany)}</ul></td>
+    </tr>;
 
     return (
       <div className={background}>

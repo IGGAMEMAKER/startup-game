@@ -64,13 +64,9 @@ const pickBonus = (id, name) => {
 
 function run (id) {
   // upgrade features
-  const performAction = Math.random();
-
-  if (performAction > 10 / 30) return;
+  // if (Math.random() > 10 / 30) return;
 
   const product: Product = productStore.getProduct(id);
-
-  const features = productStore.getDefaults(id).features;
 
   const isBalancedCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
   const isTechnologicalCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
@@ -78,6 +74,7 @@ function run (id) {
   let sumOfProbabilities = 0;
   const featureProbabilities = [];
 
+  const features = productStore.getDefaults(id).features;
   features.forEach(f => {
     let probability = 10;
 
@@ -107,31 +104,9 @@ function run (id) {
   upgradeFeature(id, willUpgradeId);
 
 
-  // upgrade payments block
-  // isBalancedCompany &&
-  // if (Math.random() < 10 / 30) {
-  //   const paymentFeature = productStore.getNearestPaymentFeature(id);
-  //
-  //   if (paymentFeature && paymentFeature.canUpgrade) {
-  //     productActions.improveFeatureByPoints(id, 'payment', paymentFeature.name);
-  //     const { points } = paymentFeature;
-  //
-  //     productActions.spendPoints(points.programming, points.marketing, id);
-  //
-  //     const companyName = productStore.getName(id);
-  //
-  //     messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_PAYMENTS_UPGRADED, { id, companyName });
-  //   }
-  // }
-
-
-
   // get more influence on markets
   const analysedMarkets = productStore.getMarketingAnalysis(id);
 
-  let hasMaxLevelOnAllMarkets = true;
-
-  const nonUpgradeableMarkets = analysedMarkets.filter(m => !m.canIncreaseInfluence);
   const upgradeableMarkets = analysedMarkets.filter(m => m.canIncreaseInfluence);
 
   if (upgradeableMarkets.length) {
@@ -139,8 +114,6 @@ function run (id) {
     const competitiveMarkets = upgradeableMarkets.sort((a, b) => b.ROI - a.ROI);
 
     upgradeMarket(id, competitiveMarkets[0].marketId);
-  } else {
-    // nonUpgradeableMarkets.filter()
   }
 
   // pick bonuses

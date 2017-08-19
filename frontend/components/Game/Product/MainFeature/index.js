@@ -17,7 +17,9 @@ export default class MainFeature extends Component {
     const defaults = productStore.getDefaults(id);
 
     const featureList = defaults.features.map(this.renderMainFeature('offer', product, id));
+    const featureListTableView = defaults.features.map(this.renderMainFeature('offer', product, id, true));
 
+          // <div className="featureGroupBody">{featureList}</div>
     return (
       <div>
         <div className="featureGroupTitle">Разработка</div>
@@ -26,7 +28,20 @@ export default class MainFeature extends Component {
         <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">Улучшая главные характеристики продукта, вы увеличиваете доход с продукта</div>
           <br />
-          <div className="featureGroupBody">{featureList}</div>
+          <div className="featureGroupBody">
+            <table className="table table-striped">
+              <thead>
+                <th>Технология</th>
+                <th>Уровень</th>
+                <th>Польза</th>
+                <th>Стоимость улучшения</th>
+                <th>Действие</th>
+              </thead>
+              <tbody>
+                {featureListTableView}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
@@ -68,7 +83,19 @@ export default class MainFeature extends Component {
     return '';
   }
 
-  renderMainFeature = (featureGroup, product, id) => (defaultFeature, featureId) => {
+  renderUpgradeCostModifierBonusInTable(id, featureId) {
+    if (productStore.isUpgradeWillResultTechBreakthrough(id, featureId)) {
+      return `+400%`;
+    }
+
+    if (productStore.isWeAreRetards(id, featureId)) {
+      return `-80%`;
+    }
+
+    return '---';
+  }
+
+  renderMainFeature = (featureGroup, product, id, isTableView) => (defaultFeature, featureId) => {
     const featureName = defaultFeature.name;
     const { shortDescription } = defaultFeature;
 
@@ -86,7 +113,10 @@ export default class MainFeature extends Component {
     };
 
     let leaderInTechPhrase = `Лидер в этой технологии: Компания "${leaderInTech.name}" (${minify(leaderInTech.value)}lvl)`;
-    if (leaderInTech.id === 0) {
+
+    const isWeAreLeaders = leaderInTech.id === 0;
+
+    if (isWeAreLeaders) {
       leaderInTechPhrase = `Мы лидируем в этой технологии!`;
     }
 
@@ -96,10 +126,49 @@ export default class MainFeature extends Component {
 
     const benefit = productStore.getBenefitOnFeatureImprove(id, featureId);
 
-    const profitPhrase = benefit ?
+    let profitPhrase = benefit ?
       <div>Мы заработаем на {benefit}$ больше в этом месяце</div>
       :
       <div>Изменение дохода непредсказуемо</div>;
+
+    if (isTableView) {
+      profitPhrase = benefit ? `+${benefit}$` : `???`;
+
+      leaderInTechPhrase = `Лидер: "${leaderInTech.name}"`;
+      if (isWeAreLeaders) leaderInTechPhrase = 'Мы лидируем!';
+
+      let specificBenefit = '';
+      if (benefit) {
+        specificBenefit = `+${Math.floor(benefit / pp)}$/PP`;
+      }
+
+
+      return <tr key={key}>
+        <td>
+          <div>{userOrientedFeatureName}</div>
+          <div className="feature-item-secondary-text">{leaderInTechPhrase}</div>
+        </td>
+        <td>
+          <div>{minify(current)}lvl</div>
+          <div className="feature-item-secondary-text">{minify(leaderInTech.value)}lvl</div>
+        </td>
+        <td>
+          <div>{profitPhrase}</div>
+          <div className="feature-item-secondary-text">{specificBenefit}</div>
+        </td>
+        <td>
+          <div>{pp} PP</div>
+        </td>
+        <td>
+          <UI.Button
+            disabled={!enoughPPs}
+            onClick={() => { this.improveFeature(id, featureId, pp) }}
+            text="Улучшить"
+            primary
+          />
+        </td>
+      </tr>
+    }
 
     return <div key={key}>
       <div className="content-block">

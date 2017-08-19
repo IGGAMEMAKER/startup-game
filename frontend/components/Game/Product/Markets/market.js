@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 
 import productStore from '../../../../stores/product-store';
 import productActions from '../../../../actions/product-actions';
+import shortenValue from '../../../../helpers/math/shorten-value';
 
 import ColoredRating from '../KPI/colored-rating';
 
@@ -24,7 +25,7 @@ export default class Market extends Component {
         onClick={() => productActions.increaseInfluenceOnMarket(id, marketId)}
       />
       <div>Стоимость поддержки после улучшения (ежемесячно): {increasedCost}MP</div>
-      <div>Мы заработаем на {benefit}$ больше в этом месяце</div>
+      <div>Мы заработаем на {shortenValue(benefit)}$ больше в этом месяце</div>
     </div>
   }
 
@@ -108,7 +109,7 @@ export default class Market extends Component {
 
       requirementTab = <div>
         <div>Рейтинг: {currentRating}</div>
-        <div>Доход: {income}$</div>
+        <div>Доход: {shortenValue(income)}$</div>
         <div>Стоимость поддержки (ежемесячно): {currentSupportCost}MP</div>
       </div>;
 
@@ -132,11 +133,13 @@ export default class Market extends Component {
       }
     }
 
+    const marketSize = shortenValue(clients * price);
+
     return <div className="content-block">
       <div className="client-market-item">
         <div>Канал №{marketId + 1}: {userOrientedName} {setAsMainMarketButton}</div>
         <div className="offset-mid">
-          <div>Объём рынка: {clients * price}$</div>
+          <div>Объём рынка: {marketSize}$</div>
           <div className="offset-mid">
             <div>{requirementTab}</div>
 

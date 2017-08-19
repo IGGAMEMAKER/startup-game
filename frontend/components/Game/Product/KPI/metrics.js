@@ -45,7 +45,6 @@ export default class Metrics extends Component {
               <li>{productIncome}</li>
             </ul>
             <ul>
-              <li>Аренда технологий: {shortenValue(outgoingRentsIncome)}$</li>
               <ul>{rentIncomeList}</ul>
             </ul>
             <li>
@@ -53,7 +52,6 @@ export default class Metrics extends Component {
             </li>
             <ul>
               <li>Команда: {shortenValue(teamExpenses)}$</li>
-              <li>Аренда технологий: {shortenValue(incomingRentsIncome)}$</li>
               <ul>{rentList}</ul>
             </ul>
           </ul>

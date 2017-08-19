@@ -20,8 +20,12 @@ import round from '../helpers/math/round';
 import * as BONUSES from '../constants/bonuses';
 import * as MANAGEMENT_STYLES from '../constants/company-styles';
 
-const names = ['Alpha-Centaura', 'Sun', 'Magenta', 'Grapes',
-  'Best Hosting', 'Tech-Labs', 'Gingerbeard', 'Mercury', 'Phantom', 'Modern', 'Unnamed'];
+const names = [
+  'Alpha-Centaura', 'Sun', 'Magenta', 'Grapes',
+  'Best Hosting', 'Tech Labs', 'Gingerbeard', 'Mercury', 'Phantom',
+  'Modern', 'Future Labs', 'Pineaple', 'Storm Technologies', '',
+  'Unnamed'
+];
 
 export default class Product {
   constructor(data, createFromObject) {
@@ -249,7 +253,6 @@ export default class Product {
 
   getProductExpenses() {
     return 0;
-    return this.getProductBlogCost() + this.getProductSupportCost();
   }
 
   getName() {
@@ -398,22 +401,22 @@ export default class Product {
     ];
 
     // lowerDevelopmentCostOfFeature
-    const amountOfFeatures = this.defaultFeatures.length;
+    // const amountOfFeatures = this.defaultFeatures.length;
 
-    for (let i = 0; i < amountOfFeatures; i++) {
-      let featureName = this.getDefaults().features[i].shortDescription;
-
-      array.push({
-        name: `lowerDevelopmentCostOfFeature${i}`,
-        type: 'lowerDevelopmentCostOfFeature',
-        featureId: i,
-        title: `Наша сила в технологии "${featureName}"`,
-        bonus: `Снижение стоимости улучшения технологии "${featureName}" на 50%`,
-        description: `Как известно, ключ всех побед состоит в правильной 
-        фокусировке на чём-то одном. В нашем случае, это технология "${featureName}". 
-        У нас есть все шансы стать лидерами в этой технологии и сдавать её в аренду другим компаниям`,
-      })
-    }
+    // for (let i = 0; i < amountOfFeatures; i++) {
+    //   let featureName = this.getDefaults().features[i].shortDescription;
+    //
+    //   array.push({
+    //     name: `lowerDevelopmentCostOfFeature${i}`,
+    //     type: 'lowerDevelopmentCostOfFeature',
+    //     featureId: i,
+    //     title: `Наша сила в технологии "${featureName}"`,
+    //     bonus: `Снижение стоимости улучшения технологии "${featureName}" на 50%`,
+    //     description: `Как известно, ключ всех побед состоит в правильной
+    //     фокусировке на чём-то одном. В нашем случае, это технология "${featureName}".
+    //     У нас есть все шансы стать лидерами в этой технологии и сдавать её в аренду другим компаниям`,
+    //   })
+    // }
 
     return array
   }
@@ -630,14 +633,6 @@ export default class Product {
     }
   }
 
-  getProductExpensesStructure() {
-    return {
-      name: this.getName(),
-      blog: this.getProductBlogCost(),
-      support: this.getProductSupportCost()
-    };
-  }
-
   getXP() {
     return this.XP;
   }
@@ -663,8 +658,8 @@ export default class Product {
     return this.getMarkets()[marketId];
   }
 
-  getMarketInfoById(segId) {
-    return this.getMarkets()[segId];
+  getMarketInfoById(marketId) {
+    return this.getMarkets()[marketId];
   }
 
   getDescriptionOfProduct() {
@@ -755,39 +750,4 @@ export default class Product {
       this.bonuses--;
     }
   }
-
-  addClients(p) {
-    // not all users will become our clients. Some of them will vanish
-    // if you got them from ads, efficiency will be less than 1
-    const efficiency = p.efficiency || 1;
-    let clients = Math.floor(efficiency * p.clients);
-
-    this.KPI.clients += clients;
-    this.KPI.newClients += clients;
-  }
-
-  addHype(hype) {
-    const max = productDescriptions(this.idea).marketSize * 10;
-
-    this.KPI.hype = Math.min(max, this.KPI.hype + hype);
-  }
-
-  loseMonthlyHype(value = -100) {
-    this.KPI.hype += value;
-
-    logger.shit('made shitty code here. There was a bug, when on hype = 0 client calculations fail for all users');
-    if (this.KPI.hype === 0) this.KPI.hype = 1;
-  }
-
-  removeClients(p) {
-    // churn clients
-    const clients = p.clients;
-
-    if (this.KPI.clients - clients < 0) {
-      this.KPI.clients = 0;
-    } else {
-      this.KPI.clients -= clients;
-    }
-  }
 }
-

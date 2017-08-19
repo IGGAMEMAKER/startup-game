@@ -49,11 +49,21 @@ export default class Competitors extends Component {
       />
     );
 
+      // <div>Текущие договоры аренды</div>
+      // <div>{rentList}</div>
     return <div>
-      <div>Текущие договоры аренды</div>
-      <div>{rentList}</div>
-      <div>Конкуренты</div>
-      <div>{competitorList}</div>
+      <div className="content-title">Рейтинг компаний</div>
+      <table className="table">
+        <thead>
+          <th>Компания</th>
+          <th>Стоимость</th>
+          <th>Доходы</th>
+          <th>Технологии</th>
+        </thead>
+        <tbody>
+          {competitorList}
+        </tbody>
+      </table>
     </div>;
   }
 }
