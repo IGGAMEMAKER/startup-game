@@ -13,23 +13,26 @@ import * as BONUSES from '../../constants/bonuses';
 import messageActions from '../../actions/message-actions';
 
 const upgradeFeature = (id, fId) => {
-  // logger.debug(`company ${id}: trying to upgrade feature ${fId}`);
-
   if (fId < 0) return;
 
+  const companyName = productStore.getName(id);
+  const featureName = productStore.getPrettyFeatureNameByFeatureId(id, fId);
   const cost = productStore.getMainFeatureUpgradeCost(id, fId);
 
-  if (productStore.enoughProgrammingPoints(cost, id)) {
+  const hasEnoughPoints = productStore.enoughProgrammingPoints(cost, id);
+  const companyPoints = productStore.getPoints(id);
+  // logger.debug(`company ${companyName} upgrading feature ${featureName} cost: ${cost} PP/ ${companyPoints.programming}. Actually has  ${hasEnoughPoints}`);
+
+
+  if (hasEnoughPoints) {
     const upgradeWillResultLeadership = productStore.isUpgradeWillResultTechBreakthrough(id, fId);
 
     productActions.spendPoints(cost, 0, id);
-    productActions.improveFeature(id, 'offer', fId, 10000, 1000);
-
-    const companyName = productStore.getName(id);
-    const featureName = productStore.getPrettyFeatureNameByFeatureId(id, fId);
+    productActions.improveFeature(id, 'offer', fId);
 
     if (upgradeWillResultLeadership) {
-      messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_FEATURE_TECH_LEADER, { id, fId, companyName, featureName })
+      const message = { id, fId, companyName, featureName };
+      messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_FEATURE_TECH_LEADER, message)
     }
   }
 };
@@ -62,70 +65,80 @@ const pickBonus = (id, name) => {
   logger.debug('pickBonus', id, name);
 };
 
-function run (id) {
-  // upgrade features
-  // if (Math.random() > 10 / 30) return;
+class Bot {
+  constructor(id) {
+    this.id = id;
+    const product: Product = productStore.getProduct(id);
 
-  const product: Product = productStore.getProduct(id);
-
-  const isBalancedCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
-  const isTechnologicalCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
-
-  let sumOfProbabilities = 0;
-  const featureProbabilities = [];
-
-  const features = productStore.getDefaults(id).features;
-  features.forEach(f => {
-    let probability = 10;
-
-    if (f.shareable && isTechnologicalCompany) {
-      probability = 100;
-    }
-
-    if (!f.shareable && isBalancedCompany) {
-      probability = 100;
-    }
-
-
-    featureProbabilities.push({
-      fId: f.id,
-      probability,
-      min: sumOfProbabilities,
-      max: sumOfProbabilities + probability
-    });
-
-    sumOfProbabilities += probability;
-  });
-
-  let value = Math.floor(Math.random(0, 1) * sumOfProbabilities);
-
-  const willUpgradeId = featureProbabilities.findIndex(f => f.min < value && f.max >= value);
-
-  upgradeFeature(id, willUpgradeId);
-
-
-  // get more influence on markets
-  const analysedMarkets = productStore.getMarketingAnalysis(id);
-
-  const upgradeableMarkets = analysedMarkets.filter(m => m.canIncreaseInfluence);
-
-  if (upgradeableMarkets.length) {
-    // there are markets, where we can improve influence
-    const competitiveMarkets = upgradeableMarkets.sort((a, b) => b.ROI - a.ROI);
-
-    upgradeMarket(id, competitiveMarkets[0].marketId);
+    this.isBalancedCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
+    this.isTechnologicalCompany = product.style === MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
   }
 
-  // pick bonuses
-  if (productStore.getBonusesAmount(id)) {
+  upgradeFeatureIfPossible() {
+    const id = this.id;
+
+    let sumOfProbabilities = 0;
+    const featureProbabilities = [];
+
+    const features = productStore.getDefaults(id).features;
+    features.forEach(f => {
+      let probability = 10;
+
+      if (f.shareable && this.isTechnologicalCompany) {
+        probability = 100;
+      }
+
+      if (!f.shareable && this.isBalancedCompany) {
+        probability = 100;
+      }
+
+
+      featureProbabilities.push({
+        fId: f.id,
+        probability,
+        min: sumOfProbabilities,
+        max: sumOfProbabilities + probability
+      });
+
+      sumOfProbabilities += probability;
+    });
+
+    let value = Math.floor(Math.random(0, 1) * sumOfProbabilities);
+
+    const willUpgradeId = featureProbabilities.findIndex(f => f.min < value && f.max >= value);
+
+    upgradeFeature(id, willUpgradeId);
+  }
+
+  increaseInfluenceOnMarket() {
+    const id = this.id;
+
+    const analysedMarkets = productStore.getMarketingAnalysis(id);
+
+    const upgradeableMarkets = analysedMarkets
+      .sort((a, b) => b.ROI - a.ROI)
+      .filter(m => m.canIncreaseInfluence);
+
+    if (upgradeableMarkets.length) {
+      // there are markets, where we can improve influence
+      upgradeMarket(id, upgradeableMarkets[0].marketId);
+    }
+  }
+
+  pickBonus() {
+    return;
+
+    const id = this.id;
+
     const bonuses = productStore.getAvailableBonuses(id);
 
-    sumOfProbabilities = 0;
+    let sumOfProbabilities = 0;
+    let value;
 
     const probabilities = bonuses.map(b => {
       let probability = 10;
 
-      if (isTechnologicalCompany) {
+      if (this.isTechnologicalCompany) {
         switch (b.name) {
           case BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER:
           case BONUSES.BONUSES_PROGRAMMER_PERFORMANCE_MODIFIER_II:
@@ -141,7 +154,7 @@ function run (id) {
         }
       }
 
-      if (isBalancedCompany) {
+      if (this.isBalancedCompany) {
         switch (b.name) {
           case BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER:
           case BONUSES.BONUSES_MARKETER_PERFORMANCE_MODIFIER_II:
@@ -175,6 +188,23 @@ function run (id) {
     const willPickBonusId = probabilities.findIndex(f => f.min < value && f.max >= value);
 
     pickBonus(id, probabilities[willPickBonusId].name);
+  }
+}
+
+function run (id) {
+  // upgrade features
+  // if (Math.random() > 10 / 30) return;
+
+  const bot = new Bot(id);
+
+  bot.upgradeFeatureIfPossible();
+
+  // get more influence on markets
+  bot.increaseInfluenceOnMarket();
+
+  // pick bonuses
+  if (productStore.getBonusesAmount(id)) {
+    bot.pickBonus();
   }
 
   return;

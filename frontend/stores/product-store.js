@@ -560,6 +560,10 @@ class ProductStore extends EventEmitter {
     return record.partnerId === c2;
   }
 
+  getCompanyDevelopmentValue(id) {
+
+  };
+
   getMarketInfo(id, marketId) {
     return this.getDefaults(id).markets[marketId];
   }
@@ -633,7 +637,7 @@ class ProductStore extends EventEmitter {
   }
 
   getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId) {
-    logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', id, marketId);
+    // logger.debug('getIncomeIncreaseIfWeIncreaseInfluenceOnMarket', id, marketId);
 
     if (this.isHaveInfluenceOnMarket(id, marketId)) {
       const powerIncreaseMultiplier = this.getNextInfluenceMarketingCost(id, marketId) / this.getCurrentInfluenceMarketingCost(id, marketId);

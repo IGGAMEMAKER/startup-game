@@ -217,6 +217,7 @@ export default class Competitor extends Component {
       <td><ul>{this.renderFeatureList(c, i, rents, ourCompany)}</ul></td>
     </tr>;
 
+
     return (
       <div className={background}>
         <div className="offset-min">{companyTitle}</div>
@@ -227,8 +228,6 @@ export default class Competitor extends Component {
         <div className="offset-mid"><ul>{this.renderFeatureList(c, i, rents, ourCompany)}</ul></div>
         <div className="offset-mid">Рыночная стоимость: {c.cost}$</div>
         <div className="offset-mid">Доходы: {c.income}$</div>
-
-
         <div className={`offset-mid ${buyingCompanyButtonVisible}`}>
           <UI.Button
             text={`Купить компанию "${c.name}"`}
