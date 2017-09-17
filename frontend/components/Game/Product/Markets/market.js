@@ -30,7 +30,7 @@ export default class Market extends Component {
   }
 
   renderMarketCompetitors(id, marketId, isAvailableToLeaveMarket) {
-    const powerList = productStore.getPowerListOnMarket(marketId)
+    const powerList = productStore.getPowerListWithCompanyNames(marketId)
       .map(c => {
         let companyClass;
         let switchPartnershipStatusButton;

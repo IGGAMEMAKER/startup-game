@@ -59,6 +59,7 @@ export default class Competitors extends Component {
           <th>Стоимость</th>
           <th>Доходы</th>
           <th>Технологии</th>
+          <th>XP</th>
         </thead>
         <tbody>
           {competitorList}

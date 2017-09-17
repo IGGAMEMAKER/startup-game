@@ -113,6 +113,8 @@ const run = () => {
 
         // calculate human points
         calculatePoints(i);
+
+        // productActions.testHypothesis(p);
       });
 
     // clean expired rents
@@ -130,7 +132,7 @@ const run = () => {
   if (isUsualDay(day)) {
     products.forEach((p, i) => {
       if (i !== 0) {
-        bot.run(i);
+        // bot.run(i);
       }
     })
   }

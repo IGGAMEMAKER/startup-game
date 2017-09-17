@@ -215,6 +215,7 @@ export default class Competitor extends Component {
       <td>{companyCost}$</td>
       <td>{companyIncome}$ / мес</td>
       <td><ul>{this.renderFeatureList(c, i, rents, ourCompany)}</ul></td>
+      <td>{c.XP}XP</td>
     </tr>;
 
 

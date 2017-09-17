@@ -5,7 +5,6 @@ import logger from '../helpers/logger/logger';
 
 import percentify from '../helpers/math/percentify';
 
-import computeRating from '../helpers/products/compute-rating';
 
 import { DefaultDescription } from '../constants/products/types/product-description';
 
@@ -14,7 +13,6 @@ import companyCostComputer from '../helpers/products/compute-company-cost';
 
 import * as balance from '../constants/balance';
 
-import round from '../helpers/math/round';
 
 
 import * as BONUSES from '../constants/bonuses';
@@ -23,13 +21,14 @@ import * as MANAGEMENT_STYLES from '../constants/company-styles';
 const names = [
   'Alpha-Centaura', 'Sun', 'Magenta', 'Grapes',
   'Best Hosting', 'Tech Labs', 'Gingerbeard', 'Mercury', 'Phantom',
-  'Modern', 'Future Labs', 'Pineaple', 'Storm Technologies', '',
+  'Modern', 'Future Labs', 'Pineaple', 'Storm Technologies',
   'Unnamed'
 ];
 
 export default class Product {
   constructor(data, createFromObject) {
     if (createFromObject) {
+      // Object.assign(this, data);
       this.features = data.features;
       this.featuresOnCreate = data.featuresOnCreate;
       this.KPI = data.KPI;
@@ -75,12 +74,15 @@ export default class Product {
       throw 'no default features!!!';
     }
 
+    let minRating = 1;
     let maxRating = 6;
+
     if (isCompetitor) {
+      minRating = 5;
       maxRating = 8;
     }
 
-    const luck = random(1, maxRating) / 10; // luck in 0.1-0.6
+    const luck = random(minRating, maxRating) / 10; // luck in 0.1-0.6
 
     const offer = defaultFeatures.map((f, i) => Math.floor(luck * f));
 
@@ -145,7 +147,6 @@ export default class Product {
     if (!isCompetitor) this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
 
     this.defaultFeatures = defaultFeatures;
-    // this.rentedFeatures = [].fill(null, defaultFeatures.length); //
   }
 
   setMainFeatureDefaults(upgradedDefaults) {
@@ -164,17 +165,8 @@ export default class Product {
     return companyCostComputer.structured(this);
   }
 
-  static getRating(p: Product, features, marketId, improvement = null) {
-    if (!marketId) marketId = 0;
-
-    const maxValues = p.defaultFeatures;
-    const marketInfluences = p.getMarketInfoById(marketId).rating;
-
-    if (improvement) {
-      features[improvement.featureId] += 1000;
-    }
-
-    return round(computeRating(features, maxValues, marketInfluences));
+  getMainFeatures() {
+    return this.getDefaults().features;
   }
 
   getMainFeatureQualityByFeatureId(featureId) {
@@ -193,40 +185,16 @@ export default class Product {
     return productDescriptions(this.idea);
   }
 
+  getBaseFeatureDevelopmentCost(featureId) {
+    return this.getDefaults().features[featureId].development;
+  }
+
+  isShareableFeature(featureId) {
+    return this.getDefaults().features[featureId].shareable;
+  }
+
   getPaymentModifier() {
     return 1;
-    const payments = this.features.payment;
-
-    // mockBuying
-    // basicPricing
-    // segmentedPricing
-
-    if (payments.segmentedPricing3) {
-      return 1;
-    }
-    if (payments.segmentedPricing2) {
-      return 0.85;
-    }
-    if (payments.segmentedPricing) {
-      return 0.7;
-    }
-
-
-    if (payments.basicPricing3) {
-      return 0.4;
-    }
-    if (payments.basicPricing2) {
-      return 0.30;
-    }
-    if (payments.basicPricing) {
-      return 0.25;
-    }
-
-    // if (payments.mockBuying) {
-    //   return 1;
-    // }
-
-    return 0.1;
   }
 
   getFeatures(featureGroup) {
@@ -639,8 +607,6 @@ export default class Product {
 
   getHypothesisPoints() {
     const complexityModifier = this.getTechnologyComplexityModifier();
-
-    // logger.debug('getHypothesisPoints', complexityModifier);
 
     const defaults = this.getDefaults().hypothesis;
 

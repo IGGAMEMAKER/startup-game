@@ -53,8 +53,6 @@ export default {
           development: 30,
           id: 1
         },
-        // { name: 'admin-panel', influence: 1, description: '', shortDescription: 'Админка', data: 5000, time: 30 },
-        // { name: 'reliability', influence: 3, description: '', shortDescription: 'Надёжность', data: 5000, time: 30 },
         {
           name: 'support',
           influence: 1.5,
@@ -104,6 +102,11 @@ export default {
       support: {
         pp: 40
       },
+      levels: [
+        {
+          name: ''
+        }
+      ],
       markets: [
         {
           id: 0,
@@ -113,7 +116,9 @@ export default {
           price: 8,
           rating: [0, 2.5, 1.5, 6, 0],
           requirements: [0, 0, 0, 0, 0],
-          levels: [1000, 1500, 2250]
+          levels: [1000, 1500, 2250],
+          maxHype: 1000,
+          baseHypeIncrease: 10
         },
         {
           id: 1,
@@ -123,7 +128,9 @@ export default {
           price: 50,
           rating: [0, 1.5, 1.5, 6.5, 0.5],
           requirements: [0, 0, 0, 80, 0],
-          levels: [100, 250, 450]
+          levels: [100, 250, 450],
+          maxHype: 1000,
+          baseHypeIncrease: 10
         },
         {
           id: 2,
@@ -133,7 +140,9 @@ export default {
           price: 150,
           rating: [0.5, 1.5, 1, 0, 7],
           requirements: [75, 0, 0, 0, 95],
-          levels: [10, 25, 45]
+          levels: [10, 25, 45],
+          maxHype: 1000,
+          baseHypeIncrease: 10
         }
       ]
     }
