@@ -523,28 +523,8 @@ class ProductStore extends EventEmitter {
     return marketHelper.isMarketFree(_markets, marketId);
   }
 
-  isFreeMarket(marketId) {
-    return marketHelper.isFreeMarket(_markets, marketId);
-  }
-
-  isHaveInfluenceOnMarket(id, marketId) {
-    return marketHelper.isHaveInfluenceOnMarket(_markets, id, marketId);
-  }
-
-  isAvailableToLeaveMarket(id, marketId) {
-    return marketHelper.isAvailableToLeaveMarket(_markets, id, marketId);
-  }
-
   idHelper(p, i) {
     return { id: i, p };
-  }
-
-  getNearestMarketingFeature(id) {
-    return this.getNextFeature(id, 'marketing', this.getMarketingFeatureList(id));
-  }
-
-  getNearestPaymentFeature(id) {
-    return this.getNextFeature(id, 'payment', this.getPaymentFeatures(id));
   }
 
   getBenefitOnFeatureImprove(id, featureId) {
@@ -598,30 +578,13 @@ class ProductStore extends EventEmitter {
       }
     };
 
-    const monthlyMarketingPointsDifferenceStructured = (id = 0) => {
-      const decrease = this.getMarketingSupportCost(id);
-      const increase = this.getMonthlyMarketerPoints(id);
-
-
-      return {
-        increase,
-        decrease,
-        detailed: {
-          markets: this.getOurMarketsSupportCostList(id)
-        },
-        needToHireWorker: decrease > increase,
-        diff: Math.abs(decrease - increase)
-      }
-    };
-
     return {
-      programming: () => monthlyProgrammingPointsDifferenceStructured(id),
-      marketing: () => monthlyMarketingPointsDifferenceStructured(id)
+      programming: () => monthlyProgrammingPointsDifferenceStructured(id)
     }
   }
 
   getMonthlyMPChange(id) {
-    return this.getMonthlyMarketerPoints(id) - this.getMarketingSupportCost(id);
+    return 0;
   }
 
   getTeamExpenses() {
@@ -646,24 +609,6 @@ class ProductStore extends EventEmitter {
     }
 
     return round(computeRating(features, maxValues, marketInfluences));
-  }
-
-  getNextFeature(id, groupType, featureList) {
-    let unlockedFeature = '';
-
-    featureList.forEach(f => {
-      if (!this.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
-        unlockedFeature = f.name;
-      }
-    });
-
-    if (!unlockedFeature) return null;
-
-    let f = featureList.find(f => f.name === unlockedFeature);
-
-    const canUpgrade = this.enoughMarketingPoints(f.points.marketing, id) && this.enoughProgrammingPoints(f.points.programming, id);
-
-    return Object.assign({}, f, { canUpgrade })
   }
 
   getPowerOfCompanyOnMarket(id, marketId) {
