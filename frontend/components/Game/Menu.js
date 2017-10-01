@@ -76,6 +76,10 @@ export default class Menu extends Component {
     let moneyDifferencePhrase = shortenValue(moneyDifference);
     if (moneyDifference > 0) moneyDifferencePhrase = `+${moneyDifferencePhrase}`;
 
+    // <div className="navigation">
+    //   <span className={mpIndication}>MP: {points.marketing}</span>
+    // </div>
+    
     return <div>
       <div>
         <div className="navigation">
@@ -86,9 +90,6 @@ export default class Menu extends Component {
         </div>
         {speedIcons}
         <div className="navigation">{pauseOrContinue}</div>
-        <div className="navigation">
-          <span className={mpIndication}>MP: {points.marketing}</span>
-        </div>
         <div className="navigation">
           <span className={ppIndication}>PP: {points.programming}</span>
         </div>

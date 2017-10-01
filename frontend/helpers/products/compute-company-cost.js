@@ -27,7 +27,7 @@ const structured = (c, income, expense) => {
   const technologyValue = Math.ceil(featureSum * complexityModifier / 1000);
 
   // customers also influence cost
-  const clientValue = Math.ceil(c.KPI.clients * defaults.CAC * 80);
+  const clientValue = 0;
   const economicValue = Math.ceil(income * 24);
 
   const cost = 10000 + technologyValue + clientValue + economicValue;

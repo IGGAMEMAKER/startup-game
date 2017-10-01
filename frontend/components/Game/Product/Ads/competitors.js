@@ -26,8 +26,6 @@ export default class Competitors extends Component {
 
     const rents = flux.productStore.getRents();
 
-    const rating = 1; // flux.productStore.getRating(id);
-
     logger.shit('competitors.js hardcoded isCompetitor check: c.id != 0');
 
     const rentList = rents
@@ -41,7 +39,6 @@ export default class Competitors extends Component {
       <Competitor
         c={c}
         i={i}
-        rating={rating}
         money={money}
         rents={rents}
         onBuyCompany={() => { this.buyCompany(0, c.id, c.cost) }}

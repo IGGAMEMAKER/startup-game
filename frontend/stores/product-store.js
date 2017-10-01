@@ -50,14 +50,6 @@ let _points = {
   analyst: 300
 };
 
-type Rent = {
-  in: Number,
-  out: Number,
-  featureId: Number,
-  price: Number,
-  until: Number
-};
-
 type DescribedRent = {
   in: Number,
   out: Number,
@@ -158,7 +150,7 @@ const initialize = ({ markets, products, rents, expenses, employees, team, reput
 initialize(sessionManager.getProductStorageData());
 
 const getCurrentMainFeatureDefaultsByIdea = (idea) => {
-  const productsWithSameIdea = _products.filter((p, i) => p.idea === idea);
+  const productsWithSameIdea = _products;
 
   return productDescriptions(idea).features.map((f, featureId) => {
     let max = f.data;
@@ -364,7 +356,7 @@ class ProductStore extends EventEmitter {
     return _products[id].getMainFeatureQualityByFeatureId(featureId);
   }
 
-  getPrettyFeatureNameByFeatureId(id, featureId){
+  getPrettyFeatureNameByFeatureId(id, featureId) {
     return _products[id].getPrettyFeatureNameByFeatureId(featureId);
   }
 
@@ -474,10 +466,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getProgrammingSupportCost();
   }
 
-  getBaseSupportCost(id = 0) {
-    return _products[id].getBaseSupportCost();
-  }
-
   getMarketingFeatureList(id) {
     return _products[id].getMarketingFeatureList();
   };
@@ -522,22 +510,29 @@ class ProductStore extends EventEmitter {
     return _products[id].getImprovementsAmount();
   }
 
-  getTechnologyComplexityModifier(id) {
-    return _products[id].getTechnologyComplexityModifier();
-  }
-
   getBonusesAmount(id) {
     return _products[id].bonuses;
   }
 
 
-  getNumberOfTechnologiesWhereWeMadeBreakthrough(id) {
-    return _products[id].getNumberOfTechnologiesWhereWeMadeBreakthrough();
+  isPartneredOnMarket(c1, c2, marketId) {
+    return marketHelper.isPartneredOnMarket(_markets, c1, c2, marketId);
   }
 
+  isMarketFree(marketId) {
+    return marketHelper.isMarketFree(_markets, marketId);
+  }
 
-  getTechnicalDebtModifier(id) {
-    return _products[id].getTechnicalDebtModifier();
+  isFreeMarket(marketId) {
+    return marketHelper.isFreeMarket(_markets, marketId);
+  }
+
+  isHaveInfluenceOnMarket(id, marketId) {
+    return marketHelper.isHaveInfluenceOnMarket(_markets, id, marketId);
+  }
+
+  isAvailableToLeaveMarket(id, marketId) {
+    return marketHelper.isAvailableToLeaveMarket(_markets, id, marketId);
   }
 
   idHelper(p, i) {
@@ -553,7 +548,7 @@ class ProductStore extends EventEmitter {
   }
 
   getBenefitOnFeatureImprove(id, featureId) {
-    return Math.floor(this.getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, 1000));
+    return Math.floor(this.getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, 1));
   }
 
   getRents(): Array<DescribedRent> {
@@ -625,6 +620,9 @@ class ProductStore extends EventEmitter {
     }
   }
 
+  getMonthlyMPChange(id) {
+    return this.getMonthlyMarketerPoints(id) - this.getMarketingSupportCost(id);
+  }
 
   getTeamExpenses() {
     return sum(
@@ -637,8 +635,6 @@ class ProductStore extends EventEmitter {
   getRating(id, marketId, improvement = null) {
     if (!marketId) marketId = 0;
 
-    // const rented = this.incomingRentList(id);
-    // const features = this.enforceFeaturesByRentedOnes(_products[id].features.offer, rented);
     const features = _products[id].features.offer;
     const p = _products[id];
 
@@ -646,7 +642,7 @@ class ProductStore extends EventEmitter {
     const marketInfluences = p.getMarketInfoById(marketId).rating;
 
     if (improvement) {
-      features[improvement.featureId] += 1000;
+      features[improvement.featureId] += 1;
     }
 
     return round(computeRating(features, maxValues, marketInfluences));
@@ -668,28 +664,6 @@ class ProductStore extends EventEmitter {
     const canUpgrade = this.enoughMarketingPoints(f.points.marketing, id) && this.enoughProgrammingPoints(f.points.programming, id);
 
     return Object.assign({}, f, { canUpgrade })
-  }
-
-  getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
-    // if (!marketHelper.isHaveInfluenceOnMarket(_markets, id, marketId)) return 0;
-    if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) return 0;
-
-    const now = this.getMarketIncome(id, marketId, null);
-
-    const rating = this.getRating(id, marketId, null);
-    const nextRating = this.getRating(id, marketId, { featureId, value });
-
-    const willBe = Math.floor(now * (nextRating / rating));
-
-    // logger.debug('getIncomeIncreaseForMarketIfWeUpgradeFeature', `featureId: ${featureId} marketId:${marketId}`, now, willBe, 'willBe');
-
-    return willBe - now;
-  }
-
-  getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
-    return this.getMarkets(id)
-      .map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
-      .reduce((p, c) => p + c, 0);
   }
 
   getPowerOfCompanyOnMarket(id, marketId) {
@@ -735,32 +709,9 @@ class ProductStore extends EventEmitter {
       .map(c => Object.assign({}, c, { name: this.getName(c.companyId) }));
   }
 
-  isPartneredOnMarket(c1, c2, marketId) {
-    return marketHelper.isPartneredOnMarket(_markets, c1, c2, marketId);
-  }
-
-  isMarketFree(marketId) {
-    return marketHelper.isMarketFree(_markets, marketId);
-  }
-
-  isFreeMarket(marketId) {
-    return marketHelper.isFreeMarket(_markets, marketId);
-  }
-
-  isHaveInfluenceOnMarket(id, marketId) {
-    return marketHelper.isHaveInfluenceOnMarket(_markets, id, marketId);
-  }
-
-  isAvailableToLeaveMarket(id, marketId) {
-    return marketHelper.isAvailableToLeaveMarket(_markets, id, marketId);
-  }
 
   getBaseMarketingInfluence(id, marketId) {
-    if (!marketHelper.isHaveInfluenceOnMarket(_markets, id, marketId)) return 0;
-
-    const level = marketHelper.getMarketLevelOfCompany(_markets, id, marketId);
-
-    return this.getMarketInfo(id, marketId).levels[level];
+    return 10;
   }
 
   getMarketInfluenceOfCompany(id, marketId) {
@@ -768,9 +719,7 @@ class ProductStore extends EventEmitter {
 
     const powerOfCompany = powers.find(c => c.companyId === id);
 
-    if (!powerOfCompany) return 0;
-
-    const power = powerOfCompany.power;
+    const power = powerOfCompany ? powerOfCompany.power : 0;
 
     const sum = powers.map(p => p.power).reduce((p, c) => p + c, 0);
 
@@ -791,6 +740,28 @@ class ProductStore extends EventEmitter {
     const efficiency = rating * paymentModifier / 10;
 
     return Math.floor(this.getMarketSize(id, marketId) * efficiency * influenceOnMarket);
+  }
+
+  getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
+    // if (!marketHelper.isHaveInfluenceOnMarket(_markets, id, marketId)) return 0;
+    if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) return 0;
+
+    const now = this.getMarketIncome(id, marketId, null);
+
+    const rating = this.getRating(id, marketId, null);
+    const nextRating = this.getRating(id, marketId, { featureId, value });
+
+    const willBe = Math.floor(now * (nextRating / rating));
+
+    // logger.debug('getIncomeIncreaseForMarketIfWeUpgradeFeature', `featureId: ${featureId} marketId:${marketId}`, now, willBe, 'willBe');
+
+    return willBe - now;
+  }
+
+  getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
+    return this.getMarkets(id)
+      .map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
+      .reduce((p, c) => p + c, 0);
   }
 
   getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId) {
@@ -825,81 +796,23 @@ class ProductStore extends EventEmitter {
     }
   }
 
+
   getCurrentInfluenceMarketingCost(id, marketId) {
-    if (!this.isAvailableToLeaveMarket(id, marketId)) return 0;
-
-    const level = this.getMarketLevelOfCompany(id, marketId);
-
-    return this.getMarketInfo(id, marketId).levels[level];
+    return 0;
   }
+
 
   getNextInfluenceMarketingCost(id, marketId) {
-    if (!this.isCanIncreaseMarketLevel(id, marketId)) return 0;
-
-    const level = this.getMarketLevelOfCompany(id, marketId);
-
-    return this.getMarketInfo(id, marketId).levels[level + 1];
+    return 0;
   }
+
 
   getMarketLevelOfCompany(id, marketId) {
-    return marketHelper.getMarketLevelOfCompany(_markets, id, marketId);
-  }
-
-  getMonthlyMPChange(id) {
-    return this.getMonthlyMarketerPoints(id) - this.getMarketingSupportCost(id);
-  }
-
-  isMaxLevelReached(id, marketId) {
-    const max = this.getMarketInfo(id, marketId).levels.length;
-    const current = this.getMarketLevelOfCompany(id, marketId);
-
-    return max === current;
-  }
-
-  getMarketingAnalysis(id) {
-    const markets = this.getMarkets(id);
-
-    return markets.map(m => {
-      let cost, enoughMPs, benefitOnLevelUp;
-
-      let isFreeMarket = this.isFreeMarket(m.id);
-
-      const isMaxLevelReached = this.isMaxLevelReached(id, m.id);
-
-      if (isMaxLevelReached) {
-        cost = 0;
-        enoughMPs = true;
-        benefitOnLevelUp = 0;
-      } else {
-        cost = this.getNextInfluenceMarketingCost(id, m.id) - this.getCurrentInfluenceMarketingCost(id, m.id);
-        enoughMPs = this.getMonthlyMPChange(id) >= cost;
-        benefitOnLevelUp = this.getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, m.id);
-      }
-
-      const canIncreaseInfluence = !isMaxLevelReached && enoughMPs;
-
-      let ROI = 0;
-      if (cost) {
-        ROI = benefitOnLevelUp / cost;
-      }
-
-      return {
-        canIncreaseInfluence,
-        isMaxLevelReached,
-        enoughMPs,
-        isFreeMarket,
-        cost,
-        benefitOnLevelUp,
-        ROI,
-        marketId: m.id
-      }
-    })
+    return 0;
   }
 
   isCanIncreaseMarketLevel(id, marketId) {
-    const max = this.getMarketInfo(id, marketId).levels.length - 1;
-
-    return this.getMarketLevelOfCompany(id, marketId) < max;
+    return false;
   }
 
   getMarketIncome = (id, marketId, improvement) => {
@@ -923,11 +836,11 @@ class ProductStore extends EventEmitter {
   getOurMarketsSupportCostList(id) {
     return _markets
       .filter(m => m.companyId === id)
-      .map(m => ({
+      .map(m =>
+        ({
           cost: this.getCurrentInfluenceMarketingCost(id, m.marketId),
           name: this.getMarketName(id, m.marketId)
-        })
-      )
+        }))
   }
 
   getMarketingSupportCost(id) {
@@ -936,7 +849,6 @@ class ProductStore extends EventEmitter {
       .reduce((p, c) => p + c, 0);
 
     return Math.ceil(baseCost * (1 - _products[id].getMarketingSupportCost() / 100));
-    // return _products[id].getMarketingSupportCost();
   }
 
 
@@ -945,7 +857,7 @@ class ProductStore extends EventEmitter {
     const current = this.getMainFeatureQualityByFeatureId(id, featureId);
     const max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
 
-    return current + 1000 > max;
+    return current + 1 > max;
   }
 
   isWeAreRetards(id, featureId) {
@@ -956,32 +868,31 @@ class ProductStore extends EventEmitter {
   }
 
   getMainFeatureUpgradeCost(id, featureId) {
-    let modifier = 1;
+    return 1;
 
-    logger.shit('write isUpgradeWillResultTechBreakthrough function!!');
+    let modifier = 1;
 
     // we are able to make breakthrough
     if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) {
       modifier = 4  - _products[id].getBonusModifiers().techBreakthroughDiscount / 100;
     }
 
-
     // we are retards
     if (this.isWeAreRetards(id, featureId)) {
       modifier = 0.25 - _products[id].getBonusModifiers().followerDiscount / 100;
     }
 
+
     const specificFeatureModifier = 1 - _products[id].getSpecificFeatureDevelopmentCostModifier(featureId) / 100;
 
-    modifier *= specificFeatureModifier;
+    const baseCost = this.getBaseFeatureDevelopmentCost(id, featureId);
 
-    return Math.ceil(this.getBaseFeatureDevelopmentCost(id, featureId) * modifier);
+    return Math.ceil(baseCost * modifier * specificFeatureModifier);
   }
 
   getLeaderInTech(id, featureId) {
     const leader = _products
       .map(this.idHelper)
-      .filter((obj, i) => obj.p.idea === this.getIdea(id))
       .sort((obj1, obj2) => {
         const p1: Product = obj1.p;
         const p2: Product = obj2.p;
@@ -999,16 +910,8 @@ class ProductStore extends EventEmitter {
     }
   }
 
-  ceilXPtoThousandValue(value) {
-    return Math.ceil(value / 1000) * 1000;
-  }
-
   getCurrentMainFeatureDefaultsById(id) {
     return getCurrentMainFeatureDefaultsById(id);
-  }
-
-  temporaryMaxFeatureValue(id, featureId) {
-    return this.ceilXPtoThousandValue(this.getLeaderInTech(id, featureId).value);
   }
 
   getUpgradedMaxDefaultFeatureValueList(id) {
@@ -1016,23 +919,19 @@ class ProductStore extends EventEmitter {
       .map((f, featureId) => {
         const base = this.getMainFeatureQualityByFeatureId(id, featureId);
 
-        const leader = (Math.floor(this.getLeaderInTech(id, featureId).value / 1000) + 1) * 1000;
+        const leader = this.getLeaderInTech(featureId).value;
 
         return leader > base ? leader : base;
       });
   }
 
-  isUpgradingMainFeatureWillResultTechLeadership(id, featureId) {
-    const current = this.getMainFeatureQualityByFeatureId(id, featureId);
-
-    const max = this.temporaryMaxFeatureValue(id, featureId);
-
-    return current + 1000 > max;
-  }
-
   getCurrentMainFeatureDefaultsByIdea(idea) {
     return getCurrentMainFeatureDefaultsByIdea(idea);
   }
+
+  getAbsoluteRating(id) {
+    return this.getRating(id, 0, null);
+  };
 
   getCompetitorsList() {
     return _products
@@ -1041,7 +940,7 @@ class ProductStore extends EventEmitter {
         const p: Product = obj.p;
         const id = obj.id;
 
-        const rating = this.getRating(id, 0);
+        const rating = this.getAbsoluteRating(id);
 
         const features = p.features.offer;
 
@@ -1057,7 +956,6 @@ class ProductStore extends EventEmitter {
           rating,
           company: p,
           style: p.style,
-          clients: p.KPI.clients,
           name: p.name,
           features: offer,
           XP: p.XP,
@@ -1085,7 +983,7 @@ Dispatcher.register((p: PayloadType) => {
   let change = true;
   switch (p.type) {
     case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.KPI, p.features, 1999);
+      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.features, 1999);
       break;
 
     case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
@@ -1103,10 +1001,8 @@ Dispatcher.register((p: PayloadType) => {
         'You need updating it only on improve Main Feature actions');
 
       const upgradedDefaults = getCurrentMainFeatureDefaultsById(id);
-      const idea = _products[id].getIdea();
 
       _products
-        .filter(p => p.idea === idea)
         .forEach((p) => {
           p.setMainFeatureDefaults(upgradedDefaults);
         });
@@ -1208,7 +1104,6 @@ Dispatcher.register((p: PayloadType) => {
 
       const difference = companyMerger.merge(buyer, seller);
 
-      _products[buyerId].KPI.clients = difference.clients;
       _products[buyerId].features.offer = difference.features;
 
       _products.splice(sellerId, 1);

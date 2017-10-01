@@ -19,8 +19,8 @@ import * as BONUSES from '../constants/bonuses';
 import * as MANAGEMENT_STYLES from '../constants/company-styles';
 
 const names = [
-  'Alpha-Centaura', 'Sun', 'Magenta', 'Grapes',
-  'Best Hosting', 'Tech Labs', 'Gingerbeard', 'Mercury', 'Phantom',
+  'Alpha', 'Proxima', 'Sun', 'Magenta', 'Grapes',
+  'Best Hosting', 'Tech Labs', 'Ginger bird', 'Mercury', 'Phantom',
   'Modern', 'Future Labs', 'Pineaple', 'Storm Technologies',
   'Unnamed'
 ];
@@ -28,10 +28,8 @@ const names = [
 export default class Product {
   constructor(data, createFromObject) {
     if (createFromObject) {
-      // Object.assign(this, data);
       this.features = data.features;
       this.featuresOnCreate = data.featuresOnCreate;
-      this.KPI = data.KPI;
       this.idea = data.idea;
       this.name = data.name;
 
@@ -61,6 +59,7 @@ export default class Product {
 
     if (!name) {
       const index = Math.floor(random(0, names.length - 1));
+
       name = names[index];
     }
 
@@ -102,25 +101,8 @@ export default class Product {
       bonuses: {}
     };
 
-    const clients = 200;
-
-    const KPI = {
-      debt: 0, // technical debt. Shows, how fast can you implement new features
-      clients,
-      newClients: clients,
-
-      hype: 1000,
-
-      bugs: 10,
-
-      currentUXBugs: 100,
-      foundUXBugs: 0,
-      fixedUXBugs: 0
-    };
-
     this.features = features;
     this.featuresOnCreate = Object.assign({}, features);
-    this.KPI = KPI;
     this.idea = idea;
     this.name = name;
 
@@ -243,10 +225,6 @@ export default class Product {
     const bonus = 1 - this.getBonusModifiers().programmingSupportCost / 100;
 
     return Math.ceil(this.getDefaults().support.pp * this.getProgrammingSupportCostModifier() * bonus);
-  }
-
-  getBaseSupportCost() {
-    return 0;
   }
 
   getMarketingSupportCost() {
@@ -605,23 +583,8 @@ export default class Product {
     return this.XP;
   }
 
-  getHypothesisPoints() {
-    const complexityModifier = this.getTechnologyComplexityModifier();
-
-    const defaults = this.getDefaults().hypothesis;
-
-    return {
-      mp: Math.ceil(defaults.mp * complexityModifier),
-      pp: Math.ceil(defaults.pp * complexityModifier)
-    }
-  }
-
   getMarkets() {
     return this.getDefaults().markets;
-  }
-
-  getMarketByMarketId(marketId) {
-    return this.getMarkets()[marketId];
   }
 
   getMarketInfoById(marketId) {
@@ -640,30 +603,10 @@ export default class Product {
     return this.improvements;
   }
 
-  getTechnologyComplexityModifier() {
-    const tests = this.getTestsAmount();
-    const improvements = this.getImprovementsAmount();
 
-    logger.shit('here must be technical debt modifier too! getTechnologyComplexityModifier(id)');
 
-    return Math.pow(0.15 * tests + 0.6 * improvements, balance.TECHNOLOGY_COST_MODIFIER);
-  }
-
-  getTechnicalDebtModifier() {
-    const improvements = this.getImprovementsAmount();
-
-    return Math.log10(improvements + 10);
-    // return Math.pow(balance.TECHNICAL_DEBT_MODIFIER, improvements);
-  }
-
-  getNumberOfTechnologiesWhereWeMadeBreakthrough() {
-    return this.defaultFeatures
-      .filter((f, i) => this.getMainFeatureQualityByFeatureId(i) === f).length;
-  }
-
-  setProductDefaults(stage, KPI, features, XP) {
+  setProductDefaults(stage, features, XP) {
     this.stage = stage;
-    this.KPI = KPI;
     this.features = features;
     this.XP = XP;
   }
@@ -675,16 +618,16 @@ export default class Product {
 
   testHypothesis(p) {
     this.XP += p.value;
-    const features = productDescriptions(this.idea).features;
-
-    let max = 0;
-    features.forEach(f => {
-      max += f.data;
-    });
-
-    if (this.XP > max) {
-      this.XP = max;
-    }
+    // const features = productDescriptions(this.idea).features;
+    //
+    // let max = 0;
+    // features.forEach(f => {
+    //   max += f.data;
+    // });
+    //
+    // if (this.XP > max) {
+    //   this.XP = max;
+    // }
 
     if (this.tests) {
       this.tests++;

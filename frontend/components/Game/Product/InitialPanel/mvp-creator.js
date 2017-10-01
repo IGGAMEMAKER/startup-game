@@ -14,7 +14,7 @@ const create = (i, basePoints, idea) => {
 
   const p = new Product({ idea, name: 'WWWEB HOSTING', defaultFeatures: getCurrentDefaultFeatures(idea) });
 
-  productActions.setInitialProductSettings(i, p.features, p.KPI);
+  productActions.setInitialProductSettings(i, p.features);
 
   createCompetitorCompany(idea);
   createCompetitorCompany(idea);

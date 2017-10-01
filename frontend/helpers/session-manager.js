@@ -1,5 +1,4 @@
 import Product from './../classes/Product';
-import productDescriptions from './products/product-descriptions';
 
 import sessionStorage from './../sessionStorage';
 
@@ -18,6 +17,8 @@ function saveToStorage(name, value) {
 }
 
 function setDefaultValues() {
+  console.log('setDefaultValues in session-manager');
+
   // schedule
   sessionStorage.saveInStorage('tasks', []);
   sessionStorage.saveInStorage('day', 1);

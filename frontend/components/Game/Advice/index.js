@@ -1,8 +1,6 @@
 import { h, Component } from 'preact';
 import c from '../../../constants';
-import flux from '../../../flux';
 
-import ColoredRating from '../Product/KPI/colored-rating';
 import UI from '../../UI';
 
 
@@ -55,7 +53,7 @@ export default class AdviceTab extends Component {
       case c.gameStages.GAME_STAGE_TESTED_FIRST_HYPOTHESIS:
         target = (
           <div>
-            <div>Первое тестирование завершено. Прототип ужасен! (Рейтинг <ColoredRating rating={flux.productStore.getRating(0)} />/10)</div>
+            <div>Первое тестирование завершено. Прототип ужасен!</div>
             <div>Однако, мы получили пару дельных советов и можем улучшить продукт</div>
             <div>Улучшите характеристику "Виртуальная машина" в разделе "Разработка", чтобы поднять наш рейтинг</div>
           </div>

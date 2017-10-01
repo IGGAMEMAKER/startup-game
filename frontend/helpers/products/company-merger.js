@@ -24,17 +24,10 @@ const merge = (buyer, seller) => {
     });
 
 
-  const sellerClients = seller.KPI.clients;
-  const buyerClients = buyer.KPI.clients;
-  const clients = sellerClients + buyerClients; // ? sellerClients : buyerClients;
-
-  const result = {
-    clients,
+  return {
     improvements,
     features
   };
-
-  return result;
 };
 
 export default {

@@ -16,10 +16,8 @@ export default class MainFeature extends Component {
     const product = productStore.getProduct(id);
     const defaults = productStore.getDefaults(id);
 
-    const featureList = defaults.features.map(this.renderMainFeature('offer', product, id));
     const featureListTableView = defaults.features.map(this.renderMainFeature('offer', product, id, true));
 
-          // <div className="featureGroupBody">{featureList}</div>
     return (
       <div>
         <div className="featureGroupTitle">Разработка</div>
@@ -106,7 +104,7 @@ export default class MainFeature extends Component {
     const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
     const key = `feature${featureGroup}${featureName}${featureId}`;
 
-    const leaderInTech = productStore.getLeaderInTech(id, featureId);
+    const leaderInTech = productStore.getLeaderInTech(featureId);
 
     const minify = v => {
       return Math.floor(v / 1000);
