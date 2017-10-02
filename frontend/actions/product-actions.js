@@ -21,15 +21,6 @@ export default {
     })
   },
 
-  increaseInfluenceOnMarket(id, marketId) {
-    if (productStore.isCanIncreaseMarketLevel(id, marketId)) {
-      Dispatcher.dispatch({
-        type: ACTIONS.PRODUCT_ACTIONS_MARKETS_INFLUENCE_INCREASE,
-        id, marketId
-      })
-    }
-  },
-
   setAsMainMarket(id, marketId) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_MARKETS_SET_AS_MAIN,

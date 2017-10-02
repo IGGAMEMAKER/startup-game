@@ -60,7 +60,7 @@ export default class Menu extends Component {
     const moneyDifference = isMakingIncome ? `+${saldoValue}` : saldoValue;
 
 
-    const ppIndication = negative; // productStore.isNeedProgrammer(id) ? negative : positive;
+    const ppIndication = productStore.isNeedProgrammer(id) ? negative : positive;
 
 
     const year = Math.floor(props.day / 360);

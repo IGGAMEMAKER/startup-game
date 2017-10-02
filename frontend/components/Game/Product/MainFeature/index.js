@@ -98,10 +98,10 @@ export default class MainFeature extends Component {
 
     const profitPhrase = benefit ? `+${benefit}$` : `???`;
 
-    // let leaderInTechPhrase = `Лидер: "${leaderInTech.name}"`;
-    // if (isWeAreLeaders) {
-    let  leaderInTechPhrase = 'Мы лидируем!';
-    // }
+    let leaderInTechPhrase = `Лидер: "${leaderInTech.name}"`;
+    if (isWeAreLeaders) {
+      leaderInTechPhrase = 'Мы лидируем!';
+    }
 
     return <tr key={key}>
       <td>

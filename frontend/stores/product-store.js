@@ -547,18 +547,15 @@ class ProductStore extends EventEmitter {
   }
 
   getMarketRatingComputationList(id, marketId) {
-    return productDescriptions(this.getIdea(id)).markets[marketId].rating;
+    return this.getDefaults(id).markets[marketId].rating;
   };
 
   getMainFeatureIterator(id): Array {
-    return productDescriptions(this.getIdea(id)).features;
+    return this.getDefaults(id).features;
   }
 
   getLeaderValues(id) {
-    return this.getMainFeatureIterator(id)
-      .map((f, i) => {
-        return this.getLeaderInTech(i)
-      })
+    return this.getMainFeatureIterator(id).map((f, i) => this.getLeaderInTech(i))
   };
 
   getRating(id, marketId, improvement = null) {
@@ -573,6 +570,9 @@ class ProductStore extends EventEmitter {
 
     return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
   }
+
+
+
 
   getPowerOfCompanyOnMarket(id, marketId) {
     const base = this.getBaseMarketingInfluence(id, marketId);
@@ -589,33 +589,36 @@ class ProductStore extends EventEmitter {
     return base * mainMarketBonus + partnershipBonus;
   }
 
-  getPowerListOnMarket(marketId) {
-    const marketRecords = _markets.filter(m => m.marketId === marketId);
+  getSharesOnMarket() {
 
-    const influences = marketRecords
-      .map(({ companyId, marketId }) =>
+  }
+
+  getPowerListOnMarket(marketId) {
+    const influences = _products
+      .map((p, i) =>
         ({
-          power: this.getPowerOfCompanyOnMarket(companyId, marketId),
-          companyId,
-          marketId
+          power: this.getPowerOfCompanyOnMarket(i, marketId),
+          companyId: i,
+          marketId,
+          name: this.getName(i)
         })
       );
 
-    const sum = influences.map(i => i.power).reduce((p, c) => p + c, 0);
+    const total = sum(influences.map(i => i.power));
 
     return influences
-      .map(m => Object.assign({}, m, { share: percentify(m.power / sum) }))
+      .map(m => Object.assign({}, m, { share: percentify(m.power / total) }))
       .sort((a, b) => b.power - a.power);
   }
 
   getPowerListWithCompanyNames(marketId) {
     return this.getPowerListOnMarket(marketId)
-      .map(c => Object.assign({}, c, { name: this.getName(c.companyId) }));
+      // .map(c => Object.assign({}, c, { name: this.getName(c.companyId) }));
   }
 
 
   getBaseMarketingInfluence(id, marketId) {
-    return 10;
+    return this.getRating(id, marketId);
   }
 
   getMarketInfluenceOfCompany(id, marketId) {
@@ -625,9 +628,9 @@ class ProductStore extends EventEmitter {
 
     const power = powerOfCompany ? powerOfCompany.power : 0;
 
-    const sum = powers.map(p => p.power).reduce((p, c) => p + c, 0);
+    const total = sum(powers.map(p => p.power));
 
-    return power / sum;
+    return power / total;
   }
 
   getMarketSize(id, marketId) {
@@ -658,43 +661,11 @@ class ProductStore extends EventEmitter {
   }
 
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
-    return this.getMarkets(id)
-      .map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
-      .reduce((p, c) => p + c, 0);
+    return sum(
+      this.getMarkets(id).map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
+    );
   }
 
-  getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId) {
-    const powerIncreaseMultiplier = this.getNextInfluenceMarketingCost(id, marketId) / this.getCurrentInfluenceMarketingCost(id, marketId);
-
-    const powers = this.getPowerListOnMarket(marketId);
-
-    const index = powers.findIndex(p => p.companyId === id);
-
-    const prevShare = powers[index].share;
-    powers[index].share = prevShare * powerIncreaseMultiplier;
-
-    const shares = powers.map(p => p.share).reduce((p, c) => p + c, 0);
-
-    const nextShare = powers[index].share * 100 / shares;
-
-    const income = this.getMarketIncome(id, marketId) * (nextShare / prevShare - 1);
-
-    return Math.floor(income);
-  }
-
-
-  getNextInfluenceMarketingCost(id, marketId) {
-    return 0;
-  }
-
-
-  getMarketLevelOfCompany(id, marketId) {
-    return 0;
-  }
-
-  isCanIncreaseMarketLevel(id, marketId) {
-    return false;
-  }
 
   getMarketIncome = (id, marketId, improvement) => {
     const influenceOnMarket = this.getMarketInfluenceOfCompany(id, marketId);
@@ -703,38 +674,16 @@ class ProductStore extends EventEmitter {
   };
 
   getProductIncome(id) {
-    const records = _markets.filter(m => m.companyId === id);
-
-    if (!records.length) return 0;
-
-    return records
-      .map((m, i) => this.getMarketIncome(id, m.marketId, null))
-      .reduce((p, c) => p + c, 0);
-  }
-
-  getOurMarketsSupportCostList(id) {
-    return _markets
-      .filter(m => m.companyId === id)
-      .map(m =>
-        ({
-          cost: this.getCurrentInfluenceMarketingCost(id, m.marketId),
-          name: this.getMarketName(id, m.marketId)
-        }))
-  }
-
-  getMarketingSupportCost(id) {
-    const baseCost = this.getOurMarketsSupportCostList(id)
-      .map(item => item.cost)
-      .reduce((p, c) => p + c, 0);
-
-    return Math.ceil(baseCost * (1 - _products[id].getMarketingSupportCost() / 100));
+    return sum(
+      this.getMarkets(id).map((m, i) => this.getMarketIncome(id, m.marketId, null))
+    );
   }
 
 
 
   isUpgradeWillResultTechBreakthrough(id, featureId) {
     const current = this.getMainFeatureQualityByFeatureId(id, featureId);
-    const max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
+    const max = this.getLeaderValues(id)[featureId];
 
     return current + 1 > max;
   }
@@ -765,17 +714,6 @@ class ProductStore extends EventEmitter {
 
   getCurrentMainFeatureDefaultsById(id) {
     return getCurrentMainFeatureDefaultsById(id);
-  }
-
-  getUpgradedMaxDefaultFeatureValueList(id) {
-    return _products[id].getMainFeatures()
-      .map((f, featureId) => {
-        const base = this.getMainFeatureQualityByFeatureId(id, featureId);
-
-        const leader = this.getLeaderInTech(featureId).value;
-
-        return leader > base ? leader : base;
-      });
   }
 
   getCurrentMainFeatureDefaultsByIdea(idea) {
@@ -851,16 +789,6 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
       _products[id].improveFeature(p);
-
-      logger.shit('rewrite upgradedDefaults updating in Product.js class. ' +
-        'You need updating it only on improve Main Feature actions');
-
-      const upgradedDefaults = getCurrentMainFeatureDefaultsById(id);
-
-      _products
-        .forEach((p) => {
-          p.setMainFeatureDefaults(upgradedDefaults);
-        });
       break;
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:

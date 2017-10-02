@@ -20,12 +20,6 @@ export const isAvailableToLeaveMarket = (_markets, id, marketId) => {
   return isHaveInfluenceOnMarket(_markets, id, marketId);
 };
 
-export const getMarketLevelOfCompany = (_markets, companyId, marketId) => {
-  const record = getMarketRecord(_markets, companyId, marketId);
-
-  return record ? record.level : -1;
-};
-
 export const isPartneredOnMarket = (_markets, c1, c2, marketId) => {
   const record = getMarketRecord(_markets, c1, marketId);
 
@@ -48,6 +42,5 @@ export default {
   isAvailableToLeaveMarket,
   isPartneredOnMarket,
 
-  getMarketLevelOfCompany,
   getMarketRecord,
 };

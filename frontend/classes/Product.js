@@ -225,10 +225,6 @@ export default class Product {
     return Math.ceil(this.getDefaults().support.pp * this.getProgrammingSupportCostModifier() * bonus);
   }
 
-  getMarketingSupportCost() {
-    return this.getBonusModifiers().marketingSupportCost;
-  }
-
   getAvailableBonuses(): Array {
     const list = this.getBonusesList();
 
