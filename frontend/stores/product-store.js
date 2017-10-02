@@ -44,12 +44,6 @@ const EC = 'PRODUCT_EVENT_CHANGE';
 let _money = 1000;
 let _expenses = [];
 
-let _points = {
-  programming: 5300,
-  marketing: 5200,
-  analyst: 300
-};
-
 type DescribedRent = {
   in: Number,
   out: Number,
@@ -398,21 +392,6 @@ class ProductStore extends EventEmitter {
 
 
 
-  getSupportPower(id) {
-    return _products[id].getSupportPower();
-  }
-
-  getEmailPower(id) {
-    return _products[id].getEmailPower();
-  }
-
-  getMarketingSupportCostPerClientForSupportFeature(id) {
-    return _products[id].getMarketingSupportCostPerClientForSupportFeature();
-  }
-
-  getProductSupportCost(id) {
-    return _products[id].getProductSupportCost();
-  }
 
   getProductExpenses(id) {
     return _products[id].getProductExpenses();
@@ -544,47 +523,19 @@ class ProductStore extends EventEmitter {
     });
   };
 
-
-  getMonthlyMarketerPoints(id) {
-    const bonus = 1 + _products[id].getBonusModifiers().marketingEfficiency / 100;
-
-    const base = sum(this.getMarketers().map(skillHelper.getMarketingPointsProducedBy));
-
-    return Math.floor(base * bonus);
-  }
-
   getMonthlyProgrammerPoints(id) {
-    const bonus = 1 + _products[id].getBonusModifiers().programmingEfficiency / 100;
+    const bonus = 1 + this.getBonusModifiers(id).programmingEfficiency / 100;
 
     const base = sum(this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy));
 
     return Math.floor(base * bonus);
   }
 
+  isNeedProgrammer(id) {
+    const decrease = this.getProgrammingSupportCost(id);
+    const increase = this.getMonthlyProgrammerPoints(id);
 
-  getPointModificationStructured(id) {
-    const monthlyProgrammingPointsDifferenceStructured = (id = 0) => {
-      logger.shit('getProgrammingSupportCost with zero index... ' +
-        'we need real ID of our product!! /helpers/points/modification.js');
-
-      const decrease = this.getProgrammingSupportCost(id);
-      const increase = this.getMonthlyProgrammerPoints(id);
-
-      return {
-        increase,
-        decrease,
-        needToHireWorker: decrease > increase,
-        diff: Math.abs(decrease - increase)
-      }
-    };
-
-    return {
-      programming: () => monthlyProgrammingPointsDifferenceStructured(id)
-    }
-  }
-
-  getMonthlyMPChange(id) {
-    return 0;
+    return decrease > increase;
   }
 
   getTeamExpenses() {
@@ -595,20 +546,32 @@ class ProductStore extends EventEmitter {
     );
   }
 
+  getMarketRatingComputationList(id, marketId) {
+    return productDescriptions(this.getIdea(id)).markets[marketId].rating;
+  };
+
+  getMainFeatureIterator(id): Array {
+    return productDescriptions(this.getIdea(id)).features;
+  }
+
+  getLeaderValues(id) {
+    return this.getMainFeatureIterator(id)
+      .map((f, i) => {
+        return this.getLeaderInTech(i)
+      })
+  };
+
   getRating(id, marketId, improvement = null) {
-    if (!marketId) marketId = 0;
+    const features = _products[id].features.offer.map(m => m);
 
-    const features = _products[id].features.offer;
-    const p = _products[id];
-
-    const maxValues = getCurrentMainFeatureDefaultsById(id);
-    const marketInfluences = p.getMarketInfoById(marketId).rating;
+    const maxValues = this.getLeaderValues(id).map(l => l.value);
+    const marketInfluences = this.getMarketRatingComputationList(id, marketId);
 
     if (improvement) {
       features[improvement.featureId] += 1;
     }
 
-    return round(computeRating(features, maxValues, marketInfluences));
+    return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
   }
 
   getPowerOfCompanyOnMarket(id, marketId) {
@@ -627,22 +590,18 @@ class ProductStore extends EventEmitter {
   }
 
   getPowerListOnMarket(marketId) {
-    let sum = 0;
-
     const marketRecords = _markets.filter(m => m.marketId === marketId);
 
     const influences = marketRecords
-      .map(({ companyId, marketId }) => {
-        const power = this.getPowerOfCompanyOnMarket(companyId, marketId);
-
-        sum += power;
-
-        return {
-          power,
+      .map(({ companyId, marketId }) =>
+        ({
+          power: this.getPowerOfCompanyOnMarket(companyId, marketId),
           companyId,
           marketId
-        };
-      });
+        })
+      );
+
+    const sum = influences.map(i => i.power).reduce((p, c) => p + c, 0);
 
     return influences
       .map(m => Object.assign({}, m, { share: percentify(m.power / sum) }))
@@ -688,17 +647,12 @@ class ProductStore extends EventEmitter {
   }
 
   getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
-    // if (!marketHelper.isHaveInfluenceOnMarket(_markets, id, marketId)) return 0;
-    if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) return 0;
-
     const now = this.getMarketIncome(id, marketId, null);
 
     const rating = this.getRating(id, marketId, null);
     const nextRating = this.getRating(id, marketId, { featureId, value });
 
     const willBe = Math.floor(now * (nextRating / rating));
-
-    // logger.debug('getIncomeIncreaseForMarketIfWeUpgradeFeature', `featureId: ${featureId} marketId:${marketId}`, now, willBe, 'willBe');
 
     return willBe - now;
   }
@@ -710,40 +664,22 @@ class ProductStore extends EventEmitter {
   }
 
   getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId) {
-    if (this.isHaveInfluenceOnMarket(id, marketId)) {
-      const powerIncreaseMultiplier = this.getNextInfluenceMarketingCost(id, marketId) / this.getCurrentInfluenceMarketingCost(id, marketId);
+    const powerIncreaseMultiplier = this.getNextInfluenceMarketingCost(id, marketId) / this.getCurrentInfluenceMarketingCost(id, marketId);
 
-      const powers = this.getPowerListOnMarket(marketId);
+    const powers = this.getPowerListOnMarket(marketId);
 
-      const index = powers.findIndex(p => p.companyId === id);
+    const index = powers.findIndex(p => p.companyId === id);
 
-      const prevShare = powers[index].share;
-      powers[index].share = prevShare * powerIncreaseMultiplier;
+    const prevShare = powers[index].share;
+    powers[index].share = prevShare * powerIncreaseMultiplier;
 
-      const shares = powers.map(p => p.share).reduce((p, c) => p + c, 0);
+    const shares = powers.map(p => p.share).reduce((p, c) => p + c, 0);
 
-      const nextShare = powers[index].share * 100 / shares;
+    const nextShare = powers[index].share * 100 / shares;
 
-      const income = this.getMarketIncome(id, marketId) * (nextShare / prevShare - 1);
+    const income = this.getMarketIncome(id, marketId) * (nextShare / prevShare - 1);
 
-      return Math.floor(income);
-    } else if (this.isMarketFree(marketId)) {
-      return this.calculateMarketIncome(id, marketId, null, 1);
-    } else {
-      // market is not free, and we are trying entering it
-      const powers = this.getPowerListOnMarket(marketId);
-
-      const newPower = this.getNextInfluenceMarketingCost(id, marketId);
-
-      const shares = powers.map(p => p.power).reduce((p, c) => p + c, 0) + newPower;
-
-      return this.calculateMarketIncome(id, marketId, null, newPower / shares);
-    }
-  }
-
-
-  getCurrentInfluenceMarketingCost(id, marketId) {
-    return 0;
+    return Math.floor(income);
   }
 
 
@@ -762,8 +698,6 @@ class ProductStore extends EventEmitter {
 
   getMarketIncome = (id, marketId, improvement) => {
     const influenceOnMarket = this.getMarketInfluenceOfCompany(id, marketId);
-
-    if (!influenceOnMarket) return 0;
 
     return this.calculateMarketIncome(id, marketId, improvement, influenceOnMarket);
   };
@@ -805,37 +739,11 @@ class ProductStore extends EventEmitter {
     return current + 1 > max;
   }
 
-  isWeAreRetards(id, featureId) {
-    const current = this.getMainFeatureQualityByFeatureId(id, featureId);
-    const max = this.getCurrentMainFeatureDefaultsById(id)[featureId];
-
-    return current < 0.6 * max;
-  }
-
   getMainFeatureUpgradeCost(id, featureId) {
-    return 1;
-
-    let modifier = 1;
-
-    // we are able to make breakthrough
-    if (this.isUpgradeWillResultTechBreakthrough(id, featureId)) {
-      modifier = 4  - _products[id].getBonusModifiers().techBreakthroughDiscount / 100;
-    }
-
-    // we are retards
-    if (this.isWeAreRetards(id, featureId)) {
-      modifier = 0.25 - _products[id].getBonusModifiers().followerDiscount / 100;
-    }
-
-
-    const specificFeatureModifier = 1 - _products[id].getSpecificFeatureDevelopmentCostModifier(featureId) / 100;
-
-    const baseCost = this.getBaseFeatureDevelopmentCost(id, featureId);
-
-    return Math.ceil(baseCost * modifier * specificFeatureModifier);
+    return this.getBaseFeatureDevelopmentCost(id, featureId);
   }
 
-  getLeaderInTech(id, featureId) {
+  getLeaderInTech(featureId) {
     const leader = _products
       .map(this.idHelper)
       .sort((obj1, obj2) => {
@@ -923,6 +831,8 @@ Dispatcher.register((p: PayloadType) => {
     return;
   }
 
+  logger.log('product store', p);
+
   const id = p.id;
 
   let change = true;
@@ -959,14 +869,6 @@ Dispatcher.register((p: PayloadType) => {
 
 
 
-    case c.PRODUCT_ACTIONS_CLIENTS_ADD:
-      _products[id].addClients(p);
-      break;
-
-    case c.PRODUCT_ACTIONS_CLIENTS_REMOVE:
-      _products[id].removeClients(p);
-      break;
-
     case c.PRODUCT_ACTIONS_HYPE_ADD:
       _products[id].addHype(p.hype);
       break;
@@ -976,26 +878,6 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
 
-
-    case c.PRODUCT_ACTIONS_MARKETS_INFLUENCE_INCREASE:
-      let index = getMarketRecordIndex(p.id, p.marketId);
-
-      if (index >= 0) {
-        _markets[index].level++;
-      } else {
-        _markets.push({ companyId: p.id, marketId: p.marketId, level: 0, partnerId: -1 });
-      }
-      break;
-
-    case c.PRODUCT_ACTIONS_MARKETS_INFLUENCE_DECREASE:
-      index = getMarketRecordIndex(p.id, p.marketId);
-
-      if (index >= 0) {
-        clearPartnershipOf(p.id, p.marketId);
-
-        _markets.splice(index, 1)
-      }
-      break;
 
     case c.PRODUCT_ACTIONS_MARKETS_SET_AS_MAIN:
       const currentIndex = getCurrentMainMarket(p.id);
@@ -1078,13 +960,11 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PLAYER_ACTIONS_INCREASE_POINTS:
       logger.shit('|| 0 in PLAYER_ACTIONS_INCREASE_POINTS pr store');
-      _products[p.id || 0]._points.marketing += p.points.marketing;
       _products[p.id || 0]._points.programming += p.points.programming;
       break;
 
     case c.PLAYER_ACTIONS_DECREASE_POINTS:
       logger.shit('|| 0 in PLAYER_ACTIONS_DECREASE_POINTS pr store');
-      _products[p.id || 0]._points.marketing -= p.mp;
       _products[p.id || 0]._points.programming -= p.pp;
       break;
 

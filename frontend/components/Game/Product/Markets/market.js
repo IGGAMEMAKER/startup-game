@@ -9,27 +9,7 @@ import ColoredRating from '../KPI/colored-rating';
 import UI from '../../../UI';
 
 export default class Market extends Component {
-  renderIncreaseInfluenceButton(id, marketId, increasingSupportCost, increasedCost) {
-    if (!productStore.isCanIncreaseMarketLevel(id, marketId)) return '';
-
-    const canIncreaseInfluence = productStore.getPointModificationStructured(id).marketing().diff >= increasingSupportCost;
-
-    const benefit = productStore.getIncomeIncreaseIfWeIncreaseInfluenceOnMarket(id, marketId);
-
-    return <div>
-      <br />
-      <UI.Button
-        text="Усилить влияние"
-        primary
-        disabled={!canIncreaseInfluence}
-        onClick={() => productActions.increaseInfluenceOnMarket(id, marketId)}
-      />
-      <div>Стоимость поддержки после улучшения (ежемесячно): {increasedCost}MP</div>
-      <div>Мы заработаем на {shortenValue(benefit)}$ больше в этом месяце</div>
-    </div>
-  }
-
-  renderMarketCompetitors(id, marketId, isAvailableToLeaveMarket) {
+  renderMarketCompetitors(id, marketId) {
     const powerList = productStore.getPowerListWithCompanyNames(marketId)
       .map(c => {
         let companyClass;
@@ -45,7 +25,7 @@ export default class Market extends Component {
           companyClass = 'partner-company';
         }
 
-        if (c.companyId === id || !isAvailableToLeaveMarket) {
+        if (c.companyId === id) {
         } else if (hasPartnershipWithUs) {
           switchPartnershipStatusButton = <div className="partnership-button-area revoke">
             <UI.Button
@@ -95,43 +75,29 @@ export default class Market extends Component {
   render({ marketId, market, id }) {
     const { userOrientedName, clients, price } = market;
 
-    let requirementTab, leaveMarketButton, setAsMainMarketButton;
+    let requirementTab, setAsMainMarketButton;
 
-    const increasedCost = productStore.getNextInfluenceMarketingCost(id, marketId);
-    const currentSupportCost = productStore.getCurrentInfluenceMarketingCost(id, marketId);
+    const currentRating = <ColoredRating rating={productStore.getRating(id, marketId)} />;
+    const income = productStore.getMarketIncome(id, marketId);
 
-    const isAvailableToLeaveMarket = productStore.isAvailableToLeaveMarket(id, marketId);
+    requirementTab = <div>
+      <div>Рейтинг: {currentRating}</div>
+      <div>Доход: {shortenValue(income)}$</div>
+    </div>;
 
-
-    if (isAvailableToLeaveMarket) {
-      const currentRating = <ColoredRating rating={productStore.getRating(id, marketId)} />;
-      const income = productStore.getMarketIncome(id, marketId);
-
-      requirementTab = <div>
-        <div>Рейтинг: {currentRating}</div>
-        <div>Доход: {shortenValue(income)}$</div>
-        <div>Стоимость поддержки (ежемесячно): {currentSupportCost}MP</div>
+    if (!productStore.isMainMarket(id, marketId)) {
+      setAsMainMarketButton = <div>
+        <div>
+          <UI.Button
+            link
+            text="Сделать этот рынок приоритетным"
+            onClick={() => productActions.setAsMainMarket(id, marketId)}
+          />
+        </div>
+        <span className="offset-mid">Это усилит наше влияние на 20%</span>
       </div>;
-
-      leaveMarketButton = <UI.Button
-        cancel
-        text="Уйти с рынка"
-        onClick={() => productActions.decreaseInfluenceOnMarket(id, marketId)}
-      />;
-
-      if (!productStore.isMainMarket(id, marketId)) {
-        setAsMainMarketButton = <div>
-          <div>
-            <UI.Button
-              link
-              text="Сделать этот рынок приоритетным"
-              onClick={() => productActions.setAsMainMarket(id, marketId)}
-            />
-          </div>
-          <span className="offset-mid">Это усилит наше влияние на 20%</span>
-        </div>;
-      }
     }
+
 
     const marketSize = shortenValue(clients * price);
 
@@ -142,16 +108,7 @@ export default class Market extends Component {
           <div>Объём рынка: {marketSize}$</div>
           <div className="offset-mid">
             <div>{requirementTab}</div>
-
-            <div>
-              <div>
-                {this.renderIncreaseInfluenceButton(id, marketId, increasedCost - currentSupportCost, increasedCost)}
-                <br />
-                {leaveMarketButton}
-              </div>
-            </div>
-
-            <div>{this.renderMarketCompetitors(id, marketId, isAvailableToLeaveMarket)}</div>
+            <div>{this.renderMarketCompetitors(id, marketId)}</div>
           </div>
         </div>
       </div>

@@ -20,8 +20,6 @@ const upgradeFeature = (id, fId) => {
   const cost = productStore.getMainFeatureUpgradeCost(id, fId);
 
   const hasEnoughPoints = productStore.enoughProgrammingPoints(cost, id);
-  const companyPoints = productStore.getPoints(id);
-  // logger.debug(`company ${companyName} upgrading feature ${featureName} cost: ${cost} PP/ ${companyPoints.programming}. Actually has  ${hasEnoughPoints}`);
 
 
   if (hasEnoughPoints) {
@@ -38,25 +36,6 @@ const upgradeFeature = (id, fId) => {
 };
 
 const upgradeMarket = (id, mId) => {
-  // logger.debug(`company ${id}: trying to upgrade market ${mId}`);
-
-  const currentSupportCost = productStore.getCurrentInfluenceMarketingCost(id, mId);
-  const increasedCost = productStore.getNextInfluenceMarketingCost(id, mId);
-
-  const mpChange = productStore.getPointModificationStructured(id).marketing().diff;
-  const cost = increasedCost - currentSupportCost;
-
-  // logger.debug(`company ${id}: trying to upgrade market ${mId}. their mpChange is: `, mpChange, `. While cost is: ${cost}.`, currentSupportCost, increasedCost);
-
-
-  if (mpChange > cost && productStore.isCanIncreaseMarketLevel(id, mId)) {
-    productActions.increaseInfluenceOnMarket(id, mId);
-
-    const companyName = productStore.getName(id);
-    const marketName = productStore.getMarketName(id, mId);
-
-    messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_MARKETS_INFLUENCE_INCREASED, { id, mId, companyName, marketName })
-  }
 };
 
 const pickBonus = (id, name) => {

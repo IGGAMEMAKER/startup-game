@@ -60,26 +60,17 @@ export default class Menu extends Component {
     const moneyDifference = isMakingIncome ? `+${saldoValue}` : saldoValue;
 
 
-    const mpIndication = productStore.getPointModificationStructured(id).marketing().needToHireWorker ? negative : positive;
-    const ppIndication = productStore.getPointModificationStructured(id).programming().needToHireWorker ? negative : positive;
+    const ppIndication = negative; // productStore.isNeedProgrammer(id) ? negative : positive;
 
 
     const year = Math.floor(props.day / 360);
     const month = Math.floor((props.day - year * 360) / 30);
     const day = props.day - year * 360 - month * 30;
 
-    // {day}.{month}.{year + 2016}
-    //       <div>{new Date(year + 2016, month, day).toLocaleDateString()}</div>
-    //       <div>Год: {year + 2016} Месяц: {month} День: {day}</div>
-
     let moneyPhrase = shortenValue(money);
     let moneyDifferencePhrase = shortenValue(moneyDifference);
     if (moneyDifference > 0) moneyDifferencePhrase = `+${moneyDifferencePhrase}`;
 
-    // <div className="navigation">
-    //   <span className={mpIndication}>MP: {points.marketing}</span>
-    // </div>
-    
     return <div>
       <div>
         <div className="navigation">

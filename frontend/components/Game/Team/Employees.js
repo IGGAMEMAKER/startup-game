@@ -24,12 +24,11 @@ export default class Employees extends Component {
 
     this.setState({
       employees: store.getEmployees(),
-      pps: store.getMonthlyProgrammerPoints(companyId),
-      mps: store.getMonthlyMarketerPoints(companyId)
+      pps: store.getMonthlyProgrammerPoints(companyId)
     })
   };
 
-  render(props: PropsType, { staff, employees, pps, mps }) {
+  render(props: PropsType, { staff, employees, pps }) {
     let title;
 
     if (!employees.length) {

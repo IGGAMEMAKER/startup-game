@@ -46,7 +46,6 @@ export default class Staff extends Component {
       employees: store.getEmployees(),
 
       pps: store.getMonthlyProgrammerPoints(0),
-      mps: store.getMonthlyMarketerPoints(0)
     })
   };
 
@@ -63,7 +62,7 @@ export default class Staff extends Component {
   }
 
 
-  render(props, { staff, teamToggle, pps, mps }) {
+  render(props, { staff, teamToggle, pps }) {
     if (!stageHelper.canShowTeamTabs()) return <div></div>;
 
     const staffList = staff.map((p, i) => <Worker p={p} i={i} />);
@@ -90,7 +89,6 @@ export default class Staff extends Component {
         <div>
           <h4 className="staff-switcher">Команда</h4>
           <div>Наши программисты производят +{pps} программистских очков (PP) в месяц</div>
-          <div>Наши маркетологи производят +{mps} маркетинговых очков (MP) в месяц</div>
           <br />
           {staffTab}
         </div>

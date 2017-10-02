@@ -3,20 +3,14 @@ import random from '../helpers/math/random';
 
 import logger from '../helpers/logger/logger';
 
-import percentify from '../helpers/math/percentify';
-
-
 import { DefaultDescription } from '../constants/products/types/product-description';
 
+import * as balance from '../constants/balance';
+import * as BONUSES from '../constants/bonuses';
+import * as MANAGEMENT_STYLES from '../constants/company-styles';
 
 import companyCostComputer from '../helpers/products/compute-company-cost';
 
-import * as balance from '../constants/balance';
-
-
-
-import * as BONUSES from '../constants/bonuses';
-import * as MANAGEMENT_STYLES from '../constants/company-styles';
 
 const names = [
   'Alpha', 'Proxima', 'Sun', 'Magenta', 'Grapes',
@@ -43,19 +37,15 @@ export default class Product {
       this.owner = data.owner;
       this.style = data.style;
 
-      this.defaultFeatures = data.defaultFeatures;
-
       this._points = data._points;
       this._money = data._money;
-
-      // this.rentedFeatures = data.rentedFeatures;
-
       return;
     }
-
-    let { idea, name, isCompetitor, defaultFeatures } = data;
+    let { idea, name, isCompetitor } = data;
 
     if (!idea) throw 'no idea in classes/Product.js';
+
+    const defaultFeatures = productDescriptions(idea).features;
 
     if (!name) {
       const index = Math.floor(random(0, names.length - 1));
@@ -63,27 +53,15 @@ export default class Product {
       name = names[index];
     }
 
-    const defaults = productDescriptions(idea);
-
-    // logger.log('new Product constructor', defaultFeatures);
-    // const defaultFeatures = defaults.features;
-
-    if (!defaultFeatures) {
-      logger.error(idea, name, isCompetitor);
-      throw 'no default features!!!';
-    }
-
     let minRating = 1;
     let maxRating = 6;
 
     if (isCompetitor) {
-      minRating = 5;
+      minRating = 4;
       maxRating = 8;
     }
 
-    const luck = random(minRating, maxRating) / 10; // luck in 0.1-0.6
-
-    const offer = defaultFeatures.map((f, i) => Math.floor(luck * f));
+    const offer = defaultFeatures.map((f, i) => Math.floor(random(minRating, maxRating)));
 
     const features = {
       offer, // features, that are attached to main idea
@@ -128,81 +106,15 @@ export default class Product {
 
     if (!isCompetitor) this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
 
-    this.defaultFeatures = defaultFeatures;
-  }
-
-  setMainFeatureDefaults(upgradedDefaults) {
-    this.defaultFeatures = upgradedDefaults;
+    return this;
   }
 
   isOurProduct() {
     return this.owner;
   }
 
-  getCompanyCost() {
-    return companyCostComputer.compute(this);
-  }
-
-  getCompanyCostStructured() {
-    return companyCostComputer.structured(this);
-  }
-
-  getMainFeatures() {
-    return this.getDefaults().features;
-  }
-
-  getMainFeatureQualityByFeatureId(featureId) {
-    return this.features.offer[featureId];
-  }
-
-  getPrettyFeatureNameByFeatureId(featureId){
-    return this.getDefaults().features[featureId].shortDescription;
-  }
-
-  getMaxMainFeatureQuality(featureId) {
-    return this.getDefaults().features[featureId].data;
-  }
-
-  getDefaults(): DefaultDescription {
-    return productDescriptions(this.idea);
-  }
-
-  getBaseFeatureDevelopmentCost(featureId) {
-    return this.getDefaults().features[featureId].development;
-  }
-
-  isShareableFeature(featureId) {
-    return this.getDefaults().features[featureId].shareable;
-  }
-
-  getPaymentModifier() {
-    return 1;
-  }
-
-  getFeatures(featureGroup) {
-    return this.features[featureGroup];
-  }
-
   getIdea() {
     return this.idea;
-  }
-
-  getMarketingFeatures() {
-    return this.features.marketing;
-  }
-
-  getSupportPower() {
-    const marketing = this.getMarketingFeatures();
-
-    if (marketing.supportIII) return 1;
-    if (marketing.supportII)  return 0.5;
-    if (marketing.support)    return 0.25;
-
-    return 0;
-  }
-
-  getProductExpenses() {
-    return 0;
   }
 
   getName() {
@@ -213,16 +125,102 @@ export default class Product {
     return this.stage;
   }
 
+  getXP() {
+    return this.XP;
+  }
+
+  getTestsAmount() {
+    return this.tests;
+  }
+
+  getImprovementsAmount() {
+    return this.improvements;
+  }
+
+
+  getPaymentModifier() {
+    return 1;
+  }
+
+  getProductExpenses() {
+    return 0;
+  }
+
+
+  getFeatures(featureGroup) {
+    return this.features[featureGroup];
+  }
+
+  getMainFeatureQualityByFeatureId(featureId) {
+    return this.features.offer[featureId];
+  }
+
+  getMarketingFeatures() {
+    return this.features.marketing;
+  }
+
   getFeatureStatus(featureGroup, featureName) {
     return this.features[featureGroup][featureName] > 0;
   }
+
+  picked = (value) => {
+    return this.features.bonuses[value]
+  };
+
+  getCompanyCost() {
+    return companyCostComputer.compute(this);
+  }
+
+  getCompanyCostStructured() {
+    return companyCostComputer.structured(this);
+  }
+
+  getDefaults(): DefaultDescription {
+    return productDescriptions(this.idea);
+  }
+
+  getMainFeatures() {
+    return this.getDefaults().features;
+  }
+
+  getPrettyFeatureNameByFeatureId(featureId){
+    return this.getDefaults().features[featureId].shortDescription;
+  }
+
+  getMaxMainFeatureQuality(featureId) {
+    return this.getDefaults().features[featureId].data;
+  }
+
+  getBaseFeatureDevelopmentCost(featureId) {
+    return this.getDefaults().features[featureId].development;
+  }
+
+  isShareableFeature(featureId) {
+    return this.getDefaults().features[featureId].shareable;
+  }
+
+  getMarkets() {
+    return this.getDefaults().markets;
+  }
+
+  getMarketInfoById(marketId) {
+    return this.getMarkets()[marketId];
+  }
+
+  getDescriptionOfProduct() {
+    return this.getDefaults().description;
+  }
+
+
+
 
   getProgrammingSupportCostModifier() {
     return Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
   }
 
   getProgrammingSupportCost() {
-    const bonus = 1 - this.getBonusModifiers().programmingSupportCost / 100;
+    const bonus = 1;
+    // const bonus = 1 - this.getBonusModifiers().programmingSupportCost / 100;
 
     return Math.ceil(this.getDefaults().support.pp * this.getProgrammingSupportCostModifier() * bonus);
   }
@@ -237,9 +235,7 @@ export default class Product {
     const newList = [];
 
     const checkBonus = (b) => {
-      const isPicked = this.getFeatureStatus('bonuses', b.name);
-
-      if (isPicked) {
+      if (this.picked(b.name)) {
         if (b.childs) {
           b.childs.forEach(checkBonus);
         }
@@ -367,13 +363,8 @@ export default class Product {
     return array
   }
 
-  picked = (value) => {
-    return this.features.bonuses[value]
-  };
-
   getBonusModifiers() {
     // write all values in percents!!!
-
     const picked = this.picked;
 
     let programmingEfficiency = 0;
@@ -481,7 +472,7 @@ export default class Product {
     ];
   };
 
-  getHypothesisAnalyticsFeatures(idea) {
+  getHypothesisAnalyticsFeatures() {
     return [
       { name: 'feedback', shortDescription: 'Форма для комментариев',
         description: 'Общение с вашими клиентами позволяет улучшить ваш продукт. +300XP/мес',
@@ -506,7 +497,7 @@ export default class Product {
     ];
   };
 
-  getPaymentFeatures(idea) {
+  getPaymentFeatures() {
     const up = points => points; // Math.ceil(points * technicalDebtModifier);
 
     return [
@@ -579,31 +570,9 @@ export default class Product {
     }
   }
 
-  getXP() {
-    return this.XP;
+  // modify
+  setMainFeatureDefaults(upgradedDefaults) {
   }
-
-  getMarkets() {
-    return this.getDefaults().markets;
-  }
-
-  getMarketInfoById(marketId) {
-    return this.getMarkets()[marketId];
-  }
-
-  getDescriptionOfProduct() {
-    return this.getDefaults().description;
-  }
-
-  getTestsAmount() {
-    return this.tests;
-  }
-
-  getImprovementsAmount() {
-    return this.improvements;
-  }
-
-
 
   setProductDefaults(stage, features, XP) {
     this.stage = stage;
@@ -618,16 +587,6 @@ export default class Product {
 
   testHypothesis(p) {
     this.XP += p.value;
-    // const features = productDescriptions(this.idea).features;
-    //
-    // let max = 0;
-    // features.forEach(f => {
-    //   max += f.data;
-    // });
-    //
-    // if (this.XP > max) {
-    //   this.XP = max;
-    // }
 
     if (this.tests) {
       this.tests++;
@@ -641,6 +600,8 @@ export default class Product {
   }
 
   improveFeature(p) {
+    logger.log('improveFeature in Product.js', p);
+
     let previous = this.features[p.featureGroup][p.featureName] || 0;
 
     this.features[p.featureGroup][p.featureName] = previous + p.value;

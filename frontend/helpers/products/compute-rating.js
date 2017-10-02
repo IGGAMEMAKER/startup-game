@@ -1,6 +1,8 @@
 import logger from '../logger/logger';
 
 export default (features, maxValues, influenceValuesOnRating) => {
+  logger.log('get rating', features, maxValues, influenceValuesOnRating);
+
   let rating = 0;
 
   features.forEach((current, i) => {

@@ -7,6 +7,8 @@ import * as JOB from './../constants/job';
 import * as IDEAS from './../constants/products/ideas';
 import * as PRODUCT_STAGES from './../constants/products/product-stages';
 
+import productDescriptions from './products/product-descriptions';
+
 import stats from '../stats';
 
 
@@ -92,59 +94,10 @@ function setDefaultValues() {
   // products
   sessionStorage.saveInStorage('markets', []);
 
-  const product = new Product({
+  let product = new Product({
     idea: IDEAS.IDEA_WEB_HOSTING,
     name: 'WWWEB HOSTING',
-    stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA,
-    // defaultFeatures: productDescriptions(IDEAS.IDEA_WEB_HOSTING).features.map(f => f.data)
-    defaultFeatures: [
-      {
-        name: 'scalability',
-        influence: 0,
-        description: '',
-        shortDescription: 'Масштабируемость',
-        data: 5000,
-        time: 20,
-        development: 70
-      },
-      {
-        name: 'website',
-        influence: 1.5,
-        description: '',
-        shortDescription: 'Веб-сайт',
-        data: 15000,
-        time: 30,
-        development: 30
-      },
-      {
-        name: 'support',
-        influence: 1.5,
-        description: '',
-        shortDescription: 'Техподдержка',
-        data: 5000,
-        time: 30,
-        development: 100
-      },
-      {
-        name: 'VPS',
-        influence: 3,
-        description: '',
-        shortDescription: 'Виртуальная машина',
-        data: 7000,
-        time: 30,
-        shareable: true,
-        development: 75
-      },
-      {
-        name: 'VDS',
-        influence: 0,
-        description: '',
-        shortDescription: 'Выделенный сервер',
-        data: 15000,
-        time: 30,
-        shareable: true,
-        development: 135
-      }].map(f => f.data)
+    stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA
   });
 
   logger.debug(product);

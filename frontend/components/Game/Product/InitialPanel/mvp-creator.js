@@ -5,14 +5,10 @@ import logger from '../../../../helpers/logger/logger';
 
 import Product from '../../../../classes/Product';
 
-const getCurrentDefaultFeatures = (idea) => {
-  return productStore.getCurrentMainFeatureDefaultsByIdea(idea);
-};
-
 const create = (i, basePoints, idea) => {
   logger.shit('WRITE proper randomizer in mvp-creator.js');
 
-  const p = new Product({ idea, name: 'WWWEB HOSTING', defaultFeatures: getCurrentDefaultFeatures(idea) });
+  let p = new Product({ idea, name: 'WWWEB HOSTING' });
 
   productActions.setInitialProductSettings(i, p.features);
 
@@ -22,7 +18,7 @@ const create = (i, basePoints, idea) => {
 };
 
 const createCompetitorCompany = (idea) => {
-  const p = new Product({ idea, isCompetitor: true, defaultFeatures: getCurrentDefaultFeatures(idea) });
+  let p = new Product({ idea, isCompetitor: true });
 
   productActions.createCompetitorCompany(p);
 

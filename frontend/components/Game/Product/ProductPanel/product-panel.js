@@ -44,97 +44,18 @@ export default class ProductPanel extends Component {
 
   componentWillMount() {}
 
-  getDevelopmentFeatureList() {
-    return [
-      { name: 'backups', description: ''},
-      { name: 'clusters', description: ''},
-      { name: 'tests', description: ''},
-      { name: 'mobiles', description: ''} // ios android apps
-    ];
-  };
-
   setMode = (mode) => {
     stats.saveAction('navigation', { mode });
 
     this.setState({ mode });
   };
 
-  renderHypothesisTab = (id) => {
-    if (!stageHelper.canShowHypothesisTab()) return '';
-
-    const improvements = productStore.getImprovementChances(id);
-
-    const improveTab = this.plainifySameTypeFeatures(id, 'analytics', 'Блок аналитики полностью улучшен!');
-
-    return (
-      <div>
-        <div className="featureGroupTitle">Аналитика</div>
-        <div className="featureGroupDescription">
-          <div className="smallText">Аналитика даёт возможность лучше узнать о потребностях ваших клиентов.</div>
-          <div className="smallText">
-            <div>Каждый месяц вы получаете {improvements.middle} XP</div>
-          </div>
-        </div>
-        <br />
-        <div>{improveTab}</div>
-        <br />
-      </div>
-    )
-  };
-
-  plainifySameTypeFeatures(id, groupType, onImprovedPhrase) {
-    let featureList;
-
-    switch (groupType) {
-      case 'marketing': featureList = productStore.getMarketingFeatureList(id); break;
-      case 'payment':   featureList = productStore.getPaymentFeatures(id); break;
-      case 'analytics': featureList = productStore.getHypothesisAnalyticsFeatures(id); break;
-    }
-
-    let unlockedFeature = '';
-    featureList.forEach(f => {
-      if (!productStore.getFeatureStatus(id, groupType, f.name) && !unlockedFeature) {
-        unlockedFeature = f.name;
-      }
-    });
-
-    if (!unlockedFeature) return onImprovedPhrase;
-
-    const feature = featureList.find(f => f.name === unlockedFeature);
-
-    return this.renderFeature(groupType, id, feature);
-  }
-
   renderMarketingTab = (id) => {
-    const support = productStore.getPointModificationStructured(id).marketing();
-
-    const influences = support.detailed.markets
-      .map(c => <li>Влияние на рынке {c.name}: {c.cost}MP</li>);
-
     let marketsTab = productStore.getMarkets(id)
       .map((m, mId) => <Market id={id} marketId={mId} market={m} />);
 
     return <div>
       <div className="featureGroupTitle">Маркетинг</div>
-
-      <div>
-        <div>Наши маркетологи производят: {support.increase}MP в месяц</div>
-        <div className={support.decrease ? '' : 'hide'}>
-          <div>Ежемесячная стоимость поддержки: {support.decrease}MP</div>
-          <ul className="offset-mid">{influences}</ul>
-        </div>
-
-        <div className={support.needToHireWorker ? '' : 'hide'}>
-          <div className="alert alert-danger">
-            <strong>Наши маркетологи не справляются с нагрузкой</strong>
-            <div>(мы теряем {support.diff}MP ежемесячно)</div>
-            <br />
-            <UI.Button secondary text="Нанять маркетолога" onClick={() => this.setMode(MODE_STAFF)} />
-          </div>
-        </div>
-        <br />
-      </div>
-
       {marketsTab}
     </div>;
   };
@@ -172,77 +93,6 @@ export default class ProductPanel extends Component {
       <Bonuses productId={id} bonusesAmount={productStore.getBonusesAmount(id)} />
     </div>;
   }
-
-  renderFeatureSupportCost(feature) {
-    if (!feature.support) return '';
-
-    const { support } = feature;
-
-    let money;
-    let mp;
-    let pp;
-
-    if (support.money) money = `${support.money}$/мес `;
-    if (support.marketing) mp = `${support.marketing}MP/мес `;
-    if (support.programming) pp = `${support.programming}PP/мес `;
-
-    if (!money && !mp && !pp) {
-      return <div></div>;
-    }
-
-    return <div>Стоимость поддержки - {mp} {pp} {money}</div>;
-  };
-
-  renderFeature = (featureGroup, id, feature) => {
-    const featureName = feature.name;
-
-    const key = `feature-${featureGroup}-${featureName}`;
-
-    const standardPoints = feature.points;
-    const mp = standardPoints.marketing || 0;
-    const pp = standardPoints.programming || 0;
-    const points = productStore.getPoints(id);
-
-    const enoughPointsToUpgrade = points.marketing >= mp && points.programming >= pp;
-
-
-    const description = feature.description || '';
-    const userOrientedFeatureName = feature.shortDescription ? feature.shortDescription : featureName;
-
-    const mpColors = points.marketing < mp ? "noPoints": "enoughPoints";
-    const ppColors = points.programming < pp ? "noPoints": "enoughPoints";
-
-    const upgradeFeature = () => {
-      productActions.spendPoints(pp, mp);
-      productActions.improveFeatureByPoints(id, featureGroup, featureName);
-    };
-
-    return (
-      <div key={key} className="content-block">
-        {userOrientedFeatureName}
-        <br />
-        <div className="featureDescription">
-          <div>{description}</div>
-          <br />
-          <div>
-            <div>
-              <span>Стоимость улучшения - &nbsp;</span>
-              {mp > 0 ? <span className={mpColors}>{mp}MP&nbsp;</span> : ''}
-              {pp > 0 ? <span className={ppColors}>{pp}PP</span> : ''}
-            </div>
-            <div>{this.renderFeatureSupportCost(feature)}</div>
-          </div>
-          <UI.Button
-            text="Улучшить"
-            disabled={!enoughPointsToUpgrade}
-            onClick={upgradeFeature}
-            secondary
-          />
-        </div>
-        <hr width="60%" />
-      </div>
-    )
-  };
 
   renderNavbar = (mode, name) => {
     return (
@@ -301,6 +151,13 @@ export default class ProductPanel extends Component {
     );
   };
 
+  renderCompetitorsTab(id) {
+    return <div>
+      {this.renderOurCostStructured(id)}
+      <Competitors id={id} />
+    </div>;
+  }
+
   renderOurCostStructured(id) {
     if (!stageHelper.canShowCompetitorsTab()) return '';
 
@@ -316,44 +173,32 @@ export default class ProductPanel extends Component {
     </div>
   }
 
+  renderDevTab(id, product) {
+    return <div>
+      <MainFeatureTab
+        id={id}
+        product={product}
+        onHireProgrammerClick={() => this.setMode(MODE_STAFF)}
+      />
+    </div>;
+  }
+
   render({ product, gamePhase }, state) {
     const id = 0;
-    logger.shit('develop-panel.js fix productID id=0'); // TODO FIX PRODUCT ID=0
 
     let body = '';
     switch (state.mode) {
-      case MODE_MARKETING:
-        body = this.renderMarketingTab(id);
-        break;
+      case MODE_MARKETING: body = this.renderMarketingTab(id); break;
 
-      case MODE_STAFF:
-        body = this.renderStaffPanel();
-        break;
+      case MODE_STAFF: body = this.renderStaffPanel(); break;
 
-      case MODE_MAIN_FEATURES:
-        body = <div>
-          <MainFeatureTab
-            id={id}
-            product={product}
-            onHireProgrammerClick={() => this.setMode(MODE_STAFF)}
-          />
-        </div>;
-        break;
+      case MODE_MAIN_FEATURES: body = this.renderDevTab(id, product); break;
 
-      case MODE_COMPETITORS:
-        body = <div>
-          {this.renderOurCostStructured(id)}
-          <Competitors id={id} />
-        </div>;
-        break;
+      case MODE_COMPETITORS: body = this.renderCompetitorsTab(id); break;
 
-      case MODE_BONUSES:
-        body = this.renderBonusesTab(id);
-        break;
+      case MODE_BONUSES: body = this.renderBonusesTab(id); break;
 
-      default:
-        body = this.renderHypothesisTab(id);
-        break;
+      default: body = this.renderDevTab(id, product); break;
     }
 
     const metrics = this.renderMetrics(id, product);
