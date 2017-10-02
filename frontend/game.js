@@ -71,11 +71,9 @@ const calculatePoints = companyId => {
   const programmingPoints = productStore.getMonthlyProgrammerPoints(companyId) - productStore.getProgrammingSupportCost(companyId);
 
   // calculate marketing points
-  let marketingPoints = productStore.getMonthlyMarketerPoints(companyId) - productStore.getMarketingSupportCost(companyId);
 
   const points = {
-    programming: programmingPoints,
-    marketing: marketingPoints
+    programming: programmingPoints
   };
 
   productActions.increasePoints(points, companyId);

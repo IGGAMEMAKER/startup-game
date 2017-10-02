@@ -613,7 +613,6 @@ class ProductStore extends EventEmitter {
 
   getPowerListWithCompanyNames(marketId) {
     return this.getPowerListOnMarket(marketId)
-      // .map(c => Object.assign({}, c, { name: this.getName(c.companyId) }));
   }
 
 
@@ -675,7 +674,7 @@ class ProductStore extends EventEmitter {
 
   getProductIncome(id) {
     return sum(
-      this.getMarkets(id).map((m, i) => this.getMarketIncome(id, m.marketId, null))
+      this.getMarkets(id).map((m, i) => this.getMarketIncome(id, i, null))
     );
   }
 

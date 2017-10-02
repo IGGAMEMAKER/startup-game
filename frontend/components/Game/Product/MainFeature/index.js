@@ -123,7 +123,8 @@ export default class MainFeature extends Component {
           disabled={!enoughPPs}
           onClick={() => { this.improveFeature(id, featureId, pp) }}
           text="Улучшить"
-          primary
+          secondary={enoughPPs}
+          gray={!enoughPPs}
         />
       </td>
     </tr>
