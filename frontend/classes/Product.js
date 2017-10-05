@@ -115,6 +115,8 @@ export default class Product {
     }
 
     if (!isCompetitor) this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
+
+    return this;
   }
 
   loadFromObject(obj) {

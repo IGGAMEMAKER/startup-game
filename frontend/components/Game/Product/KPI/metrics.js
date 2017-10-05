@@ -16,23 +16,9 @@ export default class Metrics extends Component {
     const data = moneyCalculator.structured(id);
 
     const productIncome = data.byProductIncome
-      // .filter(p => p.income > 0)
       .map(p => <div>{p.name}: {shortenValue(p.income)}$</div>);
 
-    const outgoingRents = productStore.getRentIncomes(id).outgoingRents;
-
-    const outgoingRentsIncome = outgoingRents.map(r => r.price).reduce((p, c) => p + c, 0);
-    const rentIncomeList = outgoingRents
-      .map(r => <li>Аренда технологии "{r.techName}" компанией "{r.acceptorName}" за {r.price}$</li>);
-
-
     const teamExpenses = data.teamExpenses;
-    const rentExpenses = productStore.getRentExpenses(id).incomingRents;
-
-    const incomingRentsIncome = rentExpenses.map(r => r.price).reduce((p, c) => p + c, 0);
-
-    const rentList = rentExpenses
-      .map(r => <li>Аренда технологии "{r.techName}" у компании "{r.senderName}" за {r.price}$</li>);
 
     return (
       <div>
@@ -44,15 +30,11 @@ export default class Metrics extends Component {
             <ul>
               <li>{productIncome}</li>
             </ul>
-            <ul>
-              <ul>{rentIncomeList}</ul>
-            </ul>
             <li>
               <b>Расходы: {shortenValue(data.expenses)}$</b>
             </li>
             <ul>
               <li>Команда: {shortenValue(teamExpenses)}$</li>
-              <ul>{rentList}</ul>
             </ul>
           </ul>
         </div>

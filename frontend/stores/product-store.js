@@ -25,6 +25,8 @@ import workerGenerator from '../helpers/team/create-random-worker';
 
 import marketHelper from '../helpers/products/markets';
 
+import MarketManager from '../classes/MarketManager';
+
 
 import computeRating from '../helpers/products/compute-rating';
 import round from '../helpers/math/round';
@@ -95,43 +97,26 @@ let _team = [
 
 let _products: Array<Product> = [];
 
+const marketManager = new MarketManager();
+
 let _markets: Array<MarketRecord> = [];
 
 const initialize = ({ markets, products, employees, team }) => {
-  _products = products;
+  logger.log('trying to initialize productStore.js', products);
+
+  _products = products.map(p => new Product().loadFromObject(p));
+  logger.log('trying to initialize productStore.js', _products);
   _markets = markets;
 
   _employees = employees;
   _team = team;
+
+  marketManager.loadMarkets(_markets);
 };
 
 initialize(sessionManager.getProductStorageData());
 
 const sum = (arr) => arr.reduce((p, c) => p + c, 0);
-
-
-const getMarketRecordIndex = (id, marketId) => {
-  return _markets.findIndex((m, i) => m.companyId === id && m.marketId === marketId);
-};
-
-const getCurrentMainMarket = (id) => {
-  return _markets.findIndex((m, i) => m.companyId === id && m.isMainMarket);
-};
-
-const clearPartnershipOf = (id, marketId) => {
-  const index = getMarketRecordIndex(id, marketId);
-
-  if (index >= 0) {
-    const partnerId = _markets[index].partnerId;
-
-    if (partnerId >= 0) {
-      _markets[partnerId].partnerId = -1;
-    }
-
-    _markets[index].partnerId = -1;
-  }
-};
-
 
 class ProductStore extends EventEmitter {
   addChangeListener(cb: Function) {
@@ -388,6 +373,7 @@ class ProductStore extends EventEmitter {
   }
 
   isNeedProgrammer(id) {
+    logger.log('isNeedProgrammer', _products, id);
     return this.getProgrammingSupportCost(id) > this.getMonthlyProgrammerPoints(id);
   }
 
@@ -633,38 +619,15 @@ Dispatcher.register((p: PayloadType) => {
 
 
     case c.PRODUCT_ACTIONS_MARKETS_SET_AS_MAIN:
-      const currentIndex = getCurrentMainMarket(p.id);
-
-      if (currentIndex >= 0) {
-        _markets[currentIndex].isMainMarket = false;
-      }
-
-      index = getMarketRecordIndex(p.id, p.marketId);
-      if (index >= 0) {
-        _markets[index].isMainMarket = true;
-      }
+      marketManager.setMainMarket(p.id, p.marketId);
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_REVOKE:
-      let c1 = p.c1;
-      let c2 = p.c2;
-
-      clearPartnershipOf(c1, p.marketId);
-      clearPartnershipOf(c2, p.marketId);
+      marketManager.breakPartnership(p.c1, p.c2, p.marketId);
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_OFFER:
-      c1 = p.c1;
-      c2 = p.c2;
-
-      const record1 = getMarketRecordIndex(c1, p.marketId);
-      const record2 = getMarketRecordIndex(c2, p.marketId);
-
-      clearPartnershipOf(c1, p.marketId);
-      clearPartnershipOf(c2, p.marketId);
-
-      _markets[record1].partnerId = c2;
-      _markets[record2].partnerId = c1;
+      marketManager.breakPartnership(p.c1, p.c2, p.marketId);
       break;
 
     case c.PRODUCT_ACTIONS_CREATE_COMPANY:

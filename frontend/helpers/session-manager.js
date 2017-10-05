@@ -25,9 +25,6 @@ function setDefaultValues() {
 
   const money = 1000;
 
-  const world = {
-  };
-
   // schedule
   sessionStorage.saveInStorage('tasks', []);
 
@@ -110,33 +107,31 @@ function setDefaultValues() {
   const stage = PRODUCT_STAGES.PRODUCT_STAGE_IDEA;
 
   const products = [
-    new Product({
+    new Product().createCompany({
       idea,
       stage,
       name: 'WWWEB HOSTING',
       companyId: 0
     }),
-    new Product({
+    new Product().createCompany({
       idea,
       stage,
       isCompetitor: true,
       companyId: 1
     }),
-    new Product({
+    new Product().createCompany({
       idea,
       stage,
       isCompetitor: true,
       companyId: 2
     }),
-    new Product({
+    new Product().createCompany({
       idea,
       stage,
       isCompetitor: true,
       companyId: 3
     })
   ];
-
-  // logger.debug(product, JSON.parse(JSON.stringify(product)));
 
   sessionStorage.saveInStorage('products', products);
 }
@@ -175,7 +170,7 @@ function getProductStorageData() {
 
     const data = getFromStorage('products');
 
-    products = Array.from(JSON.parse(data)).map(p => new Product(p, true));
+    products = Array.from(JSON.parse(data));
 
     markets = Array.from(JSON.parse(getFromStorage('markets')));
 
