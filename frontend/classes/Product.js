@@ -19,31 +19,41 @@ const names = [
   'Unnamed'
 ];
 
+
+
 export default class Product {
   constructor(data, createFromObject) {
-    if (createFromObject) {
-      this.features = data.features;
-      this.featuresOnCreate = data.featuresOnCreate;
-      this.idea = data.idea;
-      this.name = data.name;
+    // if (createFromObject) {
+    //   this.companyId = data.companyId;
+    //   this.features = data.features;
+    //   this.featuresOnCreate = data.featuresOnCreate;
+    //   this.idea = data.idea;
+    //   this.name = data.name;
+    //
+    //   this.XP = data.XP;
+    //
+    //   this.bonuses = data.bonuses;
+    //
+    //   this.tests = data.tests;
+    //   this.improvements = data.improvements;
+    //
+    //   this.owner = data.owner;
+    //   this.style = data.style;
+    //
+    //   this._points = data._points;
+    //   this._money = data._money;
+    //
+    //   return this;
+    // }
+  }
 
-      this.XP = data.XP;
-
-      this.bonuses = data.bonuses;
-
-      this.tests = data.tests;
-      this.improvements = data.improvements;
-
-      this.owner = data.owner;
-      this.style = data.style;
-
-      this._points = data._points;
-      this._money = data._money;
-      return;
-    }
-    let { idea, name, isCompetitor } = data;
+  createCompany(data): Product {
+    let { idea, name, isCompetitor, companyId } = data;
+    logger.log('product constructor', data);
 
     if (!idea) throw 'no idea in classes/Product.js';
+
+    if (companyId === null || companyId === undefined) throw 'no companyId in classes/Product.js';
 
     const defaultFeatures = productDescriptions(idea).features;
 
@@ -90,7 +100,7 @@ export default class Product {
     this._money = 45000;
 
 
-    this.XP = 1900;
+    this.XP = 10;
 
     this.tests = 1;
     this.improvements = 1;
@@ -105,6 +115,12 @@ export default class Product {
     }
 
     if (!isCompetitor) this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
+  }
+
+  loadFromObject(obj) {
+    for (let index in obj) {
+      this[index] = obj[index];
+    }
 
     return this;
   }
@@ -199,6 +215,10 @@ export default class Product {
     return this.getDefaults().features[featureId].shareable;
   }
 
+  getDescriptionOfProduct() {
+    return this.getDefaults().description;
+  }
+
   getMarkets() {
     return this.getDefaults().markets;
   }
@@ -207,9 +227,6 @@ export default class Product {
     return this.getMarkets()[marketId];
   }
 
-  getDescriptionOfProduct() {
-    return this.getDefaults().description;
-  }
 
 
 
@@ -223,6 +240,17 @@ export default class Product {
     // const bonus = 1 - this.getBonusModifiers().programmingSupportCost / 100;
 
     return Math.ceil(this.getDefaults().support.pp * this.getProgrammingSupportCostModifier() * bonus);
+  }
+
+
+  getSpecificFeatureDevelopmentCostModifier(featureId) {
+    let value = 0;
+
+    if (this.picked(`lowerDevelopmentCostOfFeature${featureId}`)) {
+      value = 50;
+    }
+
+    return value;
   }
 
   getAvailableBonuses(): Array {
@@ -396,16 +424,6 @@ export default class Product {
     };
   }
 
-  getSpecificFeatureDevelopmentCostModifier(featureId) {
-    let value = 0;
-
-    if (this.picked(`lowerDevelopmentCostOfFeature${featureId}`)) {
-      value = 50;
-    }
-
-    return value;
-  }
-
   getMarketingFeatureList() {
     return [
       {
@@ -494,14 +512,9 @@ export default class Product {
   };
 
   getPaymentFeatures() {
-    const up = points => points; // Math.ceil(points * technicalDebtModifier);
+    const up = points => points;
 
     return [
-      // {
-      //   name: 'mockBuying', shortDescription: 'Тестовая покупка',
-      //   description: 'Позволяет узнать платёжеспособность клиентов. Вы не извлекаете никаких доходов с продукта',
-      //   points: { programming: up(50), marketing: 0 }
-      // },
       {
         name: 'basicPricing', shortDescription: 'Единый тарифный план I',
         description: 'Единая цена для всех клиентов. Наши доходы возрастают на 15%',
@@ -536,48 +549,18 @@ export default class Product {
   };
 
   getImprovementChances() {
-    const analytics = this.features.analytics;
-
-    const picked = word => analytics[word];
-
-    const feedback = analytics.feedback;
-    const webvisor = analytics.webvisor;
-    const segmenting = analytics.segmenting;
-
-
-    const basicBonus = 100;
-
-    let bonuses = basicBonus;
-
-    this.getHypothesisAnalyticsFeatures()
-      .forEach((f) => {
-        if (picked(f.name)) bonuses += f.bonus || 0;
-      });
-
-    let maxXP = bonuses;
-
     return {
-      middle: maxXP,
-      maxXPWithoutBonuses: maxXP,
-
-      hasWebvisor: webvisor,
-      hasFeedback: feedback,
-      hasSegmenting: segmenting
+      middle: 5
     }
   }
 
-  // modify
-  setMainFeatureDefaults(upgradedDefaults) {
-  }
 
+
+
+  // modify
   setProductDefaults(stage, features, XP) {
     this.stage = stage;
     this.features = features;
-    this.XP = XP;
-  }
-
-  setCompetitorProductDefaults(stage, XP) {
-    this.stage = stage;
     this.XP = XP;
   }
 
@@ -596,8 +579,6 @@ export default class Product {
   }
 
   improveFeature(p) {
-    logger.log('improveFeature in Product.js', p);
-
     let previous = this.features[p.featureGroup][p.featureName] || 0;
 
     this.features[p.featureGroup][p.featureName] = previous + p.value;

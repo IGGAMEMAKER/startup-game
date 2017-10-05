@@ -16,13 +16,10 @@ export default class MainFeature extends Component {
     const product = productStore.getProduct(id);
     const defaults = productStore.getDefaults(id);
 
-    logger.log('MainFeature', product);
-
     const featureListTableView = defaults.features.map(this.renderMainFeature(product, id));
 
     const supportTab = this.renderProgrammingSupportTab(id, onHireProgrammerClick);
 
-          // {JSON.stringify(product.features.offer)}
     return (
       <div>
         <div className="featureGroupTitle">Разработка</div>

@@ -3,8 +3,8 @@ import { h, Component } from 'preact';
 
 import sessionManager from '../../helpers/session-manager';
 
-import Menu from '../Game/Menu';
-import Product from './Product';
+import Menu from './Menu';
+import Product from './Product/ProductPanel/product-panel';
 import Tutorial from './Tutorial';
 
 import flux from '../../flux';

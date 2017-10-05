@@ -9,7 +9,6 @@ import percentify from '../helpers/math/percentify';
 import companyCostHelper from '../helpers/products/compute-company-cost';
 
 import * as PRODUCT_STAGES from '../constants/products/product-stages';
-import * as EXPENSES from '../constants/expenses';
 import * as JOB from '../constants/job';
 
 import Product from '../classes/Product';
@@ -17,19 +16,13 @@ import Product from '../classes/Product';
 import { DefaultDescription, MarketDescription } from '../constants/products/types/product-description';
 
 
-import productDescriptions from '../helpers/products/product-descriptions';
-
 import sessionManager from '../helpers/session-manager';
-
-import companyMerger from '../helpers/products/company-merger';
-
 
 import getSpecialization from '../helpers/team/specialization';
 import skillHelper from '../helpers/team/skills';
 
 import workerGenerator from '../helpers/team/create-random-worker';
 
-import rentHelper from '../helpers/products/rents';
 import marketHelper from '../helpers/products/markets';
 
 
@@ -42,138 +35,80 @@ import stats from '../stats';
 const EC = 'PRODUCT_EVENT_CHANGE';
 
 let _money = 1000;
-let _expenses = [];
-
-type DescribedRent = {
-  in: Number,
-  out: Number,
-  featureId: Number,
-  price: Number,
-  until: Number,
-
-  senderName: String,
-  acceptorName: String,
-  senderValue: Number,
-  techName: String
-};
 
 type MarketRecord = {
   companyId: Number,
   marketId: Number,
-  level: Number,
+  level: Number
 };
-
-let _rents: Array<Rent> = [
-  // { in: 2, out: 0, featureId: 3, price: 1000, until: 420 }
-];
 
 let _employees = [];
 
 let _team = [
-  {
-    name: 'James',
-    skills: {
-      programming: 1000,
-      marketing: 150,
-      analyst: 300
-    },
-    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
-    jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
-    salary: {
-      percent: 100,
-      money: 100,
-      pricingType: 0
-    },
-    isPlayer: true
-  },
-  {
-    name: 'Lynda',
-    skills: {
-      programming: 0,
-      marketing: 500,
-      analyst: 150
-    },
-    task: JOB.JOB_TASK_MARKETING_POINTS,
-    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-    salary: {
-      money: 500,
-      percent: 0,
-      pricingType: 1
-    }
-  },
-  {
-    name: 'Xavier',
-    skills: {
-      programming: 600,
-      marketing: 100,
-      analyst: 150
-    },
-    task: JOB.JOB_TASK_PROGRAMMER_POINTS,
-    jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-    salary: {
-      money: 700,
-      percent: 0,
-      pricingType: 1
-    }
-  }
+  // {
+  //   name: 'James',
+  //   skills: {
+  //     programming: 1000,
+  //     marketing: 150,
+  //     analyst: 300
+  //   },
+  //   task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+  //   jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
+  //   salary: {
+  //     percent: 100,
+  //     money: 100,
+  //     pricingType: 0
+  //   },
+  //   isPlayer: true
+  // },
+  // {
+  //   name: 'Lynda',
+  //   skills: {
+  //     programming: 0,
+  //     marketing: 500,
+  //     analyst: 150
+  //   },
+  //   task: JOB.JOB_TASK_MARKETING_POINTS,
+  //   jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+  //   salary: {
+  //     money: 500,
+  //     percent: 0,
+  //     pricingType: 1
+  //   }
+  // },
+  // {
+  //   name: 'Xavier',
+  //   skills: {
+  //     programming: 600,
+  //     marketing: 100,
+  //     analyst: 150
+  //   },
+  //   task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+  //   jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+  //   salary: {
+  //     money: 700,
+  //     percent: 0,
+  //     pricingType: 1
+  //   }
+  // }
 ];
-
-
-let _reputation = 50; // neutral reputation
-let _fame = 0; // nobody knows you
-
-let _loan = 0; // no loans;
 
 let _products: Array<Product> = [];
 
 let _markets: Array<MarketRecord> = [];
 
-const initialize = ({ markets, products, rents, expenses, employees, team, reputation, fame, loan }) => {
+const initialize = ({ markets, products, employees, team }) => {
   _products = products;
   _markets = markets;
 
-  _expenses = expenses;
   _employees = employees;
   _team = team;
-  _reputation = reputation;
-  _fame = fame;
-  _loan = loan;
-  _rents = rents;
 };
 
 initialize(sessionManager.getProductStorageData());
 
-const getCurrentMainFeatureDefaultsByIdea = (idea) => {
-  const productsWithSameIdea = _products;
-
-  return productDescriptions(idea).features.map((f, featureId) => {
-    let max = f.data;
-
-    productsWithSameIdea.forEach((p) => {
-      let temp = p.getMainFeatureQualityByFeatureId(featureId);
-
-      if (temp > max) {
-        max = temp;
-      }
-    });
-
-    return max;
-  });
-};
-
-const getCurrentMainFeatureDefaultsById = (id) => {
-  const p = _products[id];
-
-  const idea = p.getIdea();
-
-  return getCurrentMainFeatureDefaultsByIdea(idea);
-};
-
-function isMercenary(worker) {
-  return worker.salary.pricingType === 1;
-}
-
 const sum = (arr) => arr.reduce((p, c) => p + c, 0);
+
 
 const getMarketRecordIndex = (id, marketId) => {
   return _markets.findIndex((m, i) => m.companyId === id && m.marketId === marketId);
@@ -213,14 +148,9 @@ class ProductStore extends EventEmitter {
 
   static getStoreData() {
     return {
-      expenses: _expenses,
       employees: _employees,
       team: _team,
-      reputation: _reputation,
-      fame: _fame,
-      loan: _loan,
       products: _products,
-      rents: _rents,
       markets: _markets
     }
   }
@@ -228,18 +158,6 @@ class ProductStore extends EventEmitter {
 
   getMoney(id) {
     return Math.floor(_products[id]._money);
-  }
-
-  getExpenses() {
-    return _expenses;
-  }
-
-  getLoanPaymentAmount() {
-    return _loan ? _loan * 0.01 : 0;
-  }
-
-  getLoanSize() {
-    return _loan;
   }
 
   getMarketName(id, mId) {
@@ -264,18 +182,6 @@ class ProductStore extends EventEmitter {
 
   getProgrammers() {
     return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_PROGRAMMER)
-  }
-
-  getMarketers() {
-    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_MARKETER)
-  }
-
-  getAnalysts() {
-    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_ANALYST)
-  }
-
-  getDesigners() {
-    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_DESIGNER)
   }
 
   getEmployees() {
@@ -306,43 +212,6 @@ class ProductStore extends EventEmitter {
 
   getCompanyCostStructured(id) {
     return companyCostHelper.structured(_products[id], this.getProductIncome(id), 0);
-  }
-
-
-  getRentingStatus(id, featureId) {
-    return rentHelper.getRentingStatus(_rents, id, featureId);
-  }
-
-  canRentTechFromAtoB(sender, acceptor, featureId) {
-    return rentHelper.canRentTechFromAtoB(_rents, sender, acceptor, featureId);
-  }
-
-  isRentingAlready(sender, acceptor, featureId) {
-    return rentHelper.isRentingAlready(_rents, sender, acceptor, featureId);
-  }
-
-  getRentIncomes(id) {
-    return rentHelper.getRentIncomes(_rents, id);
-  }
-
-  getRentExpenses(id) {
-    return rentHelper.getRentExpenses(_rents, id);
-  }
-
-  incomingRentList(id) {
-    return rentHelper.incomingRentList(_rents, id);
-  }
-
-  outgoingRentList(id) {
-    return rentHelper.outgoingRentList(_rents, id);
-  }
-
-  hasIncomingRents(id) {
-    return rentHelper.hasIncomingRents(_rents, id);
-  }
-
-  hasOutgoingRents(id) {
-    return rentHelper.hasOutgoingRents(_rents, id);
   }
 
 
@@ -447,15 +316,15 @@ class ProductStore extends EventEmitter {
 
   getMarketingFeatureList(id) {
     return _products[id].getMarketingFeatureList();
-  };
+  }
 
   getHypothesisAnalyticsFeatures(id) {
     return _products[id].getHypothesisAnalyticsFeatures();
-  };
+  }
 
   getPaymentFeatures(id) {
     return _products[id].getPaymentFeatures();
-  };
+  }
 
   getImprovementChances(id) {
     return _products[id].getImprovementChances()
@@ -502,53 +371,37 @@ class ProductStore extends EventEmitter {
     return marketHelper.isMarketFree(_markets, marketId);
   }
 
-  idHelper(p, i) {
-    return { id: i, p };
-  }
-
   getBenefitOnFeatureImprove(id, featureId) {
     return Math.floor(this.getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, 1));
   }
 
-  getRents(): Array<DescribedRent> {
-    return _rents.map(r => {
-      const obj = Object.assign({} , r);
+  getProgrammingEfficiencyBonus(id) {
+    return 1 + this.getBonusModifiers(id).programmingEfficiency / 100;
+  }
 
-      obj.senderName = _products[r.out].getName();
-      obj.acceptorName = _products[r.in].getName();
-      obj.senderValue = this.getMainFeatureQualityByFeatureId(r.out, r.featureId);
-      obj.techName = this.getPrettyFeatureNameByFeatureId(r.out, r.featureId);
-
-      return obj;
-    });
-  };
+  getBaseMonthlyProgrammerPoints(id) {
+    return sum(this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy));
+  }
 
   getMonthlyProgrammerPoints(id) {
-    const bonus = 1 + this.getBonusModifiers(id).programmingEfficiency / 100;
-
-    const base = sum(this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy));
-
-    return Math.floor(base * bonus);
+    return Math.floor(this.getBaseMonthlyProgrammerPoints(id) * this.getProgrammingEfficiencyBonus(id));
   }
 
   isNeedProgrammer(id) {
-    const decrease = this.getProgrammingSupportCost(id);
-    const increase = this.getMonthlyProgrammerPoints(id);
+    return this.getProgrammingSupportCost(id) > this.getMonthlyProgrammerPoints(id);
+  }
 
-    return decrease > increase;
+  getMercenaries() {
+    return this.getTeam().filter(w => w.salary.pricingType === 1)
   }
 
   getTeamExpenses() {
-    return sum(
-      this.getTeam()
-        .filter(isMercenary)
-        .map(worker => worker.salary.money)
-    );
+    return sum(this.getMercenaries().map(worker => worker.salary.money));
   }
 
   getMarketRatingComputationList(id, marketId) {
     return this.getDefaults(id).markets[marketId].rating;
-  };
+  }
 
   getMainFeatureIterator(id): Array {
     return this.getDefaults(id).features;
@@ -556,7 +409,7 @@ class ProductStore extends EventEmitter {
 
   getLeaderValues(id) {
     return this.getMainFeatureIterator(id).map((f, i) => this.getLeaderInTech(i))
-  };
+  }
 
   getRating(id, marketId, improvement = null) {
     const features = _products[id].features.offer.map(m => m);
@@ -587,10 +440,6 @@ class ProductStore extends EventEmitter {
     }
 
     return base * mainMarketBonus + partnershipBonus;
-  }
-
-  getSharesOnMarket() {
-
   }
 
   getPowerListOnMarket(marketId) {
@@ -641,9 +490,9 @@ class ProductStore extends EventEmitter {
   calculateMarketIncome(id, marketId, improvement, influenceOnMarket) {
     const rating = this.getRating(id, marketId, improvement);
 
-    const paymentModifier = this.getPaymentModifier(id);
+    const modifier = this.getPaymentModifier(id);
 
-    const efficiency = rating * paymentModifier / 10;
+    const efficiency = rating * modifier / 10;
 
     return Math.floor(this.getMarketSize(id, marketId) * efficiency * influenceOnMarket);
   }
@@ -666,10 +515,8 @@ class ProductStore extends EventEmitter {
   }
 
 
-  getMarketIncome = (id, marketId, improvement) => {
-    const influenceOnMarket = this.getMarketInfluenceOfCompany(id, marketId);
-
-    return this.calculateMarketIncome(id, marketId, improvement, influenceOnMarket);
+  getMarketIncome(id, marketId, improvement) {
+    return this.calculateMarketIncome(id, marketId, improvement, this.getMarketInfluenceOfCompany(id, marketId));
   };
 
   getProductIncome(id) {
@@ -692,12 +539,8 @@ class ProductStore extends EventEmitter {
   }
 
   getLeaderInTech(featureId) {
-    const leader = _products
-      .map(this.idHelper)
-      .sort((obj1, obj2) => {
-        const p1: Product = obj1.p;
-        const p2: Product = obj2.p;
-
+    const leader: Product = _products
+      .sort((p1: Product, p2: Product) => {
         const f1 = p1.getMainFeatureQualityByFeatureId(featureId);
         const f2 = p2.getMainFeatureQualityByFeatureId(featureId);
 
@@ -705,33 +548,16 @@ class ProductStore extends EventEmitter {
       })[0];
 
     return {
-      id: leader.id,
-      name: leader.p.name,
-      value: leader.p.getMainFeatureQualityByFeatureId(featureId)
+      id: leader.companyId,
+      name: leader.name,
+      value: leader.getMainFeatureQualityByFeatureId(featureId)
     }
   }
 
-  getCurrentMainFeatureDefaultsById(id) {
-    return getCurrentMainFeatureDefaultsById(id);
-  }
-
-  getCurrentMainFeatureDefaultsByIdea(idea) {
-    return getCurrentMainFeatureDefaultsByIdea(idea);
-  }
-
-  getAbsoluteRating(id) {
-    return this.getRating(id, 0, null);
-  };
-
   getCompetitorsList() {
     return _products
-      .map((p, i) => ({ p, id: i }))
-      .map(obj => {
-        const p: Product = obj.p;
-        const id = obj.id;
-
-        const rating = this.getAbsoluteRating(id);
-
+      .map((p: Product) => {
+        const id = p.companyId;
         const features = p.features.offer;
 
         const offer = p.getMainFeatures()
@@ -743,7 +569,7 @@ class ProductStore extends EventEmitter {
 
         return {
           id,
-          rating,
+          rating: 0,
           company: p,
           style: p.style,
           name: p.name,
@@ -841,44 +667,11 @@ Dispatcher.register((p: PayloadType) => {
       _markets[record2].partnerId = c1;
       break;
 
-    case c.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY:
-      const competitor: Product = p.p;
-
-      competitor.setCompetitorProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, 0);
+    case c.PRODUCT_ACTIONS_CREATE_COMPANY:
+      let competitor: Product;
+      competitor = new Product(p.p);
 
       _products.push(competitor);
-      break;
-
-    case c.PRODUCT_ACTIONS_COMPANY_BUY:
-      logger.debug('buy company store');
-      const { buyerId, sellerId } = p;
-
-      const buyer = _products[buyerId];
-      const seller = _products[sellerId];
-
-      const difference = companyMerger.merge(buyer, seller);
-
-      _products[buyerId].features.offer = difference.features;
-
-      _products.splice(sellerId, 1);
-      break;
-
-    case c.PRODUCT_ACTIONS_TECHNOLOGY_RENT:
-      _rents.push({
-        in: p.acceptor,
-        out: p.sender,
-        featureId: p.featureId,
-        price: p.price,
-        until: p.until
-      });
-      break;
-
-    case c.PRODUCT_ACTIONS_TECHNOLOGY_RENT_REFRESH:
-      // it must be reversed in product-actions from max id to min id
-      logger.debug(p, 'refresh');
-      p.list.forEach((id) => {
-        _rents.splice(id, 1);
-      });
       break;
 
     case c.PLAYER_ACTIONS_INCREASE_MONEY:
@@ -886,50 +679,13 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PLAYER_ACTIONS_INCREASE_POINTS:
-      logger.shit('|| 0 in PLAYER_ACTIONS_INCREASE_POINTS pr store');
       _products[p.id || 0]._points.programming += p.points.programming;
       break;
 
     case c.PLAYER_ACTIONS_DECREASE_POINTS:
-      logger.shit('|| 0 in PLAYER_ACTIONS_DECREASE_POINTS pr store');
       _products[p.id || 0]._points.programming -= p.pp;
       break;
 
-
-
-    case c.PLAYER_ACTIONS_EXPENSES_ADD:
-      _expenses.push(p.expense);
-      break;
-
-    case c.PLAYER_ACTIONS_EXPENSES_REMOVE:
-      _expenses.splice(p.id, 1);
-      break;
-
-    case c.PLAYER_ACTIONS_LOANS_TAKE:
-      logger.shit('LOAN SIZE MUST BASE ON YOUR INCOME!!!. stores product-store.js');
-
-      const repay = 1.3;
-      _products[p.id || 0]._money += p.amount;
-      _loan += p.amount * repay;
-
-      _expenses.push({
-        type: EXPENSES.EXPENSES_LOAN,
-        price: p.amount * repay,
-        regularity: 1
-      });
-      break;
-
-    case c.PLAYER_ACTIONS_LOANS_REPAY:
-      let loanSize = _expenses[p.id].price;
-      if (loanSize <= _money) {
-        _money -= loanSize;
-        _loan -= loanSize;
-
-        _expenses.splice(p.id, 1);
-      } else {
-        change = false;
-      }
-      break;
 
     case c.PRODUCT_ACTIONS_BONUSES_ADD:
       _products[p.id].bonuses++;
@@ -941,11 +697,13 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PLAYER_ACTIONS_HIRE_WORKER:
       _team.push(p.player);
+
       _employees.splice(p.i, 1);
       break;
 
     case c.PLAYER_ACTIONS_FIRE_WORKER:
       _money -= _team[p.i].salary.money;
+
       _team.splice(p.i, 1);
       break;
 

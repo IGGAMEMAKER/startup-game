@@ -1,11 +1,6 @@
 import random from '../math/random';
 import * as GAME_EVENTS from '../../constants/events';
 
-import mvpCreator from '../../components/Game/Product/InitialPanel/mvp-creator';
-
-// import {
-//   messageActions, productStore
-// } from '../../flux';
 import messageActions from '../../actions/message-actions';
 import productActions from '../../actions/product-actions';
 import productStore from '../../stores/product-store';

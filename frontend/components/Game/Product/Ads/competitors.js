@@ -24,16 +24,7 @@ export default class Competitors extends Component {
 
     const competitors = flux.productStore.getCompetitorsList(id);
 
-    const rents = flux.productStore.getRents();
-
     logger.shit('competitors.js hardcoded isCompetitor check: c.id != 0');
-
-    const rentList = rents
-      .map(r =>
-        <div>
-          {r.senderName} => {r.acceptorName} технология {r.techName} (до {flux.scheduleStore.getGameFormattedDay(r.until)}, {r.price}$ ежемесячно)
-        </div>
-      );
 
     const competitorList = competitors.map((c, i) =>
       <Competitor
@@ -46,8 +37,6 @@ export default class Competitors extends Component {
       />
     );
 
-      // <div>Текущие договоры аренды</div>
-      // <div>{rentList}</div>
     return <div>
       <div className="content-title">Рейтинг компаний</div>
       <table className="table">

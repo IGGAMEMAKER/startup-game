@@ -7,8 +7,6 @@ import * as JOB from './../constants/job';
 import * as IDEAS from './../constants/products/ideas';
 import * as PRODUCT_STAGES from './../constants/products/product-stages';
 
-import productDescriptions from './products/product-descriptions';
-
 import stats from '../stats';
 
 
@@ -19,10 +17,20 @@ function saveToStorage(name, value) {
 }
 
 function setDefaultValues() {
+
   console.log('setDefaultValues in session-manager');
+  const tasks = [];
+  const day = 1;
+  const gamePhase = GAME_STAGES.GAME_STAGE_INIT;
+
+  const money = 1000;
+
+  const world = {
+  };
 
   // schedule
   sessionStorage.saveInStorage('tasks', []);
+
   sessionStorage.saveInStorage('day', 1);
   sessionStorage.saveInStorage('gamePhase', GAME_STAGES.GAME_STAGE_INIT);
 
@@ -34,6 +42,7 @@ function setDefaultValues() {
     marketing: 5200,
     analyst: 300
   });
+
   sessionStorage.saveInStorage('employees', [
     {
       name: 'Lynda',
@@ -46,21 +55,6 @@ function setDefaultValues() {
       jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
       salary: {
         money: 500,
-        percent: 0,
-        pricingType: 1
-      }
-    },
-    {
-      name: 'Xavier',
-      skills: {
-        programming: 600,
-        marketing: 100,
-        analyst: 150
-      },
-      task: JOB.JOB_TASK_PROGRAMMER_POINTS,
-      jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-      salary: {
-        money: 700,
         percent: 0,
         pricingType: 1
       }
@@ -82,34 +76,71 @@ function setDefaultValues() {
         pricingType: 0
       },
       isPlayer: true
+    },
+    {
+      name: 'Xavier',
+      skills: {
+        programming: 600,
+        marketing: 100,
+        analyst: 150
+      },
+      task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+      jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+      salary: {
+        money: 700,
+        percent: 0,
+        pricingType: 1
+      }
     }
   ]);
-  sessionStorage.saveInStorage('reputation', 0);
-  sessionStorage.saveInStorage('fame', 0);
+
   sessionStorage.saveInStorage('loan', 0);
   sessionStorage.saveInStorage('rents', []);
 
+
+
   logger.debug('saved tasks');
+
+
 
   // products
   sessionStorage.saveInStorage('markets', []);
 
-  let product = new Product({
-    idea: IDEAS.IDEA_WEB_HOSTING,
-    name: 'WWWEB HOSTING',
-    stage: PRODUCT_STAGES.PRODUCT_STAGE_IDEA
-  });
+  const idea = IDEAS.IDEA_WEB_HOSTING;
+  const stage = PRODUCT_STAGES.PRODUCT_STAGE_IDEA;
 
-  logger.debug(product);
+  const products = [
+    new Product({
+      idea,
+      stage,
+      name: 'WWWEB HOSTING',
+      companyId: 0
+    }),
+    new Product({
+      idea,
+      stage,
+      isCompetitor: true,
+      companyId: 1
+    }),
+    new Product({
+      idea,
+      stage,
+      isCompetitor: true,
+      companyId: 2
+    }),
+    new Product({
+      idea,
+      stage,
+      isCompetitor: true,
+      companyId: 3
+    })
+  ];
 
-  sessionStorage.saveInStorage('products', [product]);
+  // logger.debug(product, JSON.parse(JSON.stringify(product)));
+
+  sessionStorage.saveInStorage('products', products);
 }
 
-if (!sessionStorage.getFromStorage('sessionId')) {
-  sessionStorage.saveInStorage('sessionId', 'asd');
-
-  setDefaultValues();
-}
 
 function getFromStorage(name) {
   return sessionStorage.getFromStorage(name);
@@ -121,72 +152,40 @@ function restartGame() {
   stats.saveAction('restartGame', {});
 }
 
-function saveProductStorageData({ markets, products, rents, money, expenses, points, employees, team, reputation, fame, loan }) {
+function saveProductStorageData({ markets, products, money, points, employees, team }) {
   saveToStorage('markets', markets);
   saveToStorage('products', products);
   saveToStorage('money', money);
-  saveToStorage('expenses', expenses);
   saveToStorage('points', points);
   saveToStorage('employees', employees);
   saveToStorage('team', team);
-  saveToStorage('reputation', reputation);
-  saveToStorage('fame', fame);
-  saveToStorage('loan', loan);
-  saveToStorage('rents', rents);
 }
 
 function getProductStorageData() {
-  let expenses: Array;
-
   let employees: Array;
   let team: Array;
-  let loan: Number;
 
-  let reputation: Number;
-  let fame: Number;
-  let rents: Array;
   let products: Array<Product>;
   let markets: Array;
 
   try {
-    // money = Number.parseInt(getFromStorage('money'));
-    // logger.debug('got money', money);
-
-    markets = Array.from(JSON.parse(getFromStorage('markets')));
-    rents = Array.from(JSON.parse(getFromStorage('rents')));
-
-    expenses = Array.from(JSON.parse(getFromStorage('expenses')));
-
-    // points = JSON.parse(getFromStorage('points'));
-    // logger.debug('got points', points);
-
     employees = Array.from(JSON.parse(getFromStorage('employees')));
 
     team = Array.from(JSON.parse(getFromStorage('team')));
 
-    reputation = Number.parseInt(getFromStorage('reputation'));
-    fame = Number.parseInt(getFromStorage('fame'));
-
-    loan = Number.parseInt(getFromStorage('loan'));
-
     const data = getFromStorage('products');
 
     products = Array.from(JSON.parse(data)).map(p => new Product(p, true));
+
+    markets = Array.from(JSON.parse(getFromStorage('markets')));
 
   } catch (ex) {
     logger.error('error in getProductStorageData', ex);
   }
 
   return {
-    // money,
-    expenses,
-    // points,
     employees,
     team,
-    reputation,
-    fame,
-    loan,
-    rents,
     products,
     markets
   };
@@ -212,7 +211,15 @@ function getMessageStorageData() {
   return getFromStorage('messages');
 }
 
+setDefaultValues();
+if (!sessionStorage.getFromStorage('sessionId')) {
+  sessionStorage.saveInStorage('sessionId', 'asd');
+
+  setDefaultValues();
+}
 // restartGame();
+
+
 
 
 export default {

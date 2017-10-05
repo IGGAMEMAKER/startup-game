@@ -14,7 +14,7 @@ import UI from '../../../UI';
 
 export default class Competitor extends Component {
   convertXPtoLvl(value) {
-    return Math.floor(value / 1000);
+    return value;
   }
 
   renderFeatureList(c, productId, rents: Array, ourCompany) {

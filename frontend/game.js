@@ -112,7 +112,7 @@ const run = () => {
         // calculate human points
         calculatePoints(i);
 
-        // productActions.testHypothesis(p);
+        productActions.testHypothesis(i);
       });
 
     // clean expired rents

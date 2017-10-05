@@ -61,17 +61,17 @@ export default {
       sender, acceptor, featureId, price, until
     })
   },
-  // testHypothesis(id) {
-  //   const range = productStore.getImprovementChances(id);
-  //
-  //   const xp = range.middle; // Math.floor(getRandomRange(range.min, range.max));
-  //
-  //   Dispatcher.dispatch({
-  //     type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
-  //     id,
-  //     value: xp
-  //   })
-  // },
+  testHypothesis(id) {
+    const range = productStore.getImprovementChances(id);
+
+    const xp = range.middle; // Math.floor(getRandomRange(range.min, range.max));
+
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
+      id,
+      value: xp
+    })
+  },
   improveFeatureByPoints(id, featureGroup, featureName) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
@@ -141,13 +141,12 @@ export default {
     })
   },
 
-  createCompetitorCompany(p) {
+  createCompany(p) {
     Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_CREATE_COMPETITOR_COMPANY,
+      type: ACTIONS.PRODUCT_ACTIONS_CREATE_COMPANY,
       p
     })
   },
-
 
 
   increaseMoney: (amount, id) => {
