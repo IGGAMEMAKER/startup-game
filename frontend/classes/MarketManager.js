@@ -1,4 +1,5 @@
 import Market from './Market';
+import logger from '../helpers/logger/logger';
 
 export default class MarketManager {
   constructor(idea) {
@@ -6,55 +7,74 @@ export default class MarketManager {
     this.markets = [];
   }
 
-  getMarketById(marketId): Market {
+  load(markets, info) {
+    this.info = info;
+    this.markets = markets.map(m => {
+      return new Market(m);
+    });
+
+    logger.debug('load markets', this);
+  }
+
+  getMarket(marketId): Market {
     return this.markets.find(m => m.id === marketId);
   }
 
   getPowerListOnMarket(marketId) {
-    return this.getMarketById(marketId).getPowerList()
+    return this.getMarket(marketId).getPowerList()
   }
 
   getPowerOfCompanyOnMarket(productId, marketId) {
-    return this.getMarketById(marketId).getPowerOnMarket(productId);
+    return this.getMarket(marketId).getPowerOnMarket(productId);
   }
 
   getMarketShare(marketId, productId) {
-    return this.getMarketById(marketId).getShareOnMarket(productId);
+    return this.getMarket(marketId).getShareOnMarket(productId);
   }
 
   getIncomesForCompany(productId) {
-    return this.markets.map((m: Market) => m.getMaxIncomeForCompany(productId))
+    return this.markets.map((m: Market) => {
+      return this.getMarketSize(m.id) * m.getShareOnMarket(productId);
+    })
   }
 
-  loadMarkets(data) {
-
+  getInfo(marketId) {
+    return this.info.markets[marketId];
   }
 
+  getMarketSize(marketId) {
+    const info = this.getInfo(marketId);
+
+    return info.price * info.clients;
+  }
+
+  getRatingFormula(marketId) {
+    return this.getInfo(marketId).rating;
+  }
+
+
+  // setters
   joinProduct(marketId, productId) {
-    const market: Market = this.markets.find(m => m.id === marketId);
-
-    market.join(productId);
+    this.getMarket(marketId).join(productId);
 
     return this;
   }
 
   setMainMarket(productId, marketId) {
-    const market: Market = this.markets.find(m => m.id === marketId);
+    this.getMarket(marketId).setAsMain(productId);
 
-    market.setAsMain(productId);
+    return this;
   }
 
   makePartnership(p1, p2, marketId) {
-    const market: Market = this.markets.find(m => m.id === marketId);
-
-    market.makePartnership(p1, p2);
+    this.getMarket(marketId).makePartnership(p1, p2);
 
     return this;
   }
 
   breakPartnership(p1, p2, marketId) {
-    const market: Market = this.markets.find(m => m.id === marketId);
+    this.getMarket(marketId).breakPartnership(p1, p2);
 
-    market.breakPartnership(p1, p2);
+    return this;
   }
 }

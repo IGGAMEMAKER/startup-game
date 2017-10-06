@@ -10,8 +10,10 @@ import UI from '../../../UI';
 
 export default class Market extends Component {
   renderMarketCompetitors(id, marketId) {
-    const powerList = productStore.getPowerListWithCompanyNames(marketId)
+    const powerList = productStore.getPowerListOnMarket(marketId)
       .map(c => {
+        const name = productStore.getName(id);
+
         let companyClass;
         let switchPartnershipStatusButton;
 
@@ -45,7 +47,7 @@ export default class Market extends Component {
         }
 
         return <tr className={companyClass}>
-          <td>{c.name} {switchPartnershipStatusButton}</td>
+          <td>{name} {switchPartnershipStatusButton}</td>
           <td>{c.power}</td>
           <td>{c.share}</td>
         </tr>

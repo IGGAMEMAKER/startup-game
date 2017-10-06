@@ -1,7 +1,5 @@
 export default class Market {
   constructor(data) {
-    if (!data.idea) throw { err: 'no idea in classes/Market.js', data };
-
     this.id = data.id;
     this.records = data.records || [];
     this.partnerships = data.partnerships || [];
@@ -31,14 +29,6 @@ export default class Market {
     return this.records
       .map(m => Object.assign({}, m, { power: m.hype, share: m.hype / total }))
       .sort((a, b) => b.power - a.power);
-  }
-
-  getSize() {
-    return 1000000;
-  }
-
-  getMaxIncomeForCompany(productId) {
-    return this.getSize() * this.getShareOnMarket(productId);
   }
 
   getPowerOnMarket(productId) {
@@ -71,6 +61,8 @@ export default class Market {
 
   setAsMain(productId) {
     this.records.find(r => r.productId === productId).isMain = true;
+
+    return true;
   }
 
   makePartnership(p1, p2) {

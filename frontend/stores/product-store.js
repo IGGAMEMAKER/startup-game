@@ -23,6 +23,8 @@ import workerGenerator from '../helpers/team/create-random-worker';
 
 import MarketManager from '../classes/MarketManager';
 
+import defaults from '../helpers/products/product-descriptions';
+
 
 import computeRating from '../helpers/products/compute-rating';
 import round from '../helpers/math/round';
@@ -40,21 +42,42 @@ let _team = [];
 
 let _products: Array<Product> = [];
 
-const marketManager = new MarketManager();
+let marketManager;
 
-let _markets: Array<MarketRecord> = [];
+let _markets: Array = [];
 
 const initialize = ({ markets, products, employees, team }) => {
   logger.log('trying to initialize productStore.js', products);
 
   _products = products.map(p => new Product().loadFromObject(p));
+
   logger.log('trying to initialize productStore.js', _products);
-  _markets = markets;
+
 
   _employees = employees;
   _team = team;
 
-  marketManager.loadMarkets(_markets);
+
+  _markets = markets;
+
+  const idea = _products[0].getIdea();
+  markets = [
+    {
+      id: 0,
+      idea
+    },
+    {
+      id: 1,
+      idea
+    },
+    {
+      id: 2,
+      idea
+    }
+  ];
+
+  marketManager = new MarketManager(idea);
+  marketManager.load(markets, defaults(idea));
 };
 
 initialize(sessionManager.getProductStorageData());
@@ -86,10 +109,6 @@ class ProductStore extends EventEmitter {
 
   getMoney(id) {
     return Math.floor(_products[id]._money);
-  }
-
-  getMarketName(id, mId) {
-    return this.getMarketInfo(id, mId).name;
   }
 
   getPoints(id) {
@@ -348,25 +367,12 @@ class ProductStore extends EventEmitter {
           features: offer,
           XP: p.XP,
           cost: this.getCompanyCost(id),
-          income: this.getProductIncome(id),
-          expenses: this.getProductExpenses(id)
+          income: this.getProductIncome(id)
         }
       });
   }
 
 
-  getRating(id, marketId, improvement = null) {
-    const features = _products[id].features.offer.map(m => m);
-
-    if (improvement) {
-      features[improvement.featureId] += 1;
-    }
-
-    const maxValues = this.getLeaderValues(id).map(l => l.value);
-    const marketInfluences = this.getMarketRatingComputationList(id, marketId);
-
-    return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
-  }
 
   isMainMarket(id, marketId) {
     return marketManager.isMainMarket(id, marketId);
@@ -384,25 +390,35 @@ class ProductStore extends EventEmitter {
     return marketManager.getMarketShare(id, marketId);
   }
 
-  getPowerListWithCompanyNames(marketId) {
-    return this.getPowerListOnMarket(marketId)
-      .map(p => Object.assign({}, p, { name: this.getName(p.companyId)}))
+  getMarketSize(marketId) {
+    return marketManager.getMarketSize(marketId);
   }
 
-  getMarketSize(id, marketId) {
-    const { price, clients } = this.getMarketInfo(id, marketId);
+  getRating(id, marketId, improvement = null) {
+    const features = _products[id].features.offer.map(m => m);
 
-    return price * clients;
+    if (improvement) {
+      features[improvement.featureId] += 1;
+    }
+
+    const maxValues = this.getLeaderValues(id).map(l => l.value);
+    const marketInfluences = marketManager.getRatingFormula(marketId); // this.getMarketRatingComputationList(id, marketId);
+
+    return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
   }
 
-  calculateMarketIncome(id, marketId, improvement, influenceOnMarket) {
+  calculateMarketIncome(id, marketId, improvement) {
     const rating = this.getRating(id, marketId, improvement);
 
     const modifier = this.getPaymentModifier(id);
 
     const efficiency = rating * modifier / 10;
 
-    return Math.floor(this.getMarketSize(id, marketId) * efficiency * influenceOnMarket);
+    const size = marketManager.getMarketSize(marketId);
+
+    const share = marketManager.getMarketShare(marketId, id);
+
+    return Math.floor(size * share * efficiency);
   }
 
   getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
@@ -425,7 +441,7 @@ class ProductStore extends EventEmitter {
 
 
   getMarketIncome(id, marketId, improvement) {
-    return this.calculateMarketIncome(id, marketId, improvement, this.getMarketInfluenceOfCompany(id, marketId));
+    return this.calculateMarketIncome(id, marketId, improvement);
   };
 
   getProductIncome(id) {
