@@ -6,6 +6,26 @@ export default class MarketManager {
     this.markets = [];
   }
 
+  getMarketById(marketId): Market {
+    return this.markets.find(m => m.id === marketId);
+  }
+
+  getPowerListOnMarket(marketId) {
+    return this.getMarketById(marketId).getPowerList()
+  }
+
+  getPowerOfCompanyOnMarket(productId, marketId) {
+    return this.getMarketById(marketId).getPowerOnMarket(productId);
+  }
+
+  getMarketShare(marketId, productId) {
+    return this.getMarketById(marketId).getShareOnMarket(productId);
+  }
+
+  getIncomesForCompany(productId) {
+    return this.markets.map((m: Market) => m.getMaxIncomeForCompany(productId))
+  }
+
   loadMarkets(data) {
 
   }

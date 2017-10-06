@@ -560,7 +560,12 @@ export default class Product {
 
 
   // modify
+  switchStage(stage) {
+    this.stage = stage;
+  }
+
   setProductDefaults(stage, features, XP) {
+    throw 'setProductDefaults';
     this.stage = stage;
     this.features = features;
     this.XP = XP;
@@ -576,9 +581,6 @@ export default class Product {
     }
   }
 
-  switchStage(stage) {
-    this.stage = stage;
-  }
 
   improveFeature(p) {
     let previous = this.features[p.featureGroup][p.featureName] || 0;

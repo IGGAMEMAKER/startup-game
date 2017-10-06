@@ -2,15 +2,59 @@ export default class Market {
   constructor(data) {
     if (!data.idea) throw { err: 'no idea in classes/Market.js', data };
 
+    this.id = data.id;
     this.records = data.records || [];
     this.partnerships = data.partnerships || [];
+
+    // market size?
   }
 
   getBaseInfluence(productId) {
-    const record = this.records[this.getRecordIdByProductId(productId)];
-    const isMain = record.isMain ? 1.2 : 1;
+    const record = this.getRecordByProductId(productId);
 
-    return record.hype * isMain;
+    return record.hype * this.getMainMarketModifier(productId);
+  }
+
+  getMainMarketModifier(productId) {
+    const record = this.getRecordByProductId(productId);
+
+    return record.isMain ? 1.2 : 1;
+  }
+
+  getPowerList() {
+    let total = 0;
+
+    this.records.forEach(r => {
+      total += r.hype; // * this.getMainMarketModifier(r.companyId);
+    });
+
+    return this.records
+      .map(m => Object.assign({}, m, { power: m.hype, share: m.hype / total }))
+      .sort((a, b) => b.power - a.power);
+  }
+
+  getSize() {
+    return 1000000;
+  }
+
+  getMaxIncomeForCompany(productId) {
+    return this.getSize() * this.getShareOnMarket(productId);
+  }
+
+  getPowerOnMarket(productId) {
+    return this.getPowerList().find(p => p.companyId === productId).power;
+  }
+
+  getShareOnMarket(productId) {
+    return this.getPowerList().find(p => p.companyId === productId).share;
+  }
+
+  getRecordByProductId(productId) {
+    return this.records.find(r => r.productId === productId);
+  }
+
+  getRecordIdByProductId(productId) {
+    return this.records.findIndex(r => r.productId === productId);
   }
 
   // setters
@@ -23,10 +67,6 @@ export default class Market {
     });
 
     return this;
-  }
-
-  getRecordIdByProductId(productId) {
-    return this.records.findIndex(r => r.productId === productId);
   }
 
   setAsMain(productId) {

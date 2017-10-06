@@ -4,8 +4,6 @@ import * as c from '../constants/actions/product-actions';
 import payloads from '../constants/actions/payloads';
 import logger from '../helpers/logger/logger';
 
-import percentify from '../helpers/math/percentify';
-
 import companyCostHelper from '../helpers/products/compute-company-cost';
 
 import * as PRODUCT_STAGES from '../constants/products/product-stages';
@@ -23,8 +21,6 @@ import skillHelper from '../helpers/team/skills';
 
 import workerGenerator from '../helpers/team/create-random-worker';
 
-import marketHelper from '../helpers/products/markets';
-
 import MarketManager from '../classes/MarketManager';
 
 
@@ -38,62 +34,9 @@ const EC = 'PRODUCT_EVENT_CHANGE';
 
 let _money = 1000;
 
-type MarketRecord = {
-  companyId: Number,
-  marketId: Number,
-  level: Number
-};
-
 let _employees = [];
 
-let _team = [
-  // {
-  //   name: 'James',
-  //   skills: {
-  //     programming: 1000,
-  //     marketing: 150,
-  //     analyst: 300
-  //   },
-  //   task: JOB.JOB_TASK_PROGRAMMER_POINTS,
-  //   jobMotivation: JOB.JOB_MOTIVATION_BUSINESS_OWNER,
-  //   salary: {
-  //     percent: 100,
-  //     money: 100,
-  //     pricingType: 0
-  //   },
-  //   isPlayer: true
-  // },
-  // {
-  //   name: 'Lynda',
-  //   skills: {
-  //     programming: 0,
-  //     marketing: 500,
-  //     analyst: 150
-  //   },
-  //   task: JOB.JOB_TASK_MARKETING_POINTS,
-  //   jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-  //   salary: {
-  //     money: 500,
-  //     percent: 0,
-  //     pricingType: 1
-  //   }
-  // },
-  // {
-  //   name: 'Xavier',
-  //   skills: {
-  //     programming: 600,
-  //     marketing: 100,
-  //     analyst: 150
-  //   },
-  //   task: JOB.JOB_TASK_PROGRAMMER_POINTS,
-  //   jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-  //   salary: {
-  //     money: 700,
-  //     percent: 0,
-  //     pricingType: 1
-  //   }
-  // }
-];
+let _team = [];
 
 let _products: Array<Product> = [];
 
@@ -240,10 +183,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getIdea();
   }
 
-  getMarketingFeatures(id) {
-    return _products[id].getMarketingFeatures();
-  }
-
 
 
 
@@ -279,18 +218,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getBonusesList();
   }
 
-  getMarketRecord(id, marketId) {
-    return marketHelper.getMarketRecord(_markets, id, marketId);
-  }
-
-  isMainMarket(id, marketId) {
-    return marketHelper.isMainMarket(_markets, id, marketId);
-  }
-
-  getClientAnalyticsModifier(id) {
-    return _products[id].getClientAnalyticsModifier();
-  }
-
   getProgrammingSupportCostModifier(id) {
     return _products[id].getProgrammingSupportCostModifier();
   }
@@ -303,20 +230,12 @@ class ProductStore extends EventEmitter {
     return _products[id].getMarketingFeatureList();
   }
 
-  getHypothesisAnalyticsFeatures(id) {
-    return _products[id].getHypothesisAnalyticsFeatures();
-  }
-
   getPaymentFeatures(id) {
     return _products[id].getPaymentFeatures();
   }
 
   getImprovementChances(id) {
     return _products[id].getImprovementChances()
-  }
-
-  getProductExpensesStructure(id) {
-    return _products[id].getProductExpensesStructure();
   }
 
   getXP(id) {
@@ -347,13 +266,8 @@ class ProductStore extends EventEmitter {
     return _products[id].bonuses;
   }
 
-
-  isPartneredOnMarket(c1, c2, marketId) {
-    return marketHelper.isPartneredOnMarket(_markets, c1, c2, marketId);
-  }
-
-  isMarketFree(marketId) {
-    return marketHelper.isMarketFree(_markets, marketId);
+  getMainFeatureUpgradeCost(id, featureId) {
+    return this.getBaseFeatureDevelopmentCost(id, featureId);
   }
 
   getBenefitOnFeatureImprove(id, featureId) {
@@ -373,7 +287,6 @@ class ProductStore extends EventEmitter {
   }
 
   isNeedProgrammer(id) {
-    logger.log('isNeedProgrammer', _products, id);
     return this.getProgrammingSupportCost(id) > this.getMonthlyProgrammerPoints(id);
   }
 
@@ -395,133 +308,6 @@ class ProductStore extends EventEmitter {
 
   getLeaderValues(id) {
     return this.getMainFeatureIterator(id).map((f, i) => this.getLeaderInTech(i))
-  }
-
-  getRating(id, marketId, improvement = null) {
-    const features = _products[id].features.offer.map(m => m);
-
-    const maxValues = this.getLeaderValues(id).map(l => l.value);
-    const marketInfluences = this.getMarketRatingComputationList(id, marketId);
-
-    if (improvement) {
-      features[improvement.featureId] += 1;
-    }
-
-    return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
-  }
-
-
-
-
-  getPowerOfCompanyOnMarket(id, marketId) {
-    const base = this.getBaseMarketingInfluence(id, marketId);
-
-    const mainMarketBonus = this.isMainMarket(id, marketId) ? 1.2 : 1;
-
-    let partnershipBonus = 0;
-    const record = this.getMarketRecord(id, marketId);
-
-    if (record && record.partnerId >= 0) {
-      partnershipBonus = this.getBaseMarketingInfluence(record.partnerId, marketId) * 0.3;
-    }
-
-    return base * mainMarketBonus + partnershipBonus;
-  }
-
-  getPowerListOnMarket(marketId) {
-    const influences = _products
-      .map((p, i) =>
-        ({
-          power: this.getPowerOfCompanyOnMarket(i, marketId),
-          companyId: i,
-          marketId,
-          name: this.getName(i)
-        })
-      );
-
-    const total = sum(influences.map(i => i.power));
-
-    return influences
-      .map(m => Object.assign({}, m, { share: percentify(m.power / total) }))
-      .sort((a, b) => b.power - a.power);
-  }
-
-  getPowerListWithCompanyNames(marketId) {
-    return this.getPowerListOnMarket(marketId)
-  }
-
-
-  getBaseMarketingInfluence(id, marketId) {
-    return this.getRating(id, marketId);
-  }
-
-  getMarketInfluenceOfCompany(id, marketId) {
-    const powers = this.getPowerListOnMarket(marketId);
-
-    const powerOfCompany = powers.find(c => c.companyId === id);
-
-    const power = powerOfCompany ? powerOfCompany.power : 0;
-
-    const total = sum(powers.map(p => p.power));
-
-    return power / total;
-  }
-
-  getMarketSize(id, marketId) {
-    const { price, clients } = this.getMarketInfo(id, marketId);
-
-    return price * clients;
-  }
-
-  calculateMarketIncome(id, marketId, improvement, influenceOnMarket) {
-    const rating = this.getRating(id, marketId, improvement);
-
-    const modifier = this.getPaymentModifier(id);
-
-    const efficiency = rating * modifier / 10;
-
-    return Math.floor(this.getMarketSize(id, marketId) * efficiency * influenceOnMarket);
-  }
-
-  getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
-    const now = this.getMarketIncome(id, marketId, null);
-
-    const rating = this.getRating(id, marketId, null);
-    const nextRating = this.getRating(id, marketId, { featureId, value });
-
-    const willBe = Math.floor(now * (nextRating / rating));
-
-    return willBe - now;
-  }
-
-  getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
-    return sum(
-      this.getMarkets(id).map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
-    );
-  }
-
-
-  getMarketIncome(id, marketId, improvement) {
-    return this.calculateMarketIncome(id, marketId, improvement, this.getMarketInfluenceOfCompany(id, marketId));
-  };
-
-  getProductIncome(id) {
-    return sum(
-      this.getMarkets(id).map((m, i) => this.getMarketIncome(id, i, null))
-    );
-  }
-
-
-
-  isUpgradeWillResultTechBreakthrough(id, featureId) {
-    const current = this.getMainFeatureQualityByFeatureId(id, featureId);
-    const max = this.getLeaderValues(id)[featureId];
-
-    return current + 1 > max;
-  }
-
-  getMainFeatureUpgradeCost(id, featureId) {
-    return this.getBaseFeatureDevelopmentCost(id, featureId);
   }
 
   getLeaderInTech(featureId) {
@@ -566,6 +352,86 @@ class ProductStore extends EventEmitter {
           expenses: this.getProductExpenses(id)
         }
       });
+  }
+
+
+  getRating(id, marketId, improvement = null) {
+    const features = _products[id].features.offer.map(m => m);
+
+    if (improvement) {
+      features[improvement.featureId] += 1;
+    }
+
+    const maxValues = this.getLeaderValues(id).map(l => l.value);
+    const marketInfluences = this.getMarketRatingComputationList(id, marketId);
+
+    return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
+  }
+
+  isMainMarket(id, marketId) {
+    return marketManager.isMainMarket(id, marketId);
+  }
+
+  getPowerOfCompanyOnMarket(id, marketId) {
+    return marketManager.getPowerOfCompanyOnMarket(id, marketId);
+  }
+
+  getPowerListOnMarket(marketId) {
+    return marketManager.getPowerListOnMarket(marketId);
+  }
+
+  getMarketInfluenceOfCompany(id, marketId) {
+    return marketManager.getMarketShare(id, marketId);
+  }
+
+  getPowerListWithCompanyNames(marketId) {
+    return this.getPowerListOnMarket(marketId)
+      .map(p => Object.assign({}, p, { name: this.getName(p.companyId)}))
+  }
+
+  getMarketSize(id, marketId) {
+    const { price, clients } = this.getMarketInfo(id, marketId);
+
+    return price * clients;
+  }
+
+  calculateMarketIncome(id, marketId, improvement, influenceOnMarket) {
+    const rating = this.getRating(id, marketId, improvement);
+
+    const modifier = this.getPaymentModifier(id);
+
+    const efficiency = rating * modifier / 10;
+
+    return Math.floor(this.getMarketSize(id, marketId) * efficiency * influenceOnMarket);
+  }
+
+  getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
+    const now = this.getMarketIncome(id, marketId, null);
+
+    const rating = this.getRating(id, marketId, null);
+    const nextRating = this.getRating(id, marketId, { featureId, value });
+
+    const willBe = Math.floor(now * (nextRating / rating));
+
+    return willBe - now;
+  }
+
+  getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
+    return 0;
+    // return sum(
+    //   this.getMarkets(id).map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
+    // );
+  }
+
+
+  getMarketIncome(id, marketId, improvement) {
+    return this.calculateMarketIncome(id, marketId, improvement, this.getMarketInfluenceOfCompany(id, marketId));
+  };
+
+  getProductIncome(id) {
+    return sum(
+      this.getMarkets(id).map((m, i) => this.getMarketIncome(id, i, null))
+    );
   }
 }
 

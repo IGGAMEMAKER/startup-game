@@ -50,20 +50,20 @@ const computeTasks = () => {
 };
 
 const checkRents = day => {
-  const refreshRents = [];
-  const rents = productStore.getRents();
-
-  rents
-    .forEach((r, i) => {
-      if (r.until <= day) {
-        refreshRents.push(i);
-        messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_RENT_EXPIRED, { r, i });
-      }
-    });
-
-  if (refreshRents.length) {
-    productActions.refreshRents(refreshRents);
-  }
+  // const refreshRents = [];
+  // const rents = productStore.getRents();
+  //
+  // rents
+  //   .forEach((r, i) => {
+  //     if (r.until <= day) {
+  //       refreshRents.push(i);
+  //       messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_RENT_EXPIRED, { r, i });
+  //     }
+  //   });
+  //
+  // if (refreshRents.length) {
+  //   productActions.refreshRents(refreshRents);
+  // }
 };
 
 const calculatePoints = companyId => {
