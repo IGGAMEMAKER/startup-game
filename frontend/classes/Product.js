@@ -49,7 +49,7 @@ export default class Product {
 
   createCompany(data): Product {
     let { idea, name, isCompetitor, companyId } = data;
-    logger.log('product constructor', data);
+    // logger.log('product constructor', data);
 
     if (!idea) throw 'no idea in classes/Product.js';
 

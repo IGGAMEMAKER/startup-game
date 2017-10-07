@@ -15,14 +15,12 @@ export default class Competitors extends Component {
 
     const competitorList = competitors.map((c, i) => {
       const companyId = c.companyId;
-      const cost = productStore.getCompanyCost(companyId);
-      const income = productStore.getProductIncome(companyId);
 
       return <Competitor
         c={c}
         i={i}
-        cost={cost}
-        income={income}
+        cost={productStore.getCompanyCost(companyId)}
+        income={productStore.getProductIncome(companyId)}
         isCompetitor={companyId != 0}
       />
     });

@@ -96,12 +96,6 @@ export default {
       featureName: bonusName
     })
   },
-  setInitialProductSettings(id, features) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS,
-      id, features
-    })
-  },
   addClients(id, clients) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,

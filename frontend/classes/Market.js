@@ -7,14 +7,14 @@ export default class Market {
     this.partnerships = data.partnerships || [];
   }
 
-  getBaseInfluence(productId) {
-    const record = this.getRecordByProductId(productId);
+  getBaseInfluence(companyId) {
+    const record = this.getRecordByProductId(companyId);
 
-    return record.hype * this.getMainMarketModifier(productId);
+    return record.hype * this.getMainMarketModifier(companyId);
   }
 
-  getMainMarketModifier(productId) {
-    const record = this.getRecordByProductId(productId);
+  getMainMarketModifier(companyId) {
+    const record = this.getRecordByProductId(companyId);
 
     return record.isMain ? 1.2 : 1;
   }
@@ -27,31 +27,37 @@ export default class Market {
     });
 
     return this.records
-      .map(m => Object.assign({}, m, { power: m.hype, share: m.hype / total }))
+      .map(m =>
+        ({
+          power: m.hype,
+          share: m.hype / total,
+          companyId: m.companyId,
+        })
+      )
       .sort((a, b) => b.power - a.power);
   }
 
-  getPowerOnMarket(productId) {
-    return this.getPowerList().find(p => p.productId === productId).power;
+  getPowerOnMarket(companyId) {
+    return this.getPowerList().find(p => p.companyId === companyId).power;
   }
 
-  getShareOnMarket(productId) {
-    return this.getPowerList().find(p => p.productId === productId).share;
+  getShareOnMarket(companyId) {
+    return this.getPowerList().find(p => p.companyId === companyId).share;
   }
 
-  getRecordByProductId(productId) {
-    return this.records.find(r => r.productId === productId);
+  getRecordByProductId(companyId) {
+    return this.records.find(r => r.companyId === companyId);
   }
 
-  getRecordIdByProductId(productId) {
-    return this.records.findIndex(r => r.productId === productId);
+  getRecordIdByProductId(companyId) {
+    return this.records.findIndex(r => r.companyId === companyId);
   }
 
   // setters
-  join(productId) {
+  join(companyId) {
     this.records.push({
-      productId,
-      hype: 10,
+      companyId,
+      hype: 1 + Math.floor(Math.random() * 10),
       active: true,
       isMain: false
     });
@@ -59,8 +65,8 @@ export default class Market {
     return this;
   }
 
-  setAsMain(productId) {
-    this.records.find(r => r.productId === productId).isMain = true;
+  setAsMain(companyId) {
+    this.records.find(r => r.companyId === companyId).isMain = true;
 
     return true;
   }

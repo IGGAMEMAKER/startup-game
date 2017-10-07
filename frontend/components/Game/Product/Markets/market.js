@@ -8,48 +8,33 @@ import ColoredRating from '../KPI/colored-rating';
 
 import UI from '../../../UI';
 
+import logger from '../../../../helpers/logger/logger';
+
 export default class Market extends Component {
   renderMarketCompetitors(id, marketId) {
+    // id is ourCompanyId
+    logger.log(marketId, id, 'renderMarketCompetitors', productStore.getCompetitorsList());
+
     const powerList = productStore.getPowerListOnMarket(marketId)
       .map(c => {
-        const name = productStore.getName(id);
+
+        const companyId = c.companyId;
+        const name = productStore.getName(companyId);
 
         let companyClass;
-        let switchPartnershipStatusButton;
 
-        const hasPartnershipWithUs = productStore.isPartneredOnMarket(id, c.companyId, marketId);
-
-        if (c.companyId === id) {
+        if (companyId === id) {
           companyClass = 'our-company';
         }
 
-        if (hasPartnershipWithUs) {
-          companyClass = 'partner-company';
-        }
+        logger.log('competitor in renderMarketCompetitors', c, name, companyClass);
 
-        if (c.companyId === id) {
-        } else if (hasPartnershipWithUs) {
-          switchPartnershipStatusButton = <div className="partnership-button-area revoke">
-            <UI.Button
-              default
-              text="Разорвать партнёрство"
-              onClick={() => { productActions.revokePartnership(id, c.companyId, marketId) }}
-            />
-          </div>;
-        } else {
-          switchPartnershipStatusButton = <div className="partnership-button-area">
-            <UI.Button
-              link
-              text="Стать партнёрами"
-              onClick={() => { productActions.offerPartnership(id, c.companyId, marketId) }}
-            />
-          </div>;
-        }
+        const share = Math.floor(c.share * 100);
 
         return <tr className={companyClass}>
-          <td>{name} {switchPartnershipStatusButton}</td>
+          <td>{name}</td>
           <td>{c.power}</td>
-          <td>{c.share}</td>
+          <td>{share}</td>
         </tr>
       });
 

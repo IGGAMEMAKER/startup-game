@@ -10,8 +10,14 @@ export default class MarketManager {
   load(markets, info) {
     this.info = info;
     this.markets = markets.map(m => {
+      logger.log('load markets', m);
+
       return new Market(m);
     });
+  }
+
+  getPossibleIncome(marketId, productId) {
+    return this.getMarketSize(marketId) * this.getMarketShare(marketId, productId);
   }
 
   getMarket(marketId): Market {
@@ -39,6 +45,8 @@ export default class MarketManager {
   isMainMarket(productId, marketId) {
     return false;
   }
+  
+  
 
   getInfo(marketId) {
     return this.info.markets[marketId];
@@ -52,6 +60,10 @@ export default class MarketManager {
 
   getRatingFormula(marketId) {
     return this.getInfo(marketId).rating;
+  }
+
+  iterate(cb) {
+    return this.markets.map(cb)
   }
 
 

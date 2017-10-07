@@ -6,7 +6,6 @@ import logger from '../helpers/logger/logger';
 
 import companyCostHelper from '../helpers/products/compute-company-cost';
 
-import * as PRODUCT_STAGES from '../constants/products/product-stages';
 import * as JOB from '../constants/job';
 
 import Product from '../classes/Product';
@@ -78,13 +77,12 @@ const initialize = ({ markets, products, employees, team }) => {
 
   marketManager = new MarketManager(idea);
   marketManager.load(markets, defaults(idea));
+
   _products.forEach(p => {
     markets.forEach(m => {
-      // logger.debug('marketManager...', m.id, p);
-
       marketManager.joinProduct(m.id, p.companyId);
     })
-  })
+  });
 };
 
 initialize(sessionManager.getProductStorageData());
@@ -120,10 +118,6 @@ class ProductStore extends EventEmitter {
 
   getPoints(id) {
     return _products[id]._points;
-  }
-
-  enoughMarketingPoints(mp, id) {
-    return _products[id]._points.marketing >= mp;
   }
 
   enoughProgrammingPoints(pp, id) {
@@ -217,7 +211,7 @@ class ProductStore extends EventEmitter {
   }
 
   getName(id) {
-    return _products[id].getName();
+    return _products.find(p => p.companyId === id).getName();
   }
 
   getStage(id) {
@@ -336,22 +330,6 @@ class ProductStore extends EventEmitter {
     return this.getMainFeatureIterator(id).map((f, i) => this.getLeaderInTech(i))
   }
 
-  getLeaderInTech(featureId) {
-    const leader: Product = _products
-      .sort((p1: Product, p2: Product) => {
-        const f1 = p1.getMainFeatureQualityByFeatureId(featureId);
-        const f2 = p2.getMainFeatureQualityByFeatureId(featureId);
-
-        return f2 - f1;
-      })[0];
-
-    return {
-      id: leader.companyId,
-      name: leader.name,
-      value: leader.getMainFeatureQualityByFeatureId(featureId)
-    }
-  }
-
   getCompetitorsList() {
     return _products;
   }
@@ -380,6 +358,22 @@ class ProductStore extends EventEmitter {
     return marketManager.getMarketSize(marketId);
   }
 
+  getLeaderInTech(featureId) {
+    const leader: Product = _products
+      .sort((p1: Product, p2: Product) => {
+        const f1 = p1.getMainFeatureQualityByFeatureId(featureId);
+        const f2 = p2.getMainFeatureQualityByFeatureId(featureId);
+
+        return f2 - f1;
+      })[0];
+
+    return {
+      id: leader.companyId,
+      name: leader.name,
+      value: leader.getMainFeatureQualityByFeatureId(featureId)
+    }
+  }
+
   getRating(id, marketId, improvement = null) {
     const features = _products[id].features.offer.map(m => m);
 
@@ -393,24 +387,22 @@ class ProductStore extends EventEmitter {
     return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
   }
 
-  calculateMarketIncome(id, marketId, improvement) {
+  calculateMarketIncome(id, marketId, improvement = null) {
     const rating = this.getRating(id, marketId, improvement);
 
     const modifier = this.getPaymentModifier(id);
 
     const efficiency = rating * modifier / 10;
 
-    const size = marketManager.getMarketSize(marketId);
+    const possible = marketManager.getPossibleIncome(marketId, id);
 
-    const share = marketManager.getMarketShare(marketId, id);
-
-    return Math.floor(size * share * efficiency);
+    return Math.floor(possible * efficiency);
   }
 
   getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
-    const now = this.getMarketIncome(id, marketId, null);
+    const now = this.getMarketIncome(id, marketId);
 
-    const rating = this.getRating(id, marketId, null);
+    const rating = this.getRating(id, marketId);
     const nextRating = this.getRating(id, marketId, { featureId, value });
 
     const willBe = Math.floor(now * (nextRating / rating));
@@ -419,21 +411,19 @@ class ProductStore extends EventEmitter {
   }
 
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
-    return 0;
+    return 154;
     // return sum(
     //   this.getMarkets(id).map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
     // );
   }
 
 
-  getMarketIncome(id, marketId, improvement) {
+  getMarketIncome(id, marketId, improvement = null) {
     return this.calculateMarketIncome(id, marketId, improvement);
   };
 
   getProductIncome(id) {
-    return sum(
-      this.getMarkets(id).map((m, i) => this.getMarketIncome(id, i, null))
-    );
+    return sum(marketManager.iterate((m, i) => this.getMarketIncome(id, i)))
   }
 }
 
@@ -454,10 +444,6 @@ Dispatcher.register((p: PayloadType) => {
 
   let change = true;
   switch (p.type) {
-    case c.PRODUCT_ACTIONS_SET_PRODUCT_DEFAULTS:
-      _products[id].setProductDefaults(PRODUCT_STAGES.PRODUCT_STAGE_NORMAL, p.features, 1999);
-      break;
-
     case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
       _products[id].testHypothesis(p);
       break;
@@ -498,11 +484,9 @@ Dispatcher.register((p: PayloadType) => {
       marketManager.breakPartnership(p.c1, p.c2, p.marketId);
       break;
 
-    case c.PRODUCT_ACTIONS_CREATE_COMPANY:
-      let competitor: Product;
-      competitor = new Product(p.p);
 
-      _products.push(competitor);
+    case c.PRODUCT_ACTIONS_CREATE_COMPANY:
+      _products.push(new Product(p.p));
       break;
 
     case c.PLAYER_ACTIONS_INCREASE_MONEY:
