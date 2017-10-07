@@ -1,10 +1,10 @@
+import logger from '../helpers/logger/logger';
+
 export default class Market {
   constructor(data) {
     this.id = data.id;
     this.records = data.records || [];
     this.partnerships = data.partnerships || [];
-
-    // market size?
   }
 
   getBaseInfluence(productId) {
@@ -23,7 +23,7 @@ export default class Market {
     let total = 0;
 
     this.records.forEach(r => {
-      total += r.hype; // * this.getMainMarketModifier(r.companyId);
+      total += r.hype;
     });
 
     return this.records
@@ -32,11 +32,11 @@ export default class Market {
   }
 
   getPowerOnMarket(productId) {
-    return this.getPowerList().find(p => p.companyId === productId).power;
+    return this.getPowerList().find(p => p.productId === productId).power;
   }
 
   getShareOnMarket(productId) {
-    return this.getPowerList().find(p => p.companyId === productId).share;
+    return this.getPowerList().find(p => p.productId === productId).share;
   }
 
   getRecordByProductId(productId) {

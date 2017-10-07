@@ -12,8 +12,6 @@ export default class MarketManager {
     this.markets = markets.map(m => {
       return new Market(m);
     });
-
-    logger.debug('load markets', this);
   }
 
   getMarket(marketId): Market {
@@ -36,6 +34,10 @@ export default class MarketManager {
     return this.markets.map((m: Market) => {
       return this.getMarketSize(m.id) * m.getShareOnMarket(productId);
     })
+  }
+
+  isMainMarket(productId, marketId) {
+    return false;
   }
 
   getInfo(marketId) {

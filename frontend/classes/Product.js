@@ -89,6 +89,7 @@ export default class Product {
       bonuses: {}
     };
 
+    this.companyId = companyId;
     this.features = features;
     this.featuresOnCreate = Object.assign({}, features);
     this.idea = idea;

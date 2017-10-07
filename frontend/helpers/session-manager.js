@@ -17,23 +17,15 @@ function saveToStorage(name, value) {
 }
 
 function setDefaultValues() {
-
   console.log('setDefaultValues in session-manager');
-  const tasks = [];
-  const day = 1;
-  const gamePhase = GAME_STAGES.GAME_STAGE_INIT;
-
-  const money = 1000;
 
   // schedule
-  sessionStorage.saveInStorage('tasks', []);
-
   sessionStorage.saveInStorage('day', 1);
+  sessionStorage.saveInStorage('tasks', []);
   sessionStorage.saveInStorage('gamePhase', GAME_STAGES.GAME_STAGE_INIT);
 
   // player
   sessionStorage.saveInStorage('money', 1000);
-  sessionStorage.saveInStorage('expenses', []);
   sessionStorage.saveInStorage('points', {
     programming: 5300,
     marketing: 5200,
@@ -90,15 +82,6 @@ function setDefaultValues() {
       }
     }
   ]);
-
-  sessionStorage.saveInStorage('loan', 0);
-  sessionStorage.saveInStorage('rents', []);
-
-
-
-  logger.debug('saved tasks');
-
-
 
   // products
   sessionStorage.saveInStorage('markets', []);
@@ -165,15 +148,9 @@ function getProductStorageData() {
 
   try {
     employees = Array.from(JSON.parse(getFromStorage('employees')));
-
-    team = Array.from(JSON.parse(getFromStorage('team')));
-
-    const data = getFromStorage('products');
-
-    products = Array.from(JSON.parse(data));
-
-    markets = Array.from(JSON.parse(getFromStorage('markets')));
-
+    team      = Array.from(JSON.parse(getFromStorage('team')));
+    products  = Array.from(JSON.parse(getFromStorage('products')));
+    markets   = Array.from(JSON.parse(getFromStorage('markets')));
   } catch (ex) {
     logger.error('error in getProductStorageData', ex);
   }

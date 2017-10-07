@@ -33,8 +33,6 @@ export default class Menu extends Component {
 
   render(props, state) {
     if (!stageHelper.canShowUpperTabInMenu()) return <div></div>;
-    logger.log('ppIndication', props);
-
 
     const {
       pause,
@@ -62,8 +60,6 @@ export default class Menu extends Component {
     const moneyDifference = isMakingIncome ? `+${saldoValue}` : saldoValue;
 
 
-    logger.log('ppIndication', id);
-    logger.log('ppIndication', id);
     const ppIndication = productStore.isNeedProgrammer(id) ? negative : positive;
 
 

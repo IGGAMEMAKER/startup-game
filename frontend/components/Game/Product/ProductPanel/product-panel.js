@@ -154,7 +154,7 @@ export default class ProductPanel extends Component {
   renderCompetitorsTab(id) {
     return <div>
       {this.renderOurCostStructured(id)}
-      <Competitors id={id} />
+      <Competitors />
     </div>;
   }
 

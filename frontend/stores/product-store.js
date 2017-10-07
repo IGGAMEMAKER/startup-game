@@ -36,15 +36,15 @@ const EC = 'PRODUCT_EVENT_CHANGE';
 
 let _money = 1000;
 
-let _employees = [];
+let _employees: Array;
 
-let _team = [];
+let _team: Array;
 
-let _products: Array<Product> = [];
+let _products: Array<Product>;
 
 let marketManager;
 
-let _markets: Array = [];
+let _markets: Array;
 
 const initialize = ({ markets, products, employees, team }) => {
   logger.log('trying to initialize productStore.js', products);
@@ -78,6 +78,13 @@ const initialize = ({ markets, products, employees, team }) => {
 
   marketManager = new MarketManager(idea);
   marketManager.load(markets, defaults(idea));
+  _products.forEach(p => {
+    markets.forEach(m => {
+      // logger.debug('marketManager...', m.id, p);
+
+      marketManager.joinProduct(m.id, p.companyId);
+    })
+  })
 };
 
 initialize(sessionManager.getProductStorageData());
@@ -346,33 +353,12 @@ class ProductStore extends EventEmitter {
   }
 
   getCompetitorsList() {
-    return _products
-      .map((p: Product) => {
-        const id = p.companyId;
-        const features = p.features.offer;
-
-        const offer = p.getMainFeatures()
-          .map((f, i) => ({
-            name: f.name,
-            description: f.shortDescription,
-            value: features[i]
-          }));
-
-        return {
-          id,
-          rating: 0,
-          company: p,
-          style: p.style,
-          name: p.name,
-          features: offer,
-          XP: p.XP,
-          cost: this.getCompanyCost(id),
-          income: this.getProductIncome(id)
-        }
-      });
+    return _products;
   }
 
-
+  isPartneredOnMarket() {
+    return false;
+  }
 
   isMainMarket(id, marketId) {
     return marketManager.isMainMarket(id, marketId);
@@ -402,7 +388,7 @@ class ProductStore extends EventEmitter {
     }
 
     const maxValues = this.getLeaderValues(id).map(l => l.value);
-    const marketInfluences = marketManager.getRatingFormula(marketId); // this.getMarketRatingComputationList(id, marketId);
+    const marketInfluences = marketManager.getRatingFormula(marketId);
 
     return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
   }
