@@ -34,7 +34,7 @@ export default class MainFeature extends Component {
               <th>Технология</th>
               <th>Уровень</th>
               <th>Польза</th>
-              <th>Стоимость улучшения</th>
+              <th>Стоимость</th>
               <th>Действие</th>
               </thead>
               <tbody>

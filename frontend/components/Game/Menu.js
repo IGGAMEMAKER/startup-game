@@ -39,6 +39,7 @@ export default class Menu extends Component {
       pauseGame,
       money,
       points,
+      xp,
       setGameSpeed,
       id
     } = props;
@@ -82,7 +83,7 @@ export default class Menu extends Component {
         {speedIcons}
         <div className="navigation">{pauseOrContinue}</div>
         <div className="navigation">
-          <span className={ppIndication}>PP: {points.programming}</span>
+          <span className={ppIndication}>XP: {xp}</span>
         </div>
       </div>
     </div>;

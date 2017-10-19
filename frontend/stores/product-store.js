@@ -211,6 +211,7 @@ class ProductStore extends EventEmitter {
   }
 
   getName(id) {
+    return _products[id].getName();
     return _products.find(p => p.companyId === id).getName();
   }
 
@@ -360,18 +361,20 @@ class ProductStore extends EventEmitter {
 
   getLeaderInTech(featureId) {
     const leader: Product = _products
-      .sort((p1: Product, p2: Product) => {
-        const f1 = p1.getMainFeatureQualityByFeatureId(featureId);
-        const f2 = p2.getMainFeatureQualityByFeatureId(featureId);
+      .map((p: Product) => ({
+        id: p.companyId,
+        value: p.features.offer[featureId],
+        name: p.name
+      }))
+      .sort((p1, p2) => {
+        const f1 = p1.value;
+        const f2 = p2.value;
 
         return f2 - f1;
-      })[0];
+      })
+      [0];
 
-    return {
-      id: leader.companyId,
-      name: leader.name,
-      value: leader.getMainFeatureQualityByFeatureId(featureId)
-    }
+    return leader;
   }
 
   getRating(id, marketId, improvement = null) {
@@ -411,10 +414,10 @@ class ProductStore extends EventEmitter {
   }
 
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
-    return 154;
-    // return sum(
-    //   this.getMarkets(id).map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
-    // );
+    // return 154;
+    return sum(
+      this.getMarkets(id).map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
+    );
   }
 
 

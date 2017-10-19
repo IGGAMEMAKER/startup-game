@@ -59,24 +59,19 @@ export default class Market extends Component {
     return <div className="positive">Рынок свободен, мы можем занять его без особых усилий!</div>
   }
 
-  render({ marketId, market, id }) {
+  render({ marketId, market, id, explored }) {
     const { userOrientedName, clients, price } = market;
 
-    let requirementTab, setAsMainMarketButton;
+    let body, setAsMainMarketButton;
 
     const currentRating = <ColoredRating rating={productStore.getRating(id, marketId)} />;
     const income = productStore.getMarketIncome(id, marketId);
-
-    requirementTab = <div>
-      <div>Рейтинг: {currentRating}</div>
-      <div>Доход: {shortenValue(income)}$</div>
-    </div>;
 
     if (!productStore.isMainMarket(id, marketId)) {
       setAsMainMarketButton = <div>
         <div>
           <UI.Button
-            link
+            secondary
             text="Сделать этот рынок приоритетным"
             onClick={() => productActions.setAsMainMarket(id, marketId)}
           />
@@ -85,17 +80,28 @@ export default class Market extends Component {
       </div>;
     }
 
+    const progressBar = <div>
+      <UI.Bar min={0} max={100} current={50} />
+      <div>{setAsMainMarketButton}</div>
+    </div>
+    body = <div>
+      <div>Рейтинг: {currentRating}</div>
+      <div>Доход: {shortenValue(income)}$</div>
+      <br />
+      <div style={{ width: '60%', marginLeft: 'auto', marginRight: 'auto' }}>{progressBar}</div>
+      <div>{this.renderMarketCompetitors(id, marketId)}</div>
+    </div>;
 
     const marketSize = shortenValue(clients * price);
 
+    // if (!explored) return <div>UNEXPLORED</div>
+
     return <div className="content-block">
       <div className="client-market-item">
-        <div>Канал №{marketId + 1}: {userOrientedName} {setAsMainMarketButton}</div>
+        <div>Рынок: {userOrientedName} (Объём: {marketSize}$)</div>
         <div className="offset-mid">
-          <div>Объём рынка: {marketSize}$</div>
           <div className="offset-mid">
-            <div>{requirementTab}</div>
-            <div>{this.renderMarketCompetitors(id, marketId)}</div>
+            <div>{body}</div>
           </div>
         </div>
       </div>

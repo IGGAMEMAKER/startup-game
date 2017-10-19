@@ -97,11 +97,6 @@ export default {
       support: {
         pp: 40
       },
-      levels: [
-        {
-          name: ''
-        }
-      ],
       markets: [
         {
           id: 0,
@@ -110,10 +105,11 @@ export default {
           clients: 90000,
           price: 8,
           rating: [0, 2.5, 1.5, 6, 0],
-          requirements: [0, 0, 0, 0, 0],
-          levels: [1000, 1500, 2250],
+          // requirements: [0, 0, 0, 0, 0],
+          // levels: [1000, 1500, 2250],
           maxHype: 1000,
-          baseHypeIncrease: 10
+          baseHypeIncrease: 10,
+          explorationCost: 50,
         },
         {
           id: 1,
@@ -122,10 +118,11 @@ export default {
           clients: 7000,
           price: 50,
           rating: [0, 1.5, 1.5, 6.5, 0.5],
-          requirements: [0, 0, 0, 80, 0],
-          levels: [100, 250, 450],
+          // requirements: [0, 0, 0, 80, 0],
+          // levels: [100, 250, 450],
           maxHype: 1000,
-          baseHypeIncrease: 10
+          baseHypeIncrease: 10,
+          explorationCost: 150,
         },
         {
           id: 2,
@@ -134,10 +131,11 @@ export default {
           clients: 3000,
           price: 150,
           rating: [0.5, 1.5, 1, 0, 7],
-          requirements: [75, 0, 0, 0, 95],
-          levels: [10, 25, 45],
+          // requirements: [75, 0, 0, 0, 95],
+          // levels: [10, 25, 45],
           maxHype: 1000,
-          baseHypeIncrease: 10
+          baseHypeIncrease: 10,
+          explorationCost: 250
         }
       ]
     }
