@@ -162,7 +162,7 @@ export default class Product {
   }
 
   getProductExpenses() {
-    return 0;
+    return this.getProgrammingSupportCost() * 60;
   }
 
 

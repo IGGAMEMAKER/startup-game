@@ -10,15 +10,13 @@ import moneyCalculator from '../../../../helpers/economics/money-difference';
 import shortenValue from '../../../../helpers/math/shorten-value';
 
 export default class Metrics extends Component {
-  render({ id }, {}) {
+  render({ id }) {
     const income = round(productStore.getProductIncome(id));
 
     const data = moneyCalculator.structured(id);
 
     const productIncome = data.byProductIncome
       .map(p => <div>{p.name}: {shortenValue(p.income)}$</div>);
-
-    const teamExpenses = data.teamExpenses;
 
     return (
       <div>
@@ -34,7 +32,8 @@ export default class Metrics extends Component {
               <b>Расходы: {shortenValue(data.expenses)}$</b>
             </li>
             <ul>
-              <li>Команда: {shortenValue(teamExpenses)}$</li>
+              <li>Команда: {shortenValue(data.teamExpenses)}$</li>
+              <li>Поддержка: {shortenValue(data.productExpenses)}$</li>
             </ul>
           </ul>
         </div>

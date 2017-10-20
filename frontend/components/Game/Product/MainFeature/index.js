@@ -10,7 +10,7 @@ import logger from '../../../../helpers/logger/logger';
 import stageHelper from '../../../../helpers/stages';
 
 export default class MainFeature extends Component {
-  render({ id, onHireProgrammerClick }) {
+  render({ id }) {
     if (!stageHelper.canShowMainFeatureTab()) return '';
 
     const product = productStore.getProduct(id);
@@ -18,7 +18,7 @@ export default class MainFeature extends Component {
 
     const featureListTableView = defaults.features.map(this.renderMainFeature(product, id));
 
-    const supportTab = this.renderProgrammingSupportTab(id, onHireProgrammerClick);
+    const supportTab = this.renderSupportTab(id);
 
     return (
       <div>
@@ -47,29 +47,10 @@ export default class MainFeature extends Component {
     );
   }
 
-  renderProgrammingSupportTab(id, onHireProgrammerClick) {
-    const support = productStore.getProgrammingSupportCost(id);
-    const ppIncrease = productStore.getMonthlyProgrammerPoints(id);
-    const isNeedProgrammer = productStore.isNeedProgrammer(id);
+  renderSupportTab(id) {
+    const support = productStore.getProductSupportCost(id);
 
-    let hireProgrammerLink;
-
-    if (isNeedProgrammer) {
-      hireProgrammerLink = <div className="alert alert-danger">
-        <div>
-          <strong>Наши программисты не справляются с нагрузкой</strong>
-          <div>(мы теряем {support - ppIncrease}PP ежемесячно)</div>
-        </div>
-        <br />
-        <UI.Button secondary text="Нанять программиста" onClick={onHireProgrammerClick} />
-      </div>
-    }
-
-    return <div>
-      <div>Стоимость поддержки продукта: {support}PP в месяц</div>
-      <div>Наши программисты производят: {ppIncrease}PP в месяц</div>
-      <div>{hireProgrammerLink}</div>
-    </div>
+    return <div>Стоимость поддержки продукта: {support}$ в месяц</div>
   }
 
   renderMainFeature = (product, id) => (defaultFeature, featureId) => {
@@ -81,19 +62,22 @@ export default class MainFeature extends Component {
 
 
     const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
-    const key = `feature${featureGroup}${featureName}${featureId}`;
+    const key = `feature${featureName}${featureId}`;
 
     const leaderInTech = productStore.getLeaderInTech(featureId);
 
     const isWeAreLeaders = leaderInTech.id === 0;
 
+
     const pp = productStore.getMainFeatureUpgradeCost(id, featureId);
 
-    const enoughPPs = productStore.enoughProgrammingPoints(pp, id);
+    const upgradeCost = pp * 60;
+
+    const upgradeable = productStore.getMoney(id) >= upgradeCost;
 
     const benefit = productStore.getBenefitOnFeatureImprove(id, featureId);
 
-    const profitPhrase = benefit ? `+${benefit}$` : `???`;
+    const profitPhrase = isWeAreLeaders ? '---' : `+${benefit}$`;
 
     let leaderInTechPhrase = `Лидер: "${leaderInTech.name}"`;
     if (isWeAreLeaders) {
@@ -113,22 +97,22 @@ export default class MainFeature extends Component {
         <div>{profitPhrase}</div>
       </td>
       <td>
-        <div>{pp} PP</div>
+        <div>{upgradeCost}$</div>
       </td>
       <td>
         <UI.Button
-          disabled={!enoughPPs}
-          onClick={() => { this.improveFeature(id, featureId, pp) }}
+          disabled={!upgradeable}
+          onClick={() => { this.improveFeature(id, featureId, upgradeCost, 1) }}
           text="Улучшить"
-          secondary={enoughPPs}
-          gray={!enoughPPs}
+          secondary={upgradeable}
+          gray={!upgradeable}
         />
       </td>
     </tr>
   };
 
-  improveFeature(id, featureId, pp) {
-    productActions.spendPoints(pp, 0);
+  improveFeature(id, featureId, money, xp) {
+    productActions.decreaseMoney(money, 0);
 
     productActions.improveFeature(id, 'offer', featureId, 1);
   }

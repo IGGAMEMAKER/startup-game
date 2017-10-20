@@ -3,8 +3,6 @@ import { h, Component } from 'preact';
 
 import moneyCalculator from '../../helpers/economics/money-difference';
 
-import productStore from '../../stores/product-store';
-
 import logger from '../../helpers/logger/logger';
 
 import stageHelper from '../../helpers/stages';
@@ -38,7 +36,6 @@ export default class Menu extends Component {
       pause,
       pauseGame,
       money,
-      points,
       xp,
       setGameSpeed,
       id
@@ -46,9 +43,14 @@ export default class Menu extends Component {
 
     const speedIcons = this.renderSpeedIcons(setGameSpeed);
 
+    let action;
+
     let pauseOrContinue = '';
     if (!pause) {
-      pauseOrContinue = <UI.Button text='Пауза' onClick={pauseGame} link />;
+      // pauseOrContinue = <UI.Button text='Пауза' onClick={pauseGame} link />;
+      action = pauseGame;
+    } else {
+      action = setGameSpeed(10);
     }
 
     const negative = 'moneyNegative';
@@ -61,16 +63,23 @@ export default class Menu extends Component {
     const moneyDifference = isMakingIncome ? `+${saldoValue}` : saldoValue;
 
 
-    const ppIndication = productStore.isNeedProgrammer(id) ? negative : positive;
+    let year = Math.floor(props.day / 360);
+    let month = Math.floor((props.day - year * 360) / 30);
+    let day = props.day - year * 360 - month * 30;
 
+    month++;
+    day++;
 
-    const year = Math.floor(props.day / 360);
-    const month = Math.floor((props.day - year * 360) / 30);
-    const day = props.day - year * 360 - month * 30;
+    const monthModified = month < 10 ? `0${month}` : month;
+    const dayModified = day < 10 ? `0${day}` : day;
+
+    const time = `${dayModified}.${monthModified}.${year + 2016}`;
+    // const time = `${day + 1}.${month + 1}.${year + 2016}`;
 
     let moneyPhrase = shortenValue(money);
     let moneyDifferencePhrase = shortenValue(moneyDifference);
     if (moneyDifference > 0) moneyDifferencePhrase = `+${moneyDifferencePhrase}`;
+
 
     return <div>
       <div>
@@ -78,12 +87,15 @@ export default class Menu extends Component {
           <div className={moneyIndication}>${moneyPhrase} ({moneyDifferencePhrase}$)</div>
         </div>
         <div className="navigation">
-          <div>{day + 1}.{month + 1}.{year + 2016}</div>
+          <span className={positive}>XP: {xp}</span>
         </div>
-        {speedIcons}
-        <div className="navigation">{pauseOrContinue}</div>
         <div className="navigation">
-          <span className={ppIndication}>XP: {xp}</span>
+          <UI.Button
+            text={time}
+            secondary={pause}
+            alert={!pause}
+            onClick={action}
+          />
         </div>
       </div>
     </div>;

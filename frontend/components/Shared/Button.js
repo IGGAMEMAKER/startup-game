@@ -38,6 +38,10 @@ export default class Button extends Component {
       className = 'btn-danger'
     }
 
+    if (props.alert) {
+      className = 'btn-danger';
+    }
+
     return (
       <div>
         <button {...props} className={`btn ${className}`}>{props.text}</button>

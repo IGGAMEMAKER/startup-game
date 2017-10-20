@@ -47,6 +47,21 @@ function setDefaultValues() {
         percent: 0,
         pricingType: 1
       }
+    },
+    {
+      name: 'Xavier',
+      skills: {
+        programming: 600,
+        marketing: 100,
+        analyst: 150
+      },
+      task: JOB.JOB_TASK_PROGRAMMER_POINTS,
+      jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+      salary: {
+        money: 700,
+        percent: 0,
+        pricingType: 1
+      }
     }
   ]);
   sessionStorage.saveInStorage('team', [
@@ -65,21 +80,6 @@ function setDefaultValues() {
         pricingType: 0
       },
       isPlayer: true
-    },
-    {
-      name: 'Xavier',
-      skills: {
-        programming: 600,
-        marketing: 100,
-        analyst: 150
-      },
-      task: JOB.JOB_TASK_PROGRAMMER_POINTS,
-      jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
-      salary: {
-        money: 700,
-        percent: 0,
-        pricingType: 1
-      }
     }
   ]);
 

@@ -1,33 +1,3 @@
-// import scheduleStore from '../../stores/schedule-store';
-
-const timeModifier = (value) => {
-  return value;
-};
-
-const marketModifier = () => {
-  return 1;
-  const day = scheduleStore.getDay();
-  const month = Math.ceil(day / 30);
-
-  if (month > 144) {
-    return 1;
-  } else if (month > 60) {
-    return 3.25;
-  } else if (month > 45) {
-    return 3.7;
-  } else if (month > 35) {
-    return 3;
-  } else if (month > 20) {
-    return 2.5;
-  } else {
-    return 1;
-  }
-};
-
-const cacModifier = () => {
-  return marketModifier()
-};
-
 export default {
   compute: () => {
     return {
@@ -84,8 +54,8 @@ export default {
       utility: 10, // 0 - useless, 100 - more useful, than water in Africa or tablet for AIDs. Influences churn rate and payments
       virality: 0.3, // virality multiplier. 1-2.5 (2.5 - social-network or some cool games)
       price: 10,
-      CAC: 1 * cacModifier(), // customer acquisition cost
-      marketSize: 100000 * marketModifier(),
+      CAC: 1, // customer acquisition cost
+      marketSize: 100000,
       mvp: {
         pp: 100,
         mp: 100

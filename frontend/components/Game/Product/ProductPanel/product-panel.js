@@ -135,9 +135,10 @@ export default class ProductPanel extends Component {
 
       bonuses = this.renderNavbar(MODE_BONUSES, `Бонусы${amount > 0 ? ` (${amount})`: ''}`);
     }
+    bonuses = '';
 
     let staff;
-    staff = this.renderNavbar(MODE_STAFF, 'Команда');
+    // staff = this.renderNavbar(MODE_STAFF, 'Команда');
 
     return (
       <ul className="nav nav-tabs">
@@ -145,7 +146,6 @@ export default class ProductPanel extends Component {
         {clients}
         {competitors}
         {staff}
-        {hypothesis}
         {bonuses}
       </ul>
     );

@@ -136,6 +136,9 @@ class ProductStore extends EventEmitter {
     return _employees;
   }
 
+  getProductSupportCost(id) {
+    return _products[id].getProgrammingSupportCost() * 60;
+  }
 
 
   getProducts(): Array<Product> {
@@ -358,6 +361,8 @@ class ProductStore extends EventEmitter {
   getMarketSize(marketId) {
     return marketManager.getMarketSize(marketId);
   }
+
+
 
   getLeaderInTech(featureId) {
     const leader: Product = _products
