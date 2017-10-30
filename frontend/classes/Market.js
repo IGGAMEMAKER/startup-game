@@ -41,6 +41,12 @@ export default class Market {
     return this.getPowerList().find(p => p.companyId === companyId).power;
   }
 
+  getHype(companyId) {
+    const record = this.getRecordByProductId(companyId);
+
+    return record.hype || 0; // * this.getMainMarketModifier(companyId);
+  }
+
   getShareOnMarket(companyId) {
     return this.getPowerList().find(p => p.companyId === companyId).share;
   }
@@ -61,6 +67,14 @@ export default class Market {
       active: true,
       isMain: false
     });
+
+    return this;
+  }
+
+  addHype(companyId, hype) {
+    const index = this.getRecordIdByProductId(companyId);
+
+    this.records[index].hype += hype;
 
     return this;
   }

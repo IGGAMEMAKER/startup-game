@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 type PropsType = {
   min: number,
   max: number,
-  current: number
+  value: number
 };
 
 type BarType = {

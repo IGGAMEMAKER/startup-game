@@ -103,11 +103,13 @@ export default {
       clients
     })
   },
-  addHype(id, hype) {
+  addHype(id, marketId, hype, cost) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_HYPE_ADD,
       id,
-      hype
+      marketId,
+      hype,
+      cost
     })
   },
   viralClients(id, clients) {

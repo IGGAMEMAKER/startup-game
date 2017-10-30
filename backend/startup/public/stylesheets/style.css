@@ -262,6 +262,11 @@ textarea {
   font-weight: 600;
 }
 
+.influence-button {
+  display: inline-block;
+  width: 33%;
+  margin: auto;
+}
 
 .button1 {
   min-width: 280px;

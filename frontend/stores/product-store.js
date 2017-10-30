@@ -362,6 +362,17 @@ class ProductStore extends EventEmitter {
     return marketManager.getMarketSize(marketId);
   }
 
+  getHypeOnMarket(id, marketId) {
+    return marketManager.getHype(marketId, id);
+  }
+
+  getCurrentMarketInfo(id, marketId) {
+    return {
+      min: 0,
+      max: 100,
+      value: this.getHypeOnMarket(id, marketId)
+    }
+  }
 
 
   getLeaderInTech(featureId) {
@@ -471,7 +482,10 @@ Dispatcher.register((p: PayloadType) => {
 
 
     case c.PRODUCT_ACTIONS_HYPE_ADD:
-      _products[id].addHype(p.hype);
+      logger.log('add hype', p);
+      marketManager.addHype(p.marketId, id, p.hype);
+
+      _products[id]._money -= p.cost;
       break;
 
     case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:

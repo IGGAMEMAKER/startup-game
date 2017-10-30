@@ -101,9 +101,9 @@ export default class MainFeature extends Component {
       </td>
       <td>
         <UI.Button
-          disabled={!upgradeable}
-          onClick={() => { this.improveFeature(id, featureId, upgradeCost, 1) }}
           text="Улучшить"
+          onClick={() => { this.improveFeature(id, featureId, upgradeCost, 1) }}
+          disabled={!upgradeable}
           secondary={upgradeable}
           gray={!upgradeable}
         />

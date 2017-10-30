@@ -17,7 +17,6 @@ export default class Market extends Component {
 
     const powerList = productStore.getPowerListOnMarket(marketId)
       .map(c => {
-
         const companyId = c.companyId;
         const name = productStore.getName(companyId);
 
@@ -26,8 +25,6 @@ export default class Market extends Component {
         if (companyId === id) {
           companyClass = 'our-company';
         }
-
-        logger.log('competitor in renderMarketCompetitors', c, name, companyClass);
 
         const share = Math.floor(c.share * 100);
 
@@ -62,7 +59,9 @@ export default class Market extends Component {
   render({ marketId, market, id, explored }) {
     const { userOrientedName, clients, price } = market;
 
-    let body, setAsMainMarketButton;
+    let setAsMainMarketButton;
+
+    const marketInfo = productStore.getCurrentMarketInfo(id, marketId);
 
     const currentRating = <ColoredRating rating={productStore.getRating(id, marketId)} />;
     const income = productStore.getMarketIncome(id, marketId);
@@ -80,11 +79,42 @@ export default class Market extends Component {
       </div>;
     }
 
+    const buttons = [{
+      hype: 10, cost: 1000, name: 'Пост в соцсети'
+    }, {
+      hype: 15, cost: 5000, name: 'Таргетинг'
+    }, {
+      hype: 20, cost: 10000, name: 'Вирусное видео'
+    }];
+
+    const improveInfluenceButtons = buttons.map(b => {
+      const upgradeable = productStore.getMoney(id) >= b.cost;
+      const text = `${b.name} (+${b.hype})`;
+
+      return (
+        <div className="influence-button">
+          <UI.Button
+            disabled={!upgradeable}
+            secondary={upgradeable}
+            gray={!upgradeable}
+            text={text}
+            onClick={() => productActions.addHype(id, marketId, b.hype, b.cost)}
+          />
+          <div>Стоимость: {b.cost}$</div>
+        </div>
+      )
+    });
+
     const progressBar = <div>
-      <UI.Bar min={0} max={100} current={50} />
       <div>{setAsMainMarketButton}</div>
-    </div>
-    body = <div>
+      <br />
+      <div>Известность: {marketInfo.value} из {marketInfo.max}</div>
+      <UI.Bar min={marketInfo.min} max={marketInfo.max} data={marketInfo.value} />
+      <br />
+      <div>{improveInfluenceButtons}</div>
+    </div>;
+
+    const body = <div>
       <div>Рейтинг: {currentRating}</div>
       <div>Доход: {shortenValue(income)}$</div>
       <br />

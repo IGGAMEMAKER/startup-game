@@ -24,6 +24,10 @@ export default class MarketManager {
     return this.markets.find(m => m.id === marketId);
   }
 
+  getHype(marketId, productId) {
+    return this.getMarket(marketId).getHype(productId);
+  }
+
   getPowerListOnMarket(marketId) {
     return this.getMarket(marketId).getPowerList()
   }
@@ -45,8 +49,8 @@ export default class MarketManager {
   isMainMarket(productId, marketId) {
     return false;
   }
-  
-  
+
+
 
   getInfo(marketId) {
     return this.info.markets[marketId];
@@ -70,6 +74,12 @@ export default class MarketManager {
   // setters
   joinProduct(marketId, productId) {
     this.getMarket(marketId).join(productId);
+
+    return this;
+  }
+
+  addHype(marketId, productId, hype) {
+    this.getMarket(marketId).addHype(productId, hype);
 
     return this;
   }
