@@ -306,13 +306,9 @@ class ProductStore extends EventEmitter {
     return sum(this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy));
   }
 
-  getMonthlyProgrammerPoints(id) {
-    return Math.floor(this.getBaseMonthlyProgrammerPoints(id) * this.getProgrammingEfficiencyBonus(id));
-  }
-
-  isNeedProgrammer(id) {
-    return this.getProgrammingSupportCost(id) > this.getMonthlyProgrammerPoints(id);
-  }
+  // getMonthlyProgrammerPoints(id) {
+  //   return Math.floor(this.getBaseMonthlyProgrammerPoints(id) * this.getProgrammingEfficiencyBonus(id));
+  // }
 
   getMercenaries() {
     return this.getTeam().filter(w => w.salary.pricingType === 1)

@@ -66,20 +66,6 @@ const checkRents = day => {
   // }
 };
 
-const calculatePoints = companyId => {
-  // calculate programmer points
-  const programmingPoints = productStore.getMonthlyProgrammerPoints(companyId) - productStore.getProgrammingSupportCost(companyId);
-
-  // calculate marketing points
-
-  const points = {
-    programming: programmingPoints
-  };
-
-  productActions.increasePoints(points, companyId);
-};
-
-
 const run = () => {
   scheduleActions.increaseDay();
 
@@ -102,15 +88,9 @@ const run = () => {
 
         const money = productStore.getMoney(i);
 
-
         if (money < 0 && moneyBefore < 0) {
           logger.log('money below zero companyId=', i);
         }
-
-        logger.shit('compute penalties and bonuses for point production');
-
-        // calculate human points
-        calculatePoints(i);
 
         productActions.testHypothesis(i);
       });
