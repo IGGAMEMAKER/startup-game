@@ -9,7 +9,7 @@ import logger from '../../../../helpers/logger/logger';
 
 import stageHelper from '../../../../helpers/stages';
 
-export default class MainFeature extends Component {
+export default class MainFeatures extends Component {
   render({ id }) {
     if (!stageHelper.canShowMainFeatureTab()) return '';
 
@@ -22,20 +22,18 @@ export default class MainFeature extends Component {
 
     return (
       <div>
-        <div className="featureGroupTitle">Разработка</div>
-        {supportTab}
-        <br />
         <div className="featureGroupDescriptionWrapper">
           <div className="featureGroupDescription">Улучшая главные характеристики продукта, вы увеличиваете доход с продукта</div>
+          {supportTab}
           <br />
-          <div className="featureGroupBody">
-            <table className="table table-striped">
+          <div className="">
+            <table className="table table-striped" style={{ textAlign: 'center' }}>
               <thead>
-              <th>Технология</th>
-              <th>Уровень</th>
-              <th>Польза</th>
-              <th>Стоимость</th>
-              <th>Действие</th>
+                <th style={{ textAlign: 'left' }}>Технология</th>
+                <th>Уровень</th>
+                <th>Польза</th>
+                <th>Стоимость</th>
+                <th>Действие</th>
               </thead>
               <tbody>
               {featureListTableView}
@@ -71,9 +69,9 @@ export default class MainFeature extends Component {
 
     const pp = productStore.getMainFeatureUpgradeCost(id, featureId);
 
-    const upgradeCost = pp * 60;
+    let upgradeCost = pp * 60;
 
-    const upgradeable = productStore.getMoney(id) >= upgradeCost;
+    const upgradeable = productStore.getXP(id) >= 1;
 
     const benefit = productStore.getBenefitOnFeatureImprove(id, featureId);
 
@@ -94,34 +92,38 @@ export default class MainFeature extends Component {
 
       normalized = Math.ceil(10 * benefit / upgradeCost) / 10;
 
-      if (benefit > upgradeCost) {
-        profitPhrase = `+${benefit}$`
-      } else {
-        profitPhrase = `Окупится за ${roi} месяцев`;
-      }
+      profitPhrase = `+${benefit}$`;
+      // if (benefit > upgradeCost) {
+      // } else {
+      //   profitPhrase = `Окупится за ${roi} месяцев`;
+      // }
     }
     // <div className="feature-item-secondary-text">Окупаемость: {roi} мес</div>
     // <div className="feature-item-secondary-text">Эффективность: {normalized}</div>
+    //     <div className="feature-item-secondary-text">{leaderInTechPhrase}</div>
+    //     <div className="feature-item-secondary-text">{leaderInTech.value}lvl</div>
+
+    upgradeCost = 1;
+
+    const maxLevel = leaderInTech.value;
 
     return <tr key={key}>
-      <td>
+      <td style={{ textAlign: 'left' }}>
         <div>{userOrientedFeatureName}</div>
-        <div className="feature-item-secondary-text">{leaderInTechPhrase}</div>
       </td>
       <td>
-        <div>{current}lvl</div>
-        <div className="feature-item-secondary-text">{leaderInTech.value}lvl</div>
+        <div>{isWeAreLeaders ? current : `${current} / ${maxLevel}`}</div>
       </td>
       <td>
         <div>{profitPhrase}</div>
       </td>
       <td>
-        <div>{upgradeCost}$</div>
+        <div>{upgradeCost}XP</div>
       </td>
       <td>
         <UI.Button
           text="Улучшить"
-          onClick={() => { this.improveFeature(id, featureId, upgradeCost, 1) }}
+          onClick={() => { this.improveFeature(id, featureId, 0, 1) }}
           disabled={!upgradeable}
           secondary={upgradeable}
           gray={!upgradeable}

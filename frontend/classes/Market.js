@@ -74,7 +74,23 @@ export default class Market {
   addHype(companyId, hype) {
     const index = this.getRecordIdByProductId(companyId);
 
-    this.records[index].hype += hype;
+    if (index < 0) return this;
+
+    const was = this.records[index].hype;
+
+    this.records[index].hype = Math.min(100, was + hype);
+
+    return this;
+  }
+
+  loseMonthlyHype(companyId) {
+    const index = this.getRecordIdByProductId(companyId);
+
+    if (index < 0) return this;
+
+    const hypeValue = this.records[index].hype;
+
+    this.records[index].hype = hypeValue <= 1 ? 1 : Math.floor(hypeValue * 0.9);
 
     return this;
   }

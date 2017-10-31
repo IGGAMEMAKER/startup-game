@@ -15,8 +15,10 @@ export default class Metrics extends Component {
 
     const data = moneyCalculator.structured(id);
 
-    const productIncome = data.byProductIncome
-      .map(p => <div>{p.name}: {shortenValue(p.income)}$</div>);
+    const productIncome = productStore.getMarketIncomeList(id)
+      .map(item => <li>market #${item.marketId}: +{shortenValue(item.income)}$</li>);
+
+    console.log('productIncomeZZ', productIncome);
 
     return (
       <div>
@@ -26,7 +28,7 @@ export default class Metrics extends Component {
               <b>Доходы: {shortenValue(income)}$</b>
             </li>
             <ul>
-              <li>{productIncome}</li>
+              {productIncome}
             </ul>
             <li>
               <b>Расходы: {shortenValue(data.expenses)}$</b>

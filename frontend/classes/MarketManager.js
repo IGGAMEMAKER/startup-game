@@ -84,6 +84,12 @@ export default class MarketManager {
     return this;
   }
 
+  loseMonthlyHype(id) {
+    this.iterate(m => {
+      m.loseMonthlyHype(id)
+    })
+  }
+
   setMainMarket(productId, marketId) {
     this.getMarket(marketId).setAsMain(productId);
 

@@ -432,13 +432,37 @@ class ProductStore extends EventEmitter {
     );
   }
 
+  getBestFeatureUpgradeVariantOnMarket(id, marketId) {
+    const incomes = this.getMainFeatureIterator(id)
+      .map((f, featureId) => {
+        const income = this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, 1);
+
+        logger.log('getBestFeatureUpgradeVariantOnMarket', featureId, income);
+
+        return {
+          income,
+          featureId
+        }
+      });
+
+    return incomes.sort((a, b) => b.income - a.income)[0];
+  }
 
   getMarketIncome(id, marketId, improvement = null) {
     return this.calculateMarketIncome(id, marketId, improvement);
-  };
+  }
 
   getProductIncome(id) {
     return sum(marketManager.iterate((m, i) => this.getMarketIncome(id, i)))
+  }
+
+  getMarketIncomeList(id) {
+    return marketManager.iterate((m) => {
+      return {
+        income: this.getMarketIncome(id, m.id),
+        marketId: m.id
+      }
+    })
   }
 }
 
@@ -485,7 +509,7 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
-      _products[id].loseMonthlyHype(p.hypeDamping);
+      marketManager.loseMonthlyHype(p.id);
       break;
 
 

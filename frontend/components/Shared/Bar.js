@@ -3,7 +3,8 @@ import { h, Component } from 'preact';
 type PropsType = {
   min: number,
   max: number,
-  value: number
+  // data, // or array
+  renderValues: Boolean
 };
 
 type BarType = {
@@ -12,26 +13,28 @@ type BarType = {
 };
 
 export default class Bar extends Component {
-  renderBar(min, max, value, style) {
+  renderBar(min, max, value, style, renderValues) {
+    const current = value * 100 / (min + max);
+
     return <div
       className={`progress-bar ${style}`}
       role="progressbar"
-      style={{ width: `${value * 100 / (min + max)}%`}}
-      aria-valuenow={value}
+      style={{ width: `${current}%`}}
+      aria-valuenow={current}
       aria-valuemin={min}
       aria-valuemax={max}
-    ></div>
+    >{renderValues ? current : ''}</div>
   }
 
   render(props: PropsType) {
     let data;
 
     if (Array.isArray(props.data)) {
-      data = props.data.map((d: BarType, i) => {
-        return this.renderBar(props.min, props.max, d.value, d.style)
+      data = props.data.map((d: BarType) => {
+        return this.renderBar(props.min, props.max, d.value, d.style, props.renderValues)
       });
     } else {
-      data = this.renderBar(props.min, props.max, props.data, '');
+      data = this.renderBar(props.min, props.max, props.data, '', props.renderValues);
     }
 
     return (

@@ -264,8 +264,18 @@ textarea {
 
 .influence-button {
   display: inline-block;
-  width: 33%;
-  margin: auto;
+  width: 100%;
+  text-align: center;
+}
+
+.segment-block {
+  width: 320px;
+  margin: 20px;
+  display: inline-block;
+}
+
+.table thead th {
+  text-align: center;
 }
 
 .button1 {

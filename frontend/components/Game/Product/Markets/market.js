@@ -10,6 +10,8 @@ import UI from '../../../UI';
 
 import logger from '../../../../helpers/logger/logger';
 
+import MainFeature from '../MainFeature';
+
 export default class Market extends Component {
   renderMarketCompetitors(id, marketId) {
     // id is ourCompanyId
@@ -37,13 +39,14 @@ export default class Market extends Component {
 
 
     if (powerList.length) {
+      return <div></div>;
       return <div>
         <br />
         <div>Участники рынка</div>
         <table className="table bordered-table">
           <thead>
           <th>Компания</th>
-          <th>Влияние</th>
+          <th>Известность</th>
           <th>Доля, %</th>
           </thead>
           <tbody>
@@ -54,6 +57,29 @@ export default class Market extends Component {
     }
 
     return <div className="positive">Рынок свободен, мы можем занять его без особых усилий!</div>
+  }
+
+  renderSetMainMarketButton = (id, marketId) => {
+    return <div></div>;
+    return <div>
+      <UI.Button
+        link
+        text="Сделать этот рынок приоритетным"
+        onClick={() => productActions.setAsMainMarket(id, marketId)}
+      />
+      <span className="offset-mid">Это усилит наше влияние на 20%</span>
+    </div>
+  };
+
+  renderBestFeatureButton(id, marketId) {
+    const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
+
+    logger.log('renderBFB', upgrade);
+    // <MainFeature />
+
+    return <div>
+      <div>{JSON.stringify(upgrade)}</div>
+    </div>;
   }
 
   render({ marketId, market, id, explored }) {
@@ -69,23 +95,22 @@ export default class Market extends Component {
     if (!productStore.isMainMarket(id, marketId)) {
       setAsMainMarketButton = <div>
         <div>
-          <UI.Button
-            secondary
-            text="Сделать этот рынок приоритетным"
-            onClick={() => productActions.setAsMainMarket(id, marketId)}
-          />
+          {this.renderSetMainMarketButton(id, marketId)}
         </div>
-        <span className="offset-mid">Это усилит наше влияние на 20%</span>
       </div>;
     }
 
-    const buttons = [{
-      hype: 10, cost: 1000, name: 'Пост в соцсети'
-    }, {
-      hype: 15, cost: 5000, name: 'Таргетинг'
-    }, {
-      hype: 20, cost: 10000, name: 'Вирусное видео'
-    }];
+    const buttons = [
+      {
+        hype: 10, cost: 1000, name: 'Пост в соцсети'
+      },
+      // {
+      //   hype: 15, cost: 5000, name: 'Таргетинг'
+      // },
+      // {
+      //   hype: 20, cost: 10000, name: 'Вирусное видео'
+      // }
+    ];
 
     const improveInfluenceButtons = buttons.map(b => {
       const upgradeable = productStore.getMoney(id) >= b.cost;
@@ -105,36 +130,57 @@ export default class Market extends Component {
       )
     });
 
+    const currentHype = marketInfo.value;
+    const nextMonthHype = Math.floor(0.9 * currentHype);
+    const barData = [
+      {
+        value: nextMonthHype,
+        style: ''
+      }, {
+        value: currentHype - nextMonthHype,
+        style: 'progress-bar-striped progress-bar-animated bg-danger'
+      }
+    ];
+
+    // <div>Известность: {currentHype} из {marketInfo.max} ({nextMonthHype} в следующем месяце)</div>
+    //   <div>Известность снизится на {currentHype - nextMonthHype}</div>
     const progressBar = <div>
-      <div>{setAsMainMarketButton}</div>
-      <br />
-      <div>Известность: {marketInfo.value} из {marketInfo.max}</div>
-      <UI.Bar min={marketInfo.min} max={marketInfo.max} data={marketInfo.value} />
+      <UI.Bar min={marketInfo.min} max={marketInfo.max} data={barData} renderValues />
       <br />
       <div>{improveInfluenceButtons}</div>
     </div>;
 
-    const body = <div>
-      <div>Рейтинг: {currentRating}</div>
-      <div>Доход: {shortenValue(income)}$</div>
-      <br />
-      <div style={{ width: '60%', marginLeft: 'auto', marginRight: 'auto' }}>{progressBar}</div>
-      <div>{this.renderMarketCompetitors(id, marketId)}</div>
-    </div>;
-
     const marketSize = shortenValue(clients * price);
 
-    // if (!explored) return <div>UNEXPLORED</div>
+    const bestFeatureButton = this.renderBestFeatureButton(id, marketId);
 
-    return <div className="content-block">
-      <div className="client-market-item">
-        <div>Рынок: {userOrientedName} (Объём: {marketSize}$)</div>
-        <div className="offset-mid">
-          <div className="offset-mid">
-            <div>{body}</div>
+    // if (!explored) return <div>UNEXPLORED</div>
+    //
+    return (
+      <div className="segment-block"  style={{  }}>
+        <div className="content-block">
+          <div className="client-market-item">
+            <div>Клиенты: {userOrientedName} {setAsMainMarketButton}</div>
+            <div className="offset-min">
+              <div>Объём: {marketSize}$</div>
+              <div>Доход: {shortenValue(income)}$</div>
+              <div className="offset-min">
+                <div>Рейтинг: {currentRating}</div>
+                <div className="offset-mid">{bestFeatureButton}</div>
+                <br />
+                <div>Известность: {marketInfo.value} из {marketInfo.max}</div>
+                <div className="offset-mid">
+                  <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+                    {progressBar}
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div>{this.renderMarketCompetitors(id, marketId)}</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    );
   }
 }

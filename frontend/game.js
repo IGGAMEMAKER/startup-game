@@ -93,6 +93,8 @@ const run = () => {
         }
 
         productActions.testHypothesis(i);
+
+        productActions.loseMonthlyHype(i);
       });
 
     // clean expired rents
