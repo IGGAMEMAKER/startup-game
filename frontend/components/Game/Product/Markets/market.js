@@ -95,11 +95,17 @@ export default class Market extends Component {
       <div className="segment-value">{name}</div>
       <div>Рост доходов: {shortenValue(upgrade.income)}$</div>
       <UI.Button
-        onClick={() => {}}
+        onClick={() => this.improveFeature(id, upgrade.featureId, 0, 1)}
         text="Улучшить"
         primary
       />
     </div>;
+  }
+
+  improveFeature(id, featureId, money, xp) {
+    productActions.decreaseMoney(money, 0);
+
+    productActions.improveFeature(id, 'offer', featureId, 1);
   }
 
   render({ marketId, market, id, explored }) {
