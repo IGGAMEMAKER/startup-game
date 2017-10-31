@@ -84,11 +84,21 @@ export default class Market extends Component {
   renderBestFeatureButton(id, marketId) {
     const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
 
+    const name = productStore.getPrettyFeatureNameByFeatureId(id, upgrade.featureId);
+
     logger.log('renderBFB', upgrade);
     // <MainFeature />
 
+      // <div>{JSON.stringify(upgrade)}</div>
     return <div>
-      <div>{JSON.stringify(upgrade)}</div>
+      <div className="segment-attribute">Улучшение</div>
+      <div className="segment-value">{name}</div>
+      <div>Рост доходов: {shortenValue(upgrade.income)}$</div>
+      <UI.Button
+        onClick={() => {}}
+        text="Улучшить"
+        primary
+      />
     </div>;
   }
 
