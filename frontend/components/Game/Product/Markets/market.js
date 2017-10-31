@@ -13,7 +13,17 @@ import logger from '../../../../helpers/logger/logger';
 import MainFeature from '../MainFeature';
 
 export default class Market extends Component {
-  renderMarketCompetitors(id, marketId) {
+  state = {
+    showCompetitors: false
+  };
+
+  toggleCompetitors = () => {
+    this.setState({
+      showCompetitors: !this.state.showCompetitors
+    })
+  };
+
+  renderMarketCompetitors(id, marketId, showCompetitors) {
     // id is ourCompanyId
     logger.log(marketId, id, 'renderMarketCompetitors', productStore.getCompetitorsList());
 
@@ -39,11 +49,11 @@ export default class Market extends Component {
 
 
     if (powerList.length) {
-      return <div></div>;
+      // return <div></div>;
       return <div>
         <br />
-        <div>Участники рынка</div>
-        <table className="table bordered-table">
+        <div onClick={this.toggleCompetitors}>Участники рынка (свернуть/развернуть)</div>
+        <table className="table bordered-table" style={{ display: showCompetitors ? 'block' : 'none' }}>
           <thead>
           <th>Компания</th>
           <th>Известность</th>
@@ -155,29 +165,24 @@ export default class Market extends Component {
     const bestFeatureButton = this.renderBestFeatureButton(id, marketId);
 
     // if (!explored) return <div>UNEXPLORED</div>
-    //
+
     return (
       <div className="segment-block"  style={{  }}>
         <div className="content-block">
           <div className="client-market-item">
-            <div>Клиенты: {userOrientedName} {setAsMainMarketButton}</div>
-            <div className="offset-min">
-              <div>Объём: {marketSize}$</div>
-              <div>Доход: {shortenValue(income)}$</div>
-              <div className="offset-min">
-                <div>Рейтинг: {currentRating}</div>
-                <div className="offset-mid">{bestFeatureButton}</div>
-                <br />
-                <div>Известность: {marketInfo.value} из {marketInfo.max}</div>
-                <div className="offset-mid">
-                  <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-                    {progressBar}
-                  </div>
-                </div>
-              </div>
-              <br />
-              <div>{this.renderMarketCompetitors(id, marketId)}</div>
+            <div className="segment-title">{userOrientedName}</div>
+            <div className="segment-attribute">Доход</div>
+            <div className="segment-value">{shortenValue(income)} / {marketSize}$</div>
+            <div className="segment-attribute">Рейтинг</div>
+            <div className="segment-value">{currentRating}</div>
+            <div className="segment-value">{bestFeatureButton}</div>
+            <br />
+            <div>Известность: {marketInfo.value} из {marketInfo.max}</div>
+            <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
+              {progressBar}
             </div>
+            <br />
+            <div>{this.renderMarketCompetitors(id, marketId, this.state.showCompetitors)}</div>
           </div>
         </div>
       </div>
