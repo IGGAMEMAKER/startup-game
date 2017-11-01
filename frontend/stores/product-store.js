@@ -392,11 +392,22 @@ class ProductStore extends EventEmitter {
   getRating(id, marketId, improvement = null) {
     const features = _products[id].features.offer.map(m => m);
 
+    const maxValues = this.getLeaderValues(id).map(l => l.value);
+
     if (improvement) {
-      features[improvement.featureId] += 1;
+      const featureId = improvement.featureId;
+      const value = features[featureId];
+
+      const leader = this.getLeaderInTech(featureId);
+      const maxValue = leader.value;
+
+      features[featureId] += 1;
+      if (value + 1 > maxValue) {
+        maxValues[featureId] += 1;
+      }
     }
 
-    const maxValues = this.getLeaderValues(id).map(l => l.value);
+
     const marketInfluences = marketManager.getRatingFormula(marketId);
 
     return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
@@ -415,14 +426,20 @@ class ProductStore extends EventEmitter {
   }
 
   getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
-    const now = this.getMarketIncome(id, marketId);
+    const income = this.getMarketIncome(id, marketId);
 
     const rating = this.getRating(id, marketId);
     const nextRating = this.getRating(id, marketId, { featureId, value });
 
-    const willBe = Math.floor(now * (nextRating / rating));
+    // logger.log('getIncomeIncreaseForMarketIfWeUpgradeFeature', marketId, featureId, income);
 
-    return willBe - now;
+    const willBe = Math.floor(income * (nextRating / rating));
+
+    const feature = this.getPrettyFeatureNameByFeatureId(id, featureId);
+    logger.log(`getIncomeIncreaseForMarketIfWeUpgradeFeature, ${feature} on market ${marketId}, 
+    income: ${income}$, willBe: ${willBe}$, rating: ${rating}, nextRating: ${nextRating}`);
+
+    return willBe - income;
   }
 
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {

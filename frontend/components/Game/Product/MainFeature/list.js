@@ -32,7 +32,6 @@ export default class MainFeatures extends Component {
                 <th style={{ textAlign: 'left' }}>Технология</th>
                 <th>Уровень</th>
                 <th>Польза</th>
-                <th>Стоимость</th>
                 <th>Действие</th>
               </thead>
               <tbody>
@@ -98,6 +97,8 @@ export default class MainFeatures extends Component {
       //   profitPhrase = `Окупится за ${roi} месяцев`;
       // }
     }
+
+    // profitPhrase = `+${benefit}$`;
     // <div className="feature-item-secondary-text">Окупаемость: {roi} мес</div>
     // <div className="feature-item-secondary-text">Эффективность: {normalized}</div>
     //     <div className="feature-item-secondary-text">{leaderInTechPhrase}</div>
@@ -122,7 +123,7 @@ export default class MainFeatures extends Component {
       </td>
       <td>
         <UI.Button
-          text="Улучшить"
+          text="Улучшить за 1XP"
           onClick={() => { this.improveFeature(id, featureId, 0, 1) }}
           disabled={!upgradeable}
           secondary={upgradeable}
