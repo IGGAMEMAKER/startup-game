@@ -51,11 +51,10 @@ export default class MainFeatures extends Component {
   }
 
   renderMainFeature = (product, id) => (defaultFeature, featureId) => {
-    const featureGroup = 'offer';
     const featureName = defaultFeature.name;
     const { shortDescription } = defaultFeature;
 
-    const current = product.features[featureGroup][featureId] || 0;
+    const current = product.features.offer[featureId] || 0;
 
 
     const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
@@ -66,45 +65,23 @@ export default class MainFeatures extends Component {
     const isWeAreLeaders = leaderInTech.id === 0;
 
 
-    const pp = productStore.getMainFeatureUpgradeCost(id, featureId);
+    const upgradeCost = productStore.getFeatureIncreaseXPCost(id);
 
-    let upgradeCost = pp * 60;
 
-    const upgradeable = productStore.getXP(id) >= 1;
+    const upgradeable = productStore.getXP(id) >= upgradeCost;
 
     const benefit = productStore.getBenefitOnFeatureImprove(id, featureId);
 
     let profitPhrase;
-    let normalized;
-    let roi;
 
     let leaderInTechPhrase;
     if (isWeAreLeaders) {
       leaderInTechPhrase = 'Мы лидируем!';
       profitPhrase = '---';
-      roi = '---';
-      normalized = '---';
     } else {
       leaderInTechPhrase = `Лидер: "${leaderInTech.name}"`;
       profitPhrase = `+${benefit}$`;
-      roi = Math.ceil(upgradeCost / benefit);
-
-      normalized = Math.ceil(10 * benefit / upgradeCost) / 10;
-
-      profitPhrase = `+${benefit}$`;
-      // if (benefit > upgradeCost) {
-      // } else {
-      //   profitPhrase = `Окупится за ${roi} месяцев`;
-      // }
     }
-
-    // profitPhrase = `+${benefit}$`;
-    // <div className="feature-item-secondary-text">Окупаемость: {roi} мес</div>
-    // <div className="feature-item-secondary-text">Эффективность: {normalized}</div>
-    //     <div className="feature-item-secondary-text">{leaderInTechPhrase}</div>
-    //     <div className="feature-item-secondary-text">{leaderInTech.value}lvl</div>
-
-    upgradeCost = 1;
 
     const maxLevel = leaderInTech.value;
 
@@ -119,9 +96,6 @@ export default class MainFeatures extends Component {
         <div>{profitPhrase}</div>
       </td>
       <td>
-        <div>{upgradeCost}XP</div>
-      </td>
-      <td>
         <UI.Button
           text="Улучшить за 1XP"
           onClick={() => { this.improveFeature(id, featureId, 0, 1) }}
@@ -133,9 +107,7 @@ export default class MainFeatures extends Component {
     </tr>
   };
 
-  improveFeature(id, featureId, money, xp) {
-    productActions.decreaseMoney(money, 0);
-
-    productActions.improveFeature(id, 'offer', featureId, 1);
+  improveFeature(id, featureId, xp) {
+    productActions.improveFeature(id, 'offer', featureId, 1, xp);
   }
 }

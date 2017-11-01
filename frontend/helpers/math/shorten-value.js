@@ -3,7 +3,7 @@ const shortenValue = value => {
 
   if (abs < 10000) return value;
 
-  if (abs < 1000000) return `${Math.floor(value / 1000)}k`;
+  if (abs < 1000000) return `${Math.floor(value / 1000)}K`;
 
   if (abs < 1000000000) return `${Math.floor(value / 100000) / 10}M`;
 

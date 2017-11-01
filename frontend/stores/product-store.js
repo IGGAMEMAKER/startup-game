@@ -425,6 +425,10 @@ class ProductStore extends EventEmitter {
     return Math.floor(possible * efficiency);
   }
 
+  getFeatureIncreaseXPCost(id) {
+    return 1;
+  }
+
   getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
     const income = this.getMarketIncome(id, marketId);
 
@@ -452,13 +456,15 @@ class ProductStore extends EventEmitter {
   getBestFeatureUpgradeVariantOnMarket(id, marketId) {
     const incomes = this.getMainFeatureIterator(id)
       .map((f, featureId) => {
+        const value = this.getMainFeatureQualityByFeatureId(id, featureId);
         const income = this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, 1);
 
         logger.log('getBestFeatureUpgradeVariantOnMarket', featureId, income);
 
         return {
           income,
-          featureId
+          featureId,
+          level: value + 1
         }
       });
 

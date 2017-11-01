@@ -82,30 +82,50 @@ export default class Market extends Component {
   };
 
   renderBestFeatureButton(id, marketId) {
+    const cost = productStore.getFeatureIncreaseXPCost(id);
+
+    const XP = productStore.getXP(id);
+
     const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
 
     const name = productStore.getPrettyFeatureNameByFeatureId(id, upgrade.featureId);
 
-    logger.log('renderBFB', upgrade);
-    // <MainFeature />
+    const income = shortenValue(upgrade.income);
 
-      // <div>{JSON.stringify(upgrade)}</div>
+
+    const isFullyUpgraded = income === 0;
+    const noXP = XP < cost;
+
+    const disabled = isFullyUpgraded || noXP;
+
+    if (isFullyUpgraded) {
+      return <div>Ваш продукт полностью устраивает клиентов!</div>
+    }
+
+    let button = <UI.Button
+      onClick={() => this.improveFeature(id, upgrade.featureId, cost)}
+      text={`Улучшить за ${cost}XP`}
+      primary
+      disabled={disabled}
+    />;
+
+    if (noXP) {
+      button = <div>
+        <div>Нужно больше XP!</div>
+        <div>{XP}XP / {cost}XP</div>
+      </div>
+    }
+
     return <div>
-      <div className="segment-attribute">Улучшение</div>
-      <div className="segment-value">{name}</div>
-      <div>Рост доходов: {shortenValue(upgrade.income)}$</div>
-      <UI.Button
-        onClick={() => this.improveFeature(id, upgrade.featureId, 0, 1)}
-        text="Улучшить"
-        primary
-      />
+      <div className="segment-attribute">Улучшение технологии</div>
+      <div className="segment-value">{name} до {upgrade.level}LVL</div>
+      <div className="segment-value">Доход: +{income}$</div>
+      {button}
     </div>;
   }
 
-  improveFeature(id, featureId, money, xp) {
-    productActions.decreaseMoney(money, 0);
-
-    productActions.improveFeature(id, 'offer', featureId, 1);
+  improveFeature(id, featureId, xp) {
+    productActions.improveFeature(id, 'offer', featureId, 1, xp);
   }
 
   render({ marketId, market, id, explored }) {
@@ -187,16 +207,17 @@ export default class Market extends Component {
         <div className="content-block">
           <div className="client-market-item">
             <div className="segment-title">{userOrientedName}</div>
+            <hr color="white"/>
             <div className="segment-attribute">Доход</div>
             <div className="segment-value">{shortenValue(income)} / {marketSize}$</div>
+            <hr color="white"/>
             <div className="segment-attribute">Рейтинг</div>
             <div className="segment-value">{currentRating}</div>
             <div className="segment-value">{bestFeatureButton}</div>
+            <hr color="white"/>
             <br />
             <div>Известность: {marketInfo.value} из {marketInfo.max}</div>
-            <div style={{ width: '100%', marginLeft: 'auto', marginRight: 'auto' }}>
-              {progressBar}
-            </div>
+            <div>{progressBar}</div>
             <br />
             <div>{this.renderMarketCompetitors(id, marketId, this.state.showCompetitors)}</div>
           </div>
