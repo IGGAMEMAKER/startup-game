@@ -6,6 +6,7 @@ import Select from './Shared/Select';
 import arrows from './Shared/arrows';
 import Info from './Shared/Info';
 import Bar from './Shared/Bar';
+import Changeable from './Shared/Changeable';
 
 const icons = {
   rating: 'R',
@@ -21,5 +22,6 @@ export default {
   symbols: arrows,
   icons,
   Info,
-  Bar
+  Bar,
+  Changeable
 };

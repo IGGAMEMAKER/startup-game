@@ -426,7 +426,7 @@ class ProductStore extends EventEmitter {
   }
 
   getFeatureIncreaseXPCost(id) {
-    return 1;
+    return 3;
   }
 
   getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
@@ -439,9 +439,9 @@ class ProductStore extends EventEmitter {
 
     const willBe = Math.floor(income * (nextRating / rating));
 
-    const feature = this.getPrettyFeatureNameByFeatureId(id, featureId);
-    logger.log(`getIncomeIncreaseForMarketIfWeUpgradeFeature, ${feature} on market ${marketId}, 
-    income: ${income}$, willBe: ${willBe}$, rating: ${rating}, nextRating: ${nextRating}`);
+    // const feature = this.getPrettyFeatureNameByFeatureId(id, featureId);
+    // logger.log(`getIncomeIncreaseForMarketIfWeUpgradeFeature, ${feature} on market ${marketId},
+    // income: ${income}$, willBe: ${willBe}$, rating: ${rating}, nextRating: ${nextRating}`);
 
     return willBe - income;
   }
@@ -458,8 +458,6 @@ class ProductStore extends EventEmitter {
       .map((f, featureId) => {
         const value = this.getMainFeatureQualityByFeatureId(id, featureId);
         const income = this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, 1);
-
-        logger.log('getBestFeatureUpgradeVariantOnMarket', featureId, income);
 
         return {
           income,

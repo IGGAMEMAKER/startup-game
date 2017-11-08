@@ -41,8 +41,6 @@ export default class ProductPanel extends Component {
     mode: MODE_MARKETING
   };
 
-  componentWillMount() {}
-
   setMode = (mode) => {
     stats.saveAction('navigation', { mode });
 

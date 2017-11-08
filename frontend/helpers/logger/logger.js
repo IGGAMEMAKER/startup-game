@@ -1,6 +1,10 @@
+const messages = [];
+
 export default {
   log: console.log,
-  debug: console.log,
+  debug: () => {
+    console.log(arguments);
+  },
   error: console.error,
   shit: (text) => {
     // console.log(`GOVNOKOD: ${text}`);

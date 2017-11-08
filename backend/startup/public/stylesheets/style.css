@@ -203,6 +203,26 @@ textarea {
   }
 }
 
+/* ---- animations ---- */
+
+@keyframes growOnChange {
+  0%, 100% {
+    font-weight: inherit;
+  }
+  25% {
+    font-weight: 900;
+    /*font-size: 108%;*/
+  }
+}
+
+.grow-on-change {
+  animation: 0.5s ease-out 0s 1 growOnChange;
+}
+
+
+/* ---- animations ---- */
+
+
 .hide {
   display: none;
 }
@@ -344,11 +364,15 @@ textarea {
 
 .content-block {
   background-color: var(--content-block-color);
-  border-style: solid;
-  border-width: thin;
+  /*border-style: solid;*/
+  /*border-width: thin;*/
   border-color: #3B5998;
   padding: 10px;
   margin-bottom: 25px;
+
+  border-radius: 15px;
+  border-style: solid;
+  border-width: 2px;
 }
 
 .bonus-button {

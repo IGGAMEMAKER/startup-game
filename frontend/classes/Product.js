@@ -593,6 +593,8 @@ export default class Product {
     } else {
       this.improvements = 1;
     }
+
+    this.XP -= p.XP;
   }
 
   improveFeatureByPoints(p) {

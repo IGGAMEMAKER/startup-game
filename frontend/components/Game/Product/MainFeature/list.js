@@ -26,7 +26,7 @@ export default class MainFeatures extends Component {
           <div className="featureGroupDescription">Улучшая главные характеристики продукта, вы увеличиваете доход с продукта</div>
           {supportTab}
           <br />
-          <div className="">
+          <div>
             <table className="table table-striped" style={{ textAlign: 'center' }}>
               <thead>
                 <th style={{ textAlign: 'left' }}>Технология</th>
@@ -97,8 +97,8 @@ export default class MainFeatures extends Component {
       </td>
       <td>
         <UI.Button
-          text="Улучшить за 1XP"
-          onClick={() => { this.improveFeature(id, featureId, 0, 1) }}
+          text={`Улучшить за ${upgradeCost}XP`}
+          onClick={() => { this.improveFeature(id, featureId, upgradeCost) }}
           disabled={!upgradeable}
           secondary={upgradeable}
           gray={!upgradeable}

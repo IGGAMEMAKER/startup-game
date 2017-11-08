@@ -59,7 +59,7 @@ export default class Menu extends Component {
     const saldoValue = moneyCalculator.saldo();
     const isMakingIncome = saldoValue > 0;
 
-    const moneyIndication = isMakingIncome ? positive : negative;
+    let moneyIndication = isMakingIncome ? positive : negative;
     const moneyDifference = isMakingIncome ? `+${saldoValue}` : saldoValue;
 
 
@@ -78,16 +78,19 @@ export default class Menu extends Component {
 
     let moneyPhrase = shortenValue(money);
     let moneyDifferencePhrase = shortenValue(moneyDifference);
-    if (moneyDifference > 0) moneyDifferencePhrase = `+${moneyDifferencePhrase}`;
+    if (moneyDifference > 0) moneyDifferencePhrase = `+$${moneyDifferencePhrase}`;
 
+    // const phrase = `$${moneyPhrase} (${moneyDifferencePhrase})`;
 
     return <div>
       <div>
         <div className="navigation">
-          <div className={moneyIndication}>${moneyPhrase} ({moneyDifferencePhrase}$)</div>
+          <div className={moneyIndication}>
+            $<UI.Changeable value={moneyPhrase} /> (<UI.Changeable value={moneyDifferencePhrase} />)
+          </div>
         </div>
         <div className="navigation">
-          <span className={positive}>XP: {xp}</span>
+          <span className={positive}>XP: <UI.Changeable value={xp} /></span>
         </div>
         <div className="navigation">
           <UI.Button

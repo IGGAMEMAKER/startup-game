@@ -10,7 +10,7 @@ import UI from '../../../UI';
 
 import logger from '../../../../helpers/logger/logger';
 
-import MainFeature from '../MainFeature';
+import coloringRange from '../../../../helpers/coloring-range';
 
 export default class Market extends Component {
   state = {
@@ -25,7 +25,6 @@ export default class Market extends Component {
 
   renderMarketCompetitors(id, marketId, showCompetitors) {
     // id is ourCompanyId
-    logger.log(marketId, id, 'renderMarketCompetitors', productStore.getCompetitorsList());
 
     const powerList = productStore.getPowerListOnMarket(marketId)
       .map(c => {
@@ -90,7 +89,8 @@ export default class Market extends Component {
 
     const name = productStore.getPrettyFeatureNameByFeatureId(id, upgrade.featureId);
 
-    const income = shortenValue(upgrade.income);
+    const maxBenefit = productStore.getProductIncomeIncreaseIfWeUpgradeFeature(id, upgrade.featureId, 1);
+    const income =  shortenValue(maxBenefit);
 
 
     const isFullyUpgraded = income === 0;
@@ -99,28 +99,29 @@ export default class Market extends Component {
     const disabled = isFullyUpgraded || noXP;
 
     if (isFullyUpgraded) {
-      return <div>Ваш продукт полностью устраивает клиентов!</div>
+      return <div>Ваш продукт идеален!</div>
     }
+
+    const text = <div>
+      <div>Улучшить технологию</div>
+      <div>"{name}"</div>
+    </div>;
 
     let button = <UI.Button
       onClick={() => this.improveFeature(id, upgrade.featureId, cost)}
-      text={`Улучшить за ${cost}XP`}
+      text={text}
       primary
       disabled={disabled}
     />;
 
     if (noXP) {
-      button = <div>
-        <div>Нужно больше XP!</div>
-        <div>{XP}XP / {cost}XP</div>
-      </div>
+      button = <div>Нужно XP: {cost}</div>;
     }
 
+      // <div className="segment-attribute">{name} >>> {upgrade.level} LVL</div>
     return <div>
-      <div className="segment-attribute">Улучшение технологии</div>
-      <div className="segment-value">{name} до {upgrade.level}LVL</div>
-      <div className="segment-value">Доход: +{income}$</div>
       {button}
+      <div className="segment-value">Доход: +{income}$</div>
     </div>;
   }
 
@@ -135,7 +136,9 @@ export default class Market extends Component {
 
     const marketInfo = productStore.getCurrentMarketInfo(id, marketId);
 
-    const currentRating = <ColoredRating rating={productStore.getRating(id, marketId)} />;
+    const rating = productStore.getRating(id, marketId);
+
+    const currentRating = <ColoredRating rating={rating} />;
     const income = productStore.getMarketIncome(id, marketId);
 
     if (!productStore.isMainMarket(id, marketId)) {
@@ -160,7 +163,7 @@ export default class Market extends Component {
 
     const improveInfluenceButtons = buttons.map(b => {
       const upgradeable = productStore.getMoney(id) >= b.cost;
-      const text = `${b.name} (+${b.hype})`;
+      const text = `${b.name}`; // (+${b.hype})`;
 
       return (
         <div className="influence-button">
@@ -178,22 +181,29 @@ export default class Market extends Component {
 
     const currentHype = marketInfo.value;
     const nextMonthHype = Math.floor(0.9 * currentHype);
+
+    // const barData = [
+    //   {
+    //     value: nextMonthHype,
+    //     style: ''
+    //   }, {
+    //     value: currentHype - nextMonthHype,
+    //     style: 'progress-bar-striped progress-bar-animated bg-danger'
+    //   }
+    // ];
     const barData = [
       {
-        value: nextMonthHype,
+        value: productStore.getXP(id),
         style: ''
       }, {
-        value: currentHype - nextMonthHype,
+        value: 5,
         style: 'progress-bar-striped progress-bar-animated bg-danger'
       }
     ];
 
-    // <div>Известность: {currentHype} из {marketInfo.max} ({nextMonthHype} в следующем месяце)</div>
-    //   <div>Известность снизится на {currentHype - nextMonthHype}</div>
     const progressBar = <div>
-      <UI.Bar min={marketInfo.min} max={marketInfo.max} data={barData} renderValues />
+      <UI.Bar min={0} max={250} data={barData} renderValues real />
       <br />
-      <div>{improveInfluenceButtons}</div>
     </div>;
 
     const marketSize = shortenValue(clients * price);
@@ -202,23 +212,40 @@ export default class Market extends Component {
 
     // if (!explored) return <div>UNEXPLORED</div>
 
+    const fame = marketInfo.value;
+    const maxFame = marketInfo.max;
+    const fameColor = coloringRange.standard(fame, 100);
+
     return (
-      <div className="segment-block"  style={{  }}>
+      <div className="segment-block">
         <div className="content-block">
           <div className="client-market-item">
             <div className="segment-title">{userOrientedName}</div>
             <hr color="white"/>
+
             <div className="segment-attribute">Доход</div>
-            <div className="segment-value">{shortenValue(income)} / {marketSize}$</div>
+            <div className="segment-value"><UI.Changeable value={shortenValue(income)} /> / {marketSize}$</div>
             <hr color="white"/>
+
+            <div style={{ display: 'none' }}>
+              <div className="segment-attribute">Известность</div>
+              <div className="segment-value"><span style={{ color: fameColor }}>{fame}</span></div>
+              <div>{improveInfluenceButtons}</div>
+              <hr color="white"/>
+            </div>
+
             <div className="segment-attribute">Рейтинг</div>
             <div className="segment-value">{currentRating}</div>
             <div className="segment-value">{bestFeatureButton}</div>
             <hr color="white"/>
-            <br />
-            <div>Известность: {marketInfo.value} из {marketInfo.max}</div>
+
+            <div style={{ display: 'none' }}>
+            <div className="segment-attribute">Следующий уровень</div>
+            <div className="segment-value">Локальный рынок</div>
+            <div className="segment-value">Объём рынка увеличивается на 150K$</div>
             <div>{progressBar}</div>
             <br />
+              </div>
             <div>{this.renderMarketCompetitors(id, marketId, this.state.showCompetitors)}</div>
           </div>
         </div>
