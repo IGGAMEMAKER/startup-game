@@ -29,6 +29,15 @@ export default {
     })
   },
 
+  joinMarket(id, marketId, explorationCost) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_JOIN,
+      id,
+      marketId,
+      xp: explorationCost
+    })
+  },
+
   offerPartnership(c1, c2, marketId) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_OFFER,

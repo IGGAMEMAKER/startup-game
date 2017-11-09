@@ -1,5 +1,10 @@
 export default {
   compute: () => {
+    const SEGMENT_PROGRAMMER = 'Программисты';
+    const SEGMENT_STARTUPS = 'Стартапы';
+    const SEGMENT_SMALL_BUSINESS = 'Малый бизнес';
+    const SEGMENT_CORPORATIONS = 'Корпорации';
+
     return {
       description: 'Веб хостинг. Позволяет клиентам создавать сайты не заботясь об инфраструктуре',
       features: [
@@ -70,42 +75,69 @@ export default {
       markets: [
         {
           id: 0,
-          name: 'solo developer',
-          userOrientedName: 'Программисты',
-          clients: 90000,
-          price: 8,
+          userOrientedName: 'Программисты. Прототип',
+          clients: 9000,
+          price: 4,
           rating: [0, 2.5, 1.5, 6, 0],
-          // requirements: [0, 0, 0, 0, 0],
-          // levels: [1000, 1500, 2250],
           maxHype: 1000,
           baseHypeIncrease: 10,
-          explorationCost: 50,
+          explorationCost: 0,
+          xp: 3
         },
         {
           id: 1,
-          name: 'small startups',
-          userOrientedName: 'Стартапы',
-          clients: 7000,
-          price: 50,
+          userOrientedName: 'Стартапы. Прототип',
+          clients: 700,
+          price: 25,
           rating: [0, 1.5, 1.5, 6.5, 0.5],
-          // requirements: [0, 0, 0, 80, 0],
-          // levels: [100, 250, 450],
           maxHype: 1000,
           baseHypeIncrease: 10,
-          explorationCost: 150,
+          explorationCost: 20,
+          xp: 1
         },
         {
           id: 2,
-          name: 'middle business',
+          userOrientedName: 'Малый бизнес. Прототип',
+          clients: 300,
+          price: 75,
+          rating: [0.5, 1.5, 1, 0, 7],
+          maxHype: 1000,
+          baseHypeIncrease: 10,
+          explorationCost: 30,
+          xp: 1
+        },
+        {
+          id: 3,
+          userOrientedName: 'Программисты',
+          clients: 9000,
+          price: 4,
+          rating: [0, 2.5, 1.5, 6, 0],
+          maxHype: 1000,
+          baseHypeIncrease: 10,
+          explorationCost: 40,
+          xp: 0.5
+        },
+        {
+          id: 4,
+          userOrientedName: 'Стартапы. Прототип',
+          clients: 700,
+          price: 25,
+          rating: [0, 1.5, 1.5, 6.5, 0.5],
+          maxHype: 1000,
+          baseHypeIncrease: 10,
+          explorationCost: 45,
+          xp: 0.5
+        },
+        {
+          id: 5,
           userOrientedName: 'Малый бизнес',
           clients: 3000,
           price: 150,
           rating: [0.5, 1.5, 1, 0, 7],
-          // requirements: [75, 0, 0, 0, 95],
-          // levels: [10, 25, 45],
           maxHype: 1000,
           baseHypeIncrease: 10,
-          explorationCost: 250
+          explorationCost: 55,
+          xp: 0.5
         }
       ]
     }

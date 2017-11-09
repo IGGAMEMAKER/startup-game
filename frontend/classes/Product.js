@@ -582,6 +582,11 @@ export default class Product {
     }
   }
 
+  decreaseXP(xp) {
+    logger.log('decreaseXP', xp, this.XP);
+    this.XP -= xp;
+    logger.log('decreaseXP', 'now', this.XP);
+  }
 
   improveFeature(p) {
     let previous = this.features[p.featureGroup][p.featureName] || 0;

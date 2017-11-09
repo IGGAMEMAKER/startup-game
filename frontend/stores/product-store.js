@@ -60,29 +60,24 @@ const initialize = ({ markets, products, employees, team }) => {
   _markets = markets;
 
   const idea = _products[0].getIdea();
-  markets = [
-    {
-      id: 0,
-      idea
-    },
-    {
-      id: 1,
-      idea
-    },
-    {
-      id: 2,
-      idea
+  markets = defaults(idea).markets.map((m, i) => {
+    return {
+      idea,
+      id: m.id
     }
-  ];
+  });
 
   marketManager = new MarketManager(idea);
   marketManager.load(markets, defaults(idea));
 
   _products.forEach(p => {
     markets.forEach(m => {
-      marketManager.joinProduct(m.id, p.companyId);
+      if (p.companyId !== 0) {
+        marketManager.joinProduct(m.id, p.companyId);
+      }
     })
   });
+  marketManager.joinProduct(0, 0);
 };
 
 initialize(sessionManager.getProductStorageData());
@@ -266,10 +261,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getXP();
   }
 
-  getHypothesisPoints(id) {
-    return _products[id].getHypothesisPoints();
-  }
-
   getDescriptionOfProduct(id) {
     return _products[id].getDescriptionOfProduct();
   }
@@ -370,6 +361,10 @@ class ProductStore extends EventEmitter {
     }
   }
 
+  isExploredMarket(id, mId) {
+    return marketManager.isExploredMarket(id, mId);
+  }
+
 
   getLeaderInTech(featureId) {
     const leader: Product = _products
@@ -411,6 +406,10 @@ class ProductStore extends EventEmitter {
     const marketInfluences = marketManager.getRatingFormula(marketId);
 
     return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
+  }
+
+  getMarketExplorationCost(id, marketId) {
+    return this.getDefaults(id).markets[marketId].explorationCost;
   }
 
   calculateMarketIncome(id, marketId, improvement = null) {
@@ -523,7 +522,6 @@ Dispatcher.register((p: PayloadType) => {
 
 
     case c.PRODUCT_ACTIONS_HYPE_ADD:
-      logger.log('add hype', p);
       marketManager.addHype(p.marketId, id, p.hype);
 
       _products[id]._money -= p.cost;
@@ -533,7 +531,10 @@ Dispatcher.register((p: PayloadType) => {
       marketManager.loseMonthlyHype(p.id);
       break;
 
-
+    case c.PRODUCT_ACTIONS_MARKETS_JOIN:
+      marketManager.joinProduct(p.marketId, p.id);
+      _products[p.id].decreaseXP(p.xp);
+      break;
 
     case c.PRODUCT_ACTIONS_MARKETS_SET_AS_MAIN:
       marketManager.setMainMarket(p.id, p.marketId);

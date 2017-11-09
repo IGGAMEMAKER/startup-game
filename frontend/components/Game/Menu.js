@@ -80,8 +80,6 @@ export default class Menu extends Component {
     let moneyDifferencePhrase = shortenValue(moneyDifference);
     if (moneyDifference > 0) moneyDifferencePhrase = `+$${moneyDifferencePhrase}`;
 
-    // const phrase = `$${moneyPhrase} (${moneyDifferencePhrase})`;
-
     return <div>
       <div>
         <div className="navigation">

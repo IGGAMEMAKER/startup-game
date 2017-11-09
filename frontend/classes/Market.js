@@ -1,10 +1,27 @@
 import logger from '../helpers/logger/logger';
 
+
+const proceed = (target, property, descriptor) => {
+  // if (getStage() >= stage || isTestMode) {
+    // descriptor.value = () => true;
+    descriptor.value = () => true;
+    descriptor.enumerable = false;
+    descriptor.configurable = true;
+    descriptor.writable = true;
+
+  logger.log(target, property, descriptor);
+  // }
+};
+
 export default class Market {
   constructor(data) {
     this.id = data.id;
     this.records = data.records || [];
     this.partnerships = data.partnerships || [];
+  }
+
+  isExploredMarket(companyId) {
+    return this.getRecordByProductId(companyId);
   }
 
   getBaseInfluence(companyId) {
@@ -38,7 +55,11 @@ export default class Market {
   }
 
   getPowerOnMarket(companyId) {
-    return this.getPowerList().find(p => p.companyId === companyId).power;
+    const info = this.getPowerList().find(p => p.companyId === companyId);
+
+    if (info) return info.power;
+
+    return 0;
   }
 
   getHype(companyId) {
@@ -48,7 +69,11 @@ export default class Market {
   }
 
   getShareOnMarket(companyId) {
-    return this.getPowerList().find(p => p.companyId === companyId).share;
+    const info = this.getPowerList().find(p => p.companyId === companyId);
+
+    if (info) return info.share;
+
+    return 0;
   }
 
   getRecordByProductId(companyId) {

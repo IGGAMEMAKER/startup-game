@@ -14,8 +14,6 @@ export type MarketDescription = {
   clients: Number,
   price: Number,
   rating: Array<Number>,
-  requirements: Array<Number>,
-  levels: Array<Number>
 };
 
 export type DefaultDescription = {
@@ -25,7 +23,6 @@ export type DefaultDescription = {
   virality: Number,
   price: Number,
   CAC: Number,
-  marketSize: Number,
   mvp: Object,
   hypothesis: Object,
   support: Object,

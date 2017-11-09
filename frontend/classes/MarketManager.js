@@ -70,6 +70,14 @@ export default class MarketManager {
     return this.markets.map(cb)
   }
 
+  isExploredMarket(productId, marketId) {
+    return this.getMarket(marketId).isExploredMarket(productId);
+  }
+  
+  iterateByCompanyMarkets(productId, cb) {
+    return this.markets.filter(m => m.isExploredMarket(productId)).forEach(cb);
+  }
+
 
   // setters
   joinProduct(marketId, productId) {

@@ -4,7 +4,6 @@ import { h, Component } from 'preact';
 import Staff from '../../Staff';
 
 import Employees from '../../Team/Employees';
-import Economics from '../../Economics/Economics';
 import Bonuses from '../../Product/Bonuses/list';
 
 
@@ -24,6 +23,8 @@ import stats from '../../../../stats';
 
 
 import Market from '../../Product/Markets/market';
+
+import shortenValue from '../../../../helpers/math/shorten-value';
 
 
 const MODE_RATING = 'MODE_RATING';
@@ -49,7 +50,16 @@ export default class ProductPanel extends Component {
 
   renderMarketingTab = (id) => {
     let marketsTab = productStore.getMarkets(id)
-      .map((m, mId) => <Market id={id} marketId={mId} market={m} />);
+      .map((m, mId) => {
+        const explored = productStore.isExploredMarket(id, mId);
+
+        return <Market
+          id={id}
+          marketId={mId}
+          market={m}
+          explored={explored}
+        />
+      });
 
     return <div>
       {marketsTab}
@@ -60,7 +70,6 @@ export default class ProductPanel extends Component {
     if (!stageHelper.canShowMetricsTab()) return '';
 
     return <div>
-      <br />
       <div>
         <b>Развитие продукта "{product.name}"</b>
         <div>Описание продукта: {productStore.getDescriptionOfProduct(id)}</div>
@@ -69,6 +78,9 @@ export default class ProductPanel extends Component {
       <div className="content-block">
         <b>Основные показатели продукта (ежемесячно)</b>
         <Metrics id={id} />
+      </div>
+      <div className="content-block">
+        {this.renderOurCostStructured(id)}
       </div>
     </div>;
   };
@@ -155,7 +167,6 @@ export default class ProductPanel extends Component {
 
   renderCompetitorsTab(id) {
     return <div>
-      {this.renderOurCostStructured(id)}
       <Competitors />
     </div>;
   }
@@ -166,11 +177,11 @@ export default class ProductPanel extends Component {
     const ourCompanyCost = productStore.getCompanyCostStructured(id);
 
     return <div>
-      <div>Наша рыночная стоимость: {ourCompanyCost.cost}$</div>
+      <div>Наша рыночная стоимость: {shortenValue(ourCompanyCost.cost)}$</div>
       <div>На нашу стоимость влияет развитие технологий и наши доходы</div>
       <ul>
-        <li>От технологий ({ourCompanyCost.technologyPart}%): {ourCompanyCost.technologyValue}$</li>
-        <li>От доходов ({ourCompanyCost.economicPart}%): {ourCompanyCost.economicValue}$</li>
+        <li>От технологий ({ourCompanyCost.technologyPart}%): {shortenValue(ourCompanyCost.technologyValue)}$</li>
+        <li>От доходов ({ourCompanyCost.economicPart}%): {shortenValue(ourCompanyCost.economicValue)}$</li>
       </ul>
     </div>
   }
@@ -205,15 +216,12 @@ export default class ProductPanel extends Component {
       default: body = this.renderDevTab(id, product); break;
     }
 
-    const menu = this.renderProductMenuNavbar();
-
     return (
       <div>
-        {menu}
+        {this.renderProductMenuNavbar()}
         <div className="product-panel-body">
           {body}
         </div>
-        {menu}
       </div>
     );
   }

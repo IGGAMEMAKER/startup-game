@@ -9,21 +9,24 @@ export default class Competitors extends Component {
   render() {
     const competitors = productStore.getCompetitorsList();
 
-    logger.shit('competitors.js hardcoded isCompetitor check: c.id != 0');
+    const competitorList = competitors
+      .map(c => c.companyId)
+      .sort((c1, c2) => {
+        const cost1 = productStore.getCompanyCost(c1);
+        const cost2 = productStore.getCompanyCost(c2);
 
-    logger.log('competitors', competitors);
+        logger.log(c1, c2, cost1, cost2);
 
-    const competitorList = competitors.map((c, i) => {
-      const companyId = c.companyId;
-
-      return <Competitor
-        c={c}
-        i={i}
-        cost={productStore.getCompanyCost(companyId)}
-        income={productStore.getProductIncome(companyId)}
-        isCompetitor={companyId != 0}
-      />
-    });
+        return cost2 - cost1;
+      })
+      .map(companyId => {
+        return <Competitor
+          name={productStore.getName(companyId)}
+          cost={productStore.getCompanyCost(companyId)}
+          income={productStore.getProductIncome(companyId)}
+          isCompetitor={companyId != 0}
+        />
+      });
 
     return <div>
       <div className="content-title">Рейтинг компаний</div>
@@ -32,7 +35,6 @@ export default class Competitors extends Component {
         <th>Компания</th>
         <th>Стоимость</th>
         <th>Доходы</th>
-        <th>XP</th>
         </thead>
         <tbody>
         {competitorList}
