@@ -223,15 +223,6 @@ export default class Product {
   }
 
   getProductSupportCost() {
-    return this.getProgrammingSupportCost();
-  }
-
-
-  getProgrammingSupportCostModifier() {
-    return Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
-  }
-
-  getProgrammingSupportCost() {
     const base = this.getDefaults().support.pp;
 
     const modifier = Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);

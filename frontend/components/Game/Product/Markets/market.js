@@ -36,6 +36,8 @@ export default class Market extends Component {
   };
 
   renderMarketCompetitors(id, marketId, showCompetitors) {
+    return <div></div>;
+
     // id is ourCompanyId
 
     const powerList = productStore.getPowerListOnMarket(marketId)
@@ -130,7 +132,7 @@ export default class Market extends Component {
       button = <div>Нужно XP: {cost}</div>;
     }
 
-      // <div className="segment-attribute">{name} >>> {upgrade.level} LVL</div>
+    // <div className="segment-attribute">{name} >>> {upgrade.level} LVL</div>
     return <div>
       {button}
       <div className="segment-value">Доход: +${income}</div>
@@ -142,7 +144,7 @@ export default class Market extends Component {
   }
 
   renderUnexploredMarket = (marketId, market, id) => {
-    const { userOrientedName, clients, price } = market;
+    const { userOrientedName, clients, price, clientType } = market;
 
     const marketSize = shortenValue(clients * price);
 
@@ -156,31 +158,28 @@ export default class Market extends Component {
       productActions.joinMarket(id, marketId, explorationCost);
     };
 
-    return <div>
-      <div>UNEXPLORED {marketId}</div>
+    return <div className="segment-block">
+      <div className="content-block">
+        <div className="client-market-item">
+          <div className="segment-title">{userOrientedName}</div>
+          <div className="segment-attribute">{clientType}</div>
+          <hr color="white"/>
 
-      <div className="segment-block">
-        <div className="content-block">
-          <div className="client-market-item">
-            <div className="segment-title">{userOrientedName}</div>
-            <hr color="white"/>
+          <div className="segment-attribute">Объём рынка</div>
+          <div className="segment-value">${marketSize}</div>
+          <hr color="white"/>
 
-            <div className="segment-attribute">Объём рынка</div>
-            <div className="segment-value">${marketSize}</div>
-            <hr color="white"/>
-
-            <div>
-              <div className="segment-attribute">Стоимость исследования</div>
-              <div className="segment-value">{explorationCost}XP</div>
-              <UI.Button
-                text="Исследовать рынок"
-                secondary={!disabled}
-                alert={disabled}
-                disabled={disabled}
-                onClick={joinMarket}
-              />
-              <br />
-            </div>
+          <div>
+            <div className="segment-attribute">Стоимость исследования</div>
+            <div className="segment-value">{explorationCost}XP</div>
+            <UI.Button
+              text="Исследовать рынок"
+              secondary={!disabled}
+              alert={disabled}
+              disabled={disabled}
+              onClick={joinMarket}
+            />
+            <br />
           </div>
         </div>
       </div>
@@ -191,7 +190,7 @@ export default class Market extends Component {
     if (!explored) return this.renderUnexploredMarket(marketId, market, id);
 
 
-    const { userOrientedName, clients, price } = market;
+    const { userOrientedName, clients, price, clientType } = market;
 
     let setAsMainMarketButton;
 
@@ -281,6 +280,7 @@ export default class Market extends Component {
         <div className="content-block">
           <div className="client-market-item">
             <div className="segment-title">{userOrientedName}</div>
+            <div className="segment-attribute">{clientType}</div>
             <hr color="white" />
 
             <div className="segment-attribute">Доход</div>
@@ -297,7 +297,6 @@ export default class Market extends Component {
             <div className="segment-attribute">Рейтинг</div>
             <div className="segment-value">{currentRating}</div>
             <div className="segment-value">{bestFeatureButton}</div>
-            <hr color="white" />
 
             <div style={{ display: 'none' }}>
               <div className="segment-attribute">Следующий уровень</div>

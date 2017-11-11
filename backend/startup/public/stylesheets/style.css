@@ -250,6 +250,8 @@ textarea {
   position: relative;
   background-color: var(--main-background-color);
   color: var(--main-text-color);
+  overflow: auto;
+  height: 100vh;
 }
 
 .body-wrapper {
@@ -455,6 +457,22 @@ textarea {
   background-color: var(--main-background-color);
   padding-left: 15px;
   border-bottom: #12908d solid 1px;
+}
+
+.nav-tabs {
+  position: fixed;
+  width: 100%;
+  z-index: 10;
+
+  left: 0;
+  height: 50px;
+  background-color: var(--main-background-color);
+  padding-left: 15px;
+  border-bottom: #12908d solid 1px;
+  top: 50px;
+
+  display: flex;
+  justify-content: center;
 }
 
 .menu-fixed {

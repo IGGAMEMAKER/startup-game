@@ -47,9 +47,7 @@ export default class Menu extends Component {
     // time and date
     let action;
 
-    let pauseOrContinue = '';
     if (!pause) {
-      // pauseOrContinue = <UI.Button text='Пауза' onClick={pauseGame} link />;
       action = pauseGame;
     } else {
       action = setGameSpeed(10);
@@ -74,10 +72,8 @@ export default class Menu extends Component {
     const moneyIndication = this.negativeOrPositiveClass(money);
     const moneyDifferenceIndication = this.negativeOrPositiveClass(saldo);
 
-    // const differencePhrase =
-
     return <div>
-      <div>
+      <div style={{ margin: 'auto', textAlign: 'center' }}>
         <div className="navigation">
           <span className={moneyIndication}>Счёт: $<UI.Changeable value={shortenValue(money)} /></span>
           <span className={moneyDifferenceIndication}> Прибыль: $<UI.Changeable value={shortenValue(saldo)} /></span>

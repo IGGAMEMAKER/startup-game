@@ -4,7 +4,7 @@ import { h, Component } from 'preact';
 import sessionManager from '../../helpers/session-manager';
 
 import Menu from './Menu';
-import Product from './Product/ProductPanel/product-panel';
+import ProductPanel from './Product/ProductPanel/product-panel';
 import Tutorial from './Tutorial';
 
 import flux from '../../flux';
@@ -16,6 +16,17 @@ import logger from '../../helpers/logger/logger';
 import UI from '../UI';
 
 import * as GAME_STAGES from '../../constants/game-stages';
+
+import stageHelper from '../../helpers/stages';
+
+
+import stats from '../../stats';
+
+
+const MODE_MARKETING = 'MODE_MARKETING';
+const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
+const MODE_COMPETITORS = 'MODE_COMPETITORS';
+const MODE_MONEY = 'MODE_MONEY';
 
 export default class Game extends Component {
   state = {
@@ -30,7 +41,8 @@ export default class Game extends Component {
     counter: 0,
 
     id: 0, // productID
-    gamePhase: GAME_STAGES.GAME_STAGE_INIT
+    gamePhase: GAME_STAGES.GAME_STAGE_INIT,
+    mode: MODE_MARKETING
   };
 
   initialize = () => {
@@ -99,18 +111,65 @@ export default class Game extends Component {
     flux.messageStore.addChangeListener(this.getMessages);
   }
 
+  setMode = (mode) => {
+    stats.saveAction('navigation', { mode });
+
+    this.setState({ mode });
+  };
+
   renderProductMenu = state => {
     if (!state.products.length) return <div></div>;
 
     const id = state.id;
     const product = state.products[id];
 
-    return <Product product={product} id={id} />;
+    return <ProductPanel product={product} id={id} mode={state.mode} />;
   };
 
-  render(props: PropsType, state) {
-    if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) return <Tutorial />;
+  renderNavbar = (mode, name) => {
+    return (
+      <li
+        className={`product-menu-toggler ${this.state.mode === mode ? 'active' : ''}`}
+        onClick={() => this.setMode(mode)}
+      >
+        <span>{name}</span>
+      </li>
+    );
+  };
 
+  renderProductMenuNavbar = () => {
+    let improvements;
+    if (stageHelper.canShowMainFeatureTab()) {
+      improvements = this.renderNavbar(MODE_MAIN_FEATURES, 'Разработка');
+    }
+
+    let clients;
+    // if (stageHelper.canShowClientsTab()) {
+    clients = this.renderNavbar(MODE_MARKETING, 'Маркетинг');
+    // }
+
+    let competitors;
+    if (stageHelper.canShowCompetitorsTab()) {
+      competitors = this.renderNavbar(MODE_COMPETITORS, 'Конкуренты');
+    }
+
+    let economics;
+    if (stageHelper.canShowMetricsTab()) {
+      economics = this.renderNavbar(MODE_MONEY, 'Экономика');
+    }
+
+    return (
+      <div className="nav nav-tabs">
+        {improvements}
+        {clients}
+        {competitors}
+        {economics}
+      </div>
+    );
+  };
+
+  render(props, state) {
+    if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) return <Tutorial />;
 
     return (
       <div className="body-background">
@@ -127,11 +186,13 @@ export default class Game extends Component {
               xp={state.xp}
               id={0}
             />
+            {this.renderProductMenuNavbar()}
           </div>
           <hr />
+          <br />
+          <br />
           {this.renderProductMenu(state)}
           <br />
-          <hr />
           <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
           <br />
           <br />

@@ -52,7 +52,7 @@ export default class MainFeatures extends Component {
     const featureName = defaultFeature.name;
     const { shortDescription } = defaultFeature;
 
-    const current = product.features.offer[featureId] || 0;
+    const current = product.features.offer[featureId];
 
 
     const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
@@ -72,12 +72,9 @@ export default class MainFeatures extends Component {
 
     let profitPhrase;
 
-    let leaderInTechPhrase;
     if (isWeAreLeaders) {
-      leaderInTechPhrase = 'Мы лидируем!';
       profitPhrase = '---';
     } else {
-      leaderInTechPhrase = `Лидер: "${leaderInTech.name}"`;
       profitPhrase = `+${benefit}$`;
     }
 

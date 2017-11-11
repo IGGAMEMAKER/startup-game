@@ -115,10 +115,6 @@ class ProductStore extends EventEmitter {
     return _team.map((e, i) => Object.assign({}, e, { id: i }));
   }
 
-  getProgrammers() {
-    return _team.filter(p => getSpecialization(p) === JOB.PROFESSION_PROGRAMMER)
-  }
-
   getEmployees() {
     return _employees;
   }
@@ -221,14 +217,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getBonusesList();
   }
 
-  getProgrammingSupportCostModifier(id) {
-    return _products[id].getProgrammingSupportCostModifier();
-  }
-
-  getProgrammingSupportCost(id) {
-    return _products[id].getProgrammingSupportCost();
-  }
-
   getMarketingFeatureList(id) {
     return _products[id].getMarketingFeatureList();
   }
@@ -271,10 +259,6 @@ class ProductStore extends EventEmitter {
 
   getBenefitOnFeatureImprove(id, featureId) {
     return Math.floor(this.getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, 1));
-  }
-
-  getProgrammingEfficiencyBonus(id) {
-    return 1 + this.getBonusModifiers(id).programmingEfficiency / 100;
   }
 
   getMercenaries() {
