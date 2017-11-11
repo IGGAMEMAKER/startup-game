@@ -49,6 +49,10 @@ export default class MarketManager {
   isMainMarket(productId, marketId) {
     return false;
   }
+  
+  markets() {
+    return this.markets;
+  }
 
 
 

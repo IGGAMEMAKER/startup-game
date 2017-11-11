@@ -162,7 +162,7 @@ export default class Product {
   }
 
   getProductExpenses() {
-    return this.getProgrammingSupportCost() * 60;
+    return this.getProductSupportCost();
   }
 
 
@@ -222,16 +222,9 @@ export default class Product {
     return this.getDefaults().description;
   }
 
-  getMarkets() {
-    return this.getDefaults().markets;
+  getProductSupportCost() {
+    return this.getProgrammingSupportCost();
   }
-
-  getMarketInfoById(marketId) {
-    return this.getMarkets()[marketId];
-  }
-
-
-
 
 
   getProgrammingSupportCostModifier() {
@@ -239,10 +232,11 @@ export default class Product {
   }
 
   getProgrammingSupportCost() {
-    const bonus = 1;
-    // const bonus = 1 - this.getBonusModifiers().programmingSupportCost / 100;
+    const base = this.getDefaults().support.pp;
 
-    return Math.ceil(this.getDefaults().support.pp * this.getProgrammingSupportCostModifier() * bonus);
+    const modifier = Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
+
+    return Math.ceil(base * modifier);
   }
 
 

@@ -86,7 +86,6 @@ export default class Game extends Component {
     this.setState({
       products: products,
       money: flux.productStore.getMoney(0),
-      points: flux.productStore.getPoints(0),
       xp
     });
   };

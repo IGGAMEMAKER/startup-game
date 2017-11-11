@@ -12,8 +12,6 @@ import UI from '../UI';
 import shortenValue from '../../helpers/math/shorten-value';
 
 export default class Menu extends Component {
-  componentWillMount() {}
-
   renderSpeedIcons(setGameSpeed) {
     const icons = [
       { speed: 1, icon: '>' },
@@ -29,6 +27,10 @@ export default class Menu extends Component {
     );
   }
 
+  negativeOrPositiveClass = value => {
+    return value >= 0 ? 'moneyPositive' : 'moneyNegative';
+  };
+
   render(props, state) {
     if (!stageHelper.canShowUpperTabInMenu()) return <div></div>;
 
@@ -41,8 +43,8 @@ export default class Menu extends Component {
       id
     } = props;
 
-    const speedIcons = this.renderSpeedIcons(setGameSpeed);
 
+    // time and date
     let action;
 
     let pauseOrContinue = '';
@@ -52,16 +54,6 @@ export default class Menu extends Component {
     } else {
       action = setGameSpeed(10);
     }
-
-    const negative = 'moneyNegative';
-    const positive = 'moneyPositive';
-
-    const saldoValue = moneyCalculator.saldo();
-    const isMakingIncome = saldoValue > 0;
-
-    let moneyIndication = isMakingIncome ? positive : negative;
-    const moneyDifference = isMakingIncome ? `+${saldoValue}` : saldoValue;
-
 
     let year = Math.floor(props.day / 360);
     let month = Math.floor((props.day - year * 360) / 30);
@@ -74,21 +66,24 @@ export default class Menu extends Component {
     const dayModified = day < 10 ? `0${day}` : day;
 
     const time = `${dayModified}.${monthModified}.${year + 2016}`;
-    // const time = `${day + 1}.${month + 1}.${year + 2016}`;
 
-    let moneyPhrase = shortenValue(money);
-    let moneyDifferencePhrase = shortenValue(moneyDifference);
-    if (moneyDifference > 0) moneyDifferencePhrase = `+$${moneyDifferencePhrase}`;
+    // money and XP
+
+    const saldo = moneyCalculator.saldo();
+
+    const moneyIndication = this.negativeOrPositiveClass(money);
+    const moneyDifferenceIndication = this.negativeOrPositiveClass(saldo);
+
+    // const differencePhrase =
 
     return <div>
       <div>
         <div className="navigation">
-          <div className={moneyIndication}>
-            $<UI.Changeable value={moneyPhrase} /> (<UI.Changeable value={moneyDifferencePhrase} />)
-          </div>
+          <span className={moneyIndication}>Счёт: $<UI.Changeable value={shortenValue(money)} /></span>
+          <span className={moneyDifferenceIndication}> Прибыль: $<UI.Changeable value={shortenValue(saldo)} /></span>
         </div>
         <div className="navigation">
-          <span className={positive}>XP: <UI.Changeable value={xp} /></span>
+          <span className="moneyPositive">XP: <UI.Changeable value={xp} /></span>
         </div>
         <div className="navigation">
           <UI.Button

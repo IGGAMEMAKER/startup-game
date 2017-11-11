@@ -111,14 +111,6 @@ class ProductStore extends EventEmitter {
     return Math.floor(_products[id]._money);
   }
 
-  getPoints(id) {
-    return _products[id]._points;
-  }
-
-  enoughProgrammingPoints(pp, id) {
-    return _products[id]._points.programming >= pp;
-  }
-
   getTeam() {
     return _team.map((e, i) => Object.assign({}, e, { id: i }));
   }
@@ -132,7 +124,7 @@ class ProductStore extends EventEmitter {
   }
 
   getProductSupportCost(id) {
-    return _products[id].getProgrammingSupportCost() * 60;
+    return _products[id].getProductSupportCost();
   }
 
 
@@ -181,20 +173,12 @@ class ProductStore extends EventEmitter {
     return _products[id].getFeatures(featureGroup);
   }
 
-  getMarkets(id): Array<MarketDescription> {
-    return _products[id].getMarkets();
-  }
-
   getBaseFeatureDevelopmentCost(id, featureId) {
     return _products[id].getBaseFeatureDevelopmentCost(featureId);
   }
 
   isShareableFeature(id, featureId) {
     return _products[id].isShareableFeature(featureId);
-  }
-
-  getMarketInfo(id, marketId) {
-    return _products[id].getMarkets()[marketId];
   }
 
   getIdea(id) {
@@ -292,14 +276,6 @@ class ProductStore extends EventEmitter {
   getProgrammingEfficiencyBonus(id) {
     return 1 + this.getBonusModifiers(id).programmingEfficiency / 100;
   }
-
-  getBaseMonthlyProgrammerPoints(id) {
-    return sum(this.getProgrammers().map(skillHelper.getProgrammingPointsProducedBy));
-  }
-
-  // getMonthlyProgrammerPoints(id) {
-  //   return Math.floor(this.getBaseMonthlyProgrammerPoints(id) * this.getProgrammingEfficiencyBonus(id));
-  // }
 
   getMercenaries() {
     return this.getTeam().filter(w => w.salary.pricingType === 1)
@@ -428,6 +404,10 @@ class ProductStore extends EventEmitter {
     return 3;
   }
 
+  getMarkets(id) {
+    return this.getDefaults(id).markets; // marketManager.markets;
+  }
+
   getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
     const income = this.getMarketIncome(id, marketId);
 
@@ -446,9 +426,9 @@ class ProductStore extends EventEmitter {
   }
 
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
-    // return 154;
+    // return 154; // marketManager.markets()
     return sum(
-      this.getMarkets(id).map((m, marketId) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value))
+      this.getMarkets(id).map((m) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, m.id, featureId, value))
     );
   }
 
@@ -528,16 +508,16 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
-      marketManager.loseMonthlyHype(p.id);
+      marketManager.loseMonthlyHype(id);
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_JOIN:
-      marketManager.joinProduct(p.marketId, p.id);
+      marketManager.joinProduct(p.marketId, id);
       _products[p.id].decreaseXP(p.xp);
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_SET_AS_MAIN:
-      marketManager.setMainMarket(p.id, p.marketId);
+      marketManager.setMainMarket(id, p.marketId);
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_REVOKE:
@@ -554,20 +534,11 @@ Dispatcher.register((p: PayloadType) => {
       break;
 
     case c.PLAYER_ACTIONS_INCREASE_MONEY:
-      _products[p.id || 0]._money += p.amount;
+      _products[id]._money += p.amount;
       break;
-
-    case c.PLAYER_ACTIONS_INCREASE_POINTS:
-      _products[p.id || 0]._points.programming += p.points.programming;
-      break;
-
-    case c.PLAYER_ACTIONS_DECREASE_POINTS:
-      _products[p.id || 0]._points.programming -= p.pp;
-      break;
-
 
     case c.PRODUCT_ACTIONS_BONUSES_ADD:
-      _products[p.id].bonuses++;
+      _products[id].bonuses++;
       break;
 
     case c.PLAYER_ACTIONS_SET_TASK:

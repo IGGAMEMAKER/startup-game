@@ -170,11 +170,10 @@ export default class Market extends Component {
             <hr color="white"/>
 
             <div>
-              <div className="segment-attribute">Исследовать рынок</div>
-              <div className="segment-value">Стоимость исследования</div>
+              <div className="segment-attribute">Стоимость исследования</div>
               <div className="segment-value">{explorationCost}XP</div>
               <UI.Button
-                text="Исследовать"
+                text="Исследовать рынок"
                 secondary={!disabled}
                 alert={disabled}
                 disabled={disabled}

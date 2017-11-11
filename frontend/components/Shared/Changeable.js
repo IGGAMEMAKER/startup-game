@@ -15,7 +15,6 @@ export default class Changeable extends Component {
     // You don't have to do this check first, but it can help prevent an unneeded render
 
     if (nextProps.value !== this.props.value) {
-      console.log('componentWillReceiveProps', nextProps.value, this.props.value);
       this.setState({
         mode: 'grow-on-change'
       });

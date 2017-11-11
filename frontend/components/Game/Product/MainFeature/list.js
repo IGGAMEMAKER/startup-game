@@ -22,23 +22,21 @@ export default class MainFeatures extends Component {
 
     return (
       <div>
-        <div className="featureGroupDescriptionWrapper">
-          <div className="featureGroupDescription">Улучшая главные характеристики продукта, вы увеличиваете доход с продукта</div>
-          {supportTab}
-          <br />
-          <div>
-            <table className="table table-striped" style={{ textAlign: 'center' }}>
-              <thead>
-                <th style={{ textAlign: 'left' }}>Технология</th>
-                <th>Уровень</th>
-                <th>Польза</th>
-                <th>Действие</th>
-              </thead>
-              <tbody>
-              {featureListTableView}
-              </tbody>
-            </table>
-          </div>
+        <div className="featureGroupDescription">Улучшая главные характеристики продукта, вы увеличиваете доход с продукта</div>
+        {supportTab}
+        <br />
+        <div>
+          <table className="table table-striped" style={{ textAlign: 'center' }}>
+            <thead>
+            <th style={{ textAlign: 'left' }}>Технология</th>
+            <th>Уровень</th>
+            <th>Польза</th>
+            <th>Действие</th>
+            </thead>
+            <tbody>
+            {featureListTableView}
+            </tbody>
+          </table>
         </div>
       </div>
     );

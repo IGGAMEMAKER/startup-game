@@ -173,6 +173,7 @@ class Bot {
 function run (id) {
   // upgrade features
   // if (Math.random() > 10 / 30) return;
+  return;
 
   const bot = new Bot(id);
 
@@ -186,7 +187,6 @@ function run (id) {
     bot.pickBonus();
   }
 
-  return;
   // improve main features
   // improve payments
   // improve marketing block
