@@ -26,7 +26,7 @@ import stats from '../../stats';
 const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 const MODE_COMPETITORS = 'MODE_COMPETITORS';
-const MODE_MONEY = 'MODE_MONEY';
+const MODE_STATS = 'MODE_STATS';
 
 export default class Game extends Component {
   state = {
@@ -127,11 +127,10 @@ export default class Game extends Component {
   };
 
   renderNavbar = (mode, name) => {
+    const selected = this.state.mode === mode ? 'active' : '';
+
     return (
-      <li
-        className={`product-menu-toggler ${this.state.mode === mode ? 'active' : ''}`}
-        onClick={() => this.setMode(mode)}
-      >
+      <li className={`product-menu-toggler ${selected}`} onClick={() => this.setMode(mode)}>
         <span>{name}</span>
       </li>
     );
@@ -144,26 +143,18 @@ export default class Game extends Component {
     }
 
     let clients;
-    // if (stageHelper.canShowClientsTab()) {
     clients = this.renderNavbar(MODE_MARKETING, 'Маркетинг');
-    // }
 
-    let competitors;
-    if (stageHelper.canShowCompetitorsTab()) {
-      competitors = this.renderNavbar(MODE_COMPETITORS, 'Конкуренты');
-    }
-
-    let economics;
+    let metrics;
     if (stageHelper.canShowMetricsTab()) {
-      economics = this.renderNavbar(MODE_MONEY, 'Экономика');
+      metrics = this.renderNavbar(MODE_STATS, 'Статистика');
     }
 
     return (
       <div className="nav nav-tabs">
         {improvements}
         {clients}
-        {competitors}
-        {economics}
+        {metrics}
       </div>
     );
   };
@@ -171,33 +162,36 @@ export default class Game extends Component {
   render(props, state) {
     if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) return <Tutorial />;
 
+    const modalActive = flux.messageStore.isDrawable();
     return (
-      <div className="body-background">
+      <div>
         <UI.Modal onclose={this.resumeGame} />
-        <div className="body-wrapper">
-          <div className="menu-fixed">
-            <Menu
-              pause={state.pause}
-              pauseGame={this.pauseGame}
-              setGameSpeed={this.setGameSpeed}
-              day={state.day}
-              money={state.money}
-              points={state.points}
-              xp={state.xp}
-              id={0}
-            />
-            {this.renderProductMenuNavbar()}
-          </div>
-          <hr />
-          <br />
-          <br />
-          {this.renderProductMenu(state)}
-          <br />
-          <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
-          <br />
-          <br />
-          <div className="bottom-fixed">
-            <UI.Notification />
+        <div className={`body-background ${modalActive ? 'blurred' : ''}`}>
+          <div className="body-wrapper">
+            <div className="menu-fixed">
+              <Menu
+                pause={state.pause}
+                pauseGame={this.pauseGame}
+                setGameSpeed={this.setGameSpeed}
+                day={state.day}
+                money={state.money}
+                points={state.points}
+                xp={state.xp}
+                id={0}
+              />
+              {this.renderProductMenuNavbar()}
+            </div>
+            <hr />
+            <br />
+            <br />
+            {this.renderProductMenu(state)}
+            <br />
+            <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
+            <br />
+            <br />
+            <div className="bottom-fixed">
+              <UI.Notification />
+            </div>
           </div>
         </div>
       </div>

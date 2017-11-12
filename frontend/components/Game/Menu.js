@@ -72,14 +72,22 @@ export default class Menu extends Component {
     const moneyIndication = this.negativeOrPositiveClass(money);
     const moneyDifferenceIndication = this.negativeOrPositiveClass(saldo);
 
+    const moneyDiffSign = saldo >= 0 ? '+' : '';
+
     return <div>
-      <div style={{ margin: 'auto', textAlign: 'center' }}>
+      <div className="menu-point-container">
         <div className="navigation">
-          <span className={moneyIndication}>Счёт: $<UI.Changeable value={shortenValue(money)} /></span>
-          <span className={moneyDifferenceIndication}> Прибыль: $<UI.Changeable value={shortenValue(saldo)} /></span>
+          <span className="menu-money-indicator-icon">$</span>
+          <span className={moneyIndication}> <UI.Changeable value={shortenValue(money)} /></span>
+          <span className={moneyDifferenceIndication}>   ({moneyDiffSign}<UI.Changeable value={shortenValue(saldo)} />$/мес)</span>
         </div>
         <div className="navigation">
-          <span className="moneyPositive">XP: <UI.Changeable value={xp} /></span>
+          <span className="menu-money-indicator-icon">XP</span>
+          <span className="moneyPositive"> <UI.Changeable value={xp} /></span>
+        </div>
+        <div className="navigation">
+          <span className="menu-money-indicator-icon">HYPE</span>
+          <span className="moneyPositive"> <UI.Changeable value={1000} /></span>
         </div>
         <div className="navigation">
           <UI.Button

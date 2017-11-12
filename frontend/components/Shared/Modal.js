@@ -22,18 +22,14 @@ export default class Modal extends Component {
     })
   };
 
-  renderModalBody = renderModal;
-
   render(props, state) {
     if (!state.drawable) return <div></div>;
 
     const message = state.messages[0];
 
-    let body = this.renderModalBody(message, 0, props.onclose);
-        // {JSON.stringify(message)}
+    let body = renderModal(message, 0, props.onclose);
 
     if (!body) return <div></div>;
-
 
     return <div className="messageTab">{body}</div>;
   }

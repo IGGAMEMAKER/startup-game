@@ -16,8 +16,7 @@ import logger from '../../../../helpers/logger/logger';
 
 const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
-const MODE_COMPETITORS = 'MODE_COMPETITORS';
-const MODE_MONEY = 'MODE_MONEY';
+const MODE_STATS = 'MODE_STATS';
 
 export default class ProductPanel extends Component {
   renderMarketingTab = (id) => {
@@ -57,6 +56,9 @@ export default class ProductPanel extends Component {
       <div className="content-block">
         {this.renderOurCostStructured(id)}
       </div>
+      <div className="content-block">
+        {this.renderCompetitorsTab(id)}
+      </div>
     </div>;
   };
 
@@ -92,9 +94,7 @@ export default class ProductPanel extends Component {
 
       case MODE_MAIN_FEATURES: body = this.renderDevTab(id, product); break;
 
-      case MODE_COMPETITORS: body = this.renderCompetitorsTab(id); break;
-
-      case MODE_MONEY: body = this.renderMetrics(id, product); break;
+      case MODE_STATS: body = this.renderMetrics(id, product); break;
     }
 
     return (
