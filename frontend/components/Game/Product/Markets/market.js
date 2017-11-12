@@ -150,15 +150,19 @@ export default class Market extends Component {
 
     const explorationCost = productStore.getMarketExplorationCost(id, marketId);
 
-    // style={{ display: 'none' }}
+    const xp = productStore.getXP(id);
+    let opacity = xp / explorationCost;
 
-    const disabled = productStore.getXP(id) < explorationCost;
+    if (opacity < 0.33) opacity = 0;
+
+    const disabled = xp < explorationCost;
 
     const joinMarket = () => {
       productActions.joinMarket(id, marketId, explorationCost);
     };
 
-    return <div className="segment-block">
+
+    return <div className="segment-block" style={{ opacity: opacity }}>
       <div className="content-block">
         <div className="client-market-item">
           <div className="segment-title">{userOrientedName}</div>

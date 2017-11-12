@@ -459,6 +459,11 @@ textarea {
   border-bottom: #12908d solid 1px;
 }
 
+.market-list-container {
+  /*display: flex;*/
+  /*justify-content: center;*/
+}
+
 .nav-tabs {
   position: fixed;
   width: 100%;

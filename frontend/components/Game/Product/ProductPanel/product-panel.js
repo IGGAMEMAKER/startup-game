@@ -38,7 +38,7 @@ export default class ProductPanel extends Component {
         }
       });
 
-    return <div>{marketsTab}</div>;
+    return <div className="market-list-container">{marketsTab}</div>;
   };
 
   renderMetrics = (id, product) => {
