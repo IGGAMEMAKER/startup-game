@@ -296,6 +296,14 @@ textarea {
 .modal-head {
   color: var(--modalMainText);
   padding: 15vh;
+  font-size: 32px;
+  font-weight: 200;
+}
+
+.modal-description {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  color: white;
 }
 
 .bold {
@@ -309,8 +317,9 @@ textarea {
 }
 
 .segment-block {
-  width: 320px;
-  margin: 20px;
+  width: 250px;
+  /*width: 320px;*/
+  margin: 10px 20px;
   display: inline-block;
   text-align: center;
 }

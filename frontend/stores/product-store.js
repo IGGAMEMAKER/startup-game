@@ -148,6 +148,10 @@ class ProductStore extends EventEmitter {
     return companyCostHelper.structured(_products[id], this.getProductIncome(id), 0);
   }
 
+  getHype(id) {
+    return 1000;
+  }
+
 
   getMainFeatureQualityByFeatureId(id, featureId) {
     return _products[id].getMainFeatureQualityByFeatureId(featureId);

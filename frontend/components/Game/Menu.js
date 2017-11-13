@@ -40,7 +40,8 @@ export default class Menu extends Component {
       money,
       xp,
       setGameSpeed,
-      id
+      id,
+      hype
     } = props;
 
 
@@ -74,6 +75,8 @@ export default class Menu extends Component {
 
     const moneyDiffSign = saldo >= 0 ? '+' : '';
 
+    //
+
     return <div>
       <div className="menu-point-container">
         <div className="navigation">
@@ -87,7 +90,7 @@ export default class Menu extends Component {
         </div>
         <div className="navigation">
           <span className="menu-money-indicator-icon">HYPE</span>
-          <span className="moneyPositive"> <UI.Changeable value={1000} /></span>
+          <span className="moneyPositive"> <UI.Changeable value={hype} /></span>
         </div>
         <div className="navigation">
           <UI.Button

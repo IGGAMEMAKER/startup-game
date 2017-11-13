@@ -154,7 +154,7 @@ export default {
           rating: [1, 0, 2, 0, 7],
           maxHype: 1000,
           baseHypeIncrease: 10,
-          explorationCost: 55,
+          explorationCost: 65,
           xp: 0.5
         }
       ]

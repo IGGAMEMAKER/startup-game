@@ -98,6 +98,7 @@ export default class Game extends Component {
     this.setState({
       products: products,
       money: flux.productStore.getMoney(0),
+      hype: flux.productStore.getHype(0),
       xp
     });
   };
@@ -163,6 +164,12 @@ export default class Game extends Component {
     if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) return <Tutorial />;
 
     const modalActive = flux.messageStore.isDrawable();
+
+    // <br />
+    // <br />
+    // <div className="bottom-fixed">
+    //   <UI.Notification />
+    //   </div>
     return (
       <div>
         <UI.Modal onclose={this.resumeGame} />
@@ -178,6 +185,7 @@ export default class Game extends Component {
                 points={state.points}
                 xp={state.xp}
                 id={0}
+                hype={state.hype}
               />
               {this.renderProductMenuNavbar()}
             </div>
@@ -187,11 +195,6 @@ export default class Game extends Component {
             {this.renderProductMenu(state)}
             <br />
             <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
-            <br />
-            <br />
-            <div className="bottom-fixed">
-              <UI.Notification />
-            </div>
           </div>
         </div>
       </div>

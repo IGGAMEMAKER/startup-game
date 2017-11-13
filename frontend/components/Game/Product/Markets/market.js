@@ -153,7 +153,7 @@ export default class Market extends Component {
     const xp = productStore.getXP(id);
     let opacity = xp / explorationCost;
 
-    if (opacity < 0.33) opacity = 0;
+    if (opacity < 0.33) opacity = 0.33;
 
     const disabled = xp < explorationCost;
 
