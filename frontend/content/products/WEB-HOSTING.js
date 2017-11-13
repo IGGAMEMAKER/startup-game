@@ -10,47 +10,37 @@ export default {
       features: [
         {
           name: 'scalability',
-          influence: 0,
           description: '',
           shortDescription: 'Масштабируемость',
-          time: 20,
           development: 70,
           id: 0
         },
         {
           name: 'website',
-          influence: 1.5,
           description: '',
           shortDescription: 'Веб-сайт',
-          time: 30,
           development: 30,
           id: 1
         },
         {
           name: 'support',
-          influence: 1.5,
           description: '',
           shortDescription: 'Техподдержка',
-          time: 30,
           development: 100,
           id: 2
         },
         {
           name: 'VPS',
-          influence: 3,
           description: '',
           shortDescription: 'Виртуальная машина',
-          time: 30,
           shareable: true,
           development: 75,
           id: 3
         },
         {
           name: 'VDS',
-          influence: 0,
           description: '',
           shortDescription: 'Выделенный сервер',
-          time: 30,
           shareable: true,
           development: 135,
           id: 4
@@ -75,87 +65,95 @@ export default {
       markets: [
         {
           id: 0,
-          userOrientedName: 'Прототип #1',
           clientType: SEGMENT_PROGRAMMER,
-          clients: 10000,
-          price: 1,
           rating: [0, 2.5, 1.5, 6, 0],
-          maxHype: 1000,
-          baseHypeIncrease: 10,
           explorationCost: 0,
-          xp: 3
+          price: 1,
+          levels: [
+            {
+              userOrientedName: 'Прототип #1',
+              clients: 10000,
+              maxHype: 1000,
+              baseHypeIncrease: 10,
+              explorationCost: 0,
+              xp: 3
+            },
+            {
+              userOrientedName: 'VK',
+              clients: 38000,
+              maxHype: 1000,
+              baseHypeIncrease: 10,
+              explorationCost: 40,
+              xp: 0.5
+            }
+          ]
         },
         {
           id: 1,
-          userOrientedName: 'Прототип #2',
           clientType: SEGMENT_STARTUPS,
-          clients: 15000,
-          price: 1,
           rating: [0, 1.5, 1.5, 6.5, 0.5],
-          maxHype: 1000,
-          baseHypeIncrease: 10,
-          explorationCost: 20,
-          xp: 1
+          explorationCost: 50,
+          price: 1,
+          levels: [
+            {
+              userOrientedName: 'Прототип #2',
+              clients: 15000,
+              maxHype: 1000,
+              baseHypeIncrease: 10,
+              explorationCost: 0,
+              xp: 1
+            },
+            {
+              userOrientedName: 'FB',
+              clients: 55000,
+              maxHype: 1000,
+              baseHypeIncrease: 10,
+              explorationCost: 45,
+              xp: 0.5
+            }
+          ]
         },
         {
           id: 2,
-          userOrientedName: 'Прототип #3',
           clientType: SEGMENT_SMALL_BUSINESS,
-          clients: 26000,
-          price: 1,
           rating: [0.5, 1.5, 1, 0, 7],
-          maxHype: 1000,
-          baseHypeIncrease: 10,
-          explorationCost: 30,
-          xp: 1
+          explorationCost: 150,
+          price: 1,
+          levels: [
+            {
+              userOrientedName: 'Прототип #3',
+              clients: 26000,
+              maxHype: 1000,
+              baseHypeIncrease: 10,
+              explorationCost: 30,
+              xp: 1
+            },
+            {
+              userOrientedName: 'SEO-траффик',
+              clients: 85000,
+              maxHype: 1000,
+              baseHypeIncrease: 10,
+              explorationCost: 55,
+              xp: 0.5
+            }
+          ]
         },
         {
           id: 3,
-          userOrientedName: 'VK',
-          clientType: SEGMENT_PROGRAMMER,
-          clients: 38000,
-          price: 1,
-          rating: [0, 2.5, 1.5, 6, 0],
-          maxHype: 1000,
-          baseHypeIncrease: 10,
-          explorationCost: 40,
-          xp: 0.5
-        },
-        {
-          id: 4,
-          userOrientedName: 'FB',
-          clientType: SEGMENT_STARTUPS,
-          clients: 55000,
-          price: 1,
-          rating: [0, 1.5, 1.5, 6.5, 0.5],
-          maxHype: 1000,
-          baseHypeIncrease: 10,
-          explorationCost: 45,
-          xp: 0.5
-        },
-        {
-          id: 5,
-          userOrientedName: 'SEO-траффик',
-          clientType: SEGMENT_SMALL_BUSINESS,
-          clients: 85000,
-          price: 1,
-          rating: [0.5, 1.5, 1, 0, 7],
-          maxHype: 1000,
-          baseHypeIncrease: 10,
-          explorationCost: 55,
-          xp: 0.5
-        },
-        {
-          id: 6,
-          userOrientedName: 'SEO-траффик',
+          rating: [2, 0, 3, 0, 5],
           clientType: SEGMENT_CORPORATIONS,
-          clients: 500,
+          explorationCost: 200,
           price: 500,
-          rating: [1, 0, 2, 0, 7],
-          maxHype: 1000,
-          baseHypeIncrease: 10,
-          explorationCost: 65,
-          xp: 0.5
+          levels: [
+            {
+              userOrientedName: 'SEO-траффик',
+              clients: 500,
+              maxHype: 1000,
+              baseHypeIncrease: 10,
+              explorationCost: 0,
+              xp: 0.5
+            }
+          ]
         }
       ]
     }

@@ -85,12 +85,13 @@ export default class Market {
   }
 
   // setters
-  join(companyId) {
+  join(companyId, level = 0) {
     this.records.push({
       companyId,
       hype: 1 + Math.floor(Math.random() * 10),
       active: true,
-      isMain: false
+      isMain: false,
+      level
     });
 
     return this;
