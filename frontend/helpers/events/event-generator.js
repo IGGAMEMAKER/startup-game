@@ -44,11 +44,11 @@ const emit = (day) => {
       }
       break;
     case GAME_EVENTS.GAME_EVENT_HIRE_ENTHUSIAST:
-      const teamCount = productStore.getTeam().length;
-      // if (teamCount < 4) {
-        let player = workerGenerator.create();
-        productActions.addEmployee(player);
-      // }
+      // const teamCount = productStore.getTeam().length;
+      // // if (teamCount < 4) {
+      //   let player = workerGenerator.create();
+      //   productActions.addEmployee(player);
+      // // }
       break;
   }
 };

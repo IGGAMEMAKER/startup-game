@@ -28,8 +28,8 @@ export default class MainFeatures extends Component {
         <div>
           <table className="table table-striped" style={{ textAlign: 'center' }}>
             <thead>
-            <th style={{ textAlign: 'left' }}>Технология</th>
             <th>Уровень</th>
+            <th style={{ textAlign: 'left' }}>Технология</th>
             <th>Польза</th>
             <th>Действие</th>
             </thead>
@@ -44,8 +44,14 @@ export default class MainFeatures extends Component {
 
   renderSupportTab(id) {
     const support = productStore.getProductSupportCost(id);
+    const upgradeCost = productStore.getFeatureIncreaseXPCost(id);
 
-    return <div>Стоимость поддержки продукта: {support}$ в месяц</div>
+
+    return <div>
+      <div>Стоимость поддержки продукта: {support}$ в месяц</div>
+      <br />
+      <div>Стоимость улучшения технологии: {upgradeCost}XP</div>
+    </div>;
   }
 
   renderMainFeature = (product, id) => (defaultFeature, featureId) => {
@@ -62,8 +68,8 @@ export default class MainFeatures extends Component {
 
     const isWeAreLeaders = leaderInTech.id === 0;
 
-
     const upgradeCost = productStore.getFeatureIncreaseXPCost(id);
+
 
 
     const upgradeable = productStore.getXP(id) >= upgradeCost;
@@ -80,19 +86,20 @@ export default class MainFeatures extends Component {
 
     const maxLevel = leaderInTech.value;
 
+        // <div>{isWeAreLeaders ? current : `${current} / ${maxLevel}`}</div>
     return <tr key={key}>
+      <td>
+        <div>{current}</div>
+      </td>
       <td style={{ textAlign: 'left' }}>
         <div>{userOrientedFeatureName}</div>
-      </td>
-      <td>
-        <div>{isWeAreLeaders ? current : `${current} / ${maxLevel}`}</div>
       </td>
       <td>
         <div>{profitPhrase}</div>
       </td>
       <td>
         <UI.Button
-          text={`Улучшить за ${upgradeCost}XP`}
+          text="Улучшить"
           onClick={() => { this.improveFeature(id, featureId, upgradeCost) }}
           disabled={!upgradeable}
           secondary={upgradeable}

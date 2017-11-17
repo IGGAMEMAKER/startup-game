@@ -1,3 +1,10 @@
+const tgPost = {
+  id: 0,
+  name: 'Пост в телеграм канале',
+  cost: { money: 0, xp: 1 },
+  hype: 5
+};
+
 export default {
   compute: () => {
     const SEGMENT_PROGRAMMER = 'Программисты';
@@ -69,10 +76,13 @@ export default {
           rating: [0, 2.5, 1.5, 6, 0],
           explorationCost: 0,
           price: 1,
+          clients: 38000,
+          ads: [
+            tgPost
+          ],
           levels: [
             {
               userOrientedName: 'Прототип #1',
-              clients: 10000,
               maxHype: 1000,
               baseHypeIncrease: 10,
               explorationCost: 0,
@@ -80,9 +90,7 @@ export default {
             },
             {
               userOrientedName: 'VK',
-              clients: 38000,
               maxHype: 1000,
-              baseHypeIncrease: 10,
               explorationCost: 40,
               xp: 0.5
             }
@@ -94,6 +102,7 @@ export default {
           rating: [0, 1.5, 1.5, 6.5, 0.5],
           explorationCost: 50,
           price: 1,
+          clients: 55000,
           levels: [
             {
               userOrientedName: 'Прототип #2',
@@ -119,6 +128,7 @@ export default {
           rating: [0.5, 1.5, 1, 0, 7],
           explorationCost: 150,
           price: 1,
+          clients: 85000,
           levels: [
             {
               userOrientedName: 'Прототип #3',
@@ -143,7 +153,8 @@ export default {
           rating: [2, 0, 3, 0, 5],
           clientType: SEGMENT_CORPORATIONS,
           explorationCost: 200,
-          price: 500,
+          price: 1500,
+          clients: 500,
           levels: [
             {
               userOrientedName: 'SEO-траффик',

@@ -8,7 +8,6 @@ function saveInStorage(field, data){
   //storage[field] = item;
 }
 function getFromStorage(field){
-  //return storage[field];
   return localStorage.getItem(field);
 }
 
@@ -18,7 +17,7 @@ function getObject(arrName){
 
 function setInObject(arrName, id , value){
   var array = getObject(arrName);
-  //prt(arrName, id, value);
+
   array[id] = value;
   saveInStorage(arrName, array);
 }
@@ -26,20 +25,13 @@ function setInObject(arrName, id , value){
 function unsetFromObject(arrName, id){
   var array = getObject(arrName);
 
-  // console.log('was', array);
-
   delete array[id];
 
-  // console.log('became', array);
   saveInStorage(arrName, array);
 }
 
 function clearStorage(){
   localStorage.clear();
-
-  // saveInStorage('tournaments', []);
-  // saveInStorage('addresses', {});
-  // saveInStorage('money', 0);
 }
 
 //clearStorage();

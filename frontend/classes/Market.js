@@ -1,6 +1,5 @@
 import logger from '../helpers/logger/logger';
 
-
 const proceed = (target, property, descriptor) => {
   // if (getStage() >= stage || isTestMode) {
     // descriptor.value = () => true;
@@ -48,7 +47,7 @@ export default class Market {
         ({
           power: m.hype,
           share: m.hype / total,
-          companyId: m.companyId,
+          companyId: m.companyId
         })
       )
       .sort((a, b) => b.power - a.power);
@@ -93,6 +92,20 @@ export default class Market {
       isMain: false,
       level
     });
+
+    return this;
+  }
+
+  levelUp(companyId, maxLevel = 0) {
+    const index = this.getRecordIdByProductId(companyId);
+
+    if (index < 0) return this;
+
+    const lvl = this.records[index].level;
+
+    if (lvl < maxLevel) {
+      this.records[index].level = lvl + 1;
+    }
 
     return this;
   }

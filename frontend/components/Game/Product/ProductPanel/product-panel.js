@@ -20,9 +20,11 @@ const MODE_STATS = 'MODE_STATS';
 
 export default class ProductPanel extends Component {
   renderMarketingTab = (id) => {
+    let hasUnexploredMarkets = false;
+
     let marketsTab = [];
 
-    let hasUnexploredMarkets = false;
+    let markets = [];
 
     productStore.getMarkets(id)
       .forEach((m, mId) => {
@@ -35,7 +37,13 @@ export default class ProductPanel extends Component {
         if (!explored) {
           hasUnexploredMarkets = true;
         }
+
+        markets.push(m);
       });
+
+    // return <div>
+    //   <div></div>
+    // </div>;
 
     return <div className="market-list-container">{marketsTab}</div>;
   };
@@ -57,14 +65,10 @@ export default class ProductPanel extends Component {
         {this.renderOurCostStructured(id)}
       </div>
       <div className="content-block">
-        {this.renderCompetitorsTab(id)}
+        <Competitors />
       </div>
     </div>;
   };
-
-  renderCompetitorsTab(id) {
-    return <Competitors />;
-  }
 
   renderOurCostStructured(id) {
     if (!stageHelper.canShowCompetitorsTab()) return '';

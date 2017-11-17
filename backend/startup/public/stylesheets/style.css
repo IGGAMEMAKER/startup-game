@@ -317,15 +317,27 @@ textarea {
 }
 
 .segment-block {
-  width: 250px;
-  /*width: 320px;*/
+  width: 500px;
   margin: 10px 20px;
   display: inline-block;
   text-align: center;
 }
 
+.flexbox {
+  display: flex;
+}
+
+.flex-splitter {
+  flex-basis: 50%;
+}
+
 .segment-attribute {
   font-weight: 200;
+  font-size: 16px;
+}
+
+.segment-bold-title {
+  font-weight: 500;
   font-size: 16px;
 }
 

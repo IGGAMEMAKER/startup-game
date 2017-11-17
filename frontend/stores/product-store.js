@@ -6,19 +6,12 @@ import logger from '../helpers/logger/logger';
 
 import companyCostHelper from '../helpers/products/compute-company-cost';
 
-import * as JOB from '../constants/job';
-
 import Product from '../classes/Product';
 
 import { DefaultDescription, MarketDescription } from '../constants/products/types/product-description';
 
 
 import sessionManager from '../helpers/session-manager';
-
-import getSpecialization from '../helpers/team/specialization';
-import skillHelper from '../helpers/team/skills';
-
-import workerGenerator from '../helpers/team/create-random-worker';
 
 import MarketManager from '../classes/MarketManager';
 
@@ -33,29 +26,16 @@ import stats from '../stats';
 
 const EC = 'PRODUCT_EVENT_CHANGE';
 
-let _money = 1000;
-
-let _employees: Array;
-
-let _team: Array;
-
 let _products: Array<Product>;
 
 let marketManager;
 
 let _markets: Array;
 
-const initialize = ({ markets, products, employees, team }) => {
+const initialize = ({ markets, products }) => {
   logger.log('trying to initialize productStore.js', products);
 
   _products = products.map(p => new Product().loadFromObject(p));
-
-  logger.log('trying to initialize productStore.js', _products);
-
-
-  _employees = employees;
-  _team = team;
-
 
   _markets = markets;
 
@@ -99,8 +79,6 @@ class ProductStore extends EventEmitter {
 
   static getStoreData() {
     return {
-      employees: _employees,
-      team: _team,
       products: _products,
       markets: _markets
     }
@@ -109,14 +87,6 @@ class ProductStore extends EventEmitter {
 
   getMoney(id) {
     return Math.floor(_products[id]._money);
-  }
-
-  getTeam() {
-    return _team.map((e, i) => Object.assign({}, e, { id: i }));
-  }
-
-  getEmployees() {
-    return _employees;
   }
 
   getProductSupportCost(id) {
@@ -265,12 +235,8 @@ class ProductStore extends EventEmitter {
     return Math.floor(this.getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, 1));
   }
 
-  getMercenaries() {
-    return this.getTeam().filter(w => w.salary.pricingType === 1)
-  }
-
   getTeamExpenses() {
-    return sum(this.getMercenaries().map(worker => worker.salary.money));
+    return 0;
   }
 
   getMarketRatingComputationList(id, marketId) {
@@ -331,21 +297,17 @@ class ProductStore extends EventEmitter {
 
 
   getLeaderInTech(featureId) {
-    const leader: Product = _products
+    const leaders: Array<Product> = _products
       .map((p: Product) => ({
         id: p.companyId,
         value: p.features.offer[featureId],
         name: p.name
       }))
       .sort((p1, p2) => {
-        const f1 = p1.value;
-        const f2 = p2.value;
+        return p2.value - p1.value;
+      });
 
-        return f2 - f1;
-      })
-      [0];
-
-    return leader;
+    return leaders[0];
   }
 
   getRating(id, marketId, improvement = null) {
@@ -389,7 +351,7 @@ class ProductStore extends EventEmitter {
   }
 
   getFeatureIncreaseXPCost(id) {
-    return 3;
+    return 1;
   }
 
   getMarkets(id) {
@@ -402,13 +364,7 @@ class ProductStore extends EventEmitter {
     const rating = this.getRating(id, marketId);
     const nextRating = this.getRating(id, marketId, { featureId, value });
 
-    // logger.log('getIncomeIncreaseForMarketIfWeUpgradeFeature', marketId, featureId, income);
-
     const willBe = Math.floor(income * (nextRating / rating));
-
-    // const feature = this.getPrettyFeatureNameByFeatureId(id, featureId);
-    // logger.log(`getIncomeIncreaseForMarketIfWeUpgradeFeature, ${feature} on market ${marketId},
-    // income: ${income}$, willBe: ${willBe}$, rating: ${rating}, nextRating: ${nextRating}`);
 
     return willBe - income;
   }
@@ -487,8 +443,6 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].improveFeatureByPoints(p);
       break;
 
-
-
     case c.PRODUCT_ACTIONS_HYPE_ADD:
       marketManager.addHype(p.marketId, id, p.hype);
 
@@ -501,6 +455,7 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PRODUCT_ACTIONS_MARKETS_JOIN:
       marketManager.joinProduct(p.marketId, id);
+
       _products[p.id].decreaseXP(p.xp);
       break;
 
@@ -516,7 +471,6 @@ Dispatcher.register((p: PayloadType) => {
       marketManager.breakPartnership(p.c1, p.c2, p.marketId);
       break;
 
-
     case c.PRODUCT_ACTIONS_CREATE_COMPANY:
       _products.push(new Product(p.p));
       break;
@@ -529,44 +483,6 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].bonuses++;
       break;
 
-    case c.PLAYER_ACTIONS_SET_TASK:
-      _team[p.index].task = p.task;
-      break;
-
-    case c.PLAYER_ACTIONS_HIRE_WORKER:
-      _team.push(p.player);
-
-      _employees.splice(p.i, 1);
-      break;
-
-    case c.PLAYER_ACTIONS_FIRE_WORKER:
-      _money -= _team[p.i].salary.money;
-
-      _team.splice(p.i, 1);
-      break;
-
-    case c.PLAYER_ACTIONS_EMPLOYEE_ADD:
-      _employees.push(p.player);
-      break;
-
-    case c.PLAYER_ACTIONS_UPDATE_EMPLOYEES:
-      _employees = [
-        workerGenerator.create(),
-        workerGenerator.create(),
-        workerGenerator.create(),
-        workerGenerator.create(),
-        workerGenerator.create(),
-        workerGenerator.create(),
-        workerGenerator.create(),
-        workerGenerator.create(),
-        workerGenerator.create()
-      ];
-      break;
-
-    case c.PLAYER_ACTIONS_EMPLOYEE_REMOVE:
-      _employees.splice(p.i, 1);
-      break;
-
     default:
       change = false;
       break;
@@ -574,6 +490,7 @@ Dispatcher.register((p: PayloadType) => {
 
   if (change) {
     stats.saveAction(p.type, p);
+
     sessionManager.saveProductStorageData(ProductStore.getStoreData());
 
     store.emitChange();

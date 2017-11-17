@@ -287,8 +287,19 @@ export default class Market extends Component {
             <div className="segment-attribute">{clientType}</div>
             <hr color="white" />
 
-            <div className="segment-attribute">Доход</div>
-            <div className="segment-value">$<UI.Changeable value={shortenValue(income)} /> / ${marketSize}</div>
+            <div className="flexbox">
+              <div className="flex-splitter">
+                <div className="segment-bold-title">Доход</div>
+                <div className="segment-value">$<UI.Changeable value={shortenValue(income)} /></div>
+              </div>
+              <div className="flex-splitter">
+                /
+              </div>
+              <div className="flex-splitter">
+                <div className="segment-bold-title">Объём рынка</div>
+                <div className="segment-value">$<UI.Changeable value={marketSize} /></div>
+              </div>
+            </div>
             <hr color="white" />
 
             <div style={{ display: 'none' }}>
