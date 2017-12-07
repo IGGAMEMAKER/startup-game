@@ -68,7 +68,7 @@ export default class Product {
 
     if (isCompetitor) {
       minRating = 4;
-      maxRating = 8;
+      maxRating = 10;
     }
 
     const offer = defaultFeatures.map((f, i) => Math.floor(random(minRating, maxRating)));
@@ -102,6 +102,8 @@ export default class Product {
 
 
     this.XP = 10;
+    this.totalXP = 0;
+    this.spendedXP = 0;
 
     this.tests = 1;
     this.improvements = 1;
@@ -542,7 +544,13 @@ export default class Product {
     }
   }
 
+  getSpendedXP() {
+    return this.spendedXP;
+  }
 
+  getTotalXP() {
+    return this.totalXP
+  }
 
 
   // modify
@@ -557,8 +565,14 @@ export default class Product {
     this.XP = XP;
   }
 
+  increaseXP(value) {
+    this.XP += p.value;
+    this.totalXP += p.value;
+  }
+
   testHypothesis(p) {
     this.XP += p.value;
+    this.totalXP += p.value;
 
     if (this.tests) {
       this.tests++;
@@ -568,9 +582,8 @@ export default class Product {
   }
 
   decreaseXP(xp) {
-    logger.log('decreaseXP', xp, this.XP);
     this.XP -= xp;
-    logger.log('decreaseXP', 'now', this.XP);
+    this.spendedXP -= xp;
   }
 
   improveFeature(p) {

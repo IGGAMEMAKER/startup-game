@@ -1,4 +1,5 @@
 const shortenValue = value => {
+  return value;
   const abs = Math.abs(value);
 
   if (abs < 10000) return value;

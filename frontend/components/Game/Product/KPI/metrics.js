@@ -18,8 +18,6 @@ export default class Metrics extends Component {
     const productIncome = productStore.getMarketIncomeList(id)
       .map(item => <li>market #${item.marketId}: +{shortenValue(item.income)}$</li>);
 
-    console.log('productIncomeZZ', productIncome);
-
     return (
       <div>
         <div>

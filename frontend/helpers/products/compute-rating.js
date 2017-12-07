@@ -1,5 +1,3 @@
-import logger from '../logger/logger';
-
 export default (features, maxValues, influenceValuesOnRating) => {
   let rating = 0;
 

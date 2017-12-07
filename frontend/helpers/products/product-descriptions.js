@@ -7,7 +7,7 @@ import webHosting from '../../content/products/WEB-HOSTING';
 export default function (idea): DefaultDescription {
   switch (idea) {
     case IDEAS.IDEA_WEB_HOSTING:
-      return webHosting.compute();
+      return webHosting;
       break;
   }
 };

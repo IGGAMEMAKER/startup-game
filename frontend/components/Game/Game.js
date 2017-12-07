@@ -165,11 +165,6 @@ export default class Game extends Component {
 
     const modalActive = flux.messageStore.isDrawable();
 
-    // <br />
-    // <br />
-    // <div className="bottom-fixed">
-    //   <UI.Notification />
-    //   </div>
     return (
       <div>
         <UI.Modal onclose={this.resumeGame} />

@@ -19,12 +19,6 @@ export type MarketDescription = {
 export type DefaultDescription = {
   description: String,
   features: Array<FeatureType>,
-  utility: Number,
-  virality: Number,
-  price: Number,
-  CAC: Number,
-  mvp: Object,
-  hypothesis: Object,
-  support: Object,
-  markets: Array
+  markets: Array,
+  ads: Array
 };

@@ -12,7 +12,7 @@ import shortenValue from '../../../../helpers/math/shorten-value';
 import stageHelper from '../../../../helpers/stages';
 import logger from '../../../../helpers/logger/logger';
 
-
+import SegmentUpgrader from '../Markets/SegmentUpgrader';
 
 const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
@@ -24,26 +24,19 @@ export default class ProductPanel extends Component {
 
     let marketsTab = [];
 
-    let markets = [];
-
     productStore.getMarkets(id)
       .forEach((m, mId) => {
         const explored = productStore.isExploredMarket(id, mId);
 
         if (!hasUnexploredMarkets) {
-          marketsTab.push(<Market id={id} marketId={mId} market={m} explored={explored} />);
+          // marketsTab.push(<Market id={id} marketId={mId} market={m} explored={explored} />);
+          marketsTab.push(<SegmentUpgrader id={id} marketId={mId} market={m} explored={explored} />);
         }
 
         if (!explored) {
           hasUnexploredMarkets = true;
         }
-
-        markets.push(m);
       });
-
-    // return <div>
-    //   <div></div>
-    // </div>;
 
     return <div className="market-list-container">{marketsTab}</div>;
   };

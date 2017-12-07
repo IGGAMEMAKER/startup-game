@@ -90,6 +90,7 @@ class ProductStore extends EventEmitter {
   }
 
   getProductSupportCost(id) {
+    return 0;
     return _products[id].getProductSupportCost();
   }
 
@@ -159,6 +160,7 @@ class ProductStore extends EventEmitter {
 
 
   getProductExpenses(id) {
+    return this.getProductSupportCost(id);
     return _products[id].getProductExpenses();
   }
 

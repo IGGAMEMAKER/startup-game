@@ -7,6 +7,8 @@ import UI from '../../../UI';
 
 import logger from '../../../../helpers/logger/logger';
 
+
+
 import stageHelper from '../../../../helpers/stages';
 
 export default class MainFeatures extends Component {
@@ -47,9 +49,9 @@ export default class MainFeatures extends Component {
     const upgradeCost = productStore.getFeatureIncreaseXPCost(id);
 
 
+      // <div>Стоимость поддержки продукта: {support}$ в месяц</div>
+      // <br />
     return <div>
-      <div>Стоимость поддержки продукта: {support}$ в месяц</div>
-      <br />
       <div>Стоимость улучшения технологии: {upgradeCost}XP</div>
     </div>;
   }
