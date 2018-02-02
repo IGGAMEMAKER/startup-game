@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import Dispatcher from '../dispatcher';
+
 import * as c from '../constants/actions/product-actions';
 import payloads from '../constants/actions/payloads';
 import logger from '../helpers/logger/logger';
@@ -8,7 +9,10 @@ import companyCostHelper from '../helpers/products/compute-company-cost';
 
 import Product from '../classes/Product';
 
-import { DefaultDescription, MarketDescription } from '../constants/products/types/product-description';
+import {
+  DefaultDescription,
+  MarketDescription
+} from '../constants/products/types/product-description';
 
 
 import sessionManager from '../helpers/session-manager';

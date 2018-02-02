@@ -8,10 +8,6 @@ import ColoredRating from '../KPI/colored-rating';
 
 import UI from '../../../UI';
 
-import logger from '../../../../helpers/logger/logger';
-
-import coloringRange from '../../../../helpers/coloring-range';
-
 export default class SegmentUpgrader extends Component {
   renderSetMainMarketButton = (id, marketId) => {
     return <div></div>;
@@ -32,9 +28,7 @@ export default class SegmentUpgrader extends Component {
 
     const income =  shortenValue(maxBenefit);
 
-    return (
-      <div className="segment-value">Доход: +${income}</div>
-    );
+    return <div className="segment-value">Доход: +${income}</div>;
   };
 
   renderBestFeatureButton(id, marketId) {

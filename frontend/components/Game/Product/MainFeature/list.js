@@ -7,8 +7,6 @@ import UI from '../../../UI';
 
 import logger from '../../../../helpers/logger/logger';
 
-
-
 import stageHelper from '../../../../helpers/stages';
 
 export default class MainFeatures extends Component {

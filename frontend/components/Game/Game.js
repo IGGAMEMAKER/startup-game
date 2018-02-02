@@ -1,27 +1,22 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
+import flux from '../../flux';
+
 import sessionManager from '../../helpers/session-manager';
+import stageHelper from '../../helpers/stages';
+import logger from '../../helpers/logger/logger';
 
 import Menu from './Menu';
 import ProductPanel from './Product/ProductPanel/product-panel';
 import Tutorial from './Tutorial';
-
-import flux from '../../flux';
-
-import gameRunner from '../../game';
-
-import logger from '../../helpers/logger/logger';
-
 import UI from '../UI';
 
-import * as GAME_STAGES from '../../constants/game-stages';
 
-import stageHelper from '../../helpers/stages';
-
-
+import gameRunner from '../../game';
 import stats from '../../stats';
 
+import * as GAME_STAGES from '../../constants/game-stages';
 
 const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
@@ -131,7 +126,10 @@ export default class Game extends Component {
     const selected = this.state.mode === mode ? 'active' : '';
 
     return (
-      <li className={`product-menu-toggler ${selected}`} onClick={() => this.setMode(mode)}>
+      <li
+        className={`product-menu-toggler ${selected}`}
+        onClick={() => this.setMode(mode)}
+      >
         <span>{name}</span>
       </li>
     );

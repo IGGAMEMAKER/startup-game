@@ -6,7 +6,7 @@ const AD_SEO = 4;
 
 const tgPost = {
   id: AD_TG_POST,
-  name: 'Пост в телеграм канале',
+  name: 'Пост в телеграме',
   cost: { money: 0, xp: 2 },
   hype: 5,
   openedOn: 0
