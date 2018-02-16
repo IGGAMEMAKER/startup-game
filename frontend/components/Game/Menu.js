@@ -37,12 +37,13 @@ export default class Menu extends Component {
     const {
       pause,
       pauseGame,
-      money,
-      xp,
+      resources,
       setGameSpeed,
       id,
       hype
     } = props;
+
+    const { money, mp, pp, sp } = resources;
 
 
     // time and date
@@ -79,26 +80,49 @@ export default class Menu extends Component {
         //   <span className="menu-money-indicator-icon">HYPE</span>
         //   <span className="moneyPositive"> <UI.Changeable value={hype} /></span>
         // </div>
+
+    // <div className="navigation">
+    //   <UI.Button
+    //     text={time}
+    //     secondary={pause}
+    //     alert={!pause}
+    //     onClick={action}
+    //   />
+    // </div>
+
+    const moneySaldoText = `${moneyDiffSign}${shortenValue(saldo)}$ ежемесячно`;
+    const managementSaldoText = `+${100} ежемесячно`;
+    const programmingSaldoText = `+${133} ежемесячно`;
+    const sellSaldoText = `+${123} ежемесячно`;
+    // <span className={moneyDifferenceIndication}>   ({moneyDiffSign}<UI.Changeable value={shortenValue(saldo)} />$/мес)</span>
+
+
+
     return <div>
       <div className="menu-point-container">
-        <div className="navigation">
+        <div title={moneySaldoText} className="navigation">
           <span className="menu-money-indicator-icon">$</span>
-          <span className={moneyIndication}> <UI.Changeable value={shortenValue(money)} /></span>
-          <span className={moneyDifferenceIndication}>   ({moneyDiffSign}<UI.Changeable value={shortenValue(saldo)} />$/мес)</span>
+          <span className={moneyDifferenceIndication}> <UI.Changeable value={shortenValue(money)} /></span>
         </div>
-        <div className="navigation">
-          <span className="menu-money-indicator-icon">XP</span>
-          <span className="moneyPositive"> <UI.Changeable value={xp} /></span>
+        <div title={managementSaldoText} className="navigation">
+          <span className="menu-money-indicator-icon">{UI.icons.MP}</span>
+          <span className="moneyPositive"> <UI.Changeable value={mp} /></span>
         </div>
-        <div className="navigation">
-          <UI.Button
-            text={time}
-            secondary={pause}
-            alert={!pause}
-            onClick={action}
-          />
+        <div title={programmingSaldoText} className="navigation">
+          <span className="menu-money-indicator-icon">{UI.icons.PP}</span>
+          <span className="moneyPositive"> <UI.Changeable value={pp} /></span>
+        </div>
+        <div title={sellSaldoText} className="navigation">
+          <span className="menu-money-indicator-icon">{UI.icons.SP}</span>
+          <span className="moneyPositive"> <UI.Changeable value={sp} /></span>
         </div>
       </div>
     </div>;
   }
 }
+        // <div className="navigation">
+        //   <UI.Button
+        //     text={time}
+        //     disabled
+        //   />
+        // </div>

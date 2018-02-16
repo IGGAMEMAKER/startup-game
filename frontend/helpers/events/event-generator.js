@@ -12,6 +12,8 @@ import workerGenerator from '../team/create-random-worker';
 import * as NOTIFICATION from '../../constants/notifications';
 
 const emit = (day) => {
+  return;
+
   if (day === 45) {
     let money = Math.ceil(random(2000, 15000));
 

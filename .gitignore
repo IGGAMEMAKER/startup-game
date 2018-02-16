@@ -4,5 +4,5 @@
 build
 node_modules
 ncp-debug.log
-npm-debug.log
+backend/npm-debug.log
 .idea/

@@ -1,32 +1,26 @@
 import { EventEmitter } from 'events';
 import Dispatcher from '../dispatcher';
 
+import logger from '../helpers/logger/logger';
+import companyCostHelper from '../helpers/products/compute-company-cost';
+import sessionManager from '../helpers/session-manager';
+import defaults from '../helpers/products/product-descriptions';
+import computeRating from '../helpers/products/compute-rating';
+import round from '../helpers/math/round';
+
+
 import * as c from '../constants/actions/product-actions';
 import payloads from '../constants/actions/payloads';
-import logger from '../helpers/logger/logger';
-
-import companyCostHelper from '../helpers/products/compute-company-cost';
-
-import Product from '../classes/Product';
-
 import {
   DefaultDescription,
   MarketDescription
 } from '../constants/products/types/product-description';
 
-
-import sessionManager from '../helpers/session-manager';
-
+import Product from '../classes/Product';
 import MarketManager from '../classes/MarketManager';
 
-import defaults from '../helpers/products/product-descriptions';
-
-
-import computeRating from '../helpers/products/compute-rating';
-import round from '../helpers/math/round';
-
-
 import stats from '../stats';
+
 
 const EC = 'PRODUCT_EVENT_CHANGE';
 

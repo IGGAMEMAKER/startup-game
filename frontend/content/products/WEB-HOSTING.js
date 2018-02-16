@@ -7,7 +7,7 @@ const AD_SEO = 4;
 const tgPost = {
   id: AD_TG_POST,
   name: 'Пост в телеграме',
-  cost: { money: 0, xp: 2 },
+  cost: { money: 0, mp: 2 },
   hype: 5,
   openedOn: 0
 };
@@ -15,7 +15,7 @@ const tgPost = {
 const ownBlogPost = {
   id: AD_OWN_BLOG,
   name: 'Пост в собственном блоге',
-  cost: { money: 0, xp: 2 },
+  cost: { money: 0, mp: 2 },
   hype: 11,
   openedOn: 10
 };
@@ -23,7 +23,7 @@ const ownBlogPost = {
 const socialNetworks = {
   id: AD_SOCIAL_NETWORK,
   name: 'Пост в соцсетях',
-  cost: { money: 50, xp: 3 },
+  cost: { money: 50, mp: 3 },
   hype: 22,
   openedOn: 30
 };
@@ -31,7 +31,7 @@ const socialNetworks = {
 const targeting = {
   id: AD_TARGETING,
   name: 'Таргетинг в соцсетях',
-  cost: { money: 150, xp: 4 },
+  cost: { money: 150, mp: 4 },
   hype: 50,
   openedOn: 30
 };
@@ -39,7 +39,7 @@ const targeting = {
 const SEO = {
   id: AD_SEO,
   name: 'SEO-траффик',
-  cost: { money: 150, xp: 4 },
+  cost: { money: 150, mp: 4 },
   hype: 50,
   openedOn: 30
 };

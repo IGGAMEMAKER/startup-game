@@ -17,6 +17,7 @@ import SegmentUpgrader from '../Markets/SegmentUpgrader';
 const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 const MODE_STATS = 'MODE_STATS';
+const MODE_RESEARCH = 'MODE_RESEARCH';
 
 export default class ProductPanel extends Component {
   renderMarketingTab = (id) => {
@@ -34,7 +35,7 @@ export default class ProductPanel extends Component {
         }
 
         if (!explored) {
-          hasUnexploredMarkets = true;
+          // hasUnexploredMarkets = true;
         }
       });
 

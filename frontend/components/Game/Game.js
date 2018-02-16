@@ -14,6 +14,9 @@ import UI from '../UI';
 
 
 import gameRunner from '../../game';
+
+import * as sounds from '../../utils/sounds';
+
 import stats from '../../stats';
 
 import * as GAME_STAGES from '../../constants/game-stages';
@@ -30,8 +33,8 @@ export default class Game extends Component {
     day: 0,
     tasks: [],
 
-    pause: true,
-    gameSpeed: 3,
+    pause: false,
+    gameSpeed: 1.5,
     timerId: null,
     counter: 0,
 
@@ -54,6 +57,8 @@ export default class Game extends Component {
 
     setTimeout(() => {
       this.runGame();
+      // sounds.moneySound();
+
     }, 1000 / this.state.gameSpeed);
   };
 
@@ -105,6 +110,8 @@ export default class Game extends Component {
     flux.productStore.addChangeListener(this.getProductsFromStore);
     flux.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
     flux.messageStore.addChangeListener(this.getMessages);
+
+    flux.scheduleActions.startGame();
   }
 
   setMode = (mode) => {
@@ -159,9 +166,14 @@ export default class Game extends Component {
   };
 
   render(props, state) {
-    if (state.gamePhase === GAME_STAGES.GAME_STAGE_INIT) return <Tutorial />;
-
     const modalActive = flux.messageStore.isDrawable();
+
+    const resources = {
+      mp: 100,
+      pp: 1000,
+      sp: 1000,
+      money: state.money
+    };
 
     return (
       <div>
@@ -174,9 +186,7 @@ export default class Game extends Component {
                 pauseGame={this.pauseGame}
                 setGameSpeed={this.setGameSpeed}
                 day={state.day}
-                money={state.money}
-                points={state.points}
-                xp={state.xp}
+                resources={resources}
                 id={0}
                 hype={state.hype}
               />
@@ -187,12 +197,12 @@ export default class Game extends Component {
             <br />
             {this.renderProductMenu(state)}
             <br />
-            <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
           </div>
         </div>
       </div>
     );
 
+            // <UI.Button link onClick={sessionManager.restartGame} text="Рестарт игры" />
     //   <h3>Два вопроса бизнеса</h3>
     //   <div>Готовы ли люди этим пользоваться</div>
     //   <div>Сколько они готовы заплатить за это</div>

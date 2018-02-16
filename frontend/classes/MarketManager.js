@@ -49,7 +49,7 @@ export default class MarketManager {
   isMainMarket(productId, marketId) {
     return false;
   }
-  
+
   markets() {
     return this.markets;
   }
@@ -75,9 +75,10 @@ export default class MarketManager {
   }
 
   isExploredMarket(productId, marketId) {
+    return true;
     return this.getMarket(marketId).isExploredMarket(productId);
   }
-  
+
   iterateByCompanyMarkets(productId, cb) {
     return this.markets.filter(m => m.isExploredMarket(productId)).forEach(cb);
   }
