@@ -577,7 +577,9 @@ export default class Product {
   }
 
   fixBug(bugId) {
-    this.bugs.splice(bugId);
+    const index = this.bugs.findIndex(b => b.id === bugId);
+
+    this.bugs.splice(index, 1);
   }
 
   increaseXP(value) {
