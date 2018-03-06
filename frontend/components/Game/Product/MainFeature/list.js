@@ -28,7 +28,6 @@ export default class MainFeatures extends Component {
         <div>
           <table className="table table-striped" style={{ textAlign: 'center' }}>
             <thead>
-            <th>Уровень</th>
             <th style={{ textAlign: 'left' }}>Технология</th>
             <th>Польза</th>
             <th>Действие</th>
@@ -43,15 +42,9 @@ export default class MainFeatures extends Component {
   }
 
   renderSupportTab(id) {
-    const support = productStore.getProductSupportCost(id);
-    const upgradeCost = productStore.getFeatureIncreaseXPCost(id);
+    const XP = productStore.getXP(id);
 
-
-      // <div>Стоимость поддержки продукта: {support}$ в месяц</div>
-      // <br />
-    return <div>
-      <div>Стоимость улучшения технологии: {upgradeCost}XP</div>
-    </div>;
+    return <div>Очки улучшений: {XP}</div>;
   }
 
   renderMainFeature = (product, id) => (defaultFeature, featureId) => {
@@ -79,7 +72,7 @@ export default class MainFeatures extends Component {
     let profitPhrase;
 
     if (isWeAreLeaders) {
-      profitPhrase = '---';
+      profitPhrase = '???';
     } else {
       profitPhrase = `+${benefit}$`;
     }
@@ -87,10 +80,13 @@ export default class MainFeatures extends Component {
     const maxLevel = leaderInTech.value;
 
         // <div>{isWeAreLeaders ? current : `${current} / ${maxLevel}`}</div>
+      // <td>
+      //   <div>{current}</div>
+      // </td>
+
+    const text = current + 1 > maxLevel ? 'Совершить прорыв!' : `Улучшить до ${current + 1} lvl`;
+
     return <tr key={key}>
-      <td>
-        <div>{current}</div>
-      </td>
       <td style={{ textAlign: 'left' }}>
         <div>{userOrientedFeatureName}</div>
       </td>
@@ -99,7 +95,7 @@ export default class MainFeatures extends Component {
       </td>
       <td>
         <UI.Button
-          text="Улучшить"
+          text={text}
           onClick={() => { this.improveFeature(id, featureId, upgradeCost) }}
           disabled={!upgradeable}
           secondary={upgradeable}

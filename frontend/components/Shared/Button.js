@@ -19,11 +19,11 @@ export default class Button extends Component {
     let className = '';
 
     if (props.primary) {
-      className = 'btn-primary';
+      className = 'btn-success';
     }
 
     if (props.secondary) {
-      className = 'btn-success';
+      className = 'btn-primary';
     }
 
     if (props.link) {

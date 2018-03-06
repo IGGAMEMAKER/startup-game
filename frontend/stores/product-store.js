@@ -10,6 +10,8 @@ import round from '../helpers/math/round';
 
 
 import * as c from '../constants/actions/product-actions';
+import * as ACTIONS from '../constants/actions/schedule-actions';
+
 import payloads from '../constants/actions/payloads';
 import {
   DefaultDescription,
@@ -154,7 +156,9 @@ class ProductStore extends EventEmitter {
     return _products[id].getIdea();
   }
 
-
+  isBugFixable(productId, bugId) {
+    return true;
+  }
 
 
   getProductExpenses(id) {
@@ -421,7 +425,9 @@ Dispatcher.register((p: PayloadType) => {
     return;
   }
 
-  logger.log('product store', p);
+  if (p.type !== ACTIONS.SCHEDULE_ACTIONS_DAY_TICK) {
+    logger.log('product store', p);
+  }
 
   const id = p.id;
 

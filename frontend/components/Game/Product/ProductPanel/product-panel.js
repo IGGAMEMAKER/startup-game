@@ -8,11 +8,14 @@ import Metrics from '../KPI/metrics';
 import Competitors from '../Ads/competitors';
 import Market from '../../Product/Markets/market';
 
+import BugPanel from '../../Product/BugPanel';
+
+import Marketing from '../../Marketing/Marketing';
+
 import shortenValue from '../../../../helpers/math/shorten-value';
 import stageHelper from '../../../../helpers/stages';
 import logger from '../../../../helpers/logger/logger';
 
-import SegmentUpgrader from '../Markets/SegmentUpgrader';
 
 const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
@@ -20,28 +23,6 @@ const MODE_STATS = 'MODE_STATS';
 const MODE_RESEARCH = 'MODE_RESEARCH';
 
 export default class ProductPanel extends Component {
-  renderMarketingTab = (id) => {
-    let hasUnexploredMarkets = false;
-
-    let marketsTab = [];
-
-    productStore.getMarkets(id)
-      .forEach((m, mId) => {
-        const explored = productStore.isExploredMarket(id, mId);
-
-        if (!hasUnexploredMarkets) {
-          // marketsTab.push(<Market id={id} marketId={mId} market={m} explored={explored} />);
-          marketsTab.push(<SegmentUpgrader id={id} marketId={mId} market={m} explored={explored} />);
-        }
-
-        if (!explored) {
-          // hasUnexploredMarkets = true;
-        }
-      });
-
-    return <div className="market-list-container">{marketsTab}</div>;
-  };
-
   renderMetrics = (id, product) => {
     if (!stageHelper.canShowMetricsTab()) return '';
 
@@ -80,7 +61,13 @@ export default class ProductPanel extends Component {
   }
 
   renderDevTab(id, product) {
-    return <MainFeatureTab id={id} product={product} />;
+    return (
+      <div>
+        <MainFeatureTab id={id} product={product} />
+
+        <BugPanel id={id} />
+      </div>
+    );
   }
 
   render({ product, gamePhase, mode }, state) {
@@ -88,7 +75,7 @@ export default class ProductPanel extends Component {
 
     let body = '';
     switch (mode) {
-      case MODE_MARKETING: body = this.renderMarketingTab(id); break;
+      case MODE_MARKETING: body = <Marketing id={id} />; break;
 
       case MODE_MAIN_FEATURES: body = this.renderDevTab(id, product); break;
 

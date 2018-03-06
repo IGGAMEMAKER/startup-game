@@ -75,7 +75,7 @@ export default class MarketManager {
   }
 
   isExploredMarket(productId, marketId) {
-    return true;
+    // return true;
     return this.getMarket(marketId).isExploredMarket(productId);
   }
 
