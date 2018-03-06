@@ -89,6 +89,13 @@ export default class Product {
       bonuses: {}
     };
 
+    // this.bugs = [];
+    this.bugs = [
+      { id: 0, cost: 15, penalty: 0.1, platform: 'web' },
+      { id: 1, cost: 25, penalty: 0.2, platform: 'web' },
+      { id: 2, cost: 35, penalty: 1, platform: 'back' }
+    ];
+
     this.companyId = companyId;
     this.features = features;
     this.featuresOnCreate = Object.assign({}, features);
@@ -156,6 +163,10 @@ export default class Product {
 
   getImprovementsAmount() {
     return this.improvements;
+  }
+
+  getBugs() {
+    return this.bugs;
   }
 
 
@@ -563,6 +574,10 @@ export default class Product {
     this.stage = stage;
     this.features = features;
     this.XP = XP;
+  }
+
+  fixBug(bugId) {
+    this.bugs.splice(bugId);
   }
 
   increaseXP(value) {

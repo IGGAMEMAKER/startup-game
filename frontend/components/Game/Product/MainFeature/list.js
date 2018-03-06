@@ -72,7 +72,9 @@ export default class MainFeatures extends Component {
     let profitPhrase;
 
     if (isWeAreLeaders) {
-      profitPhrase = '???';
+      profitPhrase = <div>
+        <div>+5 лояльности клиентов</div>
+      </div>;
     } else {
       profitPhrase = `+${benefit}$`;
     }

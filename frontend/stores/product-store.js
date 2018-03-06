@@ -156,6 +156,10 @@ class ProductStore extends EventEmitter {
     return _products[id].getIdea();
   }
 
+  getBugs(id) {
+    return _products[id].getBugs();
+  }
+
   isBugFixable(productId, bugId) {
     return true;
   }
@@ -435,6 +439,10 @@ Dispatcher.register((p: PayloadType) => {
   switch (p.type) {
     case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
       _products[id].testHypothesis(p);
+      break;
+
+    case c.PRODUCT_ACTIONS_FIX_BUG:
+      _products[id].fixBug(p.bugId);
       break;
 
     case c.PRODUCT_ACTIONS_SWITCH_STAGE:

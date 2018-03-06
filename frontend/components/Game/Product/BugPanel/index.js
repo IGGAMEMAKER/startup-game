@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
 import productStore from '../../../../stores/product-store';
+import productActions from '../../../../actions/product-actions';
 
 import UI from '../../../UI';
 
@@ -11,10 +12,18 @@ export default class BugPanel extends Component {
   renderBug = productId => bug => {
     const isFixable = productStore.isBugFixable(productId, bug.id);
 
-    const button = <UI.Button text="Исправить" primary={isFixable} />;
+    const action = () => productActions.fixBug(productId, bug.id);
+
+    const button = <UI.Button
+      text="Исправить"
+      primary={isFixable}
+      disabled={!isFixable}
+      onClick={action}
+    />;
 
     return (
       <tr>
+        <td>{UI.icons[bug.platform]}</td>
         <td>{bug.cost}</td>
         <td>{bug.penalty * penaltyMultiplier}</td>
         <td>{button}</td>
@@ -25,30 +34,26 @@ export default class BugPanel extends Component {
   render() {
     const { props } = this;
 
-    const list = [
-      { id: 0, cost: 15, penalty: 0.1, platform: 'web' },
-      { id: 1, cost: 25, penalty: 0.2, platform: 'web' },
-      { id: 2, cost: 35, penalty: 1, platform: 'web' }
-    ];
+    const list = productStore.getBugs(props.id);
 
     const bugs = list.map(this.renderBug(props.id));
 
-    const errorMoneyLoss = list.map(i => i.penalty).reduce((p, c) => p + c) * penaltyMultiplier;
+    const loyaltyLoss = list.map(i => i.penalty).reduce((p, c) => p + c, 0) * penaltyMultiplier;
 
     return (
       <div>
         <h2>Ошибки</h2>
         <div>Из-за ошибок падает лояльность наших клиентов!</div>
-        <div>Мы должны исправлять их как можно скорее!</div>
-        <div>Падение лояльности клиентов: {errorMoneyLoss}%</div>
+        <div>Исправьте их как можно скорее!</div>
+        <div>Падение лояльности клиентов: {loyaltyLoss}%</div>
         <br />
         <div>
           <table className="table table-striped" style={{ textAlign: 'center' }}>
             <thead>
-              <th>Стоимость (P)</th>
-              <th>Лояльность</th>
-              <th>Польза</th>
-              <th></th>
+              <th>Платформа</th>
+              <th>Стоимость, {UI.icons.PP}</th>
+              <th>Лояльность, %</th>
+              <th>Действие</th>
             </thead>
             <tbody>
               {bugs}

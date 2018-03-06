@@ -71,6 +71,15 @@ export default {
       sender, acceptor, featureId, price, until
     })
   },
+
+  fixBug(id, bugId) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_FIX_BUG,
+      id,
+      bugId
+    })
+  },
+
   testHypothesis(id) {
     const range = productStore.getImprovementChances(id);
 
