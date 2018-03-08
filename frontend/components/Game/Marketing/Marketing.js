@@ -59,7 +59,7 @@ export default class Marketing extends Component {
       <div>
         {this.renderSegments(id)}
         <br />
-        <h2 className="center">Каналы</h2>
+        <h2 className="center">Клиенты</h2>
         {this.renderMarketingTab(id)}
         <br />
       </div>

@@ -66,18 +66,17 @@ export default class SegmentUpgrader extends Component {
 
     const body = (
       <div>
-        <div className="center">{clientType}</div>
+        <div className="center segment-client-type">{clientType} (Рейтинг: <ColoredRating rating={rating} />)</div>
+        <div></div>
         <div className="flexbox">
           <div className="flex-splitter">
             <div className="segment-attribute">Клиенты: 100/{maxAmountOfClients}</div>
           </div>
           <div className="flex-splitter">
             <div className="segment-attribute">
-              {clientType} (<ColoredRating rating={rating} />)
+              Рейтинг: <ColoredRating rating={rating} />/10
+              <div className="segment-value">{this.renderBestFeatureButton(id, marketId)}</div>
             </div>
-          </div>
-          <div className="flex-splitter">
-            <div className="segment-value">{this.renderBestFeatureButton(id, marketId)}</div>
           </div>
           <div className="flex-splitter">
             <div className="segment-value">{this.renderBenefit(id, marketId)}</div>

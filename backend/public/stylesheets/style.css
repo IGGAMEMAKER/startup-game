@@ -252,6 +252,11 @@ textarea {
   text-align: center;
 }
 
+.segment-client-type {
+  font-weight: bolder;
+  font-style: italic;
+}
+
 .navigation {
   display: inline-block;
   padding: 7px;
