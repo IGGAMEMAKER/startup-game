@@ -48,12 +48,28 @@ export default class SegmentUpgrader extends Component {
     />;
   }
 
+  renderGetMoreClientsButton(id, marketId) {
+    return <UI.Button
+      onClick={() => this.getMoreClients(id, marketId, 50)}
+      text="Привлечь 50 клиентов"
+      primary
+      disabled={false}
+    />;
+  }
+
+  getMoreClients(id, marketId, count) {
+    productActions.addClients(id, marketId, count);
+  }
+
   improveFeature(id, featureId, xp) {
     productActions.improveFeature(id, 'offer', featureId, 1, xp);
   }
 
   renderUnexploredMarket = (marketId, market, id) => {
-    return <div></div>
+    return <div>
+      {id}
+      {JSON.stringify(market)}
+    </div>
   };
 
   render({ marketId, market, id, explored }) {
@@ -62,34 +78,34 @@ export default class SegmentUpgrader extends Component {
     const { clientType } = market;
 
     const rating = productStore.getRating(id, marketId);
-    const maxAmountOfClients = market.clients; // productStore.getMaxClientsOnMarket(id, marketId);
 
-    const body = (
-      <div>
-        <div className="center segment-client-type">{clientType} (Рейтинг: <ColoredRating rating={rating} />)</div>
-        <div></div>
-        <div className="flexbox">
-          <div className="flex-splitter">
-            <div className="segment-attribute">Клиенты: 100/{maxAmountOfClients}</div>
-          </div>
-          <div className="flex-splitter">
-            <div className="segment-attribute">
-              Рейтинг: <ColoredRating rating={rating} />/10
-              <div className="segment-value">{this.renderBestFeatureButton(id, marketId)}</div>
-            </div>
-          </div>
-          <div className="flex-splitter">
-            <div className="segment-value">{this.renderBenefit(id, marketId)}</div>
-          </div>
-        </div>
-      </div>
-    );
+    const clients = productStore.getClientsOnMarket(id, marketId);
+    const maxAmountOfClients = market.clients; // productStore.getMaxClientsOnMarket(id, marketId);
 
     return (
       <div className="segment-block">
         <div className="content-block">
           <div className="client-market-item">
-            {body}
+            <div>
+              <div className="center segment-client-type">{clientType}</div>
+              <div className="flexbox">
+                <div className="flex-splitter">
+                  <div className="segment-attribute">
+                    <div className="segment-value">Клиенты: {clients}/{maxAmountOfClients}</div>
+                    <br />
+                    <div className="segment-value">{this.renderGetMoreClientsButton(id, marketId)}</div>
+                  </div>
+                </div>
+                <div className="flex-splitter">
+                  <div className="segment-attribute">
+                    <div className="segment-value">Рейтинг: <ColoredRating rating={rating} /></div>
+                    <br />
+                    <div className="segment-value">{this.renderBestFeatureButton(id, marketId)}</div>
+                    <div className="segment-value">{this.renderBenefit(id, marketId)}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

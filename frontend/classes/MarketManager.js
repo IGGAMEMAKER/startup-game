@@ -24,6 +24,10 @@ export default class MarketManager {
     return this.markets.find(m => m.id === marketId);
   }
 
+  getClients(marketId, productId) {
+    return this.getMarket(marketId).getClients(productId);
+  }
+
   getHype(marketId, productId) {
     return this.getMarket(marketId).getHype(productId);
   }
@@ -95,6 +99,10 @@ export default class MarketManager {
     this.getMarket(marketId).addHype(productId, hype);
 
     return this;
+  }
+
+  addClients(marketId, productId, clients) {
+    this.getMarket(marketId).addClients(productId, clients);
   }
 
   loseMonthlyHype(id) {

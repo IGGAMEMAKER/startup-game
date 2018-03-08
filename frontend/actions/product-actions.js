@@ -123,10 +123,11 @@ export default {
       featureName: bonusName
     })
   },
-  addClients(id, clients) {
+  addClients(id, marketId, clients) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,
       id,
+      marketId,
       clients
     })
   },

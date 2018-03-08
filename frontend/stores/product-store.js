@@ -289,6 +289,10 @@ class ProductStore extends EventEmitter {
     return marketManager.isMainMarket(id, marketId);
   }
 
+  getClientsOnMarket(id, marketId) {
+    return marketManager.getClients(marketId, id);
+  }
+
   getPowerOfCompanyOnMarket(id, marketId) {
     return marketManager.getPowerOfCompanyOnMarket(id, marketId);
   }
@@ -485,6 +489,12 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
       marketManager.loseMonthlyHype(id);
+      break;
+
+    case c.PRODUCT_ACTIONS_CLIENTS_ADD:
+      marketManager.addClients(p.marketId, p.id, p.clients);
+
+      _products[id]._money -= 1000;
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_JOIN:

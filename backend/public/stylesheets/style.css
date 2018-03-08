@@ -255,6 +255,7 @@ textarea {
 .segment-client-type {
   font-weight: bolder;
   font-style: italic;
+  margin-bottom: 8px;
 }
 
 .navigation {
@@ -338,6 +339,18 @@ textarea {
 
 .flex-splitter {
   flex-basis: 50%;
+}
+
+.vertical-separator {
+  height: 100%;
+  color: white;
+  width: 1px;
+}
+
+.flex-splitter:last-child {
+  border-left: 1px;
+  border-left-color: white;
+  border-left-style: double;
 }
 
 .segment-attribute {
