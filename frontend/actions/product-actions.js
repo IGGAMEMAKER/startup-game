@@ -72,6 +72,16 @@ export default {
     })
   },
 
+  addBug(id, cost, platform, penalty) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_ADD_BUG,
+      id,
+      cost,
+      platform,
+      penalty
+    })
+  },
+
   fixBug(id, bugId) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_FIX_BUG,

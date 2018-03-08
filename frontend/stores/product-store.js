@@ -8,6 +8,7 @@ import defaults from '../helpers/products/product-descriptions';
 import computeRating from '../helpers/products/compute-rating';
 import round from '../helpers/math/round';
 
+import bugGenerator from '../helpers/products/bug-generator';
 
 import * as c from '../constants/actions/product-actions';
 import * as ACTIONS from '../constants/actions/schedule-actions';
@@ -164,7 +165,7 @@ class ProductStore extends EventEmitter {
     const bug = this.getBugs(productId).find(b => b.id === bugId);
 
     if (bug && bug.cost) {
-      return this.getManagerPoints(productId) >= bug.cost;
+      return this.getProgrammerPoints(productId) >= bug.cost;
     }
 
     return false;
@@ -462,6 +463,10 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
       _products[id].improveFeature(p);
+
+      _products[id].addBug(bugGenerator());
+      _products[id].addBug(bugGenerator());
+      _products[id].addBug(bugGenerator());
       break;
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:

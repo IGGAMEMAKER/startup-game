@@ -25,10 +25,14 @@ export default class BugPanel extends Component {
       <tr>
         <td>{UI.icons[bug.platform]}</td>
         <td>{bug.cost}</td>
-        <td>{bug.penalty * penaltyMultiplier}</td>
+        <td>{Math.ceil(bug.penalty * penaltyMultiplier)}</td>
         <td>{button}</td>
       </tr>
     )
+  };
+
+  sortByLoyalty = (b1, b2) => {
+    return b2.penalty - b1.penalty;
   };
 
   render() {
@@ -36,9 +40,11 @@ export default class BugPanel extends Component {
 
     const list = productStore.getBugs(props.id);
 
-    const bugs = list.map(this.renderBug(props.id));
+    const bugs = list
+      .sort(this.sortByLoyalty)
+      .map(this.renderBug(props.id));
 
-    const loyaltyLoss = list.map(i => i.penalty).reduce((p, c) => p + c, 0) * penaltyMultiplier;
+    const loyaltyLoss = Math.ceil(list.map(i => i.penalty).reduce((p, c) => p + c, 0) * penaltyMultiplier);
 
     return (
       <div>

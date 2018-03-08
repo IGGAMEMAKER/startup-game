@@ -7,8 +7,6 @@ import {
 
 import * as balance from '../constants/balance';
 
-import companyCostComputer from '../helpers/products/compute-company-cost';
-
 
 const names = [
   'Alpha', 'Proxima', 'Sun', 'Magenta', 'Grapes',
@@ -103,7 +101,7 @@ export default class Product {
     this.bonuses = 1;
 
     this._points = {
-      programming: 4500,
+      programming: 500,
       management: 100
     };
 
@@ -211,10 +209,6 @@ export default class Product {
     return this.getDefaults().features;
   }
 
-  getPrettyFeatureNameByFeatureId(featureId){
-    return this.getDefaults().features[featureId].shortDescription;
-  }
-
   getMaxMainFeatureQuality(featureId) {
     return this.getDefaults().features[featureId].data;
   }
@@ -225,6 +219,11 @@ export default class Product {
 
   isShareableFeature(featureId) {
     return this.getDefaults().features[featureId].shareable;
+  }
+
+  //
+  getPrettyFeatureNameByFeatureId(featureId){
+    return this.getDefaults().features[featureId].shortDescription;
   }
 
   getDescriptionOfProduct() {
@@ -244,14 +243,6 @@ export default class Product {
     return this.getProductSupportCost();
   }
 
-  getCompanyCost() {
-    return companyCostComputer.compute(this);
-  }
-
-  getCompanyCostStructured() {
-    return companyCostComputer.structured(this);
-  }
-
   getProductSupportCost() {
     const base = this.getDefaults().support.pp;
 
@@ -265,10 +256,6 @@ export default class Product {
   picked = (value) => {
     return this.features.bonuses[value]
   };
-
-  getSpecificFeatureDevelopmentCostModifier(featureId) {
-    return this.picked(`lowerDevelopmentCostOfFeature${featureId}`) ? 50 : 0;
-  }
 
   getAvailableBonuses(): Array {
     const list = this.getBonusesList();
@@ -330,6 +317,15 @@ export default class Product {
 
   spendMPs(mp) {
     this._points.management -= mp;
+  }
+
+  addBug(p) {
+    this.bugs.push({
+      cost: p.cost,
+      platform: p.platform,
+      penalty: p.penalty,
+      id: this.bugs.length
+    });
   }
 
   fixBug(bugId) {
