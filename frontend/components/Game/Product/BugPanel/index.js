@@ -32,7 +32,23 @@ export default class BugPanel extends Component {
   };
 
   sortByLoyalty = (b1, b2) => {
-    return b2.penalty - b1.penalty;
+    if (b2.penalty > b1.penalty) {
+      return 1;
+    }
+
+    if (b2.penalty < b1.penalty) {
+      return -1;
+    }
+
+    if (b2.cost > b1.cost) {
+      return -1;
+    }
+
+    if (b2.cost < b1.cost) {
+      return 1;
+    }
+
+    return 0;
   };
 
   render() {

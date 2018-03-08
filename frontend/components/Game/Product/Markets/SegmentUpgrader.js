@@ -38,9 +38,7 @@ export default class SegmentUpgrader extends Component {
 
     const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
 
-    const noXP = XP < cost;
-
-    const disabled = noXP;
+    const disabled = XP < cost;
 
     return <UI.Button
       onClick={() => this.improveFeature(id, upgrade.featureId, cost)}
@@ -64,20 +62,19 @@ export default class SegmentUpgrader extends Component {
     const { clientType } = market;
 
     const rating = productStore.getRating(id, marketId);
+    const maxAmountOfClients = market.clients; // productStore.getMaxClientsOnMarket(id, marketId);
 
-    const currentRating = <ColoredRating rating={rating} />;
-
-    let body;
-
-    const isFullyUpgraded = rating >= 10;
-
-    if (isFullyUpgraded) {
-      body = `${clientType} обожают наш продукт!`;
-    } else {
-      body = (
+    const body = (
+      <div>
+        <div className="center">{clientType}</div>
         <div className="flexbox">
           <div className="flex-splitter">
-            <div className="segment-attribute">{clientType} ({currentRating})</div>
+            <div className="segment-attribute">Клиенты: 100/{maxAmountOfClients}</div>
+          </div>
+          <div className="flex-splitter">
+            <div className="segment-attribute">
+              {clientType} (<ColoredRating rating={rating} />)
+            </div>
           </div>
           <div className="flex-splitter">
             <div className="segment-value">{this.renderBestFeatureButton(id, marketId)}</div>
@@ -86,8 +83,8 @@ export default class SegmentUpgrader extends Component {
             <div className="segment-value">{this.renderBenefit(id, marketId)}</div>
           </div>
         </div>
-      )
-    }
+      </div>
+    );
 
     return (
       <div className="segment-block">

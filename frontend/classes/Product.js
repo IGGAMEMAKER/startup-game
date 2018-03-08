@@ -18,30 +18,7 @@ const names = [
 
 
 export default class Product {
-  constructor(data, createFromObject) {
-    // if (createFromObject) {
-    //   this.companyId = data.companyId;
-    //   this.features = data.features;
-    //   this.featuresOnCreate = data.featuresOnCreate;
-    //   this.idea = data.idea;
-    //   this.name = data.name;
-    //
-    //   this.XP = data.XP;
-    //
-    //   this.bonuses = data.bonuses;
-    //
-    //   this.tests = data.tests;
-    //   this.improvements = data.improvements;
-    //
-    //   this.owner = data.owner;
-    //   this.style = data.style;
-    //
-    //   this._points = data._points;
-    //   this._money = data._money;
-    //
-    //   return this;
-    // }
-  }
+  constructor(data, createFromObject) {}
 
   createCompany(data): Product {
     let { idea, name, isCompetitor, companyId } = data;
@@ -85,16 +62,15 @@ export default class Product {
       bonuses: {}
     };
 
-    // this.bugs = [];
-    this.bugs = [
-      { id: 0, cost: 15, penalty: 0.1, platform: 'web' },
-      { id: 1, cost: 25, penalty: 0.2, platform: 'web' },
-      { id: 2, cost: 35, penalty: 1, platform: 'back' }
-    ];
+    this.bugs = [];
+    // this.bugs = [
+    //   { id: 0, cost: 15, penalty: 0.1, platform: 'web' },
+    //   { id: 1, cost: 25, penalty: 0.2, platform: 'web' },
+    //   { id: 2, cost: 35, penalty: 1, platform: 'back' }
+    // ];
 
     this.companyId = companyId;
     this.features = features;
-    this.featuresOnCreate = Object.assign({}, features);
     this.idea = idea;
     this.name = name;
 
@@ -116,15 +92,6 @@ export default class Product {
     this.improvements = 1;
 
     this.owner = !isCompetitor;
-
-    // let styleFactor = random(0, 1);
-    // if (styleFactor < 0.6) {
-    //   this.style = MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
-    // } else {
-    //   this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
-    // }
-    //
-    // if (!isCompetitor) this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
 
     return this;
   }

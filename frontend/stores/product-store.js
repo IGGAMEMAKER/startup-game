@@ -161,6 +161,10 @@ class ProductStore extends EventEmitter {
     return _products[id].getBugs();
   }
 
+  isSegmentingOpened(id) {
+    return false;
+  }
+
   isBugFixable(productId, bugId) {
     const bug = this.getBugs(productId).find(b => b.id === bugId);
 
