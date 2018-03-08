@@ -39,8 +39,7 @@ export default class Menu extends Component {
       pauseGame,
       resources,
       setGameSpeed,
-      id,
-      hype
+      id
     } = props;
 
     const { money, mp, pp, sp } = resources;
@@ -111,10 +110,6 @@ export default class Menu extends Component {
         <div title={programmingSaldoText} className="navigation">
           {UI.icons.PP}
           <span className="moneyPositive"> <UI.Changeable value={pp} /></span>
-        </div>
-        <div title={sellSaldoText} className="navigation">
-          {UI.icons.SP}
-          <span className="moneyPositive"> <UI.Changeable value={sp} /></span>
         </div>
       </div>
     </div>;

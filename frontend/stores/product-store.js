@@ -161,9 +161,22 @@ class ProductStore extends EventEmitter {
   }
 
   isBugFixable(productId, bugId) {
-    return true;
+    const bug = this.getBugs(productId).find(b => b.id === bugId);
+
+    if (bug && bug.cost) {
+      return this.getManagerPoints(productId) >= bug.cost;
+    }
+
+    return false;
   }
 
+  getManagerPoints(id) {
+    return this.getProduct(id).getMP()
+  }
+
+  getProgrammerPoints(id) {
+    return this.getProduct(id).getPP();
+  }
 
   getProductExpenses(id) {
     return this.getProductSupportCost(id);
@@ -336,7 +349,6 @@ class ProductStore extends EventEmitter {
       }
     }
 
-
     const marketInfluences = marketManager.getRatingFormula(marketId);
 
     return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
@@ -369,16 +381,15 @@ class ProductStore extends EventEmitter {
   getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
     const income = this.getMarketIncome(id, marketId);
 
-    const rating = this.getRating(id, marketId);
+    const currRating = this.getRating(id, marketId);
     const nextRating = this.getRating(id, marketId, { featureId, value });
 
-    const willBe = Math.floor(income * (nextRating / rating));
+    const willBe = Math.floor(income * (nextRating / currRating));
 
     return willBe - income;
   }
 
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
-    // return 154; // marketManager.markets()
     return sum(
       this.getMarkets(id).map((m) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, m.id, featureId, value))
     );

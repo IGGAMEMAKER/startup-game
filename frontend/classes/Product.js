@@ -104,7 +104,11 @@ export default class Product {
 
     this.bonuses = 1;
 
-    this._points = { programming: 4500, marketing: 500 };
+    this._points = {
+      programming: 4500,
+      management: 100
+    };
+
     this._money = 45000;
 
 
@@ -117,14 +121,14 @@ export default class Product {
 
     this.owner = !isCompetitor;
 
-    let styleFactor = random(0, 1);
-    if (styleFactor < 0.6) {
-      this.style = MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
-    } else {
-      this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
-    }
-
-    if (!isCompetitor) this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
+    // let styleFactor = random(0, 1);
+    // if (styleFactor < 0.6) {
+    //   this.style = MANAGEMENT_STYLES.COMPANY_STYLE_FEATURE_ORIENTED;
+    // } else {
+    //   this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
+    // }
+    //
+    // if (!isCompetitor) this.style = MANAGEMENT_STYLES.COMPANY_STYLE_BALANCED;
 
     return this;
   }
@@ -151,6 +155,14 @@ export default class Product {
 
   getStage() {
     return this.stage;
+  }
+
+  getPP() {
+    return this._points.programming;
+  }
+
+  getMP() {
+    return this._points.management;
   }
 
   getXP() {
@@ -571,13 +583,24 @@ export default class Product {
 
   setProductDefaults(stage, features, XP) {
     throw 'setProductDefaults';
+
     this.stage = stage;
     this.features = features;
     this.XP = XP;
   }
 
+  spendPPs(pp) {
+    this._points.programming -= pp;
+  }
+
+  spendMPs(mp) {
+    this._points.management -= mp;
+  }
+
   fixBug(bugId) {
     const index = this.bugs.findIndex(b => b.id === bugId);
+
+    this.spendPPs(this.bugs[index].cost);
 
     this.bugs.splice(index, 1);
   }

@@ -3,13 +3,11 @@ import { h, Component } from 'preact';
 
 import flux from '../../flux';
 
-import sessionManager from '../../helpers/session-manager';
 import stageHelper from '../../helpers/stages';
 import logger from '../../helpers/logger/logger';
 
 import Menu from './Menu';
 import ProductPanel from './Product/ProductPanel/product-panel';
-import Tutorial from './Tutorial';
 import UI from '../UI';
 
 
@@ -70,11 +68,16 @@ export default class Game extends Component {
   };
 
   pauseGame = () => {
-    this.setState({ pause: true, timerId: null });
+    this.setState({
+      pause: true,
+      timerId: null
+    });
   };
 
   resumeGame = () => {
-    this.setState({ pause: false })
+    this.setState({
+      pause: false
+    })
   };
 
   getMessages = () => {
@@ -92,14 +95,20 @@ export default class Game extends Component {
   };
 
   getProductsFromStore = () => {
+    const productId = this.state.id;
+
     const products = flux.productStore.getOurProducts();
-    const xp = products[0].getXP();
+    const xp = products[productId].getXP();
+    const money = flux.productStore.getMoney(productId);
+    const mp = flux.productStore.getManagerPoints(productId);
+    const pp = flux.productStore.getProgrammerPoints(productId);
 
     this.setState({
-      products: products,
-      money: flux.productStore.getMoney(0),
-      hype: flux.productStore.getHype(0),
-      xp
+      products,
+      xp,
+      money,
+      mp,
+      pp
     });
   };
 
@@ -169,9 +178,8 @@ export default class Game extends Component {
     const modalActive = flux.messageStore.isDrawable();
 
     const resources = {
-      mp: 100,
-      pp: 1000,
-      sp: 1000,
+      mp: state.mp,
+      pp: state.pp,
       money: state.money
     };
 
@@ -182,13 +190,12 @@ export default class Game extends Component {
           <div className="body-wrapper">
             <div className="menu-fixed">
               <Menu
+                id={this.state.id}
                 pause={state.pause}
                 pauseGame={this.pauseGame}
                 setGameSpeed={this.setGameSpeed}
                 day={state.day}
                 resources={resources}
-                id={0}
-                hype={state.hype}
               />
               {this.renderProductMenuNavbar()}
             </div>
