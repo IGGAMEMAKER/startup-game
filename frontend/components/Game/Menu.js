@@ -99,17 +99,17 @@ export default class Menu extends Component {
 
     return <div>
       <div className="menu-point-container">
-        <div title={moneySaldoText} className="navigation">
+        <div className="navigation">
           {UI.icons.money}
-          <span className={moneyDifferenceIndication}> <UI.Changeable value={shortenValue(money)} /></span>
+          <span title={moneySaldoText} className={moneyDifferenceIndication}> <UI.Changeable value={shortenValue(money)} /></span>
         </div>
-        <div title={managementSaldoText} className="navigation">
+        <div className="navigation">
           {UI.icons.MP}
-          <span className="moneyPositive"> <UI.Changeable value={mp} /></span>
+          <span title={managementSaldoText} className="moneyPositive"> <UI.Changeable value={mp} /></span>
         </div>
-        <div title={programmingSaldoText} className="navigation">
+        <div className="navigation">
           {UI.icons.PP}
-          <span className="moneyPositive"> <UI.Changeable value={pp} /></span>
+          <span title={programmingSaldoText} className="moneyPositive"> <UI.Changeable value={pp} /></span>
         </div>
       </div>
     </div>;
