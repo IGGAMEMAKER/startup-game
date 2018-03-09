@@ -281,10 +281,6 @@ class ProductStore extends EventEmitter {
     return _products;
   }
 
-  isPartneredOnMarket() {
-    return false;
-  }
-
   isMainMarket(id, marketId) {
     return marketManager.isMainMarket(id, marketId);
   }
@@ -293,17 +289,17 @@ class ProductStore extends EventEmitter {
     return marketManager.getClients(marketId, id);
   }
 
-  getPowerOfCompanyOnMarket(id, marketId) {
-    return marketManager.getPowerOfCompanyOnMarket(id, marketId);
-  }
-
-  getPowerListOnMarket(marketId) {
-    return marketManager.getPowerListOnMarket(marketId);
-  }
-
-  getMarketInfluenceOfCompany(id, marketId) {
-    return marketManager.getMarketShare(id, marketId);
-  }
+  // getPowerOfCompanyOnMarket(id, marketId) {
+  //   return marketManager.getPowerOfCompanyOnMarket(id, marketId);
+  // }
+  //
+  // getPowerListOnMarket(marketId) {
+  //   return marketManager.getPowerListOnMarket(marketId);
+  // }
+  //
+  // getMarketInfluenceOfCompany(id, marketId) {
+  //   return marketManager.getMarketShare(id, marketId);
+  // }
 
   getMarketSize(marketId) {
     return marketManager.getMarketSize(marketId);
@@ -400,7 +396,8 @@ class ProductStore extends EventEmitter {
 
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
     return sum(
-      this.getMarkets(id).map((m) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, m.id, featureId, value))
+      this.getMarkets(id)
+        .map((m) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, m.id, featureId, value))
     );
   }
 

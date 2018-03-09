@@ -17,7 +17,7 @@ export default class MarketManager {
   }
 
   getPossibleIncome(marketId, productId) {
-    return this.getMarketSize(marketId) * this.getMarketShare(marketId, productId);
+    return this.getInfo(marketId).price * this.getClients(marketId, productId);
   }
 
   getMarket(marketId): Market {
