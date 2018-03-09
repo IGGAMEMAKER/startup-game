@@ -6,18 +6,6 @@ import productActions from '../../../../actions/product-actions';
 import UI from '../../../UI';
 
 export default class ClientAcquisition extends Component {
-  renderGetMoreClientsButton(id, marketId, amountOfClients = 50, price) {
-    return <div>
-      <UI.Button
-        onClick={() => productActions.addClients(id, marketId, amountOfClients, price)}
-        text={`Привлечь ${amountOfClients} клиентов`}
-        primary
-        disabled={false}
-      />
-      <br />
-    </div>;
-  }
-
   renderAcquisitionButtons(id, marketId) {
     const expertise = productStore.getMarketingKnowledge(id, marketId);
 
@@ -39,7 +27,23 @@ export default class ClientAcquisition extends Component {
       buttons.push({ clients: 1500 })
     }
 
-    return buttons.map(b => this.renderGetMoreClientsButton(id, marketId, b.clients, b.clients * 10));
+    return buttons.reverse().map(b => this.renderGetMoreClientsButton(id, marketId, b.clients, b.clients * 10));
+  }
+
+  renderGetMoreClientsButton(id, marketId, amountOfClients = 50, price) {
+    const isCanGrabMoreClients = productStore.isCanGrabMoreClients(id, marketId, amountOfClients, price);
+
+    return (
+      <div>
+        <UI.Button
+          onClick={() => productActions.addClients(id, marketId, amountOfClients, price)}
+          text={`Привлечь ${amountOfClients} клиентов`}
+          primary
+          disabled={!isCanGrabMoreClients}
+        />
+        <br />
+      </div>
+    );
   }
 
   renderUnexploredMarket = (marketId, market, id) => {

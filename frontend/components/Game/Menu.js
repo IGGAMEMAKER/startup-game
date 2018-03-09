@@ -92,7 +92,6 @@ export default class Menu extends Component {
     const moneySaldoText = `${moneyDiffSign}${shortenValue(saldo)}$ ежемесячно`;
     const managementSaldoText = `+${100} ежемесячно`;
     const programmingSaldoText = `+${133} ежемесячно`;
-    const sellSaldoText = `+${123} ежемесячно`;
     // <span className={moneyDifferenceIndication}>   ({moneyDiffSign}<UI.Changeable value={shortenValue(saldo)} />$/мес)</span>
 
 
@@ -111,13 +110,13 @@ export default class Menu extends Component {
           {UI.icons.PP}
           <span title={programmingSaldoText} className="moneyPositive"> <UI.Changeable value={pp} /></span>
         </div>
+        <div className="navigation">
+          <UI.Button
+            text={time}
+            disabled
+          />
+        </div>
       </div>
     </div>;
   }
 }
-        // <div className="navigation">
-        //   <UI.Button
-        //     text={time}
-        //     disabled
-        //   />
-        // </div>

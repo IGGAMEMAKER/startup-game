@@ -175,6 +175,10 @@ class ProductStore extends EventEmitter {
     return false;
   }
 
+  isCanGrabMoreClients(id, marketId, amountOfClients, price) {
+    return this.getMoney(id) >= price
+  }
+
   getManagerPoints(id) {
     return this.getProduct(id).getMP()
   }
@@ -495,7 +499,7 @@ Dispatcher.register((p: PayloadType) => {
     case c.PRODUCT_ACTIONS_CLIENTS_ADD:
       marketManager.addClients(p.marketId, p.id, p.clients);
 
-      _products[id]._money -= 1000;
+      _products[id]._money -= p.price;
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_JOIN:
