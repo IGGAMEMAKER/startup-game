@@ -29,6 +29,14 @@ export default class Market {
     return record.isMain ? 1.2 : 1;
   }
 
+  getMarketingKnowledge(productId) {
+    const record = this.getRecordByProductId(productId);
+
+    if (!record) return 0;
+
+    return record.knowledgeOfMarket || 0;
+  }
+
   getClients(companyId) {
     const record = this.getRecordByProductId(companyId);
 
@@ -54,7 +62,8 @@ export default class Market {
       active: true,
       isMain: false,
       level,
-      clients: 0
+      clients: 0,
+      knowledgeOfMarket: 0
     });
 
     return this;
@@ -66,6 +75,7 @@ export default class Market {
     if (index < 0) return this;
 
     this.records[index].clients += clients;
+    this.records[index].knowledgeOfMarket += 1;
   }
 
   levelUp(companyId, maxLevel = 0) {

@@ -36,13 +36,36 @@ export default class ClientAcquisition extends Component {
     />;
   }
 
-  renderGetMoreClientsButton(id, marketId) {
-    return <UI.Button
-      onClick={() => this.getMoreClients(id, marketId, 50)}
-      text="Привлечь 50 клиентов"
-      primary
-      disabled={false}
-    />;
+  renderGetMoreClientsButton(id, marketId, amountOfClients = 50) {
+    return <div>
+      <UI.Button
+        onClick={() => this.getMoreClients(id, marketId, amountOfClients)}
+        text={`Привлечь ${amountOfClients} клиентов`}
+        primary
+        disabled={false}
+      />
+      <br />
+    </div>;
+  }
+
+  renderAcquisitionButtons(id, marketId) {
+    const expertise = productStore.getMarketingKnowledge(id, marketId);
+
+    const buttons = [];
+
+    if (expertise < 10) {
+      buttons.push({ clients: 50 })
+    } else if (expertise < 30) {
+      buttons.push({ clients: 125 })
+    } else if (expertise < 55) {
+      buttons.push({ clients: 225 })
+    } else if (expertise < 75) {
+      buttons.push({ clients: 500 })
+    } else {
+      buttons.push({ clients: 1500 })
+    }
+
+    return buttons.map(b => this.renderGetMoreClientsButton(id, marketId, b.clients, b.clients * 10));
   }
 
   getMoreClients(id, marketId, count) {
@@ -77,7 +100,7 @@ export default class ClientAcquisition extends Component {
               <div className="segment-attribute">
                 <div className="segment-value">Клиенты: {clients}/{maxAmountOfClients}</div>
                 <br />
-                <div className="segment-value">{this.renderGetMoreClientsButton(id, marketId)}</div>
+                <div className="segment-value">{this.renderAcquisitionButtons(id, marketId)}</div>
               </div>
             </div>
           </div>

@@ -336,8 +336,12 @@ class ProductStore extends EventEmitter {
     return leaders[0];
   }
 
+  getMarketingKnowledge(id, marketId) {
+    return marketManager.getMarketingKnowledge(marketId, id);
+  }
+
   getRating(id, marketId, improvement = null) {
-    const features = _products[id].features.offer.map(m => m);
+    const features = _products[id].features.offer.slice();
 
     const maxValues = this.getLeaderValues(id).map(l => l.value);
 
