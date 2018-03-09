@@ -3,6 +3,7 @@ import { h, Component } from 'preact';
 import productStore from '../../../stores/product-store';
 
 import SegmentUpgrader from '../Product/Markets/SegmentUpgrader';
+import ClientAcquisition from '../Product/Markets/ClientAcquisition';
 
 
 export default class Marketing extends Component {
@@ -28,10 +29,10 @@ export default class Marketing extends Component {
     return <div className="market-list-container">{marketsTab}</div>;
   };
 
-  renderSegments = id => {
-    if (!productStore.isSegmentingOpened(id)) {
-      return <div className="market-list-container">Мы ничего не знаем о наших клиентах</div>;
-    }
+  renderClientAcquisition = id => {
+    // if (!productStore.isSegmentingOpened(id)) {
+    //   return <div className="market-list-container">Мы ничего не знаем о наших клиентах</div>;
+    // }
 
     let hasUnexploredMarkets = false;
 
@@ -43,7 +44,7 @@ export default class Marketing extends Component {
 
         if (!hasUnexploredMarkets) {
           // marketsTab.push(<Market id={id} marketId={mId} market={m} explored={explored} />);
-          marketsTab.push(<SegmentUpgrader id={id} marketId={mId} market={m} explored={explored} />);
+          marketsTab.push(<ClientAcquisition id={id} marketId={mId} market={m} explored={explored} />);
         }
 
         if (!explored) {
@@ -57,9 +58,10 @@ export default class Marketing extends Component {
   render({ id }) {
     return (
       <div>
-        {this.renderSegments(id)}
+        <h2 className="center">Привлечение клиентов</h2>
+        {this.renderClientAcquisition(id)}
         <br />
-        <h2 className="center">Клиенты</h2>
+        <h2 className="center">Удержание клиентов</h2>
         {this.renderMarketingTab(id)}
         <br />
       </div>

@@ -347,11 +347,11 @@ textarea {
   width: 1px;
 }
 
-.flex-splitter:last-child {
-  border-left: 1px;
-  border-left-color: white;
-  border-left-style: double;
-}
+/*.flex-splitter:last-child {*/
+  /*border-left: 1px;*/
+  /*border-left-color: white;*/
+  /*border-left-style: double;*/
+/*}*/
 
 .segment-attribute {
   font-weight: 200;

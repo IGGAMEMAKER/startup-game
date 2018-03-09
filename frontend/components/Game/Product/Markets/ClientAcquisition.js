@@ -8,19 +8,7 @@ import ColoredRating from '../KPI/colored-rating';
 
 import UI from '../../../UI';
 
-export default class SegmentUpgrader extends Component {
-  renderSetMainMarketButton = (id, marketId) => {
-    return <div></div>;
-    return <div>
-      <UI.Button
-        link
-        text="Сделать этот рынок приоритетным"
-        onClick={() => productActions.setAsMainMarket(id, marketId)}
-      />
-      <span className="offset-mid">Это усилит наше влияние на 20%</span>
-    </div>
-  };
-
+export default class ClientAcquisition extends Component {
   renderBenefit(id, marketId) {
     const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
 
@@ -48,6 +36,19 @@ export default class SegmentUpgrader extends Component {
     />;
   }
 
+  renderGetMoreClientsButton(id, marketId) {
+    return <UI.Button
+      onClick={() => this.getMoreClients(id, marketId, 50)}
+      text="Привлечь 50 клиентов"
+      primary
+      disabled={false}
+    />;
+  }
+
+  getMoreClients(id, marketId, count) {
+    productActions.addClients(id, marketId, count);
+  }
+
   improveFeature(id, featureId, xp) {
     productActions.improveFeature(id, 'offer', featureId, 1, xp);
   }
@@ -64,7 +65,8 @@ export default class SegmentUpgrader extends Component {
 
     const { clientType } = market;
 
-    const rating = productStore.getRating(id, marketId);
+    const clients = productStore.getClientsOnMarket(id, marketId);
+    const maxAmountOfClients = market.clients; // productStore.getMaxClientsOnMarket(id, marketId);
 
     return (
       <div className="segment-block">
@@ -73,10 +75,9 @@ export default class SegmentUpgrader extends Component {
             <div>
               <div className="center segment-client-type">{clientType}</div>
               <div className="segment-attribute">
-                <div className="segment-value">Рейтинг: <ColoredRating rating={rating} /></div>
+                <div className="segment-value">Клиенты: {clients}/{maxAmountOfClients}</div>
                 <br />
-                <div className="segment-value">{this.renderBestFeatureButton(id, marketId)}</div>
-                <div className="segment-value">{this.renderBenefit(id, marketId)}</div>
+                <div className="segment-value">{this.renderGetMoreClientsButton(id, marketId)}</div>
               </div>
             </div>
           </div>
