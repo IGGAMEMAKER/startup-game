@@ -52,15 +52,8 @@ export default class SegmentUpgrader extends Component {
     productActions.improveFeature(id, 'offer', featureId, 1, xp);
   }
 
-  renderUnexploredMarket = (marketId, market, id) => {
-    return <div>
-      {id}
-      {JSON.stringify(market)}
-    </div>
-  };
-
   render({ marketId, market, id, explored }) {
-    if (!explored) return this.renderUnexploredMarket(marketId, market, id);
+    if (!explored) return <div></div>;
 
     const { clientType } = market;
 
