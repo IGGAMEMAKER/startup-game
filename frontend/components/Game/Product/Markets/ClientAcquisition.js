@@ -53,15 +53,21 @@ export default class ClientAcquisition extends Component {
 
     const buttons = [];
 
-    if (expertise < 10) {
-      buttons.push({ clients: 50 })
-    } else if (expertise < 30) {
+    buttons.push({ clients: 50 });
+
+    if (expertise >= 10) {
       buttons.push({ clients: 125 })
-    } else if (expertise < 55) {
+    }
+
+    if (expertise >= 30) {
       buttons.push({ clients: 225 })
-    } else if (expertise < 75) {
+    }
+
+    if (expertise >= 55) {
       buttons.push({ clients: 500 })
-    } else {
+    }
+
+    if (expertise >= 75) {
       buttons.push({ clients: 1500 })
     }
 
