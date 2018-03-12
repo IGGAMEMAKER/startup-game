@@ -42,7 +42,7 @@ export default class Menu extends Component {
       id
     } = props;
 
-    const { money, mp, pp, sp } = resources;
+    const { money, mp, pp, xp } = resources;
 
 
     // time and date
@@ -70,7 +70,7 @@ export default class Menu extends Component {
 
     const saldo = moneyCalculator.saldo();
 
-    const moneyIndication = this.negativeOrPositiveClass(money);
+
     const moneyDifferenceIndication = this.negativeOrPositiveClass(saldo);
 
     const moneyDiffSign = saldo >= 0 ? '+' : '';
@@ -92,6 +92,7 @@ export default class Menu extends Component {
     const moneySaldoText = `${moneyDiffSign}${shortenValue(saldo)}$ ежемесячно`;
     const managementSaldoText = `+${100} ежемесячно`;
     const programmingSaldoText = `+${133} ежемесячно`;
+    const xpSaldoText = `+${5} ежемесячно`;
     // <span className={moneyDifferenceIndication}>   ({moneyDiffSign}<UI.Changeable value={shortenValue(saldo)} />$/мес)</span>
 
 
@@ -109,6 +110,10 @@ export default class Menu extends Component {
         <div className="navigation">
           {UI.icons.PP}
           <span title={programmingSaldoText} className="moneyPositive"> <UI.Changeable value={pp} /></span>
+        </div>
+        <div className="navigation">
+          {UI.icons.XP}
+          <span title={xpSaldoText} className="moneyPositive"> <UI.Changeable value={xp} /></span>
         </div>
         <div className="navigation">
           <UI.Button

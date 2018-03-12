@@ -3,10 +3,11 @@ import { h, Component } from 'preact';
 
 import productStore from '../../../../stores/product-store';
 
+import DeveloperTab from '../DeveloperTab/DeveloperTab';
+
 import MainFeatureTab from '../MainFeature/list';
 import Metrics from '../KPI/metrics';
 import Competitors from '../Ads/competitors';
-import Market from '../../Product/Markets/market';
 
 import BugPanel from '../../Product/BugPanel';
 
@@ -63,7 +64,7 @@ export default class ProductPanel extends Component {
   renderDevTab(id, product) {
     return (
       <div>
-        <MainFeatureTab id={id} product={product} />
+        <DeveloperTab id={id} product={product} />
 
         <BugPanel id={id} />
       </div>

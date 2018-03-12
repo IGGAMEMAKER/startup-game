@@ -12,10 +12,10 @@ import Changeable from './Shared/Changeable';
 
 const icons = {
   rating: 'R',
-  XP: 'XP',
-  MP: <span className="menu-money-indicator-icon" title="Очки Менеджмента">M</span>,
-  PP: <span className="menu-money-indicator-icon" title="Очки Программирования">P</span>,
-  SP: <span className="menu-money-indicator-icon" title="Очки Маркетинга">S</span>,
+  // XP: 'XP',
+  MP: <span className="menu-money-indicator-icon" title="Очки Менеджмента">MP</span>,
+  PP: <span className="menu-money-indicator-icon" title="Очки Программирования">PP</span>,
+  XP: <span className="menu-money-indicator-icon" title="Очки Улучшений">XP</span>,
   money: <span className="menu-money-indicator-icon" title="Деньги">$</span>,
 
   // platforms

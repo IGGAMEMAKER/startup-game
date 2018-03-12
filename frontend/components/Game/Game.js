@@ -98,7 +98,7 @@ export default class Game extends Component {
     const productId = this.state.id;
 
     const products = flux.productStore.getOurProducts();
-    const xp = products[productId].getXP();
+    const xp = products[productId].getXP(productId);
     const money = flux.productStore.getMoney(productId);
     const mp = flux.productStore.getManagerPoints(productId);
     const pp = flux.productStore.getProgrammerPoints(productId);

@@ -5,8 +5,6 @@ import productStore from '../../../../stores/product-store';
 
 import UI from '../../../UI';
 
-import logger from '../../../../helpers/logger/logger';
-
 import stageHelper from '../../../../helpers/stages';
 
 export default class MainFeatures extends Component {
@@ -18,79 +16,48 @@ export default class MainFeatures extends Component {
 
     const featureListTableView = defaults.features.map(this.renderMainFeature(product, id));
 
-    const supportTab = this.renderSupportTab(id);
-
     return (
       <div>
-        <div className="featureGroupDescription">Улучшая главные характеристики продукта, вы увеличиваете доход с продукта</div>
-        {supportTab}
-        <br />
-        <div>
-          <table className="table table-striped" style={{ textAlign: 'center' }}>
-            <thead>
-            <th style={{ textAlign: 'left' }}>Технология</th>
-            <th>Польза</th>
-            <th>Действие</th>
-            </thead>
-            <tbody>
-            {featureListTableView}
-            </tbody>
-          </table>
-        </div>
+        <table className="table table-striped" style={{ textAlign: 'center' }}>
+          <thead>
+          <th style={{ textAlign: 'left' }}>Технология</th>
+          <th>Польза</th>
+          <th>Действие</th>
+          </thead>
+          <tbody>
+          {featureListTableView}
+          </tbody>
+        </table>
       </div>
     );
   }
 
-  renderSupportTab(id) {
-    const XP = productStore.getXP(id);
-
-    return <div>Очки улучшений: {XP}</div>;
-  }
-
   renderMainFeature = (product, id) => (defaultFeature, featureId) => {
-    const featureName = defaultFeature.name;
-    const { shortDescription } = defaultFeature;
-
-    const current = product.features.offer[featureId];
-
-
-    const userOrientedFeatureName = shortDescription ? shortDescription : featureName;
-    const key = `feature${featureName}${featureId}`;
-
-    const leaderInTech = productStore.getLeaderInTech(featureId);
-
-    const isWeAreLeaders = leaderInTech.id === 0;
+    const featureName = defaultFeature.shortDescription;
 
     const upgradeCost = productStore.getFeatureIncreaseXPCost(id);
-
-
-
     const upgradeable = productStore.getXP(id) >= upgradeCost;
 
-    const benefit = productStore.getBenefitOnFeatureImprove(id, featureId);
 
-    let profitPhrase;
+    const leaderInTech = productStore.getLeaderInTech(featureId);
+    const isWeAreLeaders = leaderInTech.id === 0;
+
+    let profitPhrase, text;
 
     if (isWeAreLeaders) {
-      profitPhrase = <div>
-        <div>+5 лояльности клиентов</div>
-      </div>;
+      profitPhrase = <div>+5 лояльности клиентов</div>;
+      text = 'Совершить прорыв!';
     } else {
+      const current = product.features.offer[featureId];
+      const benefit = productStore.getBenefitOnFeatureImprove(id, featureId);
+
       profitPhrase = `+${benefit}$`;
+      text = `Улучшить до ${current + 1} lvl`;
     }
 
-    const maxLevel = leaderInTech.value;
-
-        // <div>{isWeAreLeaders ? current : `${current} / ${maxLevel}`}</div>
-      // <td>
-      //   <div>{current}</div>
-      // </td>
-
-    const text = current + 1 > maxLevel ? 'Совершить прорыв!' : `Улучшить до ${current + 1} lvl`;
-
-    return <tr key={key}>
+    return <tr key={`feature-${featureId}`}>
       <td style={{ textAlign: 'left' }}>
-        <div>{userOrientedFeatureName}</div>
+        <div>{featureName}</div>
       </td>
       <td>
         <div>{profitPhrase}</div>
