@@ -97,11 +97,12 @@ export default class Game extends Component {
   getProductsFromStore = () => {
     const productId = this.state.id;
 
-    const products = flux.productStore.getOurProducts();
-    const xp = products[productId].getXP(productId);
-    const money = flux.productStore.getMoney(productId);
+    const xp = flux.productStore.getXP(productId);
     const mp = flux.productStore.getManagerPoints(productId);
     const pp = flux.productStore.getProgrammerPoints(productId);
+
+    const money = flux.productStore.getMoney(productId);
+    const products = flux.productStore.getOurProducts();
 
     this.setState({
       products,
@@ -180,7 +181,8 @@ export default class Game extends Component {
     const resources = {
       mp: state.mp,
       pp: state.pp,
-      money: state.money
+      money: state.money,
+      xp: state.xp
     };
 
     return (

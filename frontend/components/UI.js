@@ -10,6 +10,8 @@ import Info from './Shared/Info';
 import Bar from './Shared/Bar';
 import Changeable from './Shared/Changeable';
 
+import SmallIcon from './Icons/SmallIcon';
+
 const icons = {
   rating: 'R',
   // XP: 'XP',
@@ -26,8 +28,6 @@ const icons = {
   win: <span title="Windows">Windows</span>,
   lin: <span title="Linux">Linux</span>,
   back: <span title="Сервер">Сервер</span>
-
-
 };
 
 export default {
@@ -38,6 +38,7 @@ export default {
   Range,
   symbols: arrows,
   icons,
+  SmallIcon,
   Info,
   Bar,
   Changeable

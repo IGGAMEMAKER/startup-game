@@ -63,19 +63,34 @@ export default class Market {
       isMain: false,
       level,
       clients: 0,
-      knowledgeOfMarket: 0
+      knowledgeOfMarket: 0,
+      loyalty: 10
     });
 
     return this;
   }
 
-  addClients(companyId, clients) {
+  addClients(companyId, newUsers) {
     const index = this.getRecordIdByProductId(companyId);
 
     if (index < 0) return this;
 
-    this.records[index].clients += clients;
+    const previousAmountOfClients = this.records[index].clients;
+    const previousLoyalty = this.records[index].loyalty;
     this.records[index].knowledgeOfMarket += 1;
+
+    this.records[index].clients += newUsers;
+
+    const baseAmountOfLoyaltyForNewUsers = 10;
+
+    let newLoyalty;
+    if (previousAmountOfClients + newUsers === 0) {
+      newLoyalty = baseAmountOfLoyaltyForNewUsers;
+    } else {
+      newLoyalty = Math.floor((previousAmountOfClients * previousLoyalty + newUsers * baseAmountOfLoyaltyForNewUsers) / (previousAmountOfClients + clients));
+    }
+
+    this.records[index].loyalty = newLoyalty;
   }
 
   levelUp(companyId, maxLevel = 0) {

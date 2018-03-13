@@ -367,6 +367,10 @@ class ProductStore extends EventEmitter {
     return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
   }
 
+  getSegmentLoyalty(id, marketId) {
+    return 10;
+  }
+
   getMarketExplorationCost(id, marketId) {
     return this.getDefaults(id).markets[marketId].explorationCost;
   }

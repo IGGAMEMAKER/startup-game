@@ -47,6 +47,8 @@ export default class ClientAcquisition extends Component {
   }
 
   renderUnexploredMarket = (marketId, market, id) => {
+    return '';
+
     return <div>
       {id}
       {JSON.stringify(market)}
