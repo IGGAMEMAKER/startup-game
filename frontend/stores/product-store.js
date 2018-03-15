@@ -368,6 +368,7 @@ class ProductStore extends EventEmitter {
   }
 
   getSegmentLoyalty(id, marketId) {
+    return marketManager.getMarketLoyalty(marketId, id);
     return 10;
   }
 

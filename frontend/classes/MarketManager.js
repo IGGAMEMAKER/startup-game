@@ -28,6 +28,10 @@ export default class MarketManager {
     return this.getMarket(marketId).getClients(productId);
   }
 
+  getMarketLoyalty(marketId, productId) {
+    return this.getMarket(marketId).getLoyalty(productId);
+  }
+
   getHype(marketId, productId) {
     return this.getMarket(marketId).getHype(productId);
   }

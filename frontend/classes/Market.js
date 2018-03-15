@@ -45,6 +45,14 @@ export default class Market {
     return record.clients || 0;
   }
 
+  getLoyalty(companyId) {
+    const record = this.getRecordByProductId(companyId);
+
+    if (!record) return 0;
+
+    return record.loyalty || 0;
+  }
+
   getRecordByProductId(companyId) {
     return this.records.find(r => r.companyId === companyId);
   }
@@ -64,7 +72,7 @@ export default class Market {
       level,
       clients: 0,
       knowledgeOfMarket: 0,
-      loyalty: 10
+      loyalty: 0
     });
 
     return this;
@@ -87,7 +95,7 @@ export default class Market {
     if (previousAmountOfClients + newUsers === 0) {
       newLoyalty = baseAmountOfLoyaltyForNewUsers;
     } else {
-      newLoyalty = Math.floor((previousAmountOfClients * previousLoyalty + newUsers * baseAmountOfLoyaltyForNewUsers) / (previousAmountOfClients + clients));
+      newLoyalty = Math.floor((previousAmountOfClients * previousLoyalty + newUsers * baseAmountOfLoyaltyForNewUsers) / (previousAmountOfClients + newUsers));
     }
 
     this.records[index].loyalty = newLoyalty;
