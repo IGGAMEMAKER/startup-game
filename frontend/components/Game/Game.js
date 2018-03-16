@@ -1,7 +1,11 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-import flux from '../../flux';
+import productStore from '../../stores/product-store';
+import messageStore from '../../stores/message-store';
+import scheduleStore from '../../stores/schedule-store';
+import scheduleActions from '../../actions/schedule-actions';
+
 
 import stageHelper from '../../helpers/stages';
 import logger from '../../helpers/logger/logger';
@@ -81,31 +85,31 @@ export default class Game extends Component {
   };
 
   getMessages = () => {
-    if (flux.messageStore.isDrawable()) {
+    if (messageStore.isDrawable()) {
       this.pauseGame();
     }
   };
 
   pickDataFromScheduleStore = () => {
     this.setState({
-      day: flux.scheduleStore.getDay(),
-      tasks: flux.scheduleStore.getTasks(),
-      gamePhase: flux.scheduleStore.getGamePhase()
+      day: scheduleStore.getDay(),
+      tasks: scheduleStore.getTasks(),
+      gamePhase: scheduleStore.getGamePhase()
     })
   };
 
   getProductsFromStore = () => {
     const productId = this.state.id;
 
-    const xp = flux.productStore.getXP(productId);
-    const mp = flux.productStore.getManagerPoints(productId);
-    const pp = flux.productStore.getProgrammerPoints(productId);
+    const xp = productStore.getXP(productId);
+    const mp = productStore.getManagerPoints(productId);
+    const pp = productStore.getProgrammerPoints(productId);
 
-    const productionMP = flux.productStore.getPPProduction(productId);
-    const productionPP = flux.productStore.getMPProduction(productId);
+    const productionMP = productStore.getPPProduction(productId);
+    const productionPP = productStore.getMPProduction(productId);
 
-    const money = flux.productStore.getMoney(productId);
-    const products = flux.productStore.getOurProducts();
+    const money = productStore.getMoney(productId);
+    const products = productStore.getOurProducts();
 
     this.setState({
       products,
@@ -122,11 +126,11 @@ export default class Game extends Component {
   componentWillMount() {
     this.initialize();
 
-    flux.productStore.addChangeListener(this.getProductsFromStore);
-    flux.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
-    flux.messageStore.addChangeListener(this.getMessages);
+    productStore.addChangeListener(this.getProductsFromStore);
+    scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
+    messageStore.addChangeListener(this.getMessages);
 
-    flux.scheduleActions.startGame();
+    scheduleActions.startGame();
   }
 
   setMode = (mode) => {
@@ -181,13 +185,13 @@ export default class Game extends Component {
   };
 
   render(props, state) {
-    const modalActive = flux.messageStore.isDrawable();
+    const modalActive = messageStore.isDrawable();
 
     const resources = {
       mp: state.mp,
       pp: state.pp,
-      money: state.money,
-      xp: state.xp
+      xp: state.xp,
+      money: state.money
     };
 
     const production = {

@@ -583,9 +583,21 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _flux = __webpack_require__(89);
+	var _productStore = __webpack_require__(90);
 
-	var _flux2 = _interopRequireDefault(_flux);
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	var _messageStore = __webpack_require__(147);
+
+	var _messageStore2 = _interopRequireDefault(_messageStore);
+
+	var _scheduleStore = __webpack_require__(141);
+
+	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
+
+	var _scheduleActions = __webpack_require__(151);
+
+	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
 	var _stages = __webpack_require__(153);
 
@@ -627,9 +639,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var MODE_MARKETING = 'MODE_MARKETING';
 	// import React, { Component, PropTypes } from 'react';
 
-	var MODE_MARKETING = 'MODE_MARKETING';
 	var MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 	var MODE_COMPETITORS = 'MODE_COMPETITORS';
 	var MODE_STATS = 'MODE_STATS';
@@ -693,27 +705,27 @@
 	        pause: false
 	      });
 	    }, _this.getMessages = function () {
-	      if (_flux2.default.messageStore.isDrawable()) {
+	      if (_messageStore2.default.isDrawable()) {
 	        _this.pauseGame();
 	      }
 	    }, _this.pickDataFromScheduleStore = function () {
 	      _this.setState({
-	        day: _flux2.default.scheduleStore.getDay(),
-	        tasks: _flux2.default.scheduleStore.getTasks(),
-	        gamePhase: _flux2.default.scheduleStore.getGamePhase()
+	        day: _scheduleStore2.default.getDay(),
+	        tasks: _scheduleStore2.default.getTasks(),
+	        gamePhase: _scheduleStore2.default.getGamePhase()
 	      });
 	    }, _this.getProductsFromStore = function () {
 	      var productId = _this.state.id;
 
-	      var xp = _flux2.default.productStore.getXP(productId);
-	      var mp = _flux2.default.productStore.getManagerPoints(productId);
-	      var pp = _flux2.default.productStore.getProgrammerPoints(productId);
+	      var xp = _productStore2.default.getXP(productId);
+	      var mp = _productStore2.default.getManagerPoints(productId);
+	      var pp = _productStore2.default.getProgrammerPoints(productId);
 
-	      var productionMP = _flux2.default.productStore.getPPProduction(productId);
-	      var productionPP = _flux2.default.productStore.getMPProduction(productId);
+	      var productionMP = _productStore2.default.getPPProduction(productId);
+	      var productionPP = _productStore2.default.getMPProduction(productId);
 
-	      var money = _flux2.default.productStore.getMoney(productId);
-	      var products = _flux2.default.productStore.getOurProducts();
+	      var money = _productStore2.default.getMoney(productId);
+	      var products = _productStore2.default.getOurProducts();
 
 	      _this.setState({
 	        products: products,
@@ -781,16 +793,16 @@
 	    value: function componentWillMount() {
 	      this.initialize();
 
-	      _flux2.default.productStore.addChangeListener(this.getProductsFromStore);
-	      _flux2.default.scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
-	      _flux2.default.messageStore.addChangeListener(this.getMessages);
+	      _productStore2.default.addChangeListener(this.getProductsFromStore);
+	      _scheduleStore2.default.addChangeListener(this.pickDataFromScheduleStore);
+	      _messageStore2.default.addChangeListener(this.getMessages);
 
-	      _flux2.default.scheduleActions.startGame();
+	      _scheduleActions2.default.startGame();
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render(props, state) {
-	      var modalActive = _flux2.default.messageStore.isDrawable();
+	      var modalActive = _messageStore2.default.isDrawable();
 
 	      var resources = {
 	        mp: state.mp,
