@@ -347,6 +347,15 @@ textarea {
   width: 1px;
 }
 
+.horizontal-separator {
+  height: 1px;
+  background-color: white;
+  width: 80%;
+  margin: auto;
+}
+
+
+
 /*.flex-splitter:last-child {*/
   /*border-left: 1px;*/
   /*border-left-color: white;*/

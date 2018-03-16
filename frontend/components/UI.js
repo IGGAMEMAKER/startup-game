@@ -9,6 +9,7 @@ import arrows from './Shared/arrows';
 import Info from './Shared/Info';
 import Bar from './Shared/Bar';
 import Changeable from './Shared/Changeable';
+import ColoredValue from './Shared/ColoredValue';
 
 import SmallIcon from './Icons/SmallIcon';
 
@@ -41,5 +42,6 @@ export default {
   SmallIcon,
   Info,
   Bar,
-  Changeable
+  Changeable,
+  ColoredValue
 };

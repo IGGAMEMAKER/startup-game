@@ -20,40 +20,43 @@ export default class SegmentUpgrader extends Component {
   };
 
   renderBestFeatureButton(id, marketId) {
-    const cost = productStore.getFeatureIncreaseXPCost(id);
-
     const XP = productStore.getXP(id);
 
+    const cost = productStore.getFeatureIncreaseXPCost(id);
     const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
-
-    const disabled = XP < cost;
 
     return <UI.Button
       onClick={() => this.improveFeature(id, upgrade.featureId, cost)}
-      text="Улучшить"
+      text="Улучшить приложение"
       primary
-      disabled={disabled}
+      disabled={XP < cost}
     />;
   }
 
   renderLoyalty(id, marketId) {
-    const rating = productStore.getRating(id, marketId);
+    const loyaltyStructured = productStore.getSegmentLoyaltyStructured(id, marketId);
     const loyalty = productStore.getSegmentLoyalty(id, marketId);
 
     let loyaltyIndicator;
-    if (rating < 5) {
+    if (loyalty < 20) {
       loyaltyIndicator = <UI.SmallIcon src="/images/face-sad.png" />;
-    } else if (rating < 8) {
+    } else if (loyalty < 60) {
       loyaltyIndicator = <UI.SmallIcon src="/images/face-neutral.png" />;
     } else {
       loyaltyIndicator = <UI.SmallIcon src="/images/face-happy.png" />;
     }
 
+    const rating = Math.ceil(loyaltyStructured.ratingBasedLoyalty * 100);
+    const errors = Math.ceil(loyaltyStructured.bugPenalty * 100);
+    const newApp = Math.ceil(loyaltyStructured.isNewApp * 100);
+
     return <div>
-      <div className="segment-value">Лояльность клиентов</div>
-      <div className="segment-value">{loyalty}</div>
-      <br />
+      <div className="segment-value">Лояльность клиентов: {loyalty}%</div>
       <div className="segment-value">{loyaltyIndicator}</div>
+      <br />
+      <div className="segment-value">От рейтинга: <UI.ColoredValue value={rating} text="%" /></div>
+      <div className="segment-value">Ошибки: <UI.ColoredValue value={-errors} text="%" /></div>
+      <div className="segment-value">Новинка: <UI.ColoredValue value={newApp} text="%" /></div>
     </div>
   }
 
@@ -77,10 +80,13 @@ export default class SegmentUpgrader extends Component {
 
               <div className="segment-attribute">
                 <div className="segment-value">Рейтинг: <ColoredRating rating={rating} /></div>
-                <div className="segment-value">{this.renderLoyalty(id, marketId)}</div>
                 <br />
                 <div className="segment-value">{this.renderBestFeatureButton(id, marketId)}</div>
                 <div className="segment-value">{this.renderBenefit(id, marketId)}</div>
+                <br />
+                <hr className="horizontal-separator"/>
+                <br />
+                <div className="segment-value">{this.renderLoyalty(id, marketId)}</div>
               </div>
 
               <div className="segment-attribute">

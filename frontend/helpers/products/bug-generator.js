@@ -1,7 +1,7 @@
 import random from '../math/random';
 import round from '../math/round';
 
-export default () => {
+export default (platforms, tests, bonuses) => {
   const cost = Math.ceil(random(0, 50));
 
   const value = Math.ceil(random(0, 1000));

@@ -161,6 +161,38 @@ class ProductStore extends EventEmitter {
     return _products[id].getBugs();
   }
 
+  getBugLoyaltyLoss(id) {
+    const list = this.getBugs(id);
+
+    return list.map(i => i.penalty).reduce((p, c) => p + c, 0);
+  }
+
+  getRatingBasedLoyaltyOnMarket(id, marketId) {
+    const rating = this.getRating(id, marketId);
+
+    let loyalty;
+
+    if (rating === 10) loyalty = 0.3;
+    if (rating < 10) loyalty = 0.25;
+    if (rating < 9) loyalty = 0.15;
+    if (rating < 8) loyalty = 0.1;
+    if (rating < 7) loyalty = 0.05;
+    if (rating < 6) loyalty = 0;
+    if (rating < 5) loyalty = -0.1;
+    if (rating < 4) loyalty = -0.2;
+    if (rating < 3) loyalty = -0.3;
+    if (rating < 2) loyalty = -0.4;
+    if (rating < 1) loyalty = -0.5;
+
+    let isLeaderOnMarket = true;
+
+    if (isLeaderOnMarket) {
+      loyalty += 0.15;
+    }
+
+    return loyalty;
+  }
+
   isSegmentingOpened(id) {
     return false;
   }
@@ -368,8 +400,25 @@ class ProductStore extends EventEmitter {
   }
 
   getSegmentLoyalty(id, marketId) {
-    return marketManager.getMarketLoyalty(marketId, id);
-    return 10;
+    return this.getSegmentLoyaltyStructured(id, marketId).result;
+
+    // return marketManager.getMarketLoyalty(marketId, id);
+    // return 10;
+  }
+
+  getSegmentLoyaltyStructured(id, marketId) {
+    const ratingBasedLoyalty = this.getRatingBasedLoyaltyOnMarket(id, marketId);
+    const bugPenalty = this.getBugLoyaltyLoss(id);
+    const isNewApp = 0.15;
+
+    const result = Math.ceil(100 * (ratingBasedLoyalty + isNewApp - bugPenalty));
+
+    return {
+      ratingBasedLoyalty,
+      bugPenalty,
+      isNewApp,
+      result
+    }
   }
 
   getMarketExplorationCost(id, marketId) {

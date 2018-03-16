@@ -6,8 +6,6 @@ import productActions from '../../../../actions/product-actions';
 
 import UI from '../../../UI';
 
-const penaltyMultiplier = 100;
-
 export default class BugPanel extends Component {
   renderBug = productId => bug => {
     const isFixable = productStore.isBugFixable(productId, bug.id);
@@ -25,7 +23,7 @@ export default class BugPanel extends Component {
       <tr>
         <td>{UI.icons[bug.platform]}</td>
         <td>{bug.cost}</td>
-        <td>{Math.ceil(bug.penalty * penaltyMultiplier)}</td>
+        <td>{Math.ceil(bug.penalty * 100)}</td>
         <td>{button}</td>
       </tr>
     )
@@ -55,12 +53,12 @@ export default class BugPanel extends Component {
     const { props } = this;
 
     const list = productStore.getBugs(props.id);
+    // const loyaltyLoss = productStore.getBugLoyaltyLoss(props.id);
+    const loyaltyLoss = Math.ceil(productStore.getBugLoyaltyLoss(props.id) * 100);
 
     const bugs = list
       .sort(this.sortByLoyalty)
       .map(this.renderBug(props.id));
-
-    const loyaltyLoss = Math.ceil(list.map(i => i.penalty).reduce((p, c) => p + c, 0) * penaltyMultiplier);
 
     return (
       <div>
