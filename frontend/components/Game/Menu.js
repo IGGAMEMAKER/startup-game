@@ -19,11 +19,11 @@ export default class Menu extends Component {
     ];
 
     return icons.map(s => <div className="navigation">
-      <UI.Button
-        text={s.icon}
-        onClick={setGameSpeed(s.speed)}
-      />
-    </div>
+        <UI.Button
+          text={s.icon}
+          onClick={setGameSpeed(s.speed)}
+        />
+      </div>
     );
   }
 
@@ -76,10 +76,10 @@ export default class Menu extends Component {
 
     const moneyDiffSign = saldo >= 0 ? '+' : '';
 
-        // <div className="navigation">
-        //   <span className="menu-money-indicator-icon">HYPE</span>
-        //   <span className="moneyPositive"> <UI.Changeable value={hype} /></span>
-        // </div>
+    // <div className="navigation">
+    //   <span className="menu-money-indicator-icon">HYPE</span>
+    //   <span className="moneyPositive"> <UI.Changeable value={hype} /></span>
+    // </div>
 
     // <div className="navigation">
     //   <UI.Button
@@ -98,7 +98,7 @@ export default class Menu extends Component {
 
 
 
-    return <div>
+    return (
       <div className="menu-point-container">
         <div className="navigation">
           {UI.icons.money}
@@ -116,13 +116,13 @@ export default class Menu extends Component {
           {UI.icons.XP}
           <span title={xpSaldoText} className="moneyPositive"> <UI.Changeable value={xp} /></span>
         </div>
-        <div className="navigation">
-          <UI.Button
-            text={time}
-            disabled
-          />
-        </div>
       </div>
-    </div>;
+    );
+    // <div className="navigation">
+    //   <UI.Button
+    //     text={time}
+    //     disabled
+    //   />
+    // </div>
   }
 }

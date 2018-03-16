@@ -184,12 +184,6 @@ class ProductStore extends EventEmitter {
     if (rating < 2) loyalty = -0.4;
     if (rating < 1) loyalty = -0.5;
 
-    let isLeaderOnMarket = true;
-
-    if (isLeaderOnMarket) {
-      loyalty += 0.15;
-    }
-
     return loyalty;
   }
 
@@ -418,13 +412,15 @@ class ProductStore extends EventEmitter {
     const ratingBasedLoyalty = this.getRatingBasedLoyaltyOnMarket(id, marketId);
     const bugPenalty = this.getBugLoyaltyLoss(id);
     const isNewApp = 0.15;
+    const isBestApp = 0.15;
 
-    const result = Math.ceil(100 * (ratingBasedLoyalty + isNewApp - bugPenalty));
+    const result = Math.ceil(100 * (ratingBasedLoyalty + isNewApp - bugPenalty + isBestApp));
 
     return {
       ratingBasedLoyalty,
       bugPenalty,
       isNewApp,
+      isBestApp,
       result
     }
   }

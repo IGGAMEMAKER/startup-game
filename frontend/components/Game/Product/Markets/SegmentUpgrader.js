@@ -49,6 +49,7 @@ export default class SegmentUpgrader extends Component {
     const rating = Math.ceil(loyaltyStructured.ratingBasedLoyalty * 100);
     const errors = Math.ceil(loyaltyStructured.bugPenalty * 100);
     const newApp = Math.ceil(loyaltyStructured.isNewApp * 100);
+    const isBestApp = Math.ceil(loyaltyStructured.isBestApp * 100);
 
     return <div>
       <div className="segment-value">Лояльность клиентов: {loyalty}%</div>
@@ -57,6 +58,13 @@ export default class SegmentUpgrader extends Component {
       <div className="segment-value">От рейтинга: <UI.ColoredValue value={rating} text="%" /></div>
       <div className="segment-value">Ошибки: <UI.ColoredValue value={-errors} text="%" /></div>
       <div className="segment-value">Новинка: <UI.ColoredValue value={newApp} text="%" /></div>
+      {
+        isBestApp > 0
+        ?
+        <div className="segment-value">Лидерство по рейтингу: <UI.ColoredValue value={isBestApp} text="%"/></div>
+        :
+        ''
+      }
     </div>
   }
 

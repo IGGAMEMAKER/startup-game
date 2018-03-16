@@ -124,12 +124,12 @@ export default class Product {
     return this._points.programming;
   }
 
-  getPPProduction() {
-    return 100;
-  }
-
   getMP() {
     return this._points.management;
+  }
+
+  getPPProduction() {
+    return 100;
   }
 
   getMPProduction() {
@@ -320,7 +320,7 @@ export default class Product {
   }
 
   produceResources() {
-    this.testHypothesis({ value: 1 });
+    this.testHypothesis({ value: this.getImprovementChances() });
     this.addPPs(this.getPPProduction());
     this.addMPs(this.getMPProduction());
   }
