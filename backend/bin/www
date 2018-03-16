@@ -33,9 +33,10 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 
-openurl.open('http://localhost:5000', (e) => {
-  console.log('opened?', e);
-});
+// openurl.open('http://localhost:5000', (e) => {
+//   console.log('opened?', e);
+// });
+
 /*
  * Normalize a port into a number, string, or false.
  */
