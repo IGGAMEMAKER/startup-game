@@ -212,6 +212,13 @@ export default {
       i
     })
   },
+  
+  produceResources(id) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_PRODUCE_RESOURCES,
+      id
+    })
+  },
 
   increasePoints(points, id) {
     Dispatcher.dispatch({

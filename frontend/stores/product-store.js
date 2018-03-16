@@ -219,6 +219,14 @@ class ProductStore extends EventEmitter {
     return this.getProduct(id).getPP();
   }
 
+  getPPProduction(id) {
+    return this.getProduct(id).getPPProduction();
+  }
+
+  getMPProduction(id) {
+    return this.getProduct(id).getMPProduction();
+  }
+
   getProductExpenses(id) {
     return this.getProductSupportCost(id);
     return _products[id].getProductExpenses();
@@ -518,6 +526,10 @@ Dispatcher.register((p: PayloadType) => {
   switch (p.type) {
     case c.PRODUCT_ACTIONS_TEST_HYPOTHESIS:
       _products[id].testHypothesis(p);
+      break;
+
+    case c.PRODUCT_PRODUCE_RESOURCES:
+      _products[id].produceResources();
       break;
 
     case c.PRODUCT_ACTIONS_FIX_BUG:

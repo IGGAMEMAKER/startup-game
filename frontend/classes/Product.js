@@ -124,8 +124,16 @@ export default class Product {
     return this._points.programming;
   }
 
+  getPPProduction() {
+    return 100;
+  }
+
   getMP() {
     return this._points.management;
+  }
+
+  getMPProduction() {
+    return 100;
   }
 
   getXP() {
@@ -278,6 +286,14 @@ export default class Product {
     this.XP = XP;
   }
 
+  addPPs(pp) {
+    this._points.programming += pp;
+  }
+
+  addMPs(mp) {
+    this._points.management += mp;
+  }
+
   spendPPs(pp) {
     this._points.programming -= pp;
   }
@@ -301,6 +317,12 @@ export default class Product {
     this.spendPPs(this.bugs[index].cost);
 
     this.bugs.splice(index, 1);
+  }
+
+  produceResources() {
+    this.testHypothesis({ value: 1 });
+    this.addPPs(this.getPPProduction());
+    this.addMPs(this.getMPProduction());
   }
 
   testHypothesis(p) {

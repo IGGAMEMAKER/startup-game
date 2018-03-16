@@ -38,6 +38,7 @@ export default class Menu extends Component {
       pause,
       pauseGame,
       resources,
+      production,
       setGameSpeed,
       id
     } = props;
@@ -90,8 +91,8 @@ export default class Menu extends Component {
     // </div>
 
     const moneySaldoText = `${moneyDiffSign}${shortenValue(saldo)}$ ежемесячно`;
-    const managementSaldoText = `+${100} ежемесячно`;
-    const programmingSaldoText = `+${133} ежемесячно`;
+    const managementSaldoText = `+${production.mp} ежемесячно`;
+    const programmingSaldoText = `+${production.pp} ежемесячно`;
     const xpSaldoText = `+${5} ежемесячно`;
     // <span className={moneyDifferenceIndication}>   ({moneyDiffSign}<UI.Changeable value={shortenValue(saldo)} />$/мес)</span>
 

@@ -101,6 +101,9 @@ export default class Game extends Component {
     const mp = flux.productStore.getManagerPoints(productId);
     const pp = flux.productStore.getProgrammerPoints(productId);
 
+    const productionMP = flux.productStore.getPPProduction(productId);
+    const productionPP = flux.productStore.getMPProduction(productId);
+
     const money = flux.productStore.getMoney(productId);
     const products = flux.productStore.getOurProducts();
 
@@ -109,7 +112,9 @@ export default class Game extends Component {
       xp,
       money,
       mp,
-      pp
+      pp,
+      productionMP,
+      productionPP
     });
   };
 
@@ -185,6 +190,11 @@ export default class Game extends Component {
       xp: state.xp
     };
 
+    const production = {
+      mp: state.productionMP,
+      pp: state.productionPP
+    };
+
     return (
       <div>
         <UI.Modal onclose={this.resumeGame} />
@@ -198,6 +208,7 @@ export default class Game extends Component {
                 setGameSpeed={this.setGameSpeed}
                 day={state.day}
                 resources={resources}
+                production={production}
               />
               {this.renderProductMenuNavbar()}
             </div>
