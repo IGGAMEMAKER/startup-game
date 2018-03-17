@@ -9,67 +9,103 @@ import ColoredRating from '../KPI/colored-rating';
 import UI from '../../../UI';
 
 export default class SegmentUpgrader extends Component {
-  renderBenefit(id, marketId) {
-    const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
-
-    const maxBenefit = productStore.getProductIncomeIncreaseIfWeUpgradeFeature(id, upgrade.featureId, 1);
-
-    const income =  shortenValue(maxBenefit);
-
-    return <div className="segment-value">Доход: +${income}</div>;
+  state = {
+    toggle: false
   };
 
-  renderBestFeatureButton(id, marketId) {
+  toggle = () => {
+    this.setState({ toggle: !this.state.toggle })
+  };
+
+  improveFeature(id, featureId, xp) {
+    productActions.improveFeature(id, 'offer', featureId, 1, xp);
+  }
+
+  renderImprovementVariants(id, marketId) {
     const XP = productStore.getXP(id);
 
     const cost = productStore.getFeatureIncreaseXPCost(id);
     const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
 
-    return <UI.Button
-      onClick={() => this.improveFeature(id, upgrade.featureId, cost)}
-      text="Улучшить приложение"
-      primary
-      disabled={XP < cost}
-    />;
+    if (!upgrade.income) {
+      return <div>Нет доступных улучшений :(</div>
+    }
+
+    const maxBenefit = productStore.getProductIncomeIncreaseIfWeUpgradeFeature(id, upgrade.featureId, 1);
+
+    const income = shortenValue(maxBenefit);
+
+    return (
+      <div>
+        <div>
+          <UI.Button
+            onClick={() => this.improveFeature(id, upgrade.featureId, cost)}
+            text="Улучшить приложение"
+            primary
+            disabled={XP < cost}
+          />
+        </div>
+        <div className="segment-value">Доход: +${income}</div>
+      </div>
+    );
   }
 
-  renderLoyalty(id, marketId) {
-    const loyaltyStructured = productStore.getSegmentLoyaltyStructured(id, marketId);
+  renderLoyaltyToggle() {
+    return <span>(<span className="toggle" onClick={this.toggle}>Посмотреть отчёт</span>)</span>;
+  }
+
+  renderLoyaltyIndicator(id, marketId) {
     const loyalty = productStore.getSegmentLoyalty(id, marketId);
 
-    let loyaltyIndicator;
     if (loyalty < 20) {
-      loyaltyIndicator = <UI.SmallIcon src="/images/face-sad.png" />;
+      return <UI.SmallIcon src="/images/face-sad.png" />;
     } else if (loyalty < 60) {
-      loyaltyIndicator = <UI.SmallIcon src="/images/face-neutral.png" />;
-    } else {
-      loyaltyIndicator = <UI.SmallIcon src="/images/face-happy.png" />;
+      return <UI.SmallIcon src="/images/face-neutral.png" />;
     }
+
+    return <UI.SmallIcon src="/images/face-happy.png" />;
+  }
+
+  renderLoyaltyDescription(id, marketId) {
+    const loyaltyStructured = productStore.getSegmentLoyaltyStructured(id, marketId);
 
     const rating = Math.ceil(loyaltyStructured.ratingBasedLoyalty * 100);
     const errors = Math.ceil(loyaltyStructured.bugPenalty * 100);
     const newApp = Math.ceil(loyaltyStructured.isNewApp * 100);
     const isBestApp = Math.ceil(loyaltyStructured.isBestApp * 100);
 
-    return <div>
-      <div className="segment-value">Лояльность клиентов: {loyalty}%</div>
-      <div className="segment-value">{loyaltyIndicator}</div>
-      <br />
-      <div className="segment-value">От рейтинга: <UI.ColoredValue value={rating} text="%" /></div>
-      <div className="segment-value">Ошибки: <UI.ColoredValue value={-errors} text="%" /></div>
-      <div className="segment-value">Новинка: <UI.ColoredValue value={newApp} text="%" /></div>
-      {
-        isBestApp > 0
-        ?
-        <div className="segment-value">Лидерство по рейтингу: <UI.ColoredValue value={isBestApp} text="%"/></div>
-        :
-        ''
-      }
-    </div>
+
+    if (this.state.toggle) {
+      return <div>
+        <br />
+        <div className="segment-value">От рейтинга: <UI.ColoredValue value={rating} text="%" /></div>
+        <div className="segment-value">Ошибки: <UI.ColoredValue value={-errors} text="%" /></div>
+        <div className="segment-value">Новинка: <UI.ColoredValue value={newApp} text="%" /></div>
+        {
+          isBestApp > 0
+            ?
+            <div className="segment-value">Лидерство по рейтингу: <UI.ColoredValue value={isBestApp} text="%"/></div>
+            :
+            ''
+        }
+      </div>;
+    }
+
+    return '';
   }
 
-  improveFeature(id, featureId, xp) {
-    productActions.improveFeature(id, 'offer', featureId, 1, xp);
+  renderLoyalty(id, marketId) {
+    const loyalty = productStore.getSegmentLoyalty(id, marketId);
+    const loyaltyIndicator = this.renderLoyaltyIndicator(id, marketId);
+
+    const description = this.renderLoyaltyDescription(id, marketId);
+    const toggle = this.renderLoyaltyToggle(id, marketId);
+
+    return <div>
+      <div className="segment-value">Лояльность клиентов: {loyalty}% {toggle}</div>
+      <div className="segment-value">{loyaltyIndicator}</div>
+      {description}
+    </div>
   }
 
   render({ marketId, market, id, explored }) {
@@ -89,8 +125,7 @@ export default class SegmentUpgrader extends Component {
               <div className="segment-attribute">
                 <div className="segment-value">Рейтинг: <ColoredRating rating={rating} /></div>
                 <br />
-                <div className="segment-value">{this.renderBestFeatureButton(id, marketId)}</div>
-                <div className="segment-value">{this.renderBenefit(id, marketId)}</div>
+                <div className="segment-value">{this.renderImprovementVariants(id, marketId)}</div>
                 <br />
                 <hr className="horizontal-separator"/>
                 <br />

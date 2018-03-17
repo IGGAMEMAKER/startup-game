@@ -60,6 +60,13 @@ export default class BugPanel extends Component {
       .sort(this.sortByLoyalty)
       .map(this.renderBug(props.id));
 
+    if (!list.length) {
+      return <div>
+        <h2>Ошибки</h2>
+        <div>Ошибок нет! Клиенты довольны :)</div>
+      </div>
+    }
+
     return (
       <div>
         <h2>Ошибки</h2>

@@ -167,22 +167,28 @@ class ProductStore extends EventEmitter {
     return list.map(i => i.penalty).reduce((p, c) => p + c, 0);
   }
 
-  getRatingBasedLoyaltyOnMarket(id, marketId) {
-    const rating = this.getRating(id, marketId);
+  getRatingBasedLoyaltyOnMarket(id, marketId, improvement = null) {
+    const rating = this.getRating(id, marketId, improvement);
 
     let loyalty;
 
-    if (rating === 10) loyalty = 0.3;
-    if (rating < 10) loyalty = 0.25;
-    if (rating < 9) loyalty = 0.15;
-    if (rating < 8) loyalty = 0.1;
-    if (rating < 7) loyalty = 0.05;
-    if (rating < 6) loyalty = 0;
-    if (rating < 5) loyalty = -0.1;
-    if (rating < 4) loyalty = -0.2;
-    if (rating < 3) loyalty = -0.3;
-    if (rating < 2) loyalty = -0.4;
-    if (rating < 1) loyalty = -0.5;
+    if (rating <= 6) {
+      loyalty = -0.1 * (6 - rating);
+    } else {
+      loyalty = 0.15 * (rating - 6);
+    }
+
+    // if (rating === 10) loyalty = 0.3;
+    // if (rating < 10) loyalty = 0.25;
+    // if (rating < 9) loyalty = 0.15;
+    // if (rating < 8) loyalty = 0.1;
+    // if (rating < 7) loyalty = 0.05;
+    // if (rating < 6) loyalty = 0;
+    // if (rating < 5) loyalty = -0.1;
+    // if (rating < 4) loyalty = -0.2;
+    // if (rating < 3) loyalty = -0.3;
+    // if (rating < 2) loyalty = -0.4;
+    // if (rating < 1) loyalty = -0.5;
 
     return loyalty;
   }
@@ -401,15 +407,15 @@ class ProductStore extends EventEmitter {
     return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
   }
 
-  getSegmentLoyalty(id, marketId) {
-    return this.getSegmentLoyaltyStructured(id, marketId).result;
+  getSegmentLoyalty(id, marketId, improvement = null) {
+    return this.getSegmentLoyaltyStructured(id, marketId, improvement).result;
 
     // return marketManager.getMarketLoyalty(marketId, id);
     // return 10;
   }
 
-  getSegmentLoyaltyStructured(id, marketId) {
-    const ratingBasedLoyalty = this.getRatingBasedLoyaltyOnMarket(id, marketId);
+  getSegmentLoyaltyStructured(id, marketId, improvement = null) {
+    const ratingBasedLoyalty = this.getRatingBasedLoyaltyOnMarket(id, marketId, improvement);
     const bugPenalty = this.getBugLoyaltyLoss(id);
     const isNewApp = 0.15;
     const isBestApp = 0.15;
@@ -430,11 +436,12 @@ class ProductStore extends EventEmitter {
   }
 
   calculateMarketIncome(id, marketId, improvement = null) {
-    const rating = this.getRating(id, marketId, improvement);
+    // const rating = this.getRating(id, marketId, improvement);
+    const loyalty = this.getSegmentLoyalty(id, marketId, improvement);
 
     const modifier = this.getPaymentModifier(id);
 
-    const efficiency = rating * modifier / 10;
+    const efficiency = (loyalty < 0 ? 0 : loyalty / 10) * modifier / 10;
 
     const possible = marketManager.getPossibleIncome(marketId, id);
 

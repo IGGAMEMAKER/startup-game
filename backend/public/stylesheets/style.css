@@ -252,6 +252,13 @@ textarea {
   text-align: center;
 }
 
+.toggle {
+  /*text-decoration: dashed;*/
+  text-decoration: none; /* Убираем подчеркивание */
+  border-bottom: 1px dashed white;
+  cursor: pointer;
+}
+
 .segment-client-type {
   font-weight: bolder;
   font-style: italic;
