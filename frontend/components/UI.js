@@ -12,6 +12,8 @@ import Changeable from './Shared/Changeable';
 import ColoredValue from './Shared/ColoredValue';
 
 import SmallIcon from './Icons/SmallIcon';
+import MeduimIcon from './Icons/MeduimIcon';
+import BigIcon from './Icons/BigIcon';
 
 const icons = {
   rating: 'R',
@@ -38,8 +40,12 @@ export default {
   Select,
   Range,
   symbols: arrows,
+
   icons,
   SmallIcon,
+  MeduimIcon,
+  BigIcon,
+
   Info,
   Bar,
   Changeable,

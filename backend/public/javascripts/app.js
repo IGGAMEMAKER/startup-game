@@ -7906,6 +7906,14 @@
 
 	var _SmallIcon2 = _interopRequireDefault(_SmallIcon);
 
+	var _MeduimIcon = __webpack_require__(205);
+
+	var _MeduimIcon2 = _interopRequireDefault(_MeduimIcon);
+
+	var _BigIcon = __webpack_require__(206);
+
+	var _BigIcon2 = _interopRequireDefault(_BigIcon);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var icons = {
@@ -7977,8 +7985,12 @@
 	  Select: _Select2.default,
 	  Range: _Range2.default,
 	  symbols: _arrows2.default,
+
 	  icons: icons,
 	  SmallIcon: _SmallIcon2.default,
+	  MeduimIcon: _MeduimIcon2.default,
+	  BigIcon: _BigIcon2.default,
+
 	  Info: _Info2.default,
 	  Bar: _Bar2.default,
 	  Changeable: _Changeable2.default,
@@ -11437,16 +11449,33 @@
 	              ),
 	              (0, _preact.h)(
 	                'div',
-	                { className: 'segment-attribute' },
+	                { className: 'segment-attribute flexbox' },
 	                (0, _preact.h)(
 	                  'div',
-	                  { className: 'segment-value' },
-	                  '\u041A\u043B\u0438\u0435\u043D\u0442\u044B: ',
-	                  clients,
-	                  '/',
-	                  market.clients
+	                  { className: 'flex-splitter' },
+	                  (0, _preact.h)(
+	                    'div',
+	                    { className: 'segment-value' },
+	                    (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/clients.png' }),
+	                    clients
+	                  )
 	                ),
-	                (0, _preact.h)('br', null),
+	                (0, _preact.h)(
+	                  'div',
+	                  { className: 'flex-splitter' },
+	                  (0, _preact.h)(
+	                    'div',
+	                    { className: 'segment-value' },
+	                    (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/clients.png' }),
+	                    'Max: ',
+	                    market.clients
+	                  )
+	                )
+	              ),
+	              (0, _preact.h)('br', null),
+	              (0, _preact.h)(
+	                'div',
+	                { className: 'segment-attribute' },
 	                (0, _preact.h)(
 	                  'div',
 	                  { className: 'segment-value' },
@@ -12132,6 +12161,126 @@
 	  var audio = new Audio('./sounds/Metal Cling - Hit.mp3');
 	  // audio.play();
 	};
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _getPrototypeOf = __webpack_require__(3);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(30);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(34);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(81);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var MeduimIcon = function (_Component) {
+	  (0, _inherits3.default)(MeduimIcon, _Component);
+
+	  function MeduimIcon() {
+	    (0, _classCallCheck3.default)(this, MeduimIcon);
+	    return (0, _possibleConstructorReturn3.default)(this, (MeduimIcon.__proto__ || (0, _getPrototypeOf2.default)(MeduimIcon)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(MeduimIcon, [{
+	    key: "render",
+	    value: function render(_ref) {
+	      var src = _ref.src;
+
+	      return (0, _preact.h)(
+	        "span",
+	        null,
+	        (0, _preact.h)("img", { src: src, width: "72", height: "72" })
+	      );
+	    }
+	  }]);
+	  return MeduimIcon;
+	}(_preact.Component);
+
+	exports.default = MeduimIcon;
+
+/***/ },
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _getPrototypeOf = __webpack_require__(3);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(30);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(34);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(81);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var BigIcon = function (_Component) {
+	  (0, _inherits3.default)(BigIcon, _Component);
+
+	  function BigIcon() {
+	    (0, _classCallCheck3.default)(this, BigIcon);
+	    return (0, _possibleConstructorReturn3.default)(this, (BigIcon.__proto__ || (0, _getPrototypeOf2.default)(BigIcon)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(BigIcon, [{
+	    key: "render",
+	    value: function render(_ref) {
+	      var src = _ref.src;
+
+	      return (0, _preact.h)(
+	        "span",
+	        null,
+	        (0, _preact.h)("img", { src: src, width: "96", height: "96" })
+	      );
+	    }
+	  }]);
+	  return BigIcon;
+	}(_preact.Component);
+
+	exports.default = BigIcon;
 
 /***/ }
 /******/ ]);

@@ -66,9 +66,16 @@ export default class ClientAcquisition extends Component {
           <div className="client-market-item">
             <div>
               <div className="center segment-client-type">{market.clientType}</div>
+              <div className="segment-attribute flexbox">
+                <div className="flex-splitter">
+                  <div className="segment-value"><UI.SmallIcon src="/images/clients.png" />{clients}</div>
+                </div>
+                <div className="flex-splitter">
+                  <div className="segment-value"><UI.SmallIcon src="/images/clients.png" />Max: {market.clients}</div>
+                </div>
+              </div>
+              <br />
               <div className="segment-attribute">
-                <div className="segment-value">Клиенты: {clients}/{market.clients}</div>
-                <br />
                 <div className="segment-value">{this.renderAcquisitionButtons(id, marketId)}</div>
               </div>
             </div>
