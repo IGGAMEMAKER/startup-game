@@ -221,7 +221,9 @@ textarea {
 
 
 /* ---- animations ---- */
-
+.darken {
+  opacity: 0.5;
+}
 
 .hide {
   display: none;

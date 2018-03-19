@@ -430,7 +430,8 @@ class ProductStore extends EventEmitter {
         return {
           id: m.id,
           info: m,
-          explored: this.isExploredMarket(id, m.id)
+          explored: this.isExploredMarket(id, m.id),
+          enoughXPsToExplore: m.explorationCost <= this.getXP(id)
         }
       })
   }
@@ -569,6 +570,12 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].addBug(bugGenerator());
       _products[id].addBug(bugGenerator());
       _products[id].addBug(bugGenerator());
+      break;
+
+    case c.PRODUCT_ACTIONS_EXPLORE_MARKET:
+      marketManager.exploreMarket(p.marketId, id);
+
+      _products[id].decreaseXP(p.explorationCost);
       break;
 
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:

@@ -207,7 +207,7 @@ export default class Product {
 
 
   getImprovementChances() {
-    return 5;
+    return 150;
   }
 
   getPaymentModifier() {

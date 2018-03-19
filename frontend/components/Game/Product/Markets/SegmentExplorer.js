@@ -6,93 +6,58 @@ import productActions from '../../../../actions/product-actions';
 import UI from '../../../UI';
 
 export default class SegmentExplorer extends Component {
-  renderAcquisitionButtons(id, marketId) {
-    const expertise = productStore.getMarketingKnowledge(id, marketId);
-
-    const buttons = [{ clients: 50 }];
-
-    if (expertise >= 10) {
-      buttons.push({ clients: 125 })
+  renderResearchButton(id, marketId, explored, needsToBeExplored, enoughXPsToExplore, explorationCost = 50) {
+    if (explored) {
+      return <div>Исследовано</div>;
     }
 
-    if (expertise >= 30) {
-      buttons.push({ clients: 225 })
+    if (!needsToBeExplored) {
+      return <div>???</div>;
     }
 
-    if (expertise >= 55) {
-      buttons.push({ clients: 500 })
+    if (!enoughXPsToExplore) {
+      return <div>Нужно {explorationCost}{UI.icons.XP} для исследования :(</div>;
     }
-
-    if (expertise >= 75) {
-      buttons.push({ clients: 1500 })
-    }
-
-    return buttons.reverse().map(b => this.renderGetMoreClientsButton(id, marketId, b.clients, b.clients * 10));
-  }
-
-  renderGetMoreClientsButton(id, marketId, amountOfClients = 50, price) {
-    const isCanGrabMoreClients = productStore.isCanGrabMoreClients(id, marketId, amountOfClients, price);
 
     return (
       <div>
+        <div>Стоимость исследования: {explorationCost}{UI.icons.XP}</div>
         <UI.Button
-          onClick={() => productActions.addClients(id, marketId, amountOfClients, price)}
-          text={`Привлечь ${amountOfClients} клиентов`}
+          onClick={() => productActions.exploreMarket(id, marketId, explorationCost)}
+          text="Исследовать рынок!"
           primary
-          disabled={!isCanGrabMoreClients}
         />
         <br />
       </div>
     );
   }
 
-  renderUnexploredMarket = (marketId, market, id) => {
-    return '';
+  render({ id, market, explored, explorable, enoughXPsToExplore }) {
+    const { clientType, explorationCost } = market;
 
-    return <div>
-      {id}
-      {JSON.stringify(market)}
-    </div>
-  };
+    const marketSize = market.clients * market.price;
 
-  render({ marketId, explorationCost, explored, explorable }) {
-    return <div>Exploration of #{marketId}: costs ${explorationCost}XP, explored:{explored}, isExplorable:{explorable}</div>
-    if (!explored) return this.renderUnexploredMarket(marketId, market, id);
+    // return <div>Exploration of #{marketId}: costs ${explorationCost}XP, explored:{explored}, isExplorable:{explorable}</div>
 
-    const clients = productStore.getClientsOnMarket(id, marketId);
-    const income = productStore.getMarketIncome(id, marketId);
-    const marketSize = productStore.getMarketSize(marketId);
-
-    // const isServersExplored = true;
-    // if (isServersExplored) {
-    //
-    // }
-    // <div className="segment-attribute flexbox">
-    //   <div className="flex-splitter">
-    //     <div className="segment-value"><UI.SmallIcon title="Ежемесячные доходы" src="/images/coins.png" /> +{income}</div>
-    //   </div>
-    //   <div className="flex-splitter">
-    //     <div className="segment-value"><UI.SmallIcon src="/images/coins.png" />Max: {marketSize}</div>
-    //   </div>
-    // </div>
+    const fade = !explorable ? 'darken' : '';
 
     return (
-      <div className="segment-block">
+      <div className={`segment-block ${fade}`}>
         <div className="content-block">
           <div className="client-market-item">
             <div>
-              <div className="center segment-client-type">{market.clientType}</div>
+              <div className="center segment-client-type">{clientType}</div>
               <div className="segment-attribute flexbox">
                 <div className="flex-splitter">
-                  <div className="segment-value"><UI.SmallIcon src="/images/clients.png" />{clients}</div>
+                  <div className="segment-value"><UI.SmallIcon src="/images/coins.png" />Объём рынка: {marketSize}$</div>
                 </div>
                 <div className="flex-splitter">
-                  <div className="segment-value"><UI.SmallIcon src="/images/clients.png" />Max: {market.clients}</div>
+                  <div className="segment-value"><UI.SmallIcon src="/images/clients.png" />Клиентов: {market.clients}</div>
                 </div>
               </div>
               <br />
               <div className="segment-attribute">
-                <div className="segment-value">{this.renderAcquisitionButtons(id, marketId)}</div>
+                <div className="segment-value">{this.renderResearchButton(id, market.id, explored, explorable, enoughXPsToExplore, explorationCost)}</div>
               </div>
             </div>
           </div>

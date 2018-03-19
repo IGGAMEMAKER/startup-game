@@ -103,6 +103,10 @@ export default class MarketManager {
     return this;
   }
 
+  exploreMarket(marketId, productId) {
+    this.joinProduct(marketId, productId);
+  }
+
   addHype(marketId, productId, hype) {
     this.getMarket(marketId).addHype(productId, hype);
 

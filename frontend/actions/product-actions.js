@@ -51,6 +51,13 @@ export default {
     })
   },
 
+  exploreMarket(id, marketId, explorationCost) {
+    Dispatcher.dispatch({
+      type: ACTIONS.PRODUCT_ACTIONS_EXPLORE_MARKET,
+      id, marketId, explorationCost
+    })
+  },
+
   decreaseInfluenceOnMarket(id, marketId) {
     Dispatcher.dispatch({
       type: ACTIONS.PRODUCT_ACTIONS_MARKETS_INFLUENCE_DECREASE,

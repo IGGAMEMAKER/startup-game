@@ -58,10 +58,11 @@ export default class Marketing extends Component {
     const marketsTab = this.state.markets
       .map(m => {
         return <SegmentExplorer
-          marketId={m.id}
-          explorationCost={m.info.explorationCost}
+          id={id}
+          market={m.info}
           explored={m.explored}
           explorable={m.id === nextId}
+          enoughXPsToExplore={m.enoughXPsToExplore}
         />
       });
 
@@ -77,7 +78,7 @@ export default class Marketing extends Component {
         <h2 className="center">Удержание клиентов</h2>
         {this.renderMarketingTab(id)}
         <br />
-        <h2 className="center">Сегментирование клиентов</h2>
+        <h2 className="center">Исследование клиентов</h2>
         {this.renderExplorableMarkets(id)}
         <br />
       </div>

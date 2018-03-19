@@ -2994,7 +2994,8 @@
 	        return {
 	          id: m.id,
 	          info: m,
-	          explored: _this4.isExploredMarket(id, m.id)
+	          explored: _this4.isExploredMarket(id, m.id),
+	          enoughXPsToExplore: m.explorationCost <= _this4.getXP(id)
 	        };
 	      });
 	    }
@@ -3171,6 +3172,12 @@
 	      _products[id].addBug((0, _bugGenerator2.default)());
 	      _products[id].addBug((0, _bugGenerator2.default)());
 	      _products[id].addBug((0, _bugGenerator2.default)());
+	      break;
+
+	    case c.PRODUCT_ACTIONS_EXPLORE_MARKET:
+	      marketManager.exploreMarket(p.marketId, id);
+
+	      _products[id].decreaseXP(p.explorationCost);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS:
@@ -5132,7 +5139,7 @@
 	  }, {
 	    key: 'getImprovementChances',
 	    value: function getImprovementChances() {
-	      return 5;
+	      return 150;
 	    }
 	  }, {
 	    key: 'getPaymentModifier',
@@ -5680,6 +5687,8 @@
 	var PRODUCT_ACTIONS_FIX_BUG = exports.PRODUCT_ACTIONS_FIX_BUG = 'PRODUCT_ACTIONS_FIX_BUG';
 	var PRODUCT_ACTIONS_ADD_BUG = exports.PRODUCT_ACTIONS_ADD_BUG = 'PRODUCT_ACTIONS_ADD_BUG';
 
+	var PRODUCT_ACTIONS_EXPLORE_MARKET = exports.PRODUCT_ACTIONS_EXPLORE_MARKET = 'PRODUCT_ACTIONS_EXPLORE_MARKET';
+
 	var PRODUCT_PRODUCE_RESOURCES = exports.PRODUCT_PRODUCE_RESOURCES = 'PRODUCT_PRODUCE_RESOURCES';
 
 	var PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE = exports.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE = 'PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE';
@@ -5963,6 +5972,11 @@
 	      this.getMarket(marketId).join(productId);
 
 	      return this;
+	    }
+	  }, {
+	    key: 'exploreMarket',
+	    value: function exploreMarket(marketId, productId) {
+	      this.joinProduct(marketId, productId);
 	    }
 	  }, {
 	    key: 'addHype',
@@ -7247,6 +7261,12 @@
 	    _dispatcher2.default.dispatch({
 	      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_REVOKE,
 	      c1: c1, c2: c2, marketId: marketId
+	    });
+	  },
+	  exploreMarket: function exploreMarket(id, marketId, explorationCost) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.PRODUCT_ACTIONS_EXPLORE_MARKET,
+	      id: id, marketId: marketId, explorationCost: explorationCost
 	    });
 	  },
 	  decreaseInfluenceOnMarket: function decreaseInfluenceOnMarket(id, marketId) {
@@ -11036,10 +11056,11 @@
 
 	      var marketsTab = _this.state.markets.map(function (m) {
 	        return (0, _preact.h)(_SegmentExplorer2.default, {
-	          marketId: m.id,
-	          explorationCost: m.info.explorationCost,
+	          id: id,
+	          market: m.info,
 	          explored: m.explored,
-	          explorable: m.id === nextId
+	          explorable: m.id === nextId,
+	          enoughXPsToExplore: m.enoughXPsToExplore
 	        });
 	      });
 
@@ -11084,7 +11105,7 @@
 	        (0, _preact.h)(
 	          'h2',
 	          { className: 'center' },
-	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
+	          '\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
 	        ),
 	        this.renderExplorableMarkets(id),
 	        (0, _preact.h)('br', null)
@@ -12035,10 +12056,6 @@
 	});
 	exports.default = undefined;
 
-	var _stringify = __webpack_require__(125);
-
-	var _stringify2 = _interopRequireDefault(_stringify);
-
 	var _getPrototypeOf = __webpack_require__(3);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -12079,121 +12096,83 @@
 	  (0, _inherits3.default)(SegmentExplorer, _Component);
 
 	  function SegmentExplorer() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
 	    (0, _classCallCheck3.default)(this, SegmentExplorer);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = SegmentExplorer.__proto__ || (0, _getPrototypeOf2.default)(SegmentExplorer)).call.apply(_ref, [this].concat(args))), _this), _this.renderUnexploredMarket = function (marketId, market, id) {
-	      return '';
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        id,
-	        (0, _stringify2.default)(market)
-	      );
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    return (0, _possibleConstructorReturn3.default)(this, (SegmentExplorer.__proto__ || (0, _getPrototypeOf2.default)(SegmentExplorer)).apply(this, arguments));
 	  }
 
 	  (0, _createClass3.default)(SegmentExplorer, [{
-	    key: 'renderAcquisitionButtons',
-	    value: function renderAcquisitionButtons(id, marketId) {
-	      var _this2 = this;
+	    key: 'renderResearchButton',
+	    value: function renderResearchButton(id, marketId, explored, needsToBeExplored, enoughXPsToExplore) {
+	      var explorationCost = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 50;
 
-	      var expertise = _productStore2.default.getMarketingKnowledge(id, marketId);
-
-	      var buttons = [{ clients: 50 }];
-
-	      if (expertise >= 10) {
-	        buttons.push({ clients: 125 });
+	      if (explored) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u043E'
+	        );
 	      }
 
-	      if (expertise >= 30) {
-	        buttons.push({ clients: 225 });
+	      if (!needsToBeExplored) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          '???'
+	        );
 	      }
 
-	      if (expertise >= 55) {
-	        buttons.push({ clients: 500 });
+	      if (!enoughXPsToExplore) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041D\u0443\u0436\u043D\u043E ',
+	          explorationCost,
+	          _UI2.default.icons.XP,
+	          ' \u0434\u043B\u044F \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F :('
+	        );
 	      }
-
-	      if (expertise >= 75) {
-	        buttons.push({ clients: 1500 });
-	      }
-
-	      return buttons.reverse().map(function (b) {
-	        return _this2.renderGetMoreClientsButton(id, marketId, b.clients, b.clients * 10);
-	      });
-	    }
-	  }, {
-	    key: 'renderGetMoreClientsButton',
-	    value: function renderGetMoreClientsButton(id, marketId) {
-	      var amountOfClients = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 50;
-	      var price = arguments[3];
-
-	      var isCanGrabMoreClients = _productStore2.default.isCanGrabMoreClients(id, marketId, amountOfClients, price);
 
 	      return (0, _preact.h)(
 	        'div',
 	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F: ',
+	          explorationCost,
+	          _UI2.default.icons.XP
+	        ),
 	        (0, _preact.h)(_UI2.default.Button, {
 	          onClick: function onClick() {
-	            return _productActions2.default.addClients(id, marketId, amountOfClients, price);
+	            return _productActions2.default.exploreMarket(id, marketId, explorationCost);
 	          },
-	          text: '\u041F\u0440\u0438\u0432\u043B\u0435\u0447\u044C ' + amountOfClients + ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432',
-	          primary: true,
-	          disabled: !isCanGrabMoreClients
+	          text: '\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u0442\u044C \u0440\u044B\u043D\u043E\u043A!',
+	          primary: true
 	        }),
 	        (0, _preact.h)('br', null)
 	      );
 	    }
 	  }, {
 	    key: 'render',
-	    value: function render(_ref2) {
-	      var marketId = _ref2.marketId,
-	          explorationCost = _ref2.explorationCost,
-	          explored = _ref2.explored,
-	          explorable = _ref2.explorable;
+	    value: function render(_ref) {
+	      var id = _ref.id,
+	          market = _ref.market,
+	          explored = _ref.explored,
+	          explorable = _ref.explorable,
+	          enoughXPsToExplore = _ref.enoughXPsToExplore;
+	      var clientType = market.clientType,
+	          explorationCost = market.explorationCost;
+
+
+	      var marketSize = market.clients * market.price;
+
+	      // return <div>Exploration of #{marketId}: costs ${explorationCost}XP, explored:{explored}, isExplorable:{explorable}</div>
+
+	      var fade = !explorable ? 'darken' : '';
 
 	      return (0, _preact.h)(
 	        'div',
-	        null,
-	        'Exploration of #',
-	        marketId,
-	        ': costs $',
-	        explorationCost,
-	        'XP, explored:',
-	        explored,
-	        ', isExplorable:',
-	        explorable
-	      );
-	      if (!explored) return this.renderUnexploredMarket(marketId, market, id);
-
-	      var clients = _productStore2.default.getClientsOnMarket(id, marketId);
-	      var income = _productStore2.default.getMarketIncome(id, marketId);
-	      var marketSize = _productStore2.default.getMarketSize(marketId);
-
-	      // const isServersExplored = true;
-	      // if (isServersExplored) {
-	      //
-	      // }
-	      // <div className="segment-attribute flexbox">
-	      //   <div className="flex-splitter">
-	      //     <div className="segment-value"><UI.SmallIcon title="Ежемесячные доходы" src="/images/coins.png" /> +{income}</div>
-	      //   </div>
-	      //   <div className="flex-splitter">
-	      //     <div className="segment-value"><UI.SmallIcon src="/images/coins.png" />Max: {marketSize}</div>
-	      //   </div>
-	      // </div>
-
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'segment-block' },
+	        { className: 'segment-block ' + fade },
 	        (0, _preact.h)(
 	          'div',
 	          { className: 'content-block' },
@@ -12206,7 +12185,7 @@
 	              (0, _preact.h)(
 	                'div',
 	                { className: 'center segment-client-type' },
-	                market.clientType
+	                clientType
 	              ),
 	              (0, _preact.h)(
 	                'div',
@@ -12217,8 +12196,10 @@
 	                  (0, _preact.h)(
 	                    'div',
 	                    { className: 'segment-value' },
-	                    (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/clients.png' }),
-	                    clients
+	                    (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/coins.png' }),
+	                    '\u041E\u0431\u044A\u0451\u043C \u0440\u044B\u043D\u043A\u0430: ',
+	                    marketSize,
+	                    '$'
 	                  )
 	                ),
 	                (0, _preact.h)(
@@ -12228,7 +12209,7 @@
 	                    'div',
 	                    { className: 'segment-value' },
 	                    (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/clients.png' }),
-	                    'Max: ',
+	                    '\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u0432: ',
 	                    market.clients
 	                  )
 	                )
@@ -12240,7 +12221,7 @@
 	                (0, _preact.h)(
 	                  'div',
 	                  { className: 'segment-value' },
-	                  this.renderAcquisitionButtons(id, marketId)
+	                  this.renderResearchButton(id, market.id, explored, explorable, enoughXPsToExplore, explorationCost)
 	                )
 	              )
 	            )
