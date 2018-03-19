@@ -5139,7 +5139,7 @@
 	  }, {
 	    key: 'getImprovementChances',
 	    value: function getImprovementChances() {
-	      return 150;
+	      return 5;
 	    }
 	  }, {
 	    key: 'getPaymentModifier',
@@ -12109,7 +12109,8 @@
 	        return (0, _preact.h)(
 	          'div',
 	          null,
-	          '\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u043E'
+	          '\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u043E ',
+	          (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/ok.png' })
 	        );
 	      }
 

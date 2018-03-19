@@ -8,7 +8,7 @@ import UI from '../../../UI';
 export default class SegmentExplorer extends Component {
   renderResearchButton(id, marketId, explored, needsToBeExplored, enoughXPsToExplore, explorationCost = 50) {
     if (explored) {
-      return <div>Исследовано</div>;
+      return <div>Исследовано <UI.SmallIcon src="/images/ok.png" /></div>;
     }
 
     if (!needsToBeExplored) {
