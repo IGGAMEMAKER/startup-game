@@ -611,7 +611,7 @@
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _productPanel = __webpack_require__(186);
+	var _productPanel = __webpack_require__(188);
 
 	var _productPanel2 = _interopRequireDefault(_productPanel);
 
@@ -619,11 +619,11 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _game = __webpack_require__(197);
+	var _game = __webpack_require__(199);
 
 	var _game2 = _interopRequireDefault(_game);
 
-	var _sounds = __webpack_require__(204);
+	var _sounds = __webpack_require__(206);
 
 	var sounds = _interopRequireWildcard(_sounds);
 
@@ -2872,19 +2872,6 @@
 	    value: function getClientsOnMarket(id, marketId) {
 	      return marketManager.getClients(marketId, id);
 	    }
-
-	    // getPowerOfCompanyOnMarket(id, marketId) {
-	    //   return marketManager.getPowerOfCompanyOnMarket(id, marketId);
-	    // }
-	    //
-	    // getPowerListOnMarket(marketId) {
-	    //   return marketManager.getPowerListOnMarket(marketId);
-	    // }
-	    //
-	    // getMarketInfluenceOfCompany(id, marketId) {
-	    //   return marketManager.getMarketShare(id, marketId);
-	    // }
-
 	  }, {
 	    key: 'getMarketSize',
 	    value: function getMarketSize(marketId) {
@@ -2963,9 +2950,6 @@
 	      var improvement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
 	      return this.getSegmentLoyaltyStructured(id, marketId, improvement).result;
-
-	      // return marketManager.getMarketLoyalty(marketId, id);
-	      // return 10;
 	    }
 	  }, {
 	    key: 'getSegmentLoyaltyStructured',
@@ -2991,6 +2975,43 @@
 	    key: 'getMarketExplorationCost',
 	    value: function getMarketExplorationCost(id, marketId) {
 	      return this.getDefaults(id).markets[marketId].explorationCost;
+	    }
+	  }, {
+	    key: 'getExploredMarkets',
+	    value: function getExploredMarkets(id) {
+	      var _this3 = this;
+
+	      return this.getMarkets(id).filter(function (m, mId) {
+	        return _this3.isExploredMarket(id, m.id);
+	      });
+	    }
+	  }, {
+	    key: 'getMarketsWithExplorationStatuses',
+	    value: function getMarketsWithExplorationStatuses(id) {
+	      var _this4 = this;
+
+	      return this.getMarkets(id).map(function (m, i) {
+	        return {
+	          id: m.id,
+	          info: m,
+	          explored: _this4.isExploredMarket(id, m.id)
+	        };
+	      });
+	    }
+	  }, {
+	    key: 'getExplorableMarkets',
+	    value: function getExplorableMarkets(id) {
+	      var _this5 = this;
+
+	      var markets = this.getMarkets(id).filter(function (m, mId) {
+	        return !_this5.isExploredMarket(id, m.id);
+	      });
+
+	      if (markets.length) {
+	        return markets[0];
+	      }
+
+	      return [];
 	    }
 	  }, {
 	    key: 'calculateMarketIncome',
@@ -3033,23 +3054,33 @@
 	  }, {
 	    key: 'getProductIncomeIncreaseIfWeUpgradeFeature',
 	    value: function getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
-	      var _this3 = this;
+	      var _this6 = this;
 
 	      return sum(this.getMarkets(id).map(function (m) {
-	        return _this3.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, m.id, featureId, value);
+	        return _this6.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, m.id, featureId, value);
 	      }));
 	    }
 	  }, {
 	    key: 'getBestFeatureUpgradeVariantOnMarket',
 	    value: function getBestFeatureUpgradeVariantOnMarket(id, marketId) {
-	      var _this4 = this;
+	      var _this7 = this;
 
 	      var incomes = this.getMainFeatureIterator(id).map(function (f, featureId) {
-	        var value = _this4.getMainFeatureQualityByFeatureId(id, featureId);
-	        var income = _this4.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, 1);
+	        var improvementSize = 1;
+	        var improvement = {
+	          featureId: featureId,
+	          value: improvementSize
+	        };
+
+	        var value = _this7.getMainFeatureQualityByFeatureId(id, featureId);
+	        var income = _this7.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, improvementSize);
+	        var loyaltyChange = _this7.getRatingBasedLoyaltyOnMarket(id, marketId, improvement) - _this7.getRatingBasedLoyaltyOnMarket(id, marketId);
+	        var ratingChange = _this7.getRating(id, marketId, improvement) - _this7.getRating(id, marketId);
 
 	        return {
 	          income: income,
+	          loyaltyChange: loyaltyChange,
+	          ratingChange: ratingChange,
 	          featureId: featureId,
 	          level: value + 1
 	        };
@@ -3069,20 +3100,20 @@
 	  }, {
 	    key: 'getProductIncome',
 	    value: function getProductIncome(id) {
-	      var _this5 = this;
+	      var _this8 = this;
 
 	      return sum(marketManager.iterate(function (m, i) {
-	        return _this5.getMarketIncome(id, i);
+	        return _this8.getMarketIncome(id, i);
 	      }));
 	    }
 	  }, {
 	    key: 'getMarketIncomeList',
 	    value: function getMarketIncomeList(id) {
-	      var _this6 = this;
+	      var _this9 = this;
 
 	      return marketManager.iterate(function (m) {
 	        return {
-	          income: _this6.getMarketIncome(id, m.id),
+	          income: _this9.getMarketIncome(id, m.id),
 	          marketId: m.id
 	        };
 	      });
@@ -4314,22 +4345,22 @@
 	    clientType: SEGMENT_PROGRAMMER,
 	    rating: [6, 2.5, 1.5, 0, 0],
 	    explorationCost: 0,
-	    price: 1,
+	    price: 5,
 	    clients: 38000
 	  }, {
 	    id: 1,
 	    clientType: SEGMENT_STARTUP,
 	    rating: [6.5, 1.5, 1.5, 0.5, 0],
 	    explorationCost: 50,
-	    price: 1,
-	    clients: 55000
+	    price: 15,
+	    clients: 10000
 	  }, {
 	    id: 2,
 	    clientType: SEGMENT_SMALL_BUSINESS,
 	    rating: [0, 1.5, 1, 7, 0.5],
 	    explorationCost: 100,
-	    price: 1,
-	    clients: 85000
+	    price: 100,
+	    clients: 1000
 	  }, {
 	    id: 3,
 	    rating: [0, 0, 3, 5, 2],
@@ -7619,7 +7650,7 @@
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _shortenValue = __webpack_require__(185);
+	var _shortenValue = __webpack_require__(187);
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
@@ -7906,11 +7937,11 @@
 
 	var _SmallIcon2 = _interopRequireDefault(_SmallIcon);
 
-	var _MeduimIcon = __webpack_require__(205);
+	var _MeduimIcon = __webpack_require__(185);
 
 	var _MeduimIcon2 = _interopRequireDefault(_MeduimIcon);
 
-	var _BigIcon = __webpack_require__(206);
+	var _BigIcon = __webpack_require__(186);
 
 	var _BigIcon2 = _interopRequireDefault(_BigIcon);
 
@@ -9635,12 +9666,13 @@
 	  (0, _createClass3.default)(SmallIcon, [{
 	    key: "render",
 	    value: function render(_ref) {
-	      var src = _ref.src;
+	      var src = _ref.src,
+	          title = _ref.title;
 
 	      return (0, _preact.h)(
 	        "span",
 	        null,
-	        (0, _preact.h)("img", { src: src, width: "48", height: "48" })
+	        (0, _preact.h)("img", { src: src, title: title, width: "48", height: "48" })
 	      );
 	    }
 	  }]);
@@ -9651,6 +9683,128 @@
 
 /***/ },
 /* 185 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _getPrototypeOf = __webpack_require__(3);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(30);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(34);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(81);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var MeduimIcon = function (_Component) {
+	  (0, _inherits3.default)(MeduimIcon, _Component);
+
+	  function MeduimIcon() {
+	    (0, _classCallCheck3.default)(this, MeduimIcon);
+	    return (0, _possibleConstructorReturn3.default)(this, (MeduimIcon.__proto__ || (0, _getPrototypeOf2.default)(MeduimIcon)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(MeduimIcon, [{
+	    key: "render",
+	    value: function render(_ref) {
+	      var src = _ref.src,
+	          title = _ref.title;
+
+	      return (0, _preact.h)(
+	        "span",
+	        null,
+	        (0, _preact.h)("img", { src: src, title: title, width: "72", height: "72" })
+	      );
+	    }
+	  }]);
+	  return MeduimIcon;
+	}(_preact.Component);
+
+	exports.default = MeduimIcon;
+
+/***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _getPrototypeOf = __webpack_require__(3);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(30);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(34);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(81);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var BigIcon = function (_Component) {
+	  (0, _inherits3.default)(BigIcon, _Component);
+
+	  function BigIcon() {
+	    (0, _classCallCheck3.default)(this, BigIcon);
+	    return (0, _possibleConstructorReturn3.default)(this, (BigIcon.__proto__ || (0, _getPrototypeOf2.default)(BigIcon)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(BigIcon, [{
+	    key: "render",
+	    value: function render(_ref) {
+	      var src = _ref.src,
+	          title = _ref.title;
+
+	      return (0, _preact.h)(
+	        "span",
+	        null,
+	        (0, _preact.h)("img", { src: src, title: title, width: "96", height: "96" })
+	      );
+	    }
+	  }]);
+	  return BigIcon;
+	}(_preact.Component);
+
+	exports.default = BigIcon;
+
+/***/ },
+/* 187 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9674,7 +9828,7 @@
 	exports.default = shortenValue;
 
 /***/ },
-/* 186 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9710,31 +9864,31 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _DeveloperTab = __webpack_require__(187);
+	var _DeveloperTab = __webpack_require__(189);
 
 	var _DeveloperTab2 = _interopRequireDefault(_DeveloperTab);
 
-	var _list = __webpack_require__(188);
+	var _list = __webpack_require__(190);
 
 	var _list2 = _interopRequireDefault(_list);
 
-	var _metrics = __webpack_require__(189);
+	var _metrics = __webpack_require__(191);
 
 	var _metrics2 = _interopRequireDefault(_metrics);
 
-	var _competitors = __webpack_require__(190);
+	var _competitors = __webpack_require__(192);
 
 	var _competitors2 = _interopRequireDefault(_competitors);
 
-	var _BugPanel = __webpack_require__(192);
+	var _BugPanel = __webpack_require__(194);
 
 	var _BugPanel2 = _interopRequireDefault(_BugPanel);
 
-	var _Marketing = __webpack_require__(193);
+	var _Marketing = __webpack_require__(195);
 
 	var _Marketing2 = _interopRequireDefault(_Marketing);
 
-	var _shortenValue = __webpack_require__(185);
+	var _shortenValue = __webpack_require__(187);
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
@@ -9907,7 +10061,7 @@
 	exports.default = ProductPanel;
 
 /***/ },
-/* 187 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9943,7 +10097,7 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _list = __webpack_require__(188);
+	var _list = __webpack_require__(190);
 
 	var _list2 = _interopRequireDefault(_list);
 
@@ -9995,7 +10149,7 @@
 	exports.default = DeveloperTab;
 
 /***/ },
-/* 188 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10183,7 +10337,7 @@
 	exports.default = MainFeatures;
 
 /***/ },
-/* 189 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10227,7 +10381,7 @@
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _shortenValue = __webpack_require__(185);
+	var _shortenValue = __webpack_require__(187);
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
@@ -10330,7 +10484,7 @@
 	;
 
 /***/ },
-/* 190 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10366,7 +10520,7 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _competitor = __webpack_require__(191);
+	var _competitor = __webpack_require__(193);
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
@@ -10452,7 +10606,7 @@
 	exports.default = Competitors;
 
 /***/ },
-/* 191 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10484,7 +10638,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _shortenValue = __webpack_require__(185);
+	var _shortenValue = __webpack_require__(187);
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
@@ -10550,7 +10704,7 @@
 	exports.default = Competitor;
 
 /***/ },
-/* 192 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10774,7 +10928,7 @@
 	exports.default = BugPanel;
 
 /***/ },
-/* 193 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10810,13 +10964,17 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _SegmentUpgrader = __webpack_require__(194);
+	var _ClientRetention = __webpack_require__(208);
 
-	var _SegmentUpgrader2 = _interopRequireDefault(_SegmentUpgrader);
+	var _ClientRetention2 = _interopRequireDefault(_ClientRetention);
 
-	var _ClientAcquisition = __webpack_require__(196);
+	var _ClientAcquisition = __webpack_require__(198);
 
 	var _ClientAcquisition2 = _interopRequireDefault(_ClientAcquisition);
+
+	var _SegmentExplorer = __webpack_require__(207);
+
+	var _SegmentExplorer2 = _interopRequireDefault(_SegmentExplorer);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10834,22 +10992,22 @@
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Marketing.__proto__ || (0, _getPrototypeOf2.default)(Marketing)).call.apply(_ref, [this].concat(args))), _this), _this.renderMarketingTab = function (id) {
-	      var hasUnexploredMarkets = false;
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Marketing.__proto__ || (0, _getPrototypeOf2.default)(Marketing)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      exploredMarkets: [],
+	      explorableMarkets: [],
+	      markets: []
+	    }, _this.pickMarketData = function () {
+	      var state = {
+	        markets: _productStore2.default.getMarketsWithExplorationStatuses(_this.props.id),
+	        exploredMarkets: _productStore2.default.getExploredMarkets(_this.props.id),
+	        explorableMarkets: _productStore2.default.getExplorableMarkets(_this.props.id)
+	      };
 
-	      var marketsTab = [];
-
-	      _productStore2.default.getMarkets(id).forEach(function (m, mId) {
-	        var explored = _productStore2.default.isExploredMarket(id, mId);
-
-	        if (!hasUnexploredMarkets) {
-	          // marketsTab.push(<Market id={id} marketId={mId} market={m} explored={explored} />);
-	          marketsTab.push((0, _preact.h)(_SegmentUpgrader2.default, { id: id, marketId: mId, market: m, explored: explored }));
-	        }
-
-	        if (!explored) {
-	          hasUnexploredMarkets = true;
-	        }
+	      console.log(state, 'state of Marketing.js');
+	      _this.setState(state);
+	    }, _this.renderMarketingTab = function (id) {
+	      var marketsTab = _this.state.exploredMarkets.map(function (m, i) {
+	        return (0, _preact.h)(_ClientRetention2.default, { id: id, marketId: m.id, market: m });
 	      });
 
 	      return (0, _preact.h)(
@@ -10858,25 +11016,31 @@
 	        marketsTab
 	      );
 	    }, _this.renderClientAcquisition = function (id) {
-	      // if (!productStore.isSegmentingOpened(id)) {
-	      //   return <div className="market-list-container">Мы ничего не знаем о наших клиентах</div>;
-	      // }
+	      var marketsTab = _this.state.exploredMarkets.map(function (m, i) {
+	        return (0, _preact.h)(_ClientAcquisition2.default, { id: id, marketId: m.id, market: m });
+	      });
 
-	      var hasUnexploredMarkets = false;
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'market-list-container' },
+	        marketsTab
+	      );
+	    }, _this.renderExplorableMarkets = function (id) {
+	      var nextId = -1;
 
-	      var marketsTab = [];
-
-	      _productStore2.default.getMarkets(id).forEach(function (m, mId) {
-	        var explored = _productStore2.default.isExploredMarket(id, mId);
-
-	        if (!hasUnexploredMarkets) {
-	          // marketsTab.push(<Market id={id} marketId={mId} market={m} explored={explored} />);
-	          marketsTab.push((0, _preact.h)(_ClientAcquisition2.default, { id: id, marketId: mId, market: m, explored: explored }));
+	      _this.state.markets.forEach(function (m, i) {
+	        if (nextId === -1 && !m.explored) {
+	          nextId = m.id;
 	        }
+	      });
 
-	        if (!explored) {
-	          hasUnexploredMarkets = true;
-	        }
+	      var marketsTab = _this.state.markets.map(function (m) {
+	        return (0, _preact.h)(_SegmentExplorer2.default, {
+	          marketId: m.id,
+	          explorationCost: m.info.explorationCost,
+	          explored: m.explored,
+	          explorable: m.id === nextId
+	        });
 	      });
 
 	      return (0, _preact.h)(
@@ -10888,6 +11052,14 @@
 	  }
 
 	  (0, _createClass3.default)(Marketing, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      console.log('componentWillMount Marketing.js', this.props.id);
+	      this.pickMarketData();
+
+	      _productStore2.default.addChangeListener(this.pickMarketData);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render(_ref2) {
 	      var id = _ref2.id;
@@ -10908,6 +11080,13 @@
 	          '\u0423\u0434\u0435\u0440\u0436\u0430\u043D\u0438\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
 	        ),
 	        this.renderMarketingTab(id),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)(
+	          'h2',
+	          { className: 'center' },
+	          '\u0421\u0435\u0433\u043C\u0435\u043D\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
+	        ),
+	        this.renderExplorableMarkets(id),
 	        (0, _preact.h)('br', null)
 	      );
 	    }
@@ -10918,301 +11097,8 @@
 	exports.default = Marketing;
 
 /***/ },
-/* 194 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _getPrototypeOf = __webpack_require__(3);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(29);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(30);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(34);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(81);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _productStore = __webpack_require__(89);
-
-	var _productStore2 = _interopRequireDefault(_productStore);
-
-	var _productActions = __webpack_require__(155);
-
-	var _productActions2 = _interopRequireDefault(_productActions);
-
-	var _shortenValue = __webpack_require__(185);
-
-	var _shortenValue2 = _interopRequireDefault(_shortenValue);
-
-	var _coloredRating = __webpack_require__(195);
-
-	var _coloredRating2 = _interopRequireDefault(_coloredRating);
-
-	var _UI = __webpack_require__(162);
-
-	var _UI2 = _interopRequireDefault(_UI);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var SegmentUpgrader = function (_Component) {
-	  (0, _inherits3.default)(SegmentUpgrader, _Component);
-
-	  function SegmentUpgrader() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, SegmentUpgrader);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = SegmentUpgrader.__proto__ || (0, _getPrototypeOf2.default)(SegmentUpgrader)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      toggle: false
-	    }, _this.toggle = function () {
-	      _this.setState({ toggle: !_this.state.toggle });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(SegmentUpgrader, [{
-	    key: 'improveFeature',
-	    value: function improveFeature(id, featureId, xp) {
-	      _productActions2.default.improveFeature(id, 'offer', featureId, 1, xp);
-	    }
-	  }, {
-	    key: 'renderImprovementVariants',
-	    value: function renderImprovementVariants(id, marketId) {
-	      var _this2 = this;
-
-	      var XP = _productStore2.default.getXP(id);
-
-	      var cost = _productStore2.default.getFeatureIncreaseXPCost(id);
-	      var upgrade = _productStore2.default.getBestFeatureUpgradeVariantOnMarket(id, marketId);
-
-	      if (!upgrade.income) {
-	        return (0, _preact.h)(
-	          'div',
-	          null,
-	          '\u041D\u0435\u0442 \u0434\u043E\u0441\u0442\u0443\u043F\u043D\u044B\u0445 \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0439 :('
-	        );
-	      }
-
-	      var maxBenefit = _productStore2.default.getProductIncomeIncreaseIfWeUpgradeFeature(id, upgrade.featureId, 1);
-
-	      var income = (0, _shortenValue2.default)(maxBenefit);
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(_UI2.default.Button, {
-	            onClick: function onClick() {
-	              return _this2.improveFeature(id, upgrade.featureId, cost);
-	            },
-	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435',
-	            primary: true,
-	            disabled: XP < cost
-	          })
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'segment-value' },
-	          '\u0414\u043E\u0445\u043E\u0434: +$',
-	          income
-	        )
-	      );
-	    }
-	  }, {
-	    key: 'renderLoyaltyToggle',
-	    value: function renderLoyaltyToggle() {
-	      return (0, _preact.h)(
-	        'span',
-	        null,
-	        '(',
-	        (0, _preact.h)(
-	          'span',
-	          { className: 'toggle', onClick: this.toggle },
-	          '\u041F\u043E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u043E\u0442\u0447\u0451\u0442'
-	        ),
-	        ')'
-	      );
-	    }
-	  }, {
-	    key: 'renderLoyaltyIndicator',
-	    value: function renderLoyaltyIndicator(id, marketId) {
-	      var loyalty = _productStore2.default.getSegmentLoyalty(id, marketId);
-
-	      if (loyalty < 20) {
-	        return (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/face-sad.png' });
-	      } else if (loyalty < 60) {
-	        return (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/face-neutral.png' });
-	      }
-
-	      return (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/face-happy.png' });
-	    }
-	  }, {
-	    key: 'renderLoyaltyDescription',
-	    value: function renderLoyaltyDescription(id, marketId) {
-	      var loyaltyStructured = _productStore2.default.getSegmentLoyaltyStructured(id, marketId);
-
-	      var rating = Math.ceil(loyaltyStructured.ratingBasedLoyalty * 100);
-	      var errors = Math.ceil(loyaltyStructured.bugPenalty * 100);
-	      var newApp = Math.ceil(loyaltyStructured.isNewApp * 100);
-	      var isBestApp = Math.ceil(loyaltyStructured.isBestApp * 100);
-
-	      if (this.state.toggle) {
-	        return (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)('br', null),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'segment-value' },
-	            '\u041E\u0442 \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430: ',
-	            (0, _preact.h)(_UI2.default.ColoredValue, { value: rating, text: '%' })
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'segment-value' },
-	            '\u041E\u0448\u0438\u0431\u043A\u0438: ',
-	            (0, _preact.h)(_UI2.default.ColoredValue, { value: -errors, text: '%' })
-	          ),
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'segment-value' },
-	            '\u041D\u043E\u0432\u0438\u043D\u043A\u0430: ',
-	            (0, _preact.h)(_UI2.default.ColoredValue, { value: newApp, text: '%' })
-	          ),
-	          isBestApp > 0 ? (0, _preact.h)(
-	            'div',
-	            { className: 'segment-value' },
-	            '\u041B\u0438\u0434\u0435\u0440\u0441\u0442\u0432\u043E \u043F\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0443: ',
-	            (0, _preact.h)(_UI2.default.ColoredValue, { value: isBestApp, text: '%' })
-	          ) : ''
-	        );
-	      }
-
-	      return '';
-	    }
-	  }, {
-	    key: 'renderLoyalty',
-	    value: function renderLoyalty(id, marketId) {
-	      var loyalty = _productStore2.default.getSegmentLoyalty(id, marketId);
-	      var loyaltyIndicator = this.renderLoyaltyIndicator(id, marketId);
-
-	      var description = this.renderLoyaltyDescription(id, marketId);
-	      var toggle = this.renderLoyaltyToggle(id, marketId);
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'segment-value' },
-	          '\u041B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432: ',
-	          loyalty,
-	          '% ',
-	          toggle
-	        ),
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'segment-value' },
-	          loyaltyIndicator
-	        ),
-	        description
-	      );
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render(_ref2) {
-	      var marketId = _ref2.marketId,
-	          market = _ref2.market,
-	          id = _ref2.id,
-	          explored = _ref2.explored;
-
-	      if (!explored) return (0, _preact.h)('div', null);
-
-	      var clientType = market.clientType;
-
-
-	      var rating = _productStore2.default.getRating(id, marketId);
-
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'segment-block' },
-	        (0, _preact.h)(
-	          'div',
-	          { className: 'content-block' },
-	          (0, _preact.h)(
-	            'div',
-	            { className: 'client-market-item' },
-	            (0, _preact.h)(
-	              'div',
-	              null,
-	              (0, _preact.h)(
-	                'div',
-	                { className: 'center segment-client-type' },
-	                clientType
-	              ),
-	              (0, _preact.h)(
-	                'div',
-	                { className: 'segment-attribute' },
-	                (0, _preact.h)(
-	                  'div',
-	                  { className: 'segment-value' },
-	                  '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
-	                  (0, _preact.h)(_coloredRating2.default, { rating: rating })
-	                ),
-	                (0, _preact.h)('br', null),
-	                (0, _preact.h)(
-	                  'div',
-	                  { className: 'segment-value' },
-	                  this.renderImprovementVariants(id, marketId)
-	                ),
-	                (0, _preact.h)('br', null),
-	                (0, _preact.h)('hr', { className: 'horizontal-separator' }),
-	                (0, _preact.h)('br', null),
-	                (0, _preact.h)(
-	                  'div',
-	                  { className: 'segment-value' },
-	                  this.renderLoyalty(id, marketId)
-	                )
-	              ),
-	              (0, _preact.h)('div', { className: 'segment-attribute' })
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	  return SegmentUpgrader;
-	}(_preact.Component);
-
-	exports.default = SegmentUpgrader;
-
-/***/ },
-/* 195 */
+/* 196 */,
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11291,7 +11177,7 @@
 	exports.default = ColoredRating;
 
 /***/ },
-/* 196 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11300,10 +11186,6 @@
 	  value: true
 	});
 	exports.default = undefined;
-
-	var _stringify = __webpack_require__(125);
-
-	var _stringify2 = _interopRequireDefault(_stringify);
 
 	var _getPrototypeOf = __webpack_require__(3);
 
@@ -11345,26 +11227,8 @@
 	  (0, _inherits3.default)(ClientAcquisition, _Component);
 
 	  function ClientAcquisition() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
 	    (0, _classCallCheck3.default)(this, ClientAcquisition);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = ClientAcquisition.__proto__ || (0, _getPrototypeOf2.default)(ClientAcquisition)).call.apply(_ref, [this].concat(args))), _this), _this.renderUnexploredMarket = function (marketId, market, id) {
-	      return '';
-
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        id,
-	        (0, _stringify2.default)(market)
-	      );
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	    return (0, _possibleConstructorReturn3.default)(this, (ClientAcquisition.__proto__ || (0, _getPrototypeOf2.default)(ClientAcquisition)).apply(this, arguments));
 	  }
 
 	  (0, _createClass3.default)(ClientAcquisition, [{
@@ -11420,13 +11284,11 @@
 	    }
 	  }, {
 	    key: 'render',
-	    value: function render(_ref2) {
-	      var marketId = _ref2.marketId,
-	          market = _ref2.market,
-	          id = _ref2.id,
-	          explored = _ref2.explored;
-
-	      if (!explored) return this.renderUnexploredMarket(marketId, market, id);
+	    value: function render(_ref) {
+	      var marketId = _ref.marketId,
+	          market = _ref.market,
+	          id = _ref.id,
+	          explored = _ref.explored;
 
 	      var clients = _productStore2.default.getClientsOnMarket(id, marketId);
 
@@ -11494,7 +11356,7 @@
 	exports.default = ClientAcquisition;
 
 /***/ },
-/* 197 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11531,11 +11393,11 @@
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _eventGenerator = __webpack_require__(198);
+	var _eventGenerator = __webpack_require__(200);
 
 	var _eventGenerator2 = _interopRequireDefault(_eventGenerator);
 
-	var _ai = __webpack_require__(200);
+	var _ai = __webpack_require__(202);
 
 	var _ai2 = _interopRequireDefault(_ai);
 
@@ -11543,7 +11405,7 @@
 
 	var _Product2 = _interopRequireDefault(_Product);
 
-	var _date = __webpack_require__(203);
+	var _date = __webpack_require__(205);
 
 	var _notifications = __webpack_require__(174);
 
@@ -11655,7 +11517,7 @@
 	};
 
 /***/ },
-/* 198 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11688,7 +11550,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _createRandomWorker = __webpack_require__(199);
+	var _createRandomWorker = __webpack_require__(201);
 
 	var _createRandomWorker2 = _interopRequireDefault(_createRandomWorker);
 
@@ -11749,7 +11611,7 @@
 	};
 
 /***/ },
-/* 199 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11840,7 +11702,7 @@
 	};
 
 /***/ },
-/* 200 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11873,7 +11735,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _companyStyles = __webpack_require__(201);
+	var _companyStyles = __webpack_require__(203);
 
 	var MANAGEMENT_STYLES = _interopRequireWildcard(_companyStyles);
 
@@ -11881,7 +11743,7 @@
 
 	var NOTIFICATIONS = _interopRequireWildcard(_notifications);
 
-	var _bonuses = __webpack_require__(202);
+	var _bonuses = __webpack_require__(204);
 
 	var BONUSES = _interopRequireWildcard(_bonuses);
 
@@ -12095,7 +11957,7 @@
 	};
 
 /***/ },
-/* 201 */
+/* 203 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12107,7 +11969,7 @@
 	var COMPANY_STYLE_BALANCED = exports.COMPANY_STYLE_BALANCED = 'COMPANY_STYLE_BALANCED';
 
 /***/ },
-/* 202 */
+/* 204 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12128,7 +11990,7 @@
 	var BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER = exports.BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER = 'BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER';
 
 /***/ },
-/* 203 */
+/* 205 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -12149,7 +12011,7 @@
 	};
 
 /***/ },
-/* 204 */
+/* 206 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12163,15 +12025,19 @@
 	};
 
 /***/ },
-/* 205 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.default = undefined;
+
+	var _stringify = __webpack_require__(125);
+
+	var _stringify2 = _interopRequireDefault(_stringify);
 
 	var _getPrototypeOf = __webpack_require__(3);
 
@@ -12195,38 +12061,204 @@
 
 	var _preact = __webpack_require__(1);
 
+	var _productStore = __webpack_require__(89);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	var _productActions = __webpack_require__(155);
+
+	var _productActions2 = _interopRequireDefault(_productActions);
+
+	var _UI = __webpack_require__(162);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var MeduimIcon = function (_Component) {
-	  (0, _inherits3.default)(MeduimIcon, _Component);
+	var SegmentExplorer = function (_Component) {
+	  (0, _inherits3.default)(SegmentExplorer, _Component);
 
-	  function MeduimIcon() {
-	    (0, _classCallCheck3.default)(this, MeduimIcon);
-	    return (0, _possibleConstructorReturn3.default)(this, (MeduimIcon.__proto__ || (0, _getPrototypeOf2.default)(MeduimIcon)).apply(this, arguments));
-	  }
+	  function SegmentExplorer() {
+	    var _ref;
 
-	  (0, _createClass3.default)(MeduimIcon, [{
-	    key: "render",
-	    value: function render(_ref) {
-	      var src = _ref.src;
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, SegmentExplorer);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = SegmentExplorer.__proto__ || (0, _getPrototypeOf2.default)(SegmentExplorer)).call.apply(_ref, [this].concat(args))), _this), _this.renderUnexploredMarket = function (marketId, market, id) {
+	      return '';
 
 	      return (0, _preact.h)(
-	        "span",
+	        'div',
 	        null,
-	        (0, _preact.h)("img", { src: src, width: "72", height: "72" })
+	        id,
+	        (0, _stringify2.default)(market)
+	      );
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(SegmentExplorer, [{
+	    key: 'renderAcquisitionButtons',
+	    value: function renderAcquisitionButtons(id, marketId) {
+	      var _this2 = this;
+
+	      var expertise = _productStore2.default.getMarketingKnowledge(id, marketId);
+
+	      var buttons = [{ clients: 50 }];
+
+	      if (expertise >= 10) {
+	        buttons.push({ clients: 125 });
+	      }
+
+	      if (expertise >= 30) {
+	        buttons.push({ clients: 225 });
+	      }
+
+	      if (expertise >= 55) {
+	        buttons.push({ clients: 500 });
+	      }
+
+	      if (expertise >= 75) {
+	        buttons.push({ clients: 1500 });
+	      }
+
+	      return buttons.reverse().map(function (b) {
+	        return _this2.renderGetMoreClientsButton(id, marketId, b.clients, b.clients * 10);
+	      });
+	    }
+	  }, {
+	    key: 'renderGetMoreClientsButton',
+	    value: function renderGetMoreClientsButton(id, marketId) {
+	      var amountOfClients = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 50;
+	      var price = arguments[3];
+
+	      var isCanGrabMoreClients = _productStore2.default.isCanGrabMoreClients(id, marketId, amountOfClients, price);
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(_UI2.default.Button, {
+	          onClick: function onClick() {
+	            return _productActions2.default.addClients(id, marketId, amountOfClients, price);
+	          },
+	          text: '\u041F\u0440\u0438\u0432\u043B\u0435\u0447\u044C ' + amountOfClients + ' \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432',
+	          primary: true,
+	          disabled: !isCanGrabMoreClients
+	        }),
+	        (0, _preact.h)('br', null)
+	      );
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(_ref2) {
+	      var marketId = _ref2.marketId,
+	          explorationCost = _ref2.explorationCost,
+	          explored = _ref2.explored,
+	          explorable = _ref2.explorable;
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        'Exploration of #',
+	        marketId,
+	        ': costs $',
+	        explorationCost,
+	        'XP, explored:',
+	        explored,
+	        ', isExplorable:',
+	        explorable
+	      );
+	      if (!explored) return this.renderUnexploredMarket(marketId, market, id);
+
+	      var clients = _productStore2.default.getClientsOnMarket(id, marketId);
+	      var income = _productStore2.default.getMarketIncome(id, marketId);
+	      var marketSize = _productStore2.default.getMarketSize(marketId);
+
+	      // const isServersExplored = true;
+	      // if (isServersExplored) {
+	      //
+	      // }
+	      // <div className="segment-attribute flexbox">
+	      //   <div className="flex-splitter">
+	      //     <div className="segment-value"><UI.SmallIcon title="Ежемесячные доходы" src="/images/coins.png" /> +{income}</div>
+	      //   </div>
+	      //   <div className="flex-splitter">
+	      //     <div className="segment-value"><UI.SmallIcon src="/images/coins.png" />Max: {marketSize}</div>
+	      //   </div>
+	      // </div>
+
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'segment-block' },
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'content-block' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'client-market-item' },
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              (0, _preact.h)(
+	                'div',
+	                { className: 'center segment-client-type' },
+	                market.clientType
+	              ),
+	              (0, _preact.h)(
+	                'div',
+	                { className: 'segment-attribute flexbox' },
+	                (0, _preact.h)(
+	                  'div',
+	                  { className: 'flex-splitter' },
+	                  (0, _preact.h)(
+	                    'div',
+	                    { className: 'segment-value' },
+	                    (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/clients.png' }),
+	                    clients
+	                  )
+	                ),
+	                (0, _preact.h)(
+	                  'div',
+	                  { className: 'flex-splitter' },
+	                  (0, _preact.h)(
+	                    'div',
+	                    { className: 'segment-value' },
+	                    (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/clients.png' }),
+	                    'Max: ',
+	                    market.clients
+	                  )
+	                )
+	              ),
+	              (0, _preact.h)('br', null),
+	              (0, _preact.h)(
+	                'div',
+	                { className: 'segment-attribute' },
+	                (0, _preact.h)(
+	                  'div',
+	                  { className: 'segment-value' },
+	                  this.renderAcquisitionButtons(id, marketId)
+	                )
+	              )
+	            )
+	          )
+	        )
 	      );
 	    }
 	  }]);
-	  return MeduimIcon;
+	  return SegmentExplorer;
 	}(_preact.Component);
 
-	exports.default = MeduimIcon;
+	exports.default = SegmentExplorer;
 
 /***/ },
-/* 206 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -12255,32 +12287,289 @@
 
 	var _preact = __webpack_require__(1);
 
+	var _productStore = __webpack_require__(89);
+
+	var _productStore2 = _interopRequireDefault(_productStore);
+
+	var _productActions = __webpack_require__(155);
+
+	var _productActions2 = _interopRequireDefault(_productActions);
+
+	var _shortenValue = __webpack_require__(187);
+
+	var _shortenValue2 = _interopRequireDefault(_shortenValue);
+
+	var _coloredRating = __webpack_require__(197);
+
+	var _coloredRating2 = _interopRequireDefault(_coloredRating);
+
+	var _UI = __webpack_require__(162);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var BigIcon = function (_Component) {
-	  (0, _inherits3.default)(BigIcon, _Component);
+	var SegmentUpgrader = function (_Component) {
+	  (0, _inherits3.default)(SegmentUpgrader, _Component);
 
-	  function BigIcon() {
-	    (0, _classCallCheck3.default)(this, BigIcon);
-	    return (0, _possibleConstructorReturn3.default)(this, (BigIcon.__proto__ || (0, _getPrototypeOf2.default)(BigIcon)).apply(this, arguments));
+	  function SegmentUpgrader() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, SegmentUpgrader);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = SegmentUpgrader.__proto__ || (0, _getPrototypeOf2.default)(SegmentUpgrader)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      toggle: false
+	    }, _this.toggle = function () {
+	      _this.setState({ toggle: !_this.state.toggle });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
-	  (0, _createClass3.default)(BigIcon, [{
-	    key: "render",
-	    value: function render(_ref) {
-	      var src = _ref.src;
+	  (0, _createClass3.default)(SegmentUpgrader, [{
+	    key: 'improveFeature',
+	    value: function improveFeature(id, featureId, xp) {
+	      _productActions2.default.improveFeature(id, 'offer', featureId, 1, xp);
+	    }
+	  }, {
+	    key: 'renderImprovementVariants',
+	    value: function renderImprovementVariants(id, marketId) {
+	      var _this2 = this;
+
+	      var upgrade = _productStore2.default.getBestFeatureUpgradeVariantOnMarket(id, marketId);
+
+	      if (!upgrade.loyaltyChange) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          '\u041D\u0435\u0442 \u0434\u043E\u0441\u0442\u0443\u043F\u043D\u044B\u0445 \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0439 :('
+	        );
+	      }
+
+	      var loyaltyChange = Math.ceil(upgrade.loyaltyChange * 1000) / 10;
+	      var ratingChange = Math.ceil(upgrade.ratingChange * 100) / 100;
+
+	      var XP = _productStore2.default.getXP(id);
+
+	      var cost = _productStore2.default.getFeatureIncreaseXPCost(id);
+
+	      // <div className="segment-value">{JSON.stringify(upgrade)}</div>
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(_UI2.default.Button, {
+	            onClick: function onClick() {
+	              return _this2.improveFeature(id, upgrade.featureId, cost);
+	            },
+	            text: '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u043F\u0440\u0438\u043B\u043E\u0436\u0435\u043D\u0438\u0435',
+	            primary: true,
+	            disabled: XP < cost
+	          })
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'segment-value' },
+	          '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: +',
+	          ratingChange
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'segment-value' },
+	          '\u041B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C: +',
+	          loyaltyChange,
+	          '%'
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'renderLoyaltyToggle',
+	    value: function renderLoyaltyToggle() {
+	      return (0, _preact.h)(
+	        'span',
+	        null,
+	        '(',
+	        (0, _preact.h)(
+	          'span',
+	          { className: 'toggle', onClick: this.toggle },
+	          '\u041F\u043E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u043E\u0442\u0447\u0451\u0442'
+	        ),
+	        ')'
+	      );
+	    }
+	  }, {
+	    key: 'renderBugFixLink',
+	    value: function renderBugFixLink(errors) {
+	      if (!errors) return '';
 
 	      return (0, _preact.h)(
-	        "span",
+	        'span',
 	        null,
-	        (0, _preact.h)("img", { src: src, width: "96", height: "96" })
+	        '(',
+	        (0, _preact.h)(
+	          'span',
+	          { className: 'toggle' },
+	          '\u0418\u0441\u043F\u0440\u0430\u0432\u0438\u0442\u044C'
+	        ),
+	        ')'
+	      );
+	    }
+	  }, {
+	    key: 'renderLoyaltyIndicator',
+	    value: function renderLoyaltyIndicator(id, marketId) {
+	      var loyalty = _productStore2.default.getSegmentLoyalty(id, marketId);
+
+	      if (loyalty < 20) {
+	        return (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/face-sad.png' });
+	      } else if (loyalty < 60) {
+	        return (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/face-neutral.png' });
+	      }
+
+	      return (0, _preact.h)(_UI2.default.SmallIcon, { src: '/images/face-happy.png' });
+	    }
+	  }, {
+	    key: 'renderLoyaltyDescription',
+	    value: function renderLoyaltyDescription(id, marketId) {
+	      var loyaltyStructured = _productStore2.default.getSegmentLoyaltyStructured(id, marketId);
+
+	      var rating = Math.ceil(loyaltyStructured.ratingBasedLoyalty * 100);
+	      var errors = Math.ceil(loyaltyStructured.bugPenalty * 100);
+	      var newApp = Math.ceil(loyaltyStructured.isNewApp * 100);
+	      var isBestApp = Math.ceil(loyaltyStructured.isBestApp * 100);
+
+	      if (this.state.toggle) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'segment-value' },
+	            '\u041E\u0442 \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0430: ',
+	            (0, _preact.h)(_UI2.default.ColoredValue, { value: rating, text: '%' })
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'segment-value' },
+	            '\u041E\u0448\u0438\u0431\u043A\u0438: ',
+	            (0, _preact.h)(_UI2.default.ColoredValue, { value: -errors, text: '%' }),
+	            ' ',
+	            this.renderBugFixLink(errors)
+	          ),
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'segment-value' },
+	            '\u041D\u043E\u0432\u0438\u043D\u043A\u0430: ',
+	            (0, _preact.h)(_UI2.default.ColoredValue, { value: newApp, text: '%' })
+	          ),
+	          isBestApp > 0 ? (0, _preact.h)(
+	            'div',
+	            { className: 'segment-value' },
+	            '\u041B\u0438\u0434\u0435\u0440\u0441\u0442\u0432\u043E \u043F\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0443: ',
+	            (0, _preact.h)(_UI2.default.ColoredValue, { value: isBestApp, text: '%' })
+	          ) : ''
+	        );
+	      }
+
+	      return '';
+	    }
+	  }, {
+	    key: 'renderLoyalty',
+	    value: function renderLoyalty(id, marketId) {
+	      var loyalty = _productStore2.default.getSegmentLoyalty(id, marketId);
+	      var loyaltyIndicator = this.renderLoyaltyIndicator(id, marketId);
+
+	      var description = this.renderLoyaltyDescription(id, marketId);
+	      var toggle = this.renderLoyaltyToggle(id, marketId);
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'segment-value' },
+	          '\u041B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432: ',
+	          loyalty,
+	          '% ',
+	          toggle
+	        ),
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'segment-value' },
+	          loyaltyIndicator
+	        ),
+	        description
+	      );
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render(_ref2) {
+	      var marketId = _ref2.marketId,
+	          market = _ref2.market,
+	          id = _ref2.id;
+	      var clientType = market.clientType;
+
+
+	      var rating = _productStore2.default.getRating(id, marketId);
+
+	      return (0, _preact.h)(
+	        'div',
+	        { className: 'segment-block' },
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'content-block' },
+	          (0, _preact.h)(
+	            'div',
+	            { className: 'client-market-item' },
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              (0, _preact.h)(
+	                'div',
+	                { className: 'center segment-client-type' },
+	                clientType
+	              ),
+	              (0, _preact.h)(
+	                'div',
+	                { className: 'segment-attribute' },
+	                (0, _preact.h)(
+	                  'div',
+	                  { className: 'segment-value' },
+	                  '\u0420\u0435\u0439\u0442\u0438\u043D\u0433: ',
+	                  (0, _preact.h)(_coloredRating2.default, { rating: rating })
+	                ),
+	                (0, _preact.h)('br', null),
+	                (0, _preact.h)(
+	                  'div',
+	                  { className: 'segment-value' },
+	                  this.renderImprovementVariants(id, marketId)
+	                ),
+	                (0, _preact.h)('br', null),
+	                (0, _preact.h)('hr', { className: 'horizontal-separator' }),
+	                (0, _preact.h)('br', null),
+	                (0, _preact.h)(
+	                  'div',
+	                  { className: 'segment-value' },
+	                  this.renderLoyalty(id, marketId)
+	                )
+	              ),
+	              (0, _preact.h)('div', { className: 'segment-attribute' })
+	            )
+	          )
+	        )
 	      );
 	    }
 	  }]);
-	  return BigIcon;
+	  return SegmentUpgrader;
 	}(_preact.Component);
 
-	exports.default = BigIcon;
+	exports.default = SegmentUpgrader;
 
 /***/ }
 /******/ ]);

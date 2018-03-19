@@ -333,18 +333,6 @@ class ProductStore extends EventEmitter {
     return marketManager.getClients(marketId, id);
   }
 
-  // getPowerOfCompanyOnMarket(id, marketId) {
-  //   return marketManager.getPowerOfCompanyOnMarket(id, marketId);
-  // }
-  //
-  // getPowerListOnMarket(marketId) {
-  //   return marketManager.getPowerListOnMarket(marketId);
-  // }
-  //
-  // getMarketInfluenceOfCompany(id, marketId) {
-  //   return marketManager.getMarketShare(id, marketId);
-  // }
-
   getMarketSize(marketId) {
     return marketManager.getMarketSize(marketId);
   }
@@ -409,9 +397,6 @@ class ProductStore extends EventEmitter {
 
   getSegmentLoyalty(id, marketId, improvement = null) {
     return this.getSegmentLoyaltyStructured(id, marketId, improvement).result;
-
-    // return marketManager.getMarketLoyalty(marketId, id);
-    // return 10;
   }
 
   getSegmentLoyaltyStructured(id, marketId, improvement = null) {
@@ -433,6 +418,31 @@ class ProductStore extends EventEmitter {
 
   getMarketExplorationCost(id, marketId) {
     return this.getDefaults(id).markets[marketId].explorationCost;
+  }
+
+  getExploredMarkets(id) {
+    return this.getMarkets(id).filter((m, mId) => this.isExploredMarket(id, m.id));
+  }
+
+  getMarketsWithExplorationStatuses(id) {
+    return this.getMarkets(id)
+      .map((m, i) => {
+        return {
+          id: m.id,
+          info: m,
+          explored: this.isExploredMarket(id, m.id)
+        }
+      })
+  }
+
+  getExplorableMarkets(id) {
+    const markets = this.getMarkets(id).filter((m, mId) => !this.isExploredMarket(id, m.id));
+
+    if (markets.length) {
+      return markets[0];
+    }
+
+    return [];
   }
 
   calculateMarketIncome(id, marketId, improvement = null) {
@@ -477,11 +487,21 @@ class ProductStore extends EventEmitter {
   getBestFeatureUpgradeVariantOnMarket(id, marketId) {
     const incomes = this.getMainFeatureIterator(id)
       .map((f, featureId) => {
+        const improvementSize = 1;
+        const improvement = {
+          featureId,
+          value: improvementSize
+        };
+
         const value = this.getMainFeatureQualityByFeatureId(id, featureId);
-        const income = this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, 1);
+        const income = this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, improvementSize);
+        const loyaltyChange = this.getRatingBasedLoyaltyOnMarket(id, marketId, improvement) - this.getRatingBasedLoyaltyOnMarket(id, marketId);
+        const ratingChange = this.getRating(id, marketId, improvement) - this.getRating(id, marketId);
 
         return {
           income,
+          loyaltyChange,
+          ratingChange,
           featureId,
           level: value + 1
         }

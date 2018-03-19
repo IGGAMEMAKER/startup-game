@@ -535,6 +535,11 @@ textarea {
   height: 40px;
   background-color: var(--main-background-color);
   padding-left: 15px;
+}
+
+.fixed,
+.menu-fixed,
+.bottom-fixed {
   border-bottom: #12908d solid 1px;
 }
 

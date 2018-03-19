@@ -102,7 +102,7 @@ export default {
       clientType: SEGMENT_PROGRAMMER,
       rating: [6, 2.5, 1.5, 0, 0],
       explorationCost: 0,
-      price: 1,
+      price: 5,
       clients: 38000
     },
     {
@@ -110,16 +110,16 @@ export default {
       clientType: SEGMENT_STARTUP,
       rating: [6.5, 1.5, 1.5, 0.5, 0],
       explorationCost: 50,
-      price: 1,
-      clients: 55000
+      price: 15,
+      clients: 10000
     },
     {
       id: 2,
       clientType: SEGMENT_SMALL_BUSINESS,
       rating: [0, 1.5, 1, 7, 0.5],
       explorationCost: 100,
-      price: 1,
-      clients: 85000
+      price: 100,
+      clients: 1000
     },
     {
       id: 3,

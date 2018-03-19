@@ -5,7 +5,7 @@ import productActions from '../../../../actions/product-actions';
 
 import UI from '../../../UI';
 
-export default class ClientAcquisition extends Component {
+export default class Payments extends Component {
   renderAcquisitionButtons(id, marketId) {
     const expertise = productStore.getMarketingKnowledge(id, marketId);
 
@@ -46,8 +46,34 @@ export default class ClientAcquisition extends Component {
     );
   }
 
+  renderUnexploredMarket = (marketId, market, id) => {
+    return '';
+
+    return <div>
+      {id}
+      {JSON.stringify(market)}
+    </div>
+  };
+
   render({ marketId, market, id, explored }) {
+    if (!explored) return this.renderUnexploredMarket(marketId, market, id);
+
     const clients = productStore.getClientsOnMarket(id, marketId);
+    const income = productStore.getMarketIncome(id, marketId);
+    const marketSize = productStore.getMarketSize(marketId);
+
+    // const isServersExplored = true;
+    // if (isServersExplored) {
+    //
+    // }
+    // <div className="segment-attribute flexbox">
+    //   <div className="flex-splitter">
+    //     <div className="segment-value"><UI.SmallIcon title="Ежемесячные доходы" src="/images/coins.png" /> +{income}</div>
+    //   </div>
+    //   <div className="flex-splitter">
+    //     <div className="segment-value"><UI.SmallIcon src="/images/coins.png" />Max: {marketSize}</div>
+    //   </div>
+    // </div>
 
     return (
       <div className="segment-block">

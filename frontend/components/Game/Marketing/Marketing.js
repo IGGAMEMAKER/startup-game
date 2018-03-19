@@ -2,54 +2,67 @@ import { h, Component } from 'preact';
 
 import productStore from '../../../stores/product-store';
 
-import SegmentUpgrader from '../Product/Markets/SegmentUpgrader';
+import ClientRetention from '../Product/Markets/ClientRetention';
 import ClientAcquisition from '../Product/Markets/ClientAcquisition';
+import SegmentExplorer from '../Product/Markets/SegmentExplorer';
 
 
 export default class Marketing extends Component {
+  state = {
+    exploredMarkets: [],
+    explorableMarkets: [],
+    markets: []
+  };
+
+  pickMarketData = () => {
+    const state = {
+      markets: productStore.getMarketsWithExplorationStatuses(this.props.id),
+      exploredMarkets: productStore.getExploredMarkets(this.props.id),
+      explorableMarkets: productStore.getExplorableMarkets(this.props.id)
+    };
+
+    console.log(state, 'state of Marketing.js');
+    this.setState(state);
+  };
+
+  componentWillMount() {
+    console.log('componentWillMount Marketing.js', this.props.id);
+    this.pickMarketData();
+
+    productStore.addChangeListener(this.pickMarketData)
+  }
+
   renderMarketingTab = (id) => {
-    let hasUnexploredMarkets = false;
-
-    let marketsTab = [];
-
-    productStore.getMarkets(id)
-      .forEach((m, mId) => {
-        const explored = productStore.isExploredMarket(id, mId);
-
-        if (!hasUnexploredMarkets) {
-          // marketsTab.push(<Market id={id} marketId={mId} market={m} explored={explored} />);
-          marketsTab.push(<SegmentUpgrader id={id} marketId={mId} market={m} explored={explored} />);
-        }
-
-        if (!explored) {
-          hasUnexploredMarkets = true;
-        }
-      });
+    const marketsTab = this.state.exploredMarkets
+      .map((m, i) => <ClientRetention id={id} marketId={m.id} market={m} />);
 
     return <div className="market-list-container">{marketsTab}</div>;
   };
 
   renderClientAcquisition = id => {
-    // if (!productStore.isSegmentingOpened(id)) {
-    //   return <div className="market-list-container">Мы ничего не знаем о наших клиентах</div>;
-    // }
+    const marketsTab = this.state.exploredMarkets
+      .map((m, i) => <ClientAcquisition id={id} marketId={m.id} market={m} />);
 
-    let hasUnexploredMarkets = false;
+    return <div className="market-list-container">{marketsTab}</div>;
+  };
 
-    let marketsTab = [];
+  renderExplorableMarkets = id => {
+    let nextId = -1;
 
-    productStore.getMarkets(id)
-      .forEach((m, mId) => {
-        const explored = productStore.isExploredMarket(id, mId);
+    this.state.markets.forEach((m, i) => {
+      if (nextId === -1 && !m.explored) {
+        nextId = m.id;
+      }
+    });
 
-        if (!hasUnexploredMarkets) {
-          // marketsTab.push(<Market id={id} marketId={mId} market={m} explored={explored} />);
-          marketsTab.push(<ClientAcquisition id={id} marketId={mId} market={m} explored={explored} />);
-        }
-
-        if (!explored) {
-          hasUnexploredMarkets = true;
-        }
+    const marketsTab = this.state.markets
+      .map(m => {
+        return <SegmentExplorer
+          marketId={m.id}
+          explorationCost={m.info.explorationCost}
+          explored={m.explored}
+          explorable={m.id === nextId}
+        />
       });
 
     return <div className="market-list-container">{marketsTab}</div>;
@@ -63,6 +76,9 @@ export default class Marketing extends Component {
         <br />
         <h2 className="center">Удержание клиентов</h2>
         {this.renderMarketingTab(id)}
+        <br />
+        <h2 className="center">Сегментирование клиентов</h2>
+        {this.renderExplorableMarkets(id)}
         <br />
       </div>
     );

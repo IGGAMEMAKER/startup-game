@@ -22,19 +22,20 @@ export default class SegmentUpgrader extends Component {
   }
 
   renderImprovementVariants(id, marketId) {
+    const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
+
+    if (!upgrade.loyaltyChange) {
+      return <div>Нет доступных улучшений :(</div>;
+    }
+
+    const loyaltyChange = Math.ceil(upgrade.loyaltyChange * 1000) / 10;
+    const ratingChange = Math.ceil(upgrade.ratingChange * 100) / 100;
+
     const XP = productStore.getXP(id);
 
     const cost = productStore.getFeatureIncreaseXPCost(id);
-    const upgrade = productStore.getBestFeatureUpgradeVariantOnMarket(id, marketId);
 
-    if (!upgrade.income) {
-      return <div>Нет доступных улучшений :(</div>
-    }
-
-    const maxBenefit = productStore.getProductIncomeIncreaseIfWeUpgradeFeature(id, upgrade.featureId, 1);
-
-    const income = shortenValue(maxBenefit);
-
+        // <div className="segment-value">{JSON.stringify(upgrade)}</div>
     return (
       <div>
         <div>
@@ -45,13 +46,20 @@ export default class SegmentUpgrader extends Component {
             disabled={XP < cost}
           />
         </div>
-        <div className="segment-value">Доход: +${income}</div>
+        <div className="segment-value">Рейтинг: +{ratingChange}</div>
+        <div className="segment-value">Лояльность: +{loyaltyChange}%</div>
       </div>
     );
   }
 
   renderLoyaltyToggle() {
     return <span>(<span className="toggle" onClick={this.toggle}>Посмотреть отчёт</span>)</span>;
+  }
+
+  renderBugFixLink(errors) {
+    if (!errors) return '';
+
+    return <span>(<span className="toggle">Исправить</span>)</span>;
   }
 
   renderLoyaltyIndicator(id, marketId) {
@@ -79,7 +87,7 @@ export default class SegmentUpgrader extends Component {
       return <div>
         <br />
         <div className="segment-value">От рейтинга: <UI.ColoredValue value={rating} text="%" /></div>
-        <div className="segment-value">Ошибки: <UI.ColoredValue value={-errors} text="%" /></div>
+        <div className="segment-value">Ошибки: <UI.ColoredValue value={-errors} text="%" /> {this.renderBugFixLink(errors)}</div>
         <div className="segment-value">Новинка: <UI.ColoredValue value={newApp} text="%" /></div>
         {
           isBestApp > 0
@@ -108,9 +116,7 @@ export default class SegmentUpgrader extends Component {
     </div>
   }
 
-  render({ marketId, market, id, explored }) {
-    if (!explored) return <div></div>;
-
+  render({ marketId, market, id }) {
     const { clientType } = market;
 
     const rating = productStore.getRating(id, marketId);
