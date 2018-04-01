@@ -24,6 +24,7 @@ import stats from '../../stats';
 import * as GAME_STAGES from '../../constants/game-stages';
 
 const MODE_MARKETING = 'MODE_MARKETING';
+const MODE_RESEARCH = 'MODE_RESEARCH';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
 const MODE_COMPETITORS = 'MODE_COMPETITORS';
 const MODE_STATS = 'MODE_STATS';
@@ -105,8 +106,8 @@ export default class Game extends Component {
     const mp = productStore.getManagerPoints(productId);
     const pp = productStore.getProgrammerPoints(productId);
 
-    const productionMP = productStore.getPPProduction(productId);
-    const productionPP = productStore.getMPProduction(productId);
+    const productionMP = productStore.getMPProduction(productId);
+    const productionPP = productStore.getPPProduction(productId);
 
     const money = productStore.getMoney(productId);
     const products = productStore.getOurProducts();
@@ -171,14 +172,20 @@ export default class Game extends Component {
     clients = this.renderNavbar(MODE_MARKETING, 'Маркетинг');
 
     let metrics;
-    if (stageHelper.canShowMetricsTab()) {
-      metrics = this.renderNavbar(MODE_STATS, 'Статистика');
+    // if (stageHelper.canShowMetricsTab()) {
+    //   metrics = this.renderNavbar(MODE_STATS, 'Статистика');
+    // }
+
+    let research;
+    if (true) {
+      research = this.renderNavbar(MODE_RESEARCH, 'Исследования');
     }
 
     return (
       <div className="nav nav-tabs">
         {improvements}
         {clients}
+        {research}
         {metrics}
       </div>
     );

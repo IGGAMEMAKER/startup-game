@@ -4,8 +4,9 @@ import { h, Component } from 'preact';
 import productStore from '../../../../stores/product-store';
 
 import DeveloperTab from '../DeveloperTab/DeveloperTab';
+import ImprovementTab from '../DeveloperTab/ImprovementTab';
 
-import MainFeatureTab from '../MainFeature/list';
+
 import Metrics from '../KPI/metrics';
 import Competitors from '../Ads/competitors';
 
@@ -15,7 +16,6 @@ import Marketing from '../../Marketing/Marketing';
 
 import shortenValue from '../../../../helpers/math/shorten-value';
 import stageHelper from '../../../../helpers/stages';
-import logger from '../../../../helpers/logger/logger';
 
 
 const MODE_MARKETING = 'MODE_MARKETING';
@@ -81,6 +81,8 @@ export default class ProductPanel extends Component {
       case MODE_MAIN_FEATURES: body = this.renderDevTab(id, product); break;
 
       case MODE_STATS: body = this.renderMetrics(id, product); break;
+
+      case MODE_RESEARCH: body = <ImprovementTab id={id} />; break;
     }
 
     return (

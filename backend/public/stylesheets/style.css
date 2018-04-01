@@ -540,7 +540,7 @@ textarea {
 }
 
 .fixed,
-.menu-fixed,
+/*.menu-fixed,*/
 .bottom-fixed {
   border-bottom: #12908d solid 1px;
 }

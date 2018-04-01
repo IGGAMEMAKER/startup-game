@@ -1,9 +1,8 @@
 import { h, Component } from 'preact';
 
-import productStore from '../../../../stores/product-store';
-import productActions from '../../../../actions/product-actions';
-
 import UI from '../../../UI';
+
+import productActions from '../../../../actions/product-actions';
 
 export default class SegmentExplorer extends Component {
   renderResearchButton(id, marketId, explored, needsToBeExplored, enoughXPsToExplore, explorationCost = 50) {
@@ -36,8 +35,6 @@ export default class SegmentExplorer extends Component {
     const { clientType, explorationCost } = market;
 
     const marketSize = market.clients * market.price;
-
-    // return <div>Exploration of #{marketId}: costs ${explorationCost}XP, explored:{explored}, isExplorable:{explorable}</div>
 
     const fade = !explorable ? 'darken' : '';
 

@@ -36,18 +36,22 @@ export default class SegmentUpgrader extends Component {
     const cost = productStore.getFeatureIncreaseXPCost(id);
 
         // <div className="segment-value">{JSON.stringify(upgrade)}</div>
+        // <div className="segment-value">Лояльность: +{loyaltyChange}%</div>
     return (
       <div>
+        <div className="segment-attribute">
+          <div className="segment-value">Улучшаемая технология </div>
+          <div className="segment-value">{upgrade.featureName}</div>
+        </div>
+        <div className="segment-value">Рейтинг: +{ratingChange}</div>
         <div>
           <UI.Button
             onClick={() => this.improveFeature(id, upgrade.featureId, cost)}
-            text="Улучшить приложение"
+            text={`Улучшить технологию`}
             primary
             disabled={XP < cost}
           />
         </div>
-        <div className="segment-value">Рейтинг: +{ratingChange}</div>
-        <div className="segment-value">Лояльность: +{loyaltyChange}%</div>
       </div>
     );
   }

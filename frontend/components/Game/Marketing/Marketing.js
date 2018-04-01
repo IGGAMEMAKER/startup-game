@@ -21,12 +21,10 @@ export default class Marketing extends Component {
       explorableMarkets: productStore.getExplorableMarkets(this.props.id)
     };
 
-    console.log(state, 'state of Marketing.js');
     this.setState(state);
   };
 
   componentWillMount() {
-    console.log('componentWillMount Marketing.js', this.props.id);
     this.pickMarketData();
 
     productStore.addChangeListener(this.pickMarketData)
@@ -68,6 +66,10 @@ export default class Marketing extends Component {
 
     return <div className="market-list-container">{marketsTab}</div>;
   };
+        // <br />
+        // <h2 className="center">Исследование клиентов</h2>
+        // {this.renderExplorableMarkets(id)}
+        // <br />
 
   render({ id }) {
     return (
@@ -77,10 +79,6 @@ export default class Marketing extends Component {
         <br />
         <h2 className="center">Удержание клиентов</h2>
         {this.renderMarketingTab(id)}
-        <br />
-        <h2 className="center">Исследование клиентов</h2>
-        {this.renderExplorableMarkets(id)}
-        <br />
       </div>
     );
   }

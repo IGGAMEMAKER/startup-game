@@ -18,7 +18,9 @@ const names = [
 
 
 export default class Product {
-  constructor(data, createFromObject) {}
+  constructor(data, createFromObject) {
+
+  }
 
   createCompany(data): Product {
     let { idea, name, isCompetitor, companyId } = data;
@@ -83,6 +85,15 @@ export default class Product {
 
     this._money = 45000;
 
+    this.team = {
+      programmers: [0, 0, 0, 0, 0] // intern, junior, middle, senior, architect
+    };
+    this.managers = [];
+    this.managerBonus = null;
+    this.corporativeCulture = {};
+    this.appBonuses = {};
+    this.exploration = [];
+
 
     this.XP = 10;
     this.totalXP = 0;
@@ -129,7 +140,16 @@ export default class Product {
   }
 
   getPPProduction() {
-    return 100;
+    let value = 50; // managerial
+
+    const coders = this.team.programmers;
+
+    value += coders[0] * balance.PROGRAMMER_EFFICIENCY_INTERN;
+    value += coders[1] * balance.PROGRAMMER_EFFICIENCY_JUNIOR;
+    value += coders[2] * balance.PROGRAMMER_EFFICIENCY_MIDDLE;
+    value += coders[3] * balance.PROGRAMMER_EFFICIENCY_SENIOR;
+
+    return value;
   }
 
   getMPProduction() {

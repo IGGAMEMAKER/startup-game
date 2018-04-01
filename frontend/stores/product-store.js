@@ -12,7 +12,6 @@ import bugGenerator from '../helpers/products/bug-generator';
 
 import * as c from '../constants/actions/product-actions';
 import * as ACTIONS from '../constants/actions/schedule-actions';
-
 import payloads from '../constants/actions/payloads';
 import {
   DefaultDescription,
@@ -58,6 +57,7 @@ const initialize = ({ markets, products }) => {
       }
     })
   });
+
   marketManager.joinProduct(0, 0);
 };
 
@@ -92,7 +92,6 @@ class ProductStore extends EventEmitter {
 
   getProductSupportCost(id) {
     return 0;
-    return _products[id].getProductSupportCost();
   }
 
 
@@ -119,11 +118,6 @@ class ProductStore extends EventEmitter {
   getCompanyCostStructured(id) {
     return companyCostHelper.structured(_products[id], this.getProductIncome(id), 0);
   }
-
-  getHype(id) {
-    return 1000;
-  }
-
 
   getMainFeatureQualityByFeatureId(id, featureId) {
     return _products[id].getMainFeatureQualityByFeatureId(featureId);
@@ -178,18 +172,6 @@ class ProductStore extends EventEmitter {
       loyalty = 0.15 * (rating - 6);
     }
 
-    // if (rating === 10) loyalty = 0.3;
-    // if (rating < 10) loyalty = 0.25;
-    // if (rating < 9) loyalty = 0.15;
-    // if (rating < 8) loyalty = 0.1;
-    // if (rating < 7) loyalty = 0.05;
-    // if (rating < 6) loyalty = 0;
-    // if (rating < 5) loyalty = -0.1;
-    // if (rating < 4) loyalty = -0.2;
-    // if (rating < 3) loyalty = -0.3;
-    // if (rating < 2) loyalty = -0.4;
-    // if (rating < 1) loyalty = -0.5;
-
     return loyalty;
   }
 
@@ -207,8 +189,15 @@ class ProductStore extends EventEmitter {
     return false;
   }
 
+  getMaxAmountOfClientsOnMarket(id, marketId) {
+    return this.getMarkets(id)[marketId].clients;
+  }
+
   isCanGrabMoreClients(id, marketId, amountOfClients, price) {
-    return this.getMoney(id) >= price
+    const enoughMoney = this.getMoney(id) >= price;
+    const noClientOverflow = this.getClientsOnMarket(id, marketId) + amountOfClients < this.getMaxAmountOfClientsOnMarket(id, marketId);
+
+    return enoughMoney && noClientOverflow;
   }
 
   getManagerPoints(id) {
@@ -504,6 +493,7 @@ class ProductStore extends EventEmitter {
           loyaltyChange,
           ratingChange,
           featureId,
+          featureName: this.getPrettyFeatureNameByFeatureId(id, featureId),
           level: value + 1
         }
       });
