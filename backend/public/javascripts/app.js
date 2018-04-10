@@ -2569,6 +2569,29 @@
 	      this.emit(EC);
 	    }
 	  }, {
+	    key: 'getExplorationData',
+	    value: function getExplorationData(id) {
+	      return {
+	        clients: [{
+	          explored: true,
+	          name: 'startups'
+	        }, {
+	          explorable: true,
+	          name: 'programmers',
+	          explorationCost: 100
+	        }],
+	        backend: [],
+	        frontend: [],
+	        testing: [],
+	        team: [],
+	        research: [],
+	        blog: [],
+	        support: [],
+
+	        segments: []
+	      };
+	    }
+	  }, {
 	    key: 'getMoney',
 	    value: function getMoney(id) {
 	      return Math.floor(_products[id]._money);
@@ -5049,7 +5072,7 @@
 	  }, {
 	    key: 'getPPProduction',
 	    value: function getPPProduction() {
-	      var value = 50; // managerial
+	      var value = balance.PROGRAMMER_EFFICIENCY_MIDDLE; // managerial
 
 	      var coders = this.team.programmers;
 
@@ -5377,13 +5400,13 @@
 
 	var PROGRAMMER_SALARY_INTERN = exports.PROGRAMMER_SALARY_INTERN = 1;
 	var PROGRAMMER_SALARY_JUNIOR = exports.PROGRAMMER_SALARY_JUNIOR = 3;
-	var PROGRAMMER_SALARY_MIDDLE = exports.PROGRAMMER_SALARY_MIDDLE = 6;
+	var PROGRAMMER_SALARY_MIDDLE = exports.PROGRAMMER_SALARY_MIDDLE = 5;
 	var PROGRAMMER_SALARY_SENIOR = exports.PROGRAMMER_SALARY_SENIOR = 8;
 
-	var PROGRAMMER_CODE_QUALITY_INTERN = exports.PROGRAMMER_CODE_QUALITY_INTERN = 1;
-	var PROGRAMMER_CODE_QUALITY_JUNIOR = exports.PROGRAMMER_CODE_QUALITY_JUNIOR = 3;
-	var PROGRAMMER_CODE_QUALITY_MIDDLE = exports.PROGRAMMER_CODE_QUALITY_MIDDLE = 6;
-	var PROGRAMMER_CODE_QUALITY_SENIOR = exports.PROGRAMMER_CODE_QUALITY_SENIOR = 8;
+	var PROGRAMMER_CODE_QUALITY_INTERN = exports.PROGRAMMER_CODE_QUALITY_INTERN = -8;
+	var PROGRAMMER_CODE_QUALITY_JUNIOR = exports.PROGRAMMER_CODE_QUALITY_JUNIOR = -3;
+	var PROGRAMMER_CODE_QUALITY_MIDDLE = exports.PROGRAMMER_CODE_QUALITY_MIDDLE = 1;
+	var PROGRAMMER_CODE_QUALITY_SENIOR = exports.PROGRAMMER_CODE_QUALITY_SENIOR = 5;
 
 /***/ },
 /* 124 */
@@ -10276,26 +10299,37 @@
 	        var isWeAreLeaders = leaderInTech.id === 0;
 
 	        var profitPhrase = void 0,
-	            text = void 0;
+	            text = void 0,
+	            current = void 0;
+
+	        current = product.features.offer[featureId];
 
 	        if (isWeAreLeaders) {
 	          profitPhrase = (0, _preact.h)(
 	            'div',
 	            null,
-	            '+5 \u043B\u043E\u044F\u043B\u044C\u043D\u043E\u0441\u0442\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432'
+	            '\u0421\u043E\u0432\u0435\u0440\u0448\u0438\u0442\u044C \u043F\u0440\u043E\u0440\u044B\u0432!'
 	          );
-	          text = 'Совершить прорыв!';
+	          text = 'Улучшить';
 	        } else {
-	          var current = product.features.offer[featureId];
 	          var benefit = _productStore2.default.getBenefitOnFeatureImprove(id, featureId);
 
 	          profitPhrase = '+' + benefit + '$';
-	          text = '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C \u0434\u043E ' + (current + 1) + ' lvl';
+	          text = '\u0423\u043B\u0443\u0447\u0448\u0438\u0442\u044C';
 	        }
 
 	        return (0, _preact.h)(
 	          'tr',
 	          { key: 'feature-' + featureId },
+	          (0, _preact.h)(
+	            'td',
+	            null,
+	            (0, _preact.h)(
+	              'div',
+	              null,
+	              current
+	            )
+	          ),
 	          (0, _preact.h)(
 	            'td',
 	            { style: { textAlign: 'left' } },
@@ -10353,6 +10387,11 @@
 	          (0, _preact.h)(
 	            'thead',
 	            null,
+	            (0, _preact.h)(
+	              'th',
+	              null,
+	              '\u0423\u0440\u043E\u0432\u0435\u043D\u044C'
+	            ),
 	            (0, _preact.h)(
 	              'th',
 	              { style: { textAlign: 'left' } },
@@ -10517,6 +10556,10 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
+	var _UI = __webpack_require__(162);
+
+	var _UI2 = _interopRequireDefault(_UI);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Exploration = function (_Component) {
@@ -10533,24 +10576,48 @@
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Exploration.__proto__ || (0, _getPrototypeOf2.default)(Exploration)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _this.pickData = function () {
-	      _this.setState({
-	        backend: [],
-	        frontend: [],
-	        testing: [],
-	        team: [],
-	        research: [],
-	        blog: [],
-	        support: [],
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Exploration.__proto__ || (0, _getPrototypeOf2.default)(Exploration)).call.apply(_ref, [this].concat(args))), _this), _this.pickData = function () {
+	      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	      return function () {
+	        _this.setState({
+	          info: _productStore2.default.getExplorationData(id)
+	        });
+	      };
+	    }, _this.renderClientTab = function (state) {
+	      var list = state.info.clients.map(function (c, i) {
+	        if (c.explored) {
+	          return (0, _preact.h)(
+	            'div',
+	            null,
+	            'Explored: ',
+	            c.name
+	          );
+	        }
 
-	        segments: []
+	        if (c.explorable) {
+	          return (0, _preact.h)(
+	            'div',
+	            null,
+	            'Explorable: ',
+	            c.name,
+	            ' for ',
+	            c.explorationCost,
+	            _UI2.default.icons.xp
+	          );
+	        }
 	      });
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        list
+	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
 	  (0, _createClass3.default)(Exploration, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
 	      this.pickData();
 
 	      _productStore2.default.addChangeListener(this.pickData);
@@ -10560,9 +10627,19 @@
 	    value: function render(_ref2, state) {
 	      var id = _ref2.id;
 
+	      if (!state.info) return (0, _preact.h)('div', null);
+
 	      return (0, _preact.h)(
 	        'div',
 	        null,
+	        (0, _preact.h)(
+	          'h2',
+	          { className: 'center' },
+	          '\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438'
+	        ),
+	        this.renderClientTab(state),
+	        (0, _stringify2.default)(state.clients),
+	        (0, _preact.h)('br', null),
 	        (0, _preact.h)(
 	          'h2',
 	          { className: 'center' },

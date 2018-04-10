@@ -20,6 +20,7 @@ export default class MainFeatures extends Component {
       <div>
         <table className="table table-striped" style={{ textAlign: 'center' }}>
           <thead>
+          <th>Уровень</th>
           <th style={{ textAlign: 'left' }}>Технология</th>
           <th>Польза</th>
           <th>Действие</th>
@@ -42,20 +43,24 @@ export default class MainFeatures extends Component {
     const leaderInTech = productStore.getLeaderInTech(featureId);
     const isWeAreLeaders = leaderInTech.id === 0;
 
-    let profitPhrase, text;
+    let profitPhrase, text, current;
+
+    current = product.features.offer[featureId];
 
     if (isWeAreLeaders) {
-      profitPhrase = <div>+5 лояльности клиентов</div>;
-      text = 'Совершить прорыв!';
+      profitPhrase = <div>Совершить прорыв!</div>;
+      text = 'Улучшить';
     } else {
-      const current = product.features.offer[featureId];
       const benefit = productStore.getBenefitOnFeatureImprove(id, featureId);
 
       profitPhrase = `+${benefit}$`;
-      text = `Улучшить до ${current + 1} lvl`;
+      text = `Улучшить`;
     }
 
     return <tr key={`feature-${featureId}`}>
+      <td>
+        <div>{current}</div>
+      </td>
       <td style={{ textAlign: 'left' }}>
         <div>{featureName}</div>
       </td>

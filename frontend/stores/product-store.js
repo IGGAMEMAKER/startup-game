@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import Dispatcher from '../dispatcher';
 
 import logger from '../helpers/logger/logger';
+
 import companyCostHelper from '../helpers/products/compute-company-cost';
 import sessionManager from '../helpers/session-manager';
 import defaults from '../helpers/products/product-descriptions';
@@ -85,6 +86,27 @@ class ProductStore extends EventEmitter {
     }
   }
 
+  getExplorationData(id) {
+    return {
+      clients: [{
+        explored: true,
+        name: 'startups'
+      }, {
+        explorable: true,
+        name: 'programmers',
+        explorationCost: 100
+      }],
+      backend: [],
+      frontend: [],
+      testing: [],
+      team: [],
+      research: [],
+      blog: [],
+      support: [],
+
+      segments: []
+    }
+  }
 
   getMoney(id) {
     return Math.floor(_products[id]._money);

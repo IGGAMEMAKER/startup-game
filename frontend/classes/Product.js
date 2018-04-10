@@ -140,7 +140,7 @@ export default class Product {
   }
 
   getPPProduction() {
-    let value = 50; // managerial
+    let value = balance.PROGRAMMER_EFFICIENCY_MIDDLE; // managerial
 
     const coders = this.team.programmers;
 
