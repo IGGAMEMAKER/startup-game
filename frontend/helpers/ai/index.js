@@ -1,4 +1,4 @@
-import Product from '../../classes/Product';
+import Product from '../../classes/Project';
 import productStore from '../../stores/product-store';
 import productActions from '../../actions/product-actions';
 

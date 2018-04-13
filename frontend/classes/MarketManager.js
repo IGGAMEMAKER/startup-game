@@ -36,14 +36,6 @@ export default class MarketManager {
     return this.getMarket(marketId).getHype(productId);
   }
 
-  // getPowerListOnMarket(marketId) {
-  //   return this.getMarket(marketId).getPowerList()
-  // }
-
-  // getPowerOfCompanyOnMarket(productId, marketId) {
-  //   return this.getMarket(marketId).getPowerOnMarket(productId);
-  // }
-
   getMarketShare(marketId, productId) {
     return this.getMarket(marketId).getShareOnMarket(productId);
   }

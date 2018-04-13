@@ -13,7 +13,7 @@ import eventGenerator from './helpers/events/event-generator';
 
 import bot from './helpers/ai/';
 
-import Product from './classes/Product';
+import Product from './classes/Project';
 
 import {
   isLastDayOfMonth,

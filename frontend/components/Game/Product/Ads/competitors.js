@@ -3,8 +3,6 @@ import { h, Component } from 'preact';
 import productStore from '../../../../stores/product-store';
 import Competitor from './competitor';
 
-import logger from '../../../../helpers/logger/logger';
-
 export default class Competitors extends Component {
   render() {
     const competitors = productStore.getCompetitorsList();
@@ -14,8 +12,6 @@ export default class Competitors extends Component {
       .sort((c1, c2) => {
         const cost1 = productStore.getCompanyCost(c1);
         const cost2 = productStore.getCompanyCost(c2);
-
-        logger.log(c1, c2, cost1, cost2);
 
         return cost2 - cost1;
       })

@@ -1,11 +1,9 @@
 
-
 export default class Company {
-  constructor(team, product, points, money) {
-    this.team = team;
-    this.product = product;
-    this.points = points;
-    this.money = money;
+  constructor(products, bonuses) {
+    this.products = products; // List of projectIds
+    this.bonuses = bonuses;
+    this.maxDaughterCompanies = 1;
   }
 
 

@@ -19,7 +19,9 @@ import {
   MarketDescription
 } from '../constants/products/types/product-description';
 
-import Product from '../classes/Product';
+
+import Project from '../classes/Project';
+import Company from '../classes/Company';
 import MarketManager from '../classes/MarketManager';
 
 import stats from '../stats';
@@ -27,7 +29,9 @@ import stats from '../stats';
 
 const EC = 'PRODUCT_EVENT_CHANGE';
 
-let _products: Array<Product>;
+let _companies: Array<Company>;
+
+let _products: Array<Project>;
 
 let marketManager;
 
@@ -36,12 +40,12 @@ let _markets: Array;
 const initialize = ({ markets, products }) => {
   logger.log('trying to initialize productStore.js', products);
 
-  _products = products.map(p => new Product().loadFromObject(p));
+  _products = products.map(p => new Project().loadFromObject(p));
 
   _markets = markets;
 
   const idea = _products[0].getIdea();
-  markets = defaults(idea).markets.map((m, i) => {
+  markets = defaults(idea).markets.map(m => {
     return {
       idea,
       id: m.id
@@ -87,37 +91,15 @@ class ProductStore extends EventEmitter {
   }
 
   getExplorationData(id) {
-    return {
-      clients: [{
-        explored: true,
-        name: 'startups'
-      }, {
-        explorable: true,
-        name: 'programmers',
-        explorationCost: 100
-      }],
-      backend: [],
-      frontend: [],
-      testing: [],
-      team: [],
-      research: [],
-      blog: [],
-      support: [],
-
-      segments: []
-    }
+    return _products[id].getExplorationData();
   }
 
   getMoney(id) {
     return Math.floor(_products[id]._money);
   }
 
-  getProductSupportCost(id) {
-    return 0;
-  }
 
-
-  getProducts(): Array<Product> {
+  getProducts(): Array<Project> {
     return _products;
   }
 
@@ -129,7 +111,7 @@ class ProductStore extends EventEmitter {
     return p.owner;
   }
 
-  getProduct(id): Product {
+  getProduct(id): Project {
     return _products[id];
   }
 
@@ -165,10 +147,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getBaseFeatureDevelopmentCost(featureId);
   }
 
-  isShareableFeature(id, featureId) {
-    return _products[id].isShareableFeature(featureId);
-  }
-
   getIdea(id) {
     return _products[id].getIdea();
   }
@@ -178,9 +156,7 @@ class ProductStore extends EventEmitter {
   }
 
   getBugLoyaltyLoss(id) {
-    const list = this.getBugs(id);
-
-    return list.map(i => i.penalty).reduce((p, c) => p + c, 0);
+    return _products[id].getBugLoyaltyLoss();
   }
 
   getRatingBasedLoyaltyOnMarket(id, marketId, improvement = null) {
@@ -202,13 +178,7 @@ class ProductStore extends EventEmitter {
   }
 
   isBugFixable(productId, bugId) {
-    const bug = this.getBugs(productId).find(b => b.id === bugId);
-
-    if (bug && bug.cost) {
-      return this.getProgrammerPoints(productId) >= bug.cost;
-    }
-
-    return false;
+    return this.getProgrammerPoints(productId) >= _products[productId].getBugCost(bugId);
   }
 
   getMaxAmountOfClientsOnMarket(id, marketId) {
@@ -223,29 +193,31 @@ class ProductStore extends EventEmitter {
   }
 
   getManagerPoints(id) {
-    return this.getProduct(id).getMP()
+    return _products[id].getMP()
   }
 
   getProgrammerPoints(id) {
-    return this.getProduct(id).getPP();
+    return _products[id].getPP();
   }
 
   getPPProduction(id) {
-    return this.getProduct(id).getPPProduction();
+    return _products[id].getPPProduction();
   }
 
   getMPProduction(id) {
-    return this.getProduct(id).getMPProduction();
+    return _products[id].getMPProduction();
   }
 
   getProductExpenses(id) {
     return this.getProductSupportCost(id);
-    return _products[id].getProductExpenses();
+  }
+
+  getProductSupportCost(id) {
+    return 0;
   }
 
   getName(id) {
     return _products[id].getName();
-    return _products.find(p => p.companyId === id).getName();
   }
 
   getStage(id) {
@@ -305,7 +277,7 @@ class ProductStore extends EventEmitter {
   }
 
   getBonusesAmount(id) {
-    return _products[id].bonuses;
+    return _products[id].getBonuses();
   }
 
   getMainFeatureUpgradeCost(id, featureId) {
@@ -366,8 +338,8 @@ class ProductStore extends EventEmitter {
 
 
   getLeaderInTech(featureId) {
-    const leaders: Array<Product> = _products
-      .map((p: Product) => ({
+    const leaders: Array<Project> = _products
+      .map((p: Project) => ({
         id: p.companyId,
         value: p.features.offer[featureId],
         name: p.name
@@ -386,7 +358,7 @@ class ProductStore extends EventEmitter {
   getRating(id, marketId, improvement = null) {
     const features = _products[id].features.offer.slice();
 
-    const maxValues = this.getLeaderValues(id).map(l => l.value);
+    const standards = this.getLeaderValues(id).map(l => l.value);
 
     if (improvement) {
       const featureId = improvement.featureId;
@@ -397,13 +369,13 @@ class ProductStore extends EventEmitter {
 
       features[featureId] += 1;
       if (value + 1 > maxValue) {
-        maxValues[featureId] += 1;
+        standards[featureId] += 1;
       }
     }
 
     const marketInfluences = marketManager.getRatingFormula(marketId);
 
-    return Math.min(round(computeRating(features, maxValues, marketInfluences)), 10);
+    return Math.min(round(computeRating(features, standards, marketInfluences)), 10);
   }
 
   getSegmentLoyalty(id, marketId, improvement = null) {
@@ -413,10 +385,13 @@ class ProductStore extends EventEmitter {
   getSegmentLoyaltyStructured(id, marketId, improvement = null) {
     const ratingBasedLoyalty = this.getRatingBasedLoyaltyOnMarket(id, marketId, improvement);
     const bugPenalty = this.getBugLoyaltyLoss(id);
+
     const isNewApp = 0.15;
     const isBestApp = 0.15;
 
-    const result = Math.ceil(100 * (ratingBasedLoyalty + isNewApp - bugPenalty + isBestApp));
+    const designPenalty = 0;
+
+    const result = Math.ceil(100 * (ratingBasedLoyalty + isNewApp - bugPenalty - designPenalty + isBestApp));
 
     return {
       ratingBasedLoyalty,
@@ -437,18 +412,19 @@ class ProductStore extends EventEmitter {
 
   getMarketsWithExplorationStatuses(id) {
     return this.getMarkets(id)
-      .map((m, i) => {
+      .map(m => {
         return {
           id: m.id,
           info: m,
           explored: this.isExploredMarket(id, m.id),
-          enoughXPsToExplore: m.explorationCost <= this.getXP(id)
+          enoughXPsToExplore: this.getXP(id) >= m.explorationCost
         }
       })
   }
 
   getExplorableMarkets(id) {
-    const markets = this.getMarkets(id).filter((m, mId) => !this.isExploredMarket(id, m.id));
+    const markets = this.getMarkets(id)
+      .filter((m, mId) => !this.isExploredMarket(id, m.id));
 
     if (markets.length) {
       return markets[0];
@@ -458,16 +434,15 @@ class ProductStore extends EventEmitter {
   }
 
   calculateMarketIncome(id, marketId, improvement = null) {
-    // const rating = this.getRating(id, marketId, improvement);
     const loyalty = this.getSegmentLoyalty(id, marketId, improvement);
 
-    const modifier = this.getPaymentModifier(id);
+    const loyaltyModifier = loyalty < 0 ? 0 : loyalty / 10;
 
-    const efficiency = (loyalty < 0 ? 0 : loyalty / 10) * modifier / 10;
+    const paymentModifier = this.getPaymentModifier(id);
 
     const possible = marketManager.getPossibleIncome(marketId, id);
 
-    return Math.floor(possible * efficiency);
+    return Math.floor(possible * loyaltyModifier * paymentModifier / 10);
   }
 
   getFeatureIncreaseXPCost(id) {
@@ -492,7 +467,7 @@ class ProductStore extends EventEmitter {
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {
     return sum(
       this.getMarkets(id)
-        .map((m) => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, m.id, featureId, value))
+        .map(m => this.getIncomeIncreaseForMarketIfWeUpgradeFeature(id, m.id, featureId, value))
     );
   }
 
@@ -532,7 +507,7 @@ class ProductStore extends EventEmitter {
   }
 
   getMarketIncomeList(id) {
-    return marketManager.iterate((m) => {
+    return marketManager.iterate(m => {
       return {
         income: this.getMarketIncome(id, m.id),
         marketId: m.id
@@ -572,10 +547,6 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].fixBug(p.bugId);
       break;
 
-    case c.PRODUCT_ACTIONS_SWITCH_STAGE:
-      _products[id].switchStage(p.stage);
-      break;
-
     case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
       _products[id].improveFeature(p);
 
@@ -594,20 +565,10 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].improveFeatureByPoints(p);
       break;
 
-    case c.PRODUCT_ACTIONS_HYPE_ADD:
-      marketManager.addHype(p.marketId, id, p.hype);
-
-      _products[id]._money -= p.cost;
-      break;
-
-    case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
-      marketManager.loseMonthlyHype(id);
-      break;
-
     case c.PRODUCT_ACTIONS_CLIENTS_ADD:
       marketManager.addClients(p.marketId, p.id, p.clients);
 
-      _products[id]._money -= p.price;
+      _products[id].decreaseMoney(p.price);
       break;
 
     case c.PRODUCT_ACTIONS_MARKETS_JOIN:
@@ -620,24 +581,16 @@ Dispatcher.register((p: PayloadType) => {
       marketManager.setMainMarket(id, p.marketId);
       break;
 
-    case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_REVOKE:
-      marketManager.breakPartnership(p.c1, p.c2, p.marketId);
-      break;
-
-    case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_OFFER:
-      marketManager.breakPartnership(p.c1, p.c2, p.marketId);
-      break;
-
     case c.PRODUCT_ACTIONS_CREATE_COMPANY:
-      _products.push(new Product(p.p));
+      _products.push(new Project(p.p));
       break;
 
     case c.PLAYER_ACTIONS_INCREASE_MONEY:
-      _products[id]._money += p.amount;
+      _products[id].increaseMoney(p.amount);
       break;
 
     case c.PRODUCT_ACTIONS_BONUSES_ADD:
-      _products[id].bonuses++;
+      _products[id].addBonuses();
       break;
 
     default:

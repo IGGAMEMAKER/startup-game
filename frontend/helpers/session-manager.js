@@ -1,4 +1,4 @@
-import Product from './../classes/Product';
+import Product from './../classes/Project';
 
 import sessionStorage from './../sessionStorage';
 

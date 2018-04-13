@@ -2479,9 +2479,13 @@
 
 	var _productDescription = __webpack_require__(103);
 
-	var _Product = __webpack_require__(121);
+	var _Project = __webpack_require__(210);
 
-	var _Product2 = _interopRequireDefault(_Product);
+	var _Project2 = _interopRequireDefault(_Project);
+
+	var _Company = __webpack_require__(211);
+
+	var _Company2 = _interopRequireDefault(_Company);
 
 	var _MarketManager = __webpack_require__(138);
 
@@ -2497,6 +2501,8 @@
 
 	var EC = 'PRODUCT_EVENT_CHANGE';
 
+	var _companies = void 0;
+
 	var _products = void 0;
 
 	var marketManager = void 0;
@@ -2510,13 +2516,13 @@
 	  _logger2.default.log('trying to initialize productStore.js', products);
 
 	  _products = products.map(function (p) {
-	    return new _Product2.default().loadFromObject(p);
+	    return new _Project2.default().loadFromObject(p);
 	  });
 
 	  _markets = markets;
 
 	  var idea = _products[0].getIdea();
-	  markets = (0, _productDescriptions2.default)(idea).markets.map(function (m, i) {
+	  markets = (0, _productDescriptions2.default)(idea).markets.map(function (m) {
 	    return {
 	      idea: idea,
 	      id: m.id
@@ -2571,35 +2577,12 @@
 	  }, {
 	    key: 'getExplorationData',
 	    value: function getExplorationData(id) {
-	      return {
-	        clients: [{
-	          explored: true,
-	          name: 'startups'
-	        }, {
-	          explorable: true,
-	          name: 'programmers',
-	          explorationCost: 100
-	        }],
-	        backend: [],
-	        frontend: [],
-	        testing: [],
-	        team: [],
-	        research: [],
-	        blog: [],
-	        support: [],
-
-	        segments: []
-	      };
+	      return _products[id].getExplorationData();
 	    }
 	  }, {
 	    key: 'getMoney',
 	    value: function getMoney(id) {
 	      return Math.floor(_products[id]._money);
-	    }
-	  }, {
-	    key: 'getProductSupportCost',
-	    value: function getProductSupportCost(id) {
-	      return 0;
 	    }
 	  }, {
 	    key: 'getProducts',
@@ -2662,11 +2645,6 @@
 	      return _products[id].getBaseFeatureDevelopmentCost(featureId);
 	    }
 	  }, {
-	    key: 'isShareableFeature',
-	    value: function isShareableFeature(id, featureId) {
-	      return _products[id].isShareableFeature(featureId);
-	    }
-	  }, {
 	    key: 'getIdea',
 	    value: function getIdea(id) {
 	      return _products[id].getIdea();
@@ -2679,13 +2657,7 @@
 	  }, {
 	    key: 'getBugLoyaltyLoss',
 	    value: function getBugLoyaltyLoss(id) {
-	      var list = this.getBugs(id);
-
-	      return list.map(function (i) {
-	        return i.penalty;
-	      }).reduce(function (p, c) {
-	        return p + c;
-	      }, 0);
+	      return _products[id].getBugLoyaltyLoss();
 	    }
 	  }, {
 	    key: 'getRatingBasedLoyaltyOnMarket',
@@ -2712,15 +2684,7 @@
 	  }, {
 	    key: 'isBugFixable',
 	    value: function isBugFixable(productId, bugId) {
-	      var bug = this.getBugs(productId).find(function (b) {
-	        return b.id === bugId;
-	      });
-
-	      if (bug && bug.cost) {
-	        return this.getProgrammerPoints(productId) >= bug.cost;
-	      }
-
-	      return false;
+	      return this.getProgrammerPoints(productId) >= _products[productId].getBugCost(bugId);
 	    }
 	  }, {
 	    key: 'getMaxAmountOfClientsOnMarket',
@@ -2738,36 +2702,37 @@
 	  }, {
 	    key: 'getManagerPoints',
 	    value: function getManagerPoints(id) {
-	      return this.getProduct(id).getMP();
+	      return _products[id].getMP();
 	    }
 	  }, {
 	    key: 'getProgrammerPoints',
 	    value: function getProgrammerPoints(id) {
-	      return this.getProduct(id).getPP();
+	      return _products[id].getPP();
 	    }
 	  }, {
 	    key: 'getPPProduction',
 	    value: function getPPProduction(id) {
-	      return this.getProduct(id).getPPProduction();
+	      return _products[id].getPPProduction();
 	    }
 	  }, {
 	    key: 'getMPProduction',
 	    value: function getMPProduction(id) {
-	      return this.getProduct(id).getMPProduction();
+	      return _products[id].getMPProduction();
 	    }
 	  }, {
 	    key: 'getProductExpenses',
 	    value: function getProductExpenses(id) {
 	      return this.getProductSupportCost(id);
-	      return _products[id].getProductExpenses();
+	    }
+	  }, {
+	    key: 'getProductSupportCost',
+	    value: function getProductSupportCost(id) {
+	      return 0;
 	    }
 	  }, {
 	    key: 'getName',
 	    value: function getName(id) {
 	      return _products[id].getName();
-	      return _products.find(function (p) {
-	        return p.companyId === id;
-	      }).getName();
 	    }
 	  }, {
 	    key: 'getStage',
@@ -2842,7 +2807,7 @@
 	  }, {
 	    key: 'getBonusesAmount',
 	    value: function getBonusesAmount(id) {
-	      return _products[id].bonuses;
+	      return _products[id].getBonuses();
 	    }
 	  }, {
 	    key: 'getMainFeatureUpgradeCost',
@@ -2944,7 +2909,7 @@
 
 	      var features = _products[id].features.offer.slice();
 
-	      var maxValues = this.getLeaderValues(id).map(function (l) {
+	      var standards = this.getLeaderValues(id).map(function (l) {
 	        return l.value;
 	      });
 
@@ -2957,13 +2922,13 @@
 
 	        features[featureId] += 1;
 	        if (value + 1 > maxValue) {
-	          maxValues[featureId] += 1;
+	          standards[featureId] += 1;
 	        }
 	      }
 
 	      var marketInfluences = marketManager.getRatingFormula(marketId);
 
-	      return Math.min((0, _round2.default)((0, _computeRating2.default)(features, maxValues, marketInfluences)), 10);
+	      return Math.min((0, _round2.default)((0, _computeRating2.default)(features, standards, marketInfluences)), 10);
 	    }
 	  }, {
 	    key: 'getSegmentLoyalty',
@@ -2979,10 +2944,13 @@
 
 	      var ratingBasedLoyalty = this.getRatingBasedLoyaltyOnMarket(id, marketId, improvement);
 	      var bugPenalty = this.getBugLoyaltyLoss(id);
+
 	      var isNewApp = 0.15;
 	      var isBestApp = 0.15;
 
-	      var result = Math.ceil(100 * (ratingBasedLoyalty + isNewApp - bugPenalty + isBestApp));
+	      var designPenalty = 0;
+
+	      var result = Math.ceil(100 * (ratingBasedLoyalty + isNewApp - bugPenalty - designPenalty + isBestApp));
 
 	      return {
 	        ratingBasedLoyalty: ratingBasedLoyalty,
@@ -3011,12 +2979,12 @@
 	    value: function getMarketsWithExplorationStatuses(id) {
 	      var _this4 = this;
 
-	      return this.getMarkets(id).map(function (m, i) {
+	      return this.getMarkets(id).map(function (m) {
 	        return {
 	          id: m.id,
 	          info: m,
 	          explored: _this4.isExploredMarket(id, m.id),
-	          enoughXPsToExplore: m.explorationCost <= _this4.getXP(id)
+	          enoughXPsToExplore: _this4.getXP(id) >= m.explorationCost
 	        };
 	      });
 	    }
@@ -3040,16 +3008,15 @@
 	    value: function calculateMarketIncome(id, marketId) {
 	      var improvement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-	      // const rating = this.getRating(id, marketId, improvement);
 	      var loyalty = this.getSegmentLoyalty(id, marketId, improvement);
 
-	      var modifier = this.getPaymentModifier(id);
+	      var loyaltyModifier = loyalty < 0 ? 0 : loyalty / 10;
 
-	      var efficiency = (loyalty < 0 ? 0 : loyalty / 10) * modifier / 10;
+	      var paymentModifier = this.getPaymentModifier(id);
 
 	      var possible = marketManager.getPossibleIncome(marketId, id);
 
-	      return Math.floor(possible * efficiency);
+	      return Math.floor(possible * loyaltyModifier * paymentModifier / 10);
 	    }
 	  }, {
 	    key: 'getFeatureIncreaseXPCost',
@@ -3184,10 +3151,6 @@
 	      _products[id].fixBug(p.bugId);
 	      break;
 
-	    case c.PRODUCT_ACTIONS_SWITCH_STAGE:
-	      _products[id].switchStage(p.stage);
-	      break;
-
 	    case c.PRODUCT_ACTIONS_IMPROVE_FEATURE:
 	      _products[id].improveFeature(p);
 
@@ -3206,20 +3169,10 @@
 	      _products[id].improveFeatureByPoints(p);
 	      break;
 
-	    case c.PRODUCT_ACTIONS_HYPE_ADD:
-	      marketManager.addHype(p.marketId, id, p.hype);
-
-	      _products[id]._money -= p.cost;
-	      break;
-
-	    case c.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE:
-	      marketManager.loseMonthlyHype(id);
-	      break;
-
 	    case c.PRODUCT_ACTIONS_CLIENTS_ADD:
 	      marketManager.addClients(p.marketId, p.id, p.clients);
 
-	      _products[id]._money -= p.price;
+	      _products[id].decreaseMoney(p.price);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_MARKETS_JOIN:
@@ -3232,24 +3185,16 @@
 	      marketManager.setMainMarket(id, p.marketId);
 	      break;
 
-	    case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_REVOKE:
-	      marketManager.breakPartnership(p.c1, p.c2, p.marketId);
-	      break;
-
-	    case c.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_OFFER:
-	      marketManager.breakPartnership(p.c1, p.c2, p.marketId);
-	      break;
-
 	    case c.PRODUCT_ACTIONS_CREATE_COMPANY:
-	      _products.push(new _Product2.default(p.p));
+	      _products.push(new _Project2.default(p.p));
 	      break;
 
 	    case c.PLAYER_ACTIONS_INCREASE_MONEY:
-	      _products[id]._money += p.amount;
+	      _products[id].increaseMoney(p.amount);
 	      break;
 
 	    case c.PRODUCT_ACTIONS_BONUSES_ADD:
-	      _products[id].bonuses++;
+	      _products[id].addBonuses();
 	      break;
 
 	    default:
@@ -4418,9 +4363,9 @@
 
 	var _from2 = _interopRequireDefault(_from);
 
-	var _Product = __webpack_require__(121);
+	var _Project = __webpack_require__(210);
 
-	var _Product2 = _interopRequireDefault(_Product);
+	var _Project2 = _interopRequireDefault(_Project);
 
 	var _sessionStorage = __webpack_require__(124);
 
@@ -4526,22 +4471,22 @@
 	  var idea = IDEAS.IDEA_WEB_HOSTING;
 	  var stage = PRODUCT_STAGES.PRODUCT_STAGE_IDEA;
 
-	  var products = [new _Product2.default().createCompany({
+	  var products = [new _Project2.default().createCompany({
 	    idea: idea,
 	    stage: stage,
 	    name: 'WWWEB HOSTING',
 	    companyId: 0
-	  }), new _Product2.default().createCompany({
+	  }), new _Project2.default().createCompany({
 	    idea: idea,
 	    stage: stage,
 	    isCompetitor: true,
 	    companyId: 1
-	  }), new _Product2.default().createCompany({
+	  }), new _Project2.default().createCompany({
 	    idea: idea,
 	    stage: stage,
 	    isCompetitor: true,
 	    companyId: 2
-	  }), new _Product2.default().createCompany({
+	  }), new _Project2.default().createCompany({
 	    idea: idea,
 	    stage: stage,
 	    isCompetitor: true,
@@ -4891,479 +4836,7 @@
 	};
 
 /***/ },
-/* 121 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _classCallCheck2 = __webpack_require__(29);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(30);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _productDescriptions = __webpack_require__(101);
-
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
-	var _random = __webpack_require__(122);
-
-	var _random2 = _interopRequireDefault(_random);
-
-	var _productDescription = __webpack_require__(103);
-
-	var _balance = __webpack_require__(123);
-
-	var balance = _interopRequireWildcard(_balance);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var names = ['Alpha', 'Proxima', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Tech Labs', 'Ginger bird', 'Mercury', 'Phantom', 'Modern', 'Future Labs', 'Pineaple', 'Storm Technologies', 'Unnamed'];
-
-	var Product = function () {
-	  function Product(data, createFromObject) {
-	    var _this = this;
-
-	    (0, _classCallCheck3.default)(this, Product);
-
-	    this.picked = function (value) {
-	      return _this.features.bonuses[value];
-	    };
-	  }
-
-	  (0, _createClass3.default)(Product, [{
-	    key: 'createCompany',
-	    value: function createCompany(data) {
-	      var idea = data.idea,
-	          name = data.name,
-	          isCompetitor = data.isCompetitor,
-	          companyId = data.companyId;
-	      // logger.log('product constructor', data);
-
-	      if (!idea) throw 'no idea in classes/Product.js';
-
-	      if (companyId === null || companyId === undefined) throw 'no companyId in classes/Product.js';
-
-	      var defaultFeatures = (0, _productDescriptions2.default)(idea).features;
-
-	      if (!name) {
-	        var index = Math.floor((0, _random2.default)(0, names.length - 1));
-
-	        name = names[index];
-	      }
-
-	      var minRating = 1;
-	      var maxRating = 6;
-
-	      if (isCompetitor) {
-	        minRating = 4;
-	        maxRating = 10;
-	      }
-
-	      var offer = defaultFeatures.map(function (f, i) {
-	        return Math.floor((0, _random2.default)(minRating, maxRating));
-	      });
-
-	      var features = {
-	        offer: offer, // features, that are attached to main idea
-	        development: {}, // backups, more dev servers, e.t.c.
-
-	        marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-	        analytics: {}, // simple analytics (main KPIs),
-	        // middle (segments analytics), mid+ (segments + versions),
-
-	        // not only chat with users, but also localisations, content updates
-	        // and all sort of things, that you need doing constantly
-	        support: {},
-	        payment: {},
-
-	        bonuses: {}
-	      };
-
-	      this.bugs = [];
-	      // this.bugs = [
-	      //   { id: 0, cost: 15, penalty: 0.1, platform: 'web' },
-	      //   { id: 1, cost: 25, penalty: 0.2, platform: 'web' },
-	      //   { id: 2, cost: 35, penalty: 1, platform: 'back' }
-	      // ];
-
-	      this.companyId = companyId;
-	      this.features = features;
-	      this.idea = idea;
-	      this.name = name;
-
-	      this.bonuses = 1;
-
-	      this._points = {
-	        programming: 500,
-	        management: 100
-	      };
-
-	      this._money = 45000;
-
-	      this.team = {
-	        programmers: [0, 0, 0, 0, 0] // intern, junior, middle, senior, architect
-	      };
-	      this.managers = [];
-	      this.managerBonus = null;
-	      this.corporativeCulture = {};
-	      this.appBonuses = {};
-	      this.exploration = [];
-
-	      this.XP = 10;
-	      this.totalXP = 0;
-	      this.spendedXP = 0;
-
-	      this.tests = 1;
-	      this.improvements = 1;
-
-	      this.owner = !isCompetitor;
-
-	      return this;
-	    }
-	  }, {
-	    key: 'loadFromObject',
-	    value: function loadFromObject(obj) {
-	      for (var index in obj) {
-	        this[index] = obj[index];
-	      }
-
-	      return this;
-	    }
-	  }, {
-	    key: 'isOurProduct',
-	    value: function isOurProduct() {
-	      return this.owner;
-	    }
-	  }, {
-	    key: 'getIdea',
-	    value: function getIdea() {
-	      return this.idea;
-	    }
-	  }, {
-	    key: 'getName',
-	    value: function getName() {
-	      return this.name;
-	    }
-	  }, {
-	    key: 'getStage',
-	    value: function getStage() {
-	      return this.stage;
-	    }
-	  }, {
-	    key: 'getPP',
-	    value: function getPP() {
-	      return this._points.programming;
-	    }
-	  }, {
-	    key: 'getMP',
-	    value: function getMP() {
-	      return this._points.management;
-	    }
-	  }, {
-	    key: 'getPPProduction',
-	    value: function getPPProduction() {
-	      var value = balance.PROGRAMMER_EFFICIENCY_MIDDLE; // managerial
-
-	      var coders = this.team.programmers;
-
-	      value += coders[0] * balance.PROGRAMMER_EFFICIENCY_INTERN;
-	      value += coders[1] * balance.PROGRAMMER_EFFICIENCY_JUNIOR;
-	      value += coders[2] * balance.PROGRAMMER_EFFICIENCY_MIDDLE;
-	      value += coders[3] * balance.PROGRAMMER_EFFICIENCY_SENIOR;
-
-	      return value;
-	    }
-	  }, {
-	    key: 'getMPProduction',
-	    value: function getMPProduction() {
-	      return 100;
-	    }
-	  }, {
-	    key: 'getXP',
-	    value: function getXP() {
-	      return this.XP;
-	    }
-	  }, {
-	    key: 'getTestsAmount',
-	    value: function getTestsAmount() {
-	      return this.tests;
-	    }
-	  }, {
-	    key: 'getSpendedXP',
-	    value: function getSpendedXP() {
-	      return this.spendedXP;
-	    }
-	  }, {
-	    key: 'getTotalXP',
-	    value: function getTotalXP() {
-	      return this.totalXP;
-	    }
-	  }, {
-	    key: 'getImprovementsAmount',
-	    value: function getImprovementsAmount() {
-	      return this.improvements;
-	    }
-	  }, {
-	    key: 'getBugs',
-	    value: function getBugs() {
-	      return this.bugs;
-	    }
-	  }, {
-	    key: 'getFeatures',
-	    value: function getFeatures(featureGroup) {
-	      return this.features[featureGroup];
-	    }
-	  }, {
-	    key: 'getMainFeatureQualityByFeatureId',
-	    value: function getMainFeatureQualityByFeatureId(featureId) {
-	      return this.features.offer[featureId];
-	    }
-	  }, {
-	    key: 'getMarketingFeatures',
-	    value: function getMarketingFeatures() {
-	      return this.features.marketing;
-	    }
-	  }, {
-	    key: 'getFeatureStatus',
-	    value: function getFeatureStatus(featureGroup, featureName) {
-	      return this.features[featureGroup][featureName] > 0;
-	    }
-	  }, {
-	    key: 'getDefaults',
-	    value: function getDefaults() {
-	      return (0, _productDescriptions2.default)(this.idea);
-	    }
-	  }, {
-	    key: 'getMainFeatures',
-	    value: function getMainFeatures() {
-	      return this.getDefaults().features;
-	    }
-	  }, {
-	    key: 'getMaxMainFeatureQuality',
-	    value: function getMaxMainFeatureQuality(featureId) {
-	      return this.getDefaults().features[featureId].data;
-	    }
-	  }, {
-	    key: 'getBaseFeatureDevelopmentCost',
-	    value: function getBaseFeatureDevelopmentCost(featureId) {
-	      return this.getDefaults().features[featureId].development;
-	    }
-	  }, {
-	    key: 'isShareableFeature',
-	    value: function isShareableFeature(featureId) {
-	      return this.getDefaults().features[featureId].shareable;
-	    }
-
-	    //
-
-	  }, {
-	    key: 'getPrettyFeatureNameByFeatureId',
-	    value: function getPrettyFeatureNameByFeatureId(featureId) {
-	      return this.getDefaults().features[featureId].shortDescription;
-	    }
-	  }, {
-	    key: 'getDescriptionOfProduct',
-	    value: function getDescriptionOfProduct() {
-	      return this.getDefaults().description;
-	    }
-	  }, {
-	    key: 'getImprovementChances',
-	    value: function getImprovementChances() {
-	      return 5;
-	    }
-	  }, {
-	    key: 'getPaymentModifier',
-	    value: function getPaymentModifier() {
-	      return 1;
-	    }
-	  }, {
-	    key: 'getProductExpenses',
-	    value: function getProductExpenses() {
-	      return this.getProductSupportCost();
-	    }
-	  }, {
-	    key: 'getProductSupportCost',
-	    value: function getProductSupportCost() {
-	      var base = this.getDefaults().support.pp;
-
-	      var modifier = Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
-
-	      return Math.ceil(base * modifier);
-	    }
-
-	    // bonuses
-
-	  }, {
-	    key: 'getAvailableBonuses',
-	    value: function getAvailableBonuses() {
-	      var _this2 = this;
-
-	      var list = this.getBonusesList();
-
-	      var newList = [];
-
-	      var checkBonus = function checkBonus(b) {
-	        if (_this2.picked(b.name)) {
-	          if (b.childs) {
-	            b.childs.forEach(checkBonus);
-	          }
-
-	          return;
-	        }
-
-	        newList.push(b);
-	      };
-
-	      list.forEach(checkBonus);
-
-	      return newList;
-	    }
-	  }, {
-	    key: 'getBonusesList',
-	    value: function getBonusesList() {
-	      // constants/products/bonuses-list
-	      return null;
-	    }
-	  }, {
-	    key: 'getMarketingFeatureList',
-	    value: function getMarketingFeatureList() {
-	      // constants/products/marketing-feature-list
-	      return null;
-	    }
-	  }, {
-	    key: 'getHypothesisAnalyticsFeatures',
-	    value: function getHypothesisAnalyticsFeatures() {
-	      return null;
-	    }
-	  }, {
-	    key: 'getPaymentFeatures',
-	    value: function getPaymentFeatures() {
-	      return null;
-	    }
-	  }, {
-	    key: 'switchStage',
-
-
-	    // modify
-	    value: function switchStage(stage) {
-	      this.stage = stage;
-	    }
-	  }, {
-	    key: 'setProductDefaults',
-	    value: function setProductDefaults(stage, features, XP) {
-	      throw 'setProductDefaults';
-
-	      this.stage = stage;
-	      this.features = features;
-	      this.XP = XP;
-	    }
-	  }, {
-	    key: 'addPPs',
-	    value: function addPPs(pp) {
-	      this._points.programming += pp;
-	    }
-	  }, {
-	    key: 'addMPs',
-	    value: function addMPs(mp) {
-	      this._points.management += mp;
-	    }
-	  }, {
-	    key: 'spendPPs',
-	    value: function spendPPs(pp) {
-	      this._points.programming -= pp;
-	    }
-	  }, {
-	    key: 'spendMPs',
-	    value: function spendMPs(mp) {
-	      this._points.management -= mp;
-	    }
-	  }, {
-	    key: 'addBug',
-	    value: function addBug(p) {
-	      this.bugs.push({
-	        cost: p.cost,
-	        platform: p.platform,
-	        penalty: p.penalty,
-	        id: this.bugs.length
-	      });
-	    }
-	  }, {
-	    key: 'fixBug',
-	    value: function fixBug(bugId) {
-	      var index = this.bugs.findIndex(function (b) {
-	        return b.id === bugId;
-	      });
-
-	      this.spendPPs(this.bugs[index].cost);
-
-	      this.bugs.splice(index, 1);
-	    }
-	  }, {
-	    key: 'produceResources',
-	    value: function produceResources() {
-	      this.testHypothesis({ value: this.getImprovementChances() });
-	      this.addPPs(this.getPPProduction());
-	      this.addMPs(this.getMPProduction());
-	    }
-	  }, {
-	    key: 'testHypothesis',
-	    value: function testHypothesis(p) {
-	      this.XP += p.value;
-	      this.totalXP += p.value;
-
-	      if (this.tests) {
-	        this.tests++;
-	      } else {
-	        this.tests = 1;
-	      }
-	    }
-	  }, {
-	    key: 'decreaseXP',
-	    value: function decreaseXP(xp) {
-	      this.XP -= xp;
-	      this.spendedXP -= xp;
-	    }
-	  }, {
-	    key: 'improveFeature',
-	    value: function improveFeature(p) {
-	      var previous = this.features[p.featureGroup][p.featureName] || 0;
-
-	      this.features[p.featureGroup][p.featureName] = previous + p.value;
-
-	      if (this.improvements) {
-	        this.improvements++;
-	      } else {
-	        this.improvements = 1;
-	      }
-
-	      this.XP -= p.XP;
-	    }
-	  }, {
-	    key: 'improveFeatureByPoints',
-	    value: function improveFeatureByPoints(p) {
-	      this.features[p.featureGroup][p.featureName] = 1;
-
-	      if (p.featureGroup === 'bonuses') {
-	        this.bonuses--;
-	      }
-	    }
-	  }]);
-	  return Product;
-	}();
-
-	exports.default = Product;
-
-/***/ },
+/* 121 */,
 /* 122 */
 /***/ function(module, exports) {
 
@@ -5946,15 +5419,6 @@
 	    value: function getHype(marketId, productId) {
 	      return this.getMarket(marketId).getHype(productId);
 	    }
-
-	    // getPowerListOnMarket(marketId) {
-	    //   return this.getMarket(marketId).getPowerList()
-	    // }
-
-	    // getPowerOfCompanyOnMarket(productId, marketId) {
-	    //   return this.getMarket(marketId).getPowerOnMarket(productId);
-	    // }
-
 	  }, {
 	    key: 'getMarketShare',
 	    value: function getMarketShare(marketId, productId) {
@@ -10878,10 +10342,6 @@
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
-	var _logger = __webpack_require__(99);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Competitors = function (_Component) {
@@ -10902,8 +10362,6 @@
 	      }).sort(function (c1, c2) {
 	        var cost1 = _productStore2.default.getCompanyCost(c1);
 	        var cost2 = _productStore2.default.getCompanyCost(c2);
-
-	        _logger2.default.log(c1, c2, cost1, cost2);
 
 	        return cost2 - cost1;
 	      }).map(function (companyId) {
@@ -12261,9 +11719,9 @@
 
 	var _ai2 = _interopRequireDefault(_ai);
 
-	var _Product = __webpack_require__(121);
+	var _Project = __webpack_require__(210);
 
-	var _Product2 = _interopRequireDefault(_Product);
+	var _Project2 = _interopRequireDefault(_Project);
 
 	var _date = __webpack_require__(208);
 
@@ -12579,9 +12037,9 @@
 
 	var _createClass3 = _interopRequireDefault(_createClass2);
 
-	var _Product = __webpack_require__(121);
+	var _Project = __webpack_require__(210);
 
-	var _Product2 = _interopRequireDefault(_Product);
+	var _Project2 = _interopRequireDefault(_Project);
 
 	var _productStore = __webpack_require__(89);
 
@@ -12883,6 +12341,544 @@
 	  var audio = new Audio('./sounds/Metal Cling - Hit.mp3');
 	  // audio.play();
 	};
+
+/***/ },
+/* 210 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(30);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _productDescriptions = __webpack_require__(101);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	var _random = __webpack_require__(122);
+
+	var _random2 = _interopRequireDefault(_random);
+
+	var _productDescription = __webpack_require__(103);
+
+	var _balance = __webpack_require__(123);
+
+	var balance = _interopRequireWildcard(_balance);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var names = ['Alpha', 'Proxima', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Tech Labs', 'Ginger bird', 'Mercury', 'Phantom', 'Modern', 'Future Labs', 'Pineaple', 'Storm Technologies', 'Unnamed'];
+
+	var Project = function () {
+	  function Project(data, createFromObject) {
+	    var _this = this;
+
+	    (0, _classCallCheck3.default)(this, Project);
+
+	    this.picked = function (value) {
+	      return _this.features.bonuses[value];
+	    };
+	  }
+
+	  (0, _createClass3.default)(Project, [{
+	    key: 'createCompany',
+	    value: function createCompany(data) {
+	      var idea = data.idea,
+	          name = data.name,
+	          isCompetitor = data.isCompetitor,
+	          companyId = data.companyId;
+	      // logger.log('product constructor', data);
+
+	      if (!idea) throw 'no idea in classes/Project.js';
+
+	      if (companyId === null || companyId === undefined) throw 'no companyId in classes/Project.js';
+
+	      var defaultFeatures = (0, _productDescriptions2.default)(idea).features;
+
+	      if (!name) {
+	        var index = Math.floor((0, _random2.default)(0, names.length - 1));
+
+	        name = names[index];
+	      }
+
+	      var minRating = 1;
+	      var maxRating = 6;
+
+	      if (isCompetitor) {
+	        minRating = 4;
+	        maxRating = 10;
+	      }
+
+	      var offer = defaultFeatures.map(function (f, i) {
+	        return Math.floor((0, _random2.default)(minRating, maxRating));
+	      });
+
+	      var features = {
+	        offer: offer, // features, that are attached to main idea
+	        development: {}, // backups, more dev servers, e.t.c.
+
+	        marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
+	        analytics: {}, // simple analytics (main KPIs),
+	        // middle (segments analytics), mid+ (segments + versions),
+
+	        // not only chat with users, but also localisations, content updates
+	        // and all sort of things, that you need doing constantly
+	        support: {},
+	        payment: {},
+
+	        bonuses: {}
+	      };
+
+	      this.bugs = [];
+	      // this.bugs = [
+	      //   { id: 0, cost: 15, penalty: 0.1, platform: 'web' },
+	      //   { id: 1, cost: 25, penalty: 0.2, platform: 'web' },
+	      //   { id: 2, cost: 35, penalty: 1, platform: 'back' }
+	      // ];
+
+	      this.companyId = companyId;
+	      this.features = features;
+	      this.idea = idea;
+	      this.name = name;
+
+	      this.bonuses = 1;
+
+	      this.programming = 500;
+	      this.management = 100;
+
+	      this.money = 45000;
+
+	      this.team = {
+	        programmers: [0, 0, 0, 0, 0] // intern, junior, middle, senior, architect
+	      };
+
+	      this.managers = [];
+	      this.managerBonus = null;
+	      this.corporativeCulture = {};
+	      this.appBonuses = {};
+	      this.exploration = [];
+
+	      this.XP = 10;
+	      this.totalXP = 0;
+	      this.spendedXP = 0;
+
+	      this.tests = 1;
+	      this.improvements = 1;
+
+	      this.owner = !isCompetitor;
+
+	      return this;
+	    }
+	  }, {
+	    key: 'loadFromObject',
+	    value: function loadFromObject(obj) {
+	      for (var index in obj) {
+	        this[index] = obj[index];
+	      }
+
+	      return this;
+	    }
+	  }, {
+	    key: 'isOurProduct',
+	    value: function isOurProduct() {
+	      return this.owner;
+	    }
+	  }, {
+	    key: 'getIdea',
+	    value: function getIdea() {
+	      return this.idea;
+	    }
+	  }, {
+	    key: 'getName',
+	    value: function getName() {
+	      return this.name;
+	    }
+	  }, {
+	    key: 'getStage',
+	    value: function getStage() {
+	      return this.stage;
+	    }
+	  }, {
+	    key: 'getPP',
+	    value: function getPP() {
+	      return this.programming;
+	    }
+	  }, {
+	    key: 'getMP',
+	    value: function getMP() {
+	      return this.management;
+	    }
+	  }, {
+	    key: 'getPPProduction',
+	    value: function getPPProduction() {
+	      var value = balance.PROGRAMMER_EFFICIENCY_MIDDLE; // managerial
+
+	      var coders = this.team.programmers;
+
+	      value += coders[0] * balance.PROGRAMMER_EFFICIENCY_INTERN;
+	      value += coders[1] * balance.PROGRAMMER_EFFICIENCY_JUNIOR;
+	      value += coders[2] * balance.PROGRAMMER_EFFICIENCY_MIDDLE;
+	      value += coders[3] * balance.PROGRAMMER_EFFICIENCY_SENIOR;
+
+	      return value;
+	    }
+	  }, {
+	    key: 'getMPProduction',
+	    value: function getMPProduction() {
+	      return 100;
+	    }
+	  }, {
+	    key: 'getXP',
+	    value: function getXP() {
+	      return this.XP;
+	    }
+	  }, {
+	    key: 'getTestsAmount',
+	    value: function getTestsAmount() {
+	      return this.tests;
+	    }
+	  }, {
+	    key: 'getSpendedXP',
+	    value: function getSpendedXP() {
+	      return this.spendedXP;
+	    }
+	  }, {
+	    key: 'getTotalXP',
+	    value: function getTotalXP() {
+	      return this.totalXP;
+	    }
+	  }, {
+	    key: 'getImprovementsAmount',
+	    value: function getImprovementsAmount() {
+	      return this.improvements;
+	    }
+	  }, {
+	    key: 'getBugs',
+	    value: function getBugs() {
+	      return this.bugs;
+	    }
+	  }, {
+	    key: 'getBonuses',
+	    value: function getBonuses() {
+	      return this.bonuses;
+	    }
+	  }, {
+	    key: 'getExplorationData',
+	    value: function getExplorationData() {
+	      return {
+	        clients: [{
+	          explored: true,
+	          name: 'startups'
+	        }, {
+	          explorable: true,
+	          name: 'programmers',
+	          explorationCost: 100
+	        }],
+	        backend: [],
+	        frontend: [],
+	        testing: [],
+	        team: [],
+	        research: [],
+	        blog: [],
+	        support: [],
+
+	        segments: []
+	      };
+	    }
+	  }, {
+	    key: 'getBugCost',
+	    value: function getBugCost(bugId) {
+	      var bug = this.bugs.find(function (b) {
+	        return b.id === bugId;
+	      });
+
+	      return bug ? bug.cost : 0;
+	    }
+	  }, {
+	    key: 'getBugLoyaltyLoss',
+	    value: function getBugLoyaltyLoss() {
+	      return this.bugs.map(function (i) {
+	        return i.penalty;
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
+	    }
+	  }, {
+	    key: 'getFeatures',
+	    value: function getFeatures(featureGroup) {
+	      return this.features[featureGroup];
+	    }
+	  }, {
+	    key: 'getMainFeatureQualityByFeatureId',
+	    value: function getMainFeatureQualityByFeatureId(featureId) {
+	      return this.features.offer[featureId];
+	    }
+	  }, {
+	    key: 'getMarketingFeatures',
+	    value: function getMarketingFeatures() {
+	      return this.features.marketing;
+	    }
+	  }, {
+	    key: 'getFeatureStatus',
+	    value: function getFeatureStatus(featureGroup, featureName) {
+	      return this.features[featureGroup][featureName] > 0;
+	    }
+	  }, {
+	    key: 'getDefaults',
+	    value: function getDefaults() {
+	      return (0, _productDescriptions2.default)(this.idea);
+	    }
+	  }, {
+	    key: 'getMainFeatures',
+	    value: function getMainFeatures() {
+	      return this.getDefaults().features;
+	    }
+	  }, {
+	    key: 'getMaxMainFeatureQuality',
+	    value: function getMaxMainFeatureQuality(featureId) {
+	      return this.getDefaults().features[featureId].data;
+	    }
+	  }, {
+	    key: 'getBaseFeatureDevelopmentCost',
+	    value: function getBaseFeatureDevelopmentCost(featureId) {
+	      return this.getDefaults().features[featureId].development;
+	    }
+	  }, {
+	    key: 'getPrettyFeatureNameByFeatureId',
+	    value: function getPrettyFeatureNameByFeatureId(featureId) {
+	      return this.getDefaults().features[featureId].shortDescription;
+	    }
+	  }, {
+	    key: 'getDescriptionOfProduct',
+	    value: function getDescriptionOfProduct() {
+	      return this.getDefaults().description;
+	    }
+	  }, {
+	    key: 'getImprovementChances',
+	    value: function getImprovementChances() {
+	      return 5;
+	    }
+	  }, {
+	    key: 'getPaymentModifier',
+	    value: function getPaymentModifier() {
+	      return 1;
+	    }
+	  }, {
+	    key: 'getProductExpenses',
+	    value: function getProductExpenses() {
+	      return this.getProductSupportCost();
+	    }
+	  }, {
+	    key: 'getProductSupportCost',
+	    value: function getProductSupportCost() {
+	      var base = this.getDefaults().support.pp;
+
+	      var modifier = Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
+
+	      return Math.ceil(base * modifier);
+	    }
+
+	    // bonuses
+
+	  }, {
+	    key: 'getAvailableBonuses',
+	    value: function getAvailableBonuses() {
+	      var _this2 = this;
+
+	      var list = this.getBonusesList();
+
+	      var newList = [];
+
+	      var checkBonus = function checkBonus(b) {
+	        if (_this2.picked(b.name)) {
+	          if (b.childs) {
+	            b.childs.forEach(checkBonus);
+	          }
+
+	          return;
+	        }
+
+	        newList.push(b);
+	      };
+
+	      list.forEach(checkBonus);
+
+	      return newList;
+	    }
+	  }, {
+	    key: 'getBonusesList',
+	    value: function getBonusesList() {
+	      // constants/products/bonuses-list
+	      return null;
+	    }
+	  }, {
+	    key: 'getMarketingFeatureList',
+	    value: function getMarketingFeatureList() {
+	      // constants/products/marketing-feature-list
+	      return null;
+	    }
+	  }, {
+	    key: 'getHypothesisAnalyticsFeatures',
+	    value: function getHypothesisAnalyticsFeatures() {
+	      return null;
+	    }
+	  }, {
+	    key: 'getPaymentFeatures',
+	    value: function getPaymentFeatures() {
+	      return null;
+	    }
+	  }, {
+	    key: 'addPPs',
+
+
+	    // ------------- modify -------------
+	    value: function addPPs(pp) {
+	      this.programming += pp;
+	    }
+	  }, {
+	    key: 'addMPs',
+	    value: function addMPs(mp) {
+	      this.management += mp;
+	    }
+	  }, {
+	    key: 'spendPPs',
+	    value: function spendPPs(pp) {
+	      this.programming -= pp;
+	    }
+	  }, {
+	    key: 'spendMPs',
+	    value: function spendMPs(mp) {
+	      this.management -= mp;
+	    }
+	  }, {
+	    key: 'increaseMoney',
+	    value: function increaseMoney(amount) {
+	      this.money += amount;
+	    }
+	  }, {
+	    key: 'decreaseMoney',
+	    value: function decreaseMoney(amount) {
+	      this.money -= amount;
+	    }
+	  }, {
+	    key: 'addBonuses',
+	    value: function addBonuses() {
+	      this.bonuses++;
+	    }
+	  }, {
+	    key: 'addBug',
+	    value: function addBug(p) {
+	      this.bugs.push({
+	        cost: p.cost,
+	        platform: p.platform,
+	        penalty: p.penalty,
+	        id: this.bugs.length
+	      });
+	    }
+	  }, {
+	    key: 'fixBug',
+	    value: function fixBug(bugId) {
+	      var index = this.bugs.findIndex(function (b) {
+	        return b.id === bugId;
+	      });
+
+	      this.spendPPs(this.bugs[index].cost);
+
+	      this.bugs.splice(index, 1);
+	    }
+	  }, {
+	    key: 'produceResources',
+	    value: function produceResources() {
+	      this.testHypothesis({ value: this.getImprovementChances() });
+	      this.addPPs(this.getPPProduction());
+	      this.addMPs(this.getMPProduction());
+	    }
+	  }, {
+	    key: 'testHypothesis',
+	    value: function testHypothesis(p) {
+	      this.XP += p.value;
+	      this.totalXP += p.value;
+
+	      if (this.tests) {
+	        this.tests++;
+	      } else {
+	        this.tests = 1;
+	      }
+	    }
+	  }, {
+	    key: 'decreaseXP',
+	    value: function decreaseXP(xp) {
+	      this.XP -= xp;
+	      this.spendedXP -= xp;
+	    }
+	  }, {
+	    key: 'improveFeature',
+	    value: function improveFeature(p) {
+	      var previous = this.features[p.featureGroup][p.featureName] || 0;
+
+	      this.features[p.featureGroup][p.featureName] = previous + p.value;
+
+	      if (this.improvements) {
+	        this.improvements++;
+	      } else {
+	        this.improvements = 1;
+	      }
+
+	      this.XP -= p.XP;
+	    }
+	  }, {
+	    key: 'improveFeatureByPoints',
+	    value: function improveFeatureByPoints(p) {
+	      this.features[p.featureGroup][p.featureName] = 1;
+
+	      if (p.featureGroup === 'bonuses') {
+	        this.bonuses--;
+	      }
+	    }
+	  }]);
+	  return Project;
+	}();
+
+	exports.default = Project;
+
+/***/ },
+/* 211 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Company = function Company(products, bonuses) {
+	  (0, _classCallCheck3.default)(this, Company);
+
+	  this.products = products; // List of projectIds
+	  this.bonuses = bonuses;
+	  this.maxDaughterCompanies = 1;
+	};
+
+	exports.default = Company;
 
 /***/ }
 /******/ ]);

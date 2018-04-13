@@ -17,18 +17,18 @@ const names = [
 
 
 
-export default class Product {
+export default class Project {
   constructor(data, createFromObject) {
 
   }
 
-  createCompany(data): Product {
+  createCompany(data): Project {
     let { idea, name, isCompetitor, companyId } = data;
     // logger.log('product constructor', data);
 
-    if (!idea) throw 'no idea in classes/Product.js';
+    if (!idea) throw 'no idea in classes/Project.js';
 
-    if (companyId === null || companyId === undefined) throw 'no companyId in classes/Product.js';
+    if (companyId === null || companyId === undefined) throw 'no companyId in classes/Project.js';
 
     const defaultFeatures = productDescriptions(idea).features;
 
@@ -78,16 +78,16 @@ export default class Product {
 
     this.bonuses = 1;
 
-    this._points = {
-      programming: 500,
-      management: 100
-    };
 
-    this._money = 45000;
+    this.programming = 500;
+    this.management = 100;
+
+    this.money = 45000;
 
     this.team = {
       programmers: [0, 0, 0, 0, 0] // intern, junior, middle, senior, architect
     };
+
     this.managers = [];
     this.managerBonus = null;
     this.corporativeCulture = {};
@@ -132,11 +132,11 @@ export default class Product {
   }
 
   getPP() {
-    return this._points.programming;
+    return this.programming;
   }
 
   getMP() {
-    return this._points.management;
+    return this.management;
   }
 
   getPPProduction() {
@@ -180,6 +180,42 @@ export default class Product {
     return this.bugs;
   }
 
+  getBonuses() {
+    return this.bonuses;
+  }
+
+  getExplorationData() {
+    return {
+      clients: [{
+        explored: true,
+        name: 'startups'
+      }, {
+        explorable: true,
+        name: 'programmers',
+        explorationCost: 100
+      }],
+      backend: [],
+      frontend: [],
+      testing: [],
+      team: [],
+      research: [],
+      blog: [],
+      support: [],
+
+      segments: []
+    }
+  }
+
+  getBugCost(bugId) {
+    let bug = this.bugs.find(b => b.id === bugId);
+
+    return bug ? bug.cost : 0;
+  }
+
+  getBugLoyaltyLoss() {
+    return this.bugs.map(i => i.penalty).reduce((p, c) => p + c, 0);
+  }
+
   getFeatures(featureGroup) {
     return this.features[featureGroup];
   }
@@ -212,11 +248,6 @@ export default class Product {
     return this.getDefaults().features[featureId].development;
   }
 
-  isShareableFeature(featureId) {
-    return this.getDefaults().features[featureId].shareable;
-  }
-
-  //
   getPrettyFeatureNameByFeatureId(featureId){
     return this.getDefaults().features[featureId].shortDescription;
   }
@@ -292,34 +323,33 @@ export default class Product {
     return null;
   };
 
-
-  // modify
-  switchStage(stage) {
-    this.stage = stage;
-  }
-
-  setProductDefaults(stage, features, XP) {
-    throw 'setProductDefaults';
-
-    this.stage = stage;
-    this.features = features;
-    this.XP = XP;
-  }
-
+  // ------------- modify -------------
   addPPs(pp) {
-    this._points.programming += pp;
+    this.programming += pp;
   }
 
   addMPs(mp) {
-    this._points.management += mp;
+    this.management += mp;
   }
 
   spendPPs(pp) {
-    this._points.programming -= pp;
+    this.programming -= pp;
   }
 
   spendMPs(mp) {
-    this._points.management -= mp;
+    this.management -= mp;
+  }
+
+  increaseMoney(amount) {
+    this.money += amount;
+  }
+
+  decreaseMoney(amount) {
+    this.money -= amount;
+  }
+
+  addBonuses() {
+    this.bonuses++;
   }
 
   addBug(p) {
