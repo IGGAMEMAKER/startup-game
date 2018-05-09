@@ -43,12 +43,11 @@ const initialize = (world) => {
   _markets = markets;
 
   const idea = _products[0].getIdea();
-  markets = defaults(idea).markets.map(m => {
-    return {
+  markets = defaults(idea).markets
+    .map(m => ({
       idea,
       id: m.id
-    }
-  });
+    }));
 
   marketManager = new MarketManager(idea);
   marketManager.load(markets, defaults(idea));
@@ -138,18 +137,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getPaymentModifier();
   }
 
-  getFeatures(id, featureGroup) {
-    return _products[id].getFeatures(featureGroup);
-  }
-
-  getBaseFeatureDevelopmentCost(id, featureId) {
-    return _products[id].getBaseFeatureDevelopmentCost(featureId);
-  }
-
-  getIdea(id) {
-    return _products[id].getIdea();
-  }
-
   getBugs(id) {
     return _products[id].getBugs();
   }
@@ -201,26 +188,6 @@ class ProductStore extends EventEmitter {
     return _products[id].getName();
   }
 
-  getStage(id) {
-    return _products[id].getStage();
-  }
-
-  getFeatureStatus(id, featureGroup, featureName) {
-    return _products[id].getFeatureStatus(featureGroup, featureName);
-  }
-
-  getBonusStatus(id, bonusName) {
-    return _products[id].getFeatureStatus('bonuses', bonusName);
-  }
-
-  getAvailableBonuses(id) {
-    return _products[id].getAvailableBonuses();
-  }
-
-  getBonuses(id) {
-    return Object.keys(_products[id].features.bonuses);
-  }
-
   getImprovementChances(id) {
     return _products[id].getImprovementChances()
   }
@@ -233,24 +200,8 @@ class ProductStore extends EventEmitter {
     return _products[id].getDescriptionOfProduct();
   }
 
-  getBonusesAmount(id) {
-    return _products[id].getBonuses();
-  }
-
-  getMainFeatureUpgradeCost(id, featureId) {
-    return this.getBaseFeatureDevelopmentCost(id, featureId);
-  }
-
   getBenefitOnFeatureImprove(id, featureId) {
     return Math.floor(this.getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, 1));
-  }
-
-  getTeamExpenses() {
-    return 0;
-  }
-
-  getMainFeatureIterator(id): Array {
-    return this.getDefaults(id).features;
   }
 
   getLeaderValues(id) {
@@ -289,64 +240,8 @@ class ProductStore extends EventEmitter {
     return marketManager.isExploredMarket(id, mId);
   }
 
-  isSegmentingOpened(id) {
-    return false;
-  }
-
   getMarketingKnowledge(id, marketId) {
     return marketManager.getMarketingKnowledge(marketId, id);
-  }
-
-
-  getLeaderInTech(featureId) {
-    const leaders: Array<Project> = _products
-      .map((p: Project) => ({
-        id: p.companyId,
-        value: p.features.offer[featureId],
-        name: p.name
-      }))
-      .sort((p1, p2) => {
-        return p2.value - p1.value;
-      });
-
-    return leaders[0];
-  }
-
-  getRatingBasedLoyaltyOnMarket(id, marketId, improvement = null) {
-    const rating = this.getRating(id, marketId, improvement);
-
-    let loyalty;
-
-    if (rating <= 6) {
-      loyalty = -0.1 * (6 - rating);
-    } else {
-      loyalty = 0.15 * (rating - 6);
-    }
-
-    return loyalty;
-  }
-
-  getRating(id, marketId, improvement = null) {
-    const features = _products[id].features.offer.slice();
-
-    const standards = this.getLeaderValues(id).map(l => l.value);
-
-    if (improvement) {
-      const featureId = improvement.featureId;
-      const value = features[featureId];
-
-      const leader = this.getLeaderInTech(featureId);
-      const maxValue = leader.value;
-
-      features[featureId] += 1;
-      if (value + 1 > maxValue) {
-        standards[featureId] += 1;
-      }
-    }
-
-    const marketInfluences = marketManager.getRatingFormula(marketId);
-
-    return Math.min(round(computeRating(features, standards, marketInfluences)), 10);
   }
 
   getSegmentLoyalty(id, marketId, improvement = null) {
@@ -422,17 +317,6 @@ class ProductStore extends EventEmitter {
 
   getMarkets(id) {
     return this.getDefaults(id).markets; // marketManager.markets;
-  }
-
-  getIncomeIncreaseForMarketIfWeUpgradeFeature(id, marketId, featureId, value) {
-    const income = this.getMarketIncome(id, marketId);
-
-    const currRating = this.getRating(id, marketId);
-    const nextRating = this.getRating(id, marketId, { featureId, value });
-
-    const willBe = Math.floor(income * (nextRating / currRating));
-
-    return willBe - income;
   }
 
   getProductIncomeIncreaseIfWeUpgradeFeature(id, featureId, value) {

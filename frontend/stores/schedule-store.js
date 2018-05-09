@@ -131,7 +131,9 @@ Dispatcher.register((p: PayloadType) => {
 
     case c.SCHEDULE_ACTIONS_TASKS_ADD:
       let task = p.task;
+
       addTask(task);
+
       break;
 
     case c.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS:

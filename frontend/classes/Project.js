@@ -15,78 +15,6 @@ const names = [
   'Unnamed'
 ];
 
-type Cost = {
-  pp: Number,
-  mp: Number,
-  xp: Number,
-  money: Number
-};
-
-const requireCost: Cost = (pp = 0, mp = 0, sp = 0, xp = 0, money = 0) => {
-  return {
-    pp,
-    mp,
-    xp,
-    money
-  }
-};
-
-
-const UPGRADES_TESTS_UNIT = 'UPGRADES_TESTS_UNIT';
-const UPGRADES_TESTS_INTEGRATION = 'UPGRADES_TESTS_INTEGRATION';
-const UPGRADES_TESTS_UI = 'UPGRADES_TESTS_UI';
-
-const UPGRADES_MANAGEMENT_IDEA_NAPKIN = 'UPGRADES_MANAGEMENT_IDEA_NAPKIN';
-const UPGRADES_MANAGEMENT_IDEA_VISION = 'UPGRADES_MANAGEMENT_IDEA_VISION';
-const UPGRADES_MANAGEMENT_IDEA_CONCEPT = 'UPGRADES_MANAGEMENT_IDEA_CONCEPT';
-
-// ---- TESTS -----
-
-const unitTests = {
-  name: UPGRADES_TESTS_UNIT,
-  cost: requireCost(50),
-  bonus: 5
-};
-
-const integrationTests = {
-  name: UPGRADES_TESTS_INTEGRATION,
-  cost: requireCost(50),
-  bonus: 5
-};
-
-const uiTests = {
-  name: UPGRADES_TESTS_UI,
-  cost: requireCost(50),
-  bonus: 5
-};
-
-
-
-// ---- IDEA ------
-
-const ideaOnNapkin = {
-  name: UPGRADES_MANAGEMENT_IDEA_NAPKIN,
-  cost: requireCost(0, 15),
-  bonus: 5
-};
-
-const visionDocument = {
-  name: UPGRADES_MANAGEMENT_IDEA_VISION,
-  cost: requireCost(0, 50),
-  bonus: 5
-};
-
-const featuresDocument = {
-  name: UPGRADES_MANAGEMENT_IDEA_CONCEPT,
-  cost: requireCost(0, 100),
-  bonus: 0
-};
-
-const conceptDocument = {
-  name: UPGRADES_MANAGEMENT_IDEA_CONCEPT,
-  cost: requireCost(0, 100),
-  bonus: 0
-};
 
 export default class Project {
   createCompany(data): Project {
@@ -96,69 +24,33 @@ export default class Project {
 
     if (companyId === null || companyId === undefined) throw 'no companyId in classes/Project.js';
 
-    const defaultFeatures = productDescriptions(idea).features;
-
     if (!name) {
       const index = Math.floor(random(0, names.length - 1));
 
       name = names[index];
     }
 
-    let minRating = 1;
-    let maxRating = 6;
-
-    if (isCompetitor) {
-      minRating = 4;
-      maxRating = 10;
-    }
-
-    const offer = defaultFeatures.map((f, i) => Math.floor(random(minRating, maxRating)));
-
-    const features = {
-      offer, // features, that are attached to main idea
-      development: {}, // backups, more dev servers, e.t.c.
-
-      marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-      analytics: {}, // simple analytics (main KPIs),
-      // middle (segments analytics), mid+ (segments + versions),
-
-      // not only chat with users, but also localisations, content updates
-      // and all sort of things, that you need doing constantly
-      support: {},
-      payment: {},
-
-      bonuses: {}
-    };
-    
-    this.core = 1;
-    this.problems = {};
-
-    this.bugs = [];
-
-    this.servers = 1;
-
     this.companyId = companyId;
-    this.features = features;
     this.idea = idea;
     this.name = name;
 
-    this.bonuses = 1;
+    this.core = 1;
+    this.personas = [{
+      clientType: 1,
+      quality: 1
+    }];
+
+    this.bugs = [];
 
 
     this.programming = 500;
     this.management = 100;
+    this.XP = 10;
 
     this.money = 45000;
 
-    this.team = {
-      programmers: [0, 0, 0, 0, 0] // intern, junior, middle, senior, architect
-    };
+    this.programmers = [0, 0, 0, 0, 0]; // intern, junior, middle, senior, architect
 
-    this.XP = 10;
-    this.totalXP = 0;
-    this.spendedXP = 0;
-
-    this.tests = 1;
     this.improvements = 1;
 
     this.owner = !isCompetitor;
@@ -184,10 +76,6 @@ export default class Project {
 
   getName() {
     return this.name;
-  }
-
-  getStage() {
-    return this.stage;
   }
 
   getPP() {
@@ -219,18 +107,6 @@ export default class Project {
     return this.XP;
   }
 
-  getTestsAmount() {
-    return this.tests;
-  }
-
-  getSpendedXP() {
-    return this.spendedXP;
-  }
-
-  getTotalXP() {
-    return this.totalXP
-  }
-
   getImprovementsAmount() {
     return this.improvements;
   }
@@ -243,68 +119,20 @@ export default class Project {
     return this.bonuses;
   }
 
-  getExplorationData() {
-    return {
-      clients: [{
-        explored: true,
-        name: 'startups'
-      }, {
-        explorable: true,
-        name: 'programmers',
-        explorationCost: 100
-      }],
-      backend: [],
-      frontend: [],
-      testing: [],
-      team: [],
-      research: [],
-      blog: [],
-      support: [],
-
-      segments: []
-    }
-  }
-
   getBugCost(bugId) {
-    let bug = this.bugs.find(b => b.id === bugId);
-
-    return bug ? bug.cost : 0;
+    return this.bugs[bugId].cost;
   }
 
   getBugLoyaltyLoss() {
     return this.bugs.map(i => i.penalty).reduce((p, c) => p + c, 0);
   }
 
-  getFeatures(featureGroup) {
-    return this.features[featureGroup];
-  }
-
-  getMainFeatureQualityByFeatureId(featureId) {
-    return this.features.offer[featureId];
-  }
-
-  getFeatureStatus(featureGroup, featureName) {
-    return this.features[featureGroup][featureName] > 0;
+  getSystemComplexityModifier() {
+    return Math.pow(balance.TECHNOLOGY_COST_MODIFIER, this.improvements * (1 + ((this.personas.length - 1) / 10)))
   }
 
   getDefaults(): DefaultDescription {
     return productDescriptions(this.idea);
-  }
-
-  getMainFeatures() {
-    return this.getDefaults().features;
-  }
-
-  getMaxMainFeatureQuality(featureId) {
-    return this.getDefaults().features[featureId].data;
-  }
-
-  getBaseFeatureDevelopmentCost(featureId) {
-    return this.getDefaults().features[featureId].development;
-  }
-
-  getPrettyFeatureNameByFeatureId(featureId){
-    return this.getDefaults().features[featureId].shortDescription;
   }
 
   getDescriptionOfProduct() {
@@ -319,65 +147,6 @@ export default class Project {
   getPaymentModifier() {
     return 1;
   }
-
-  getProductExpenses() {
-    return this.getProductSupportCost();
-  }
-
-  getProductSupportCost() {
-    const base = this.getDefaults().support.pp;
-
-    const modifier = Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
-
-    return Math.ceil(base * modifier);
-  }
-
-
-  // bonuses
-  picked = (value) => {
-    return this.features.bonuses[value]
-  };
-
-  getAvailableBonuses(): Array {
-    const list = this.getBonusesList();
-
-    const newList = [];
-
-    const checkBonus = (b) => {
-      if (this.picked(b.name)) {
-        if (b.childs) {
-          b.childs.forEach(checkBonus);
-        }
-
-        return;
-      }
-
-      newList.push(b);
-    };
-
-    list.forEach(checkBonus);
-
-    return newList;
-  }
-
-  getBonusesList(): Array {
-    // constants/products/bonuses-list
-    return null;
-  }
-
-  getMarketingFeatureList() {
-    // constants/products/marketing-feature-list
-    return null;
-  };
-
-  getHypothesisAnalyticsFeatures() {
-    return null;
-  };
-
-  getPaymentFeatures() {
-    return null;
-  };
-
 
 
   // ------------- modify -------------
@@ -405,10 +174,6 @@ export default class Project {
     this.money -= amount;
   }
 
-  addBonuses() {
-    this.bonuses++;
-  }
-
   addBug(p) {
     this.bugs.push({
       cost: p.cost,
@@ -418,55 +183,39 @@ export default class Project {
     });
   }
 
-  fixBug(bugId) {
-    const index = this.bugs.findIndex(b => b.id === bugId);
-
-    this.spendPPs(this.bugs[index].cost);
-
-    this.bugs.splice(index, 1);
+  removeBug(bugId) {
+    this.bugs.splice(bugId, 1);
   }
 
   produceResources() {
-    this.testHypothesis({ value: this.getImprovementChances() });
     this.addPPs(this.getPPProduction());
     this.addMPs(this.getMPProduction());
   }
 
   testHypothesis(p) {
     this.XP += p.value;
-    this.totalXP += p.value;
-
-    if (this.tests) {
-      this.tests++;
-    } else {
-      this.tests = 1;
-    }
   }
 
   decreaseXP(xp) {
     this.XP -= xp;
-    this.spendedXP -= xp;
   }
 
-  improveFeature(p) {
-    let previous = this.features[p.featureGroup][p.featureName] || 0;
-
-    this.features[p.featureGroup][p.featureName] = previous + p.value;
-
-    if (this.improvements) {
-      this.improvements++;
-    } else {
-      this.improvements = 1;
-    }
-
-    this.XP -= p.XP;
+  incrementImprovements() {
+    this.improvements++;
   }
 
-  improveFeatureByPoints(p) {
-    this.features[p.featureGroup][p.featureName] = 1;
+  improveCore() {
+    this.core++;
+    this.incrementImprovements();
+  }
 
-    if (p.featureGroup === 'bonuses') {
-      this.bonuses--;
-    }
+  improveOffer({ clientType, xp }) {
+    const index = this.personas.findIndex(p => p.clientType === clientType);
+
+    this.personas[index].quality++;
+
+    this.incrementImprovements();
+
+    this.XP -= xp;
   }
 }
