@@ -15,16 +15,82 @@ const names = [
   'Unnamed'
 ];
 
+type Cost = {
+  pp: Number,
+  mp: Number,
+  xp: Number,
+  money: Number
+};
 
+const requireCost: Cost = (pp = 0, mp = 0, sp = 0, xp = 0, money = 0) => {
+  return {
+    pp,
+    mp,
+    xp,
+    money
+  }
+};
+
+
+const UPGRADES_TESTS_UNIT = 'UPGRADES_TESTS_UNIT';
+const UPGRADES_TESTS_INTEGRATION = 'UPGRADES_TESTS_INTEGRATION';
+const UPGRADES_TESTS_UI = 'UPGRADES_TESTS_UI';
+
+const UPGRADES_MANAGEMENT_IDEA_NAPKIN = 'UPGRADES_MANAGEMENT_IDEA_NAPKIN';
+const UPGRADES_MANAGEMENT_IDEA_VISION = 'UPGRADES_MANAGEMENT_IDEA_VISION';
+const UPGRADES_MANAGEMENT_IDEA_CONCEPT = 'UPGRADES_MANAGEMENT_IDEA_CONCEPT';
+
+// ---- TESTS -----
+
+const unitTests = {
+  name: UPGRADES_TESTS_UNIT,
+  cost: requireCost(50),
+  bonus: 5
+};
+
+const integrationTests = {
+  name: UPGRADES_TESTS_INTEGRATION,
+  cost: requireCost(50),
+  bonus: 5
+};
+
+const uiTests = {
+  name: UPGRADES_TESTS_UI,
+  cost: requireCost(50),
+  bonus: 5
+};
+
+
+
+// ---- IDEA ------
+
+const ideaOnNapkin = {
+  name: UPGRADES_MANAGEMENT_IDEA_NAPKIN,
+  cost: requireCost(0, 15),
+  bonus: 5
+};
+
+const visionDocument = {
+  name: UPGRADES_MANAGEMENT_IDEA_VISION,
+  cost: requireCost(0, 50),
+  bonus: 5
+};
+
+const featuresDocument = {
+  name: UPGRADES_MANAGEMENT_IDEA_CONCEPT,
+  cost: requireCost(0, 100),
+  bonus: 0
+};
+
+const conceptDocument = {
+  name: UPGRADES_MANAGEMENT_IDEA_CONCEPT,
+  cost: requireCost(0, 100),
+  bonus: 0
+};
 
 export default class Project {
-  constructor(data, createFromObject) {
-
-  }
-
   createCompany(data): Project {
     let { idea, name, isCompetitor, companyId } = data;
-    // logger.log('product constructor', data);
 
     if (!idea) throw 'no idea in classes/Project.js';
 
@@ -63,13 +129,13 @@ export default class Project {
 
       bonuses: {}
     };
+    
+    this.core = 1;
+    this.problems = {};
 
     this.bugs = [];
-    // this.bugs = [
-    //   { id: 0, cost: 15, penalty: 0.1, platform: 'web' },
-    //   { id: 1, cost: 25, penalty: 0.2, platform: 'web' },
-    //   { id: 2, cost: 35, penalty: 1, platform: 'back' }
-    // ];
+
+    this.servers = 1;
 
     this.companyId = companyId;
     this.features = features;
@@ -87,13 +153,6 @@ export default class Project {
     this.team = {
       programmers: [0, 0, 0, 0, 0] // intern, junior, middle, senior, architect
     };
-
-    this.managers = [];
-    this.managerBonus = null;
-    this.corporativeCulture = {};
-    this.appBonuses = {};
-    this.exploration = [];
-
 
     this.XP = 10;
     this.totalXP = 0;
@@ -224,10 +283,6 @@ export default class Project {
     return this.features.offer[featureId];
   }
 
-  getMarketingFeatures() {
-    return this.features.marketing;
-  }
-
   getFeatureStatus(featureGroup, featureName) {
     return this.features[featureGroup][featureName] > 0;
   }
@@ -322,6 +377,8 @@ export default class Project {
   getPaymentFeatures() {
     return null;
   };
+
+
 
   // ------------- modify -------------
   addPPs(pp) {

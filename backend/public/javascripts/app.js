@@ -587,19 +587,19 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _messageStore = __webpack_require__(140);
+	var _messageStore = __webpack_require__(141);
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _scheduleStore = __webpack_require__(143);
+	var _scheduleStore = __webpack_require__(144);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
-	var _scheduleActions = __webpack_require__(149);
+	var _scheduleActions = __webpack_require__(150);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
-	var _stages = __webpack_require__(150);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -607,23 +607,23 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _Menu = __webpack_require__(160);
+	var _Menu = __webpack_require__(161);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _productPanel = __webpack_require__(188);
+	var _productPanel = __webpack_require__(189);
 
 	var _productPanel2 = _interopRequireDefault(_productPanel);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _game = __webpack_require__(202);
+	var _game = __webpack_require__(203);
 
 	var _game2 = _interopRequireDefault(_game);
 
-	var _sounds = __webpack_require__(209);
+	var _sounds = __webpack_require__(210);
 
 	var sounds = _interopRequireWildcard(_sounds);
 
@@ -2479,15 +2479,15 @@
 
 	var _productDescription = __webpack_require__(103);
 
-	var _Project = __webpack_require__(210);
+	var _Project = __webpack_require__(121);
 
 	var _Project2 = _interopRequireDefault(_Project);
 
-	var _Company = __webpack_require__(211);
+	var _Company = __webpack_require__(138);
 
 	var _Company2 = _interopRequireDefault(_Company);
 
-	var _MarketManager = __webpack_require__(138);
+	var _MarketManager = __webpack_require__(139);
 
 	var _MarketManager2 = _interopRequireDefault(_MarketManager);
 
@@ -2506,14 +2506,14 @@
 	var _products = void 0;
 
 	var marketManager = void 0;
+	var companyManager = void 0;
 
 	var _markets = void 0;
 
-	var initialize = function initialize(_ref) {
-	  var markets = _ref.markets,
-	      products = _ref.products;
+	var initialize = function initialize(world) {
+	  var products = world.products,
+	      markets = world.markets;
 
-	  _logger2.default.log('trying to initialize productStore.js', products);
 
 	  _products = products.map(function (p) {
 	    return new _Project2.default().loadFromObject(p);
@@ -2590,6 +2590,16 @@
 	      return _products;
 	    }
 	  }, {
+	    key: 'getCompanyCost',
+	    value: function getCompanyCost(id) {
+	      return _computeCompanyCost2.default.compute(_products[id], this.getProductIncome(id), 0);
+	    }
+	  }, {
+	    key: 'getCompanyCostStructured',
+	    value: function getCompanyCostStructured(id) {
+	      return _computeCompanyCost2.default.structured(_products[id], this.getProductIncome(id), 0);
+	    }
+	  }, {
 	    key: 'getOurProducts',
 	    value: function getOurProducts() {
 	      return _products.filter(this.isOurProduct);
@@ -2603,16 +2613,6 @@
 	    key: 'getProduct',
 	    value: function getProduct(id) {
 	      return _products[id];
-	    }
-	  }, {
-	    key: 'getCompanyCost',
-	    value: function getCompanyCost(id) {
-	      return _computeCompanyCost2.default.compute(_products[id], this.getProductIncome(id), 0);
-	    }
-	  }, {
-	    key: 'getCompanyCostStructured',
-	    value: function getCompanyCostStructured(id) {
-	      return _computeCompanyCost2.default.structured(_products[id], this.getProductIncome(id), 0);
 	    }
 	  }, {
 	    key: 'getMainFeatureQualityByFeatureId',
@@ -2658,28 +2658,6 @@
 	    key: 'getBugLoyaltyLoss',
 	    value: function getBugLoyaltyLoss(id) {
 	      return _products[id].getBugLoyaltyLoss();
-	    }
-	  }, {
-	    key: 'getRatingBasedLoyaltyOnMarket',
-	    value: function getRatingBasedLoyaltyOnMarket(id, marketId) {
-	      var improvement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-
-	      var rating = this.getRating(id, marketId, improvement);
-
-	      var loyalty = void 0;
-
-	      if (rating <= 6) {
-	        loyalty = -0.1 * (6 - rating);
-	      } else {
-	        loyalty = 0.15 * (rating - 6);
-	      }
-
-	      return loyalty;
-	    }
-	  }, {
-	    key: 'isSegmentingOpened',
-	    value: function isSegmentingOpened(id) {
-	      return false;
 	    }
 	  }, {
 	    key: 'isBugFixable',
@@ -2760,21 +2738,6 @@
 	      return (0, _keys2.default)(_products[id].features.bonuses);
 	    }
 	  }, {
-	    key: 'getBonusesList',
-	    value: function getBonusesList(id) {
-	      return _products[id].getBonusesList();
-	    }
-	  }, {
-	    key: 'getMarketingFeatureList',
-	    value: function getMarketingFeatureList(id) {
-	      return _products[id].getMarketingFeatureList();
-	    }
-	  }, {
-	    key: 'getPaymentFeatures',
-	    value: function getPaymentFeatures(id) {
-	      return _products[id].getPaymentFeatures();
-	    }
-	  }, {
 	    key: 'getImprovementChances',
 	    value: function getImprovementChances(id) {
 	      return _products[id].getImprovementChances();
@@ -2788,21 +2751,6 @@
 	    key: 'getDescriptionOfProduct',
 	    value: function getDescriptionOfProduct(id) {
 	      return _products[id].getDescriptionOfProduct();
-	    }
-	  }, {
-	    key: 'getBonusModifiers',
-	    value: function getBonusModifiers(id) {
-	      return _products[id].getBonusModifiers();
-	    }
-	  }, {
-	    key: 'getTestsAmount',
-	    value: function getTestsAmount(id) {
-	      return _products[id].getTestsAmount();
-	    }
-	  }, {
-	    key: 'getImprovementsAmount',
-	    value: function getImprovementsAmount(id) {
-	      return _products[id].getImprovementsAmount();
 	    }
 	  }, {
 	    key: 'getBonusesAmount',
@@ -2823,11 +2771,6 @@
 	    key: 'getTeamExpenses',
 	    value: function getTeamExpenses() {
 	      return 0;
-	    }
-	  }, {
-	    key: 'getMarketRatingComputationList',
-	    value: function getMarketRatingComputationList(id, marketId) {
-	      return this.getDefaults(id).markets[marketId].rating;
 	    }
 	  }, {
 	    key: 'getMainFeatureIterator',
@@ -2883,6 +2826,16 @@
 	      return marketManager.isExploredMarket(id, mId);
 	    }
 	  }, {
+	    key: 'isSegmentingOpened',
+	    value: function isSegmentingOpened(id) {
+	      return false;
+	    }
+	  }, {
+	    key: 'getMarketingKnowledge',
+	    value: function getMarketingKnowledge(id, marketId) {
+	      return marketManager.getMarketingKnowledge(marketId, id);
+	    }
+	  }, {
 	    key: 'getLeaderInTech',
 	    value: function getLeaderInTech(featureId) {
 	      var leaders = _products.map(function (p) {
@@ -2898,9 +2851,21 @@
 	      return leaders[0];
 	    }
 	  }, {
-	    key: 'getMarketingKnowledge',
-	    value: function getMarketingKnowledge(id, marketId) {
-	      return marketManager.getMarketingKnowledge(marketId, id);
+	    key: 'getRatingBasedLoyaltyOnMarket',
+	    value: function getRatingBasedLoyaltyOnMarket(id, marketId) {
+	      var improvement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+	      var rating = this.getRating(id, marketId, improvement);
+
+	      var loyalty = void 0;
+
+	      if (rating <= 6) {
+	        loyalty = -0.1 * (6 - rating);
+	      } else {
+	        loyalty = 0.15 * (rating - 6);
+	      }
+
+	      return loyalty;
 	    }
 	  }, {
 	    key: 'getRating',
@@ -3198,8 +3163,7 @@
 	      break;
 
 	    default:
-	      change = false;
-	      break;
+	      change = false;break;
 	  }
 
 	  if (change) {
@@ -4363,7 +4327,7 @@
 
 	var _from2 = _interopRequireDefault(_from);
 
-	var _Project = __webpack_require__(210);
+	var _Project = __webpack_require__(121);
 
 	var _Project2 = _interopRequireDefault(_Project);
 
@@ -4836,7 +4800,582 @@
 	};
 
 /***/ },
-/* 121 */,
+/* 121 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(30);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _productDescriptions = __webpack_require__(101);
+
+	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
+
+	var _random = __webpack_require__(122);
+
+	var _random2 = _interopRequireDefault(_random);
+
+	var _productDescription = __webpack_require__(103);
+
+	var _balance = __webpack_require__(123);
+
+	var balance = _interopRequireWildcard(_balance);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var names = ['Alpha', 'Proxima', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Tech Labs', 'Ginger bird', 'Mercury', 'Phantom', 'Modern', 'Future Labs', 'Pineaple', 'Storm Technologies', 'Unnamed'];
+
+	var requireCost = function requireCost() {
+	  var pp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	  var mp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+	  var sp = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+	  var xp = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+	  var money = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+
+	  return {
+	    pp: pp,
+	    mp: mp,
+	    xp: xp,
+	    money: money
+	  };
+	};
+
+	var UPGRADES_TESTS_UNIT = 'UPGRADES_TESTS_UNIT';
+	var UPGRADES_TESTS_INTEGRATION = 'UPGRADES_TESTS_INTEGRATION';
+	var UPGRADES_TESTS_UI = 'UPGRADES_TESTS_UI';
+
+	var UPGRADES_MANAGEMENT_IDEA_NAPKIN = 'UPGRADES_MANAGEMENT_IDEA_NAPKIN';
+	var UPGRADES_MANAGEMENT_IDEA_VISION = 'UPGRADES_MANAGEMENT_IDEA_VISION';
+	var UPGRADES_MANAGEMENT_IDEA_CONCEPT = 'UPGRADES_MANAGEMENT_IDEA_CONCEPT';
+
+	// ---- TESTS -----
+
+	var unitTests = {
+	  name: UPGRADES_TESTS_UNIT,
+	  cost: requireCost(50),
+	  bonus: 5
+	};
+
+	var integrationTests = {
+	  name: UPGRADES_TESTS_INTEGRATION,
+	  cost: requireCost(50),
+	  bonus: 5
+	};
+
+	var uiTests = {
+	  name: UPGRADES_TESTS_UI,
+	  cost: requireCost(50),
+	  bonus: 5
+	};
+
+	// ---- IDEA ------
+
+	var ideaOnNapkin = {
+	  name: UPGRADES_MANAGEMENT_IDEA_NAPKIN,
+	  cost: requireCost(0, 15),
+	  bonus: 5
+	};
+
+	var visionDocument = {
+	  name: UPGRADES_MANAGEMENT_IDEA_VISION,
+	  cost: requireCost(0, 50),
+	  bonus: 5
+	};
+
+	var featuresDocument = {
+	  name: UPGRADES_MANAGEMENT_IDEA_CONCEPT,
+	  cost: requireCost(0, 100),
+	  bonus: 0
+	};
+
+	var conceptDocument = {
+	  name: UPGRADES_MANAGEMENT_IDEA_CONCEPT,
+	  cost: requireCost(0, 100),
+	  bonus: 0
+	};
+
+	var IDEAS = [[], [], []];
+
+	var Project = function () {
+	  function Project() {
+	    var _this = this;
+
+	    (0, _classCallCheck3.default)(this, Project);
+
+	    this.picked = function (value) {
+	      return _this.features.bonuses[value];
+	    };
+	  }
+
+	  (0, _createClass3.default)(Project, [{
+	    key: 'createCompany',
+	    value: function createCompany(data) {
+	      var idea = data.idea,
+	          name = data.name,
+	          isCompetitor = data.isCompetitor,
+	          companyId = data.companyId;
+
+
+	      if (!idea) throw 'no idea in classes/Project.js';
+
+	      if (companyId === null || companyId === undefined) throw 'no companyId in classes/Project.js';
+
+	      var defaultFeatures = (0, _productDescriptions2.default)(idea).features;
+
+	      if (!name) {
+	        var index = Math.floor((0, _random2.default)(0, names.length - 1));
+
+	        name = names[index];
+	      }
+
+	      var minRating = 1;
+	      var maxRating = 6;
+
+	      if (isCompetitor) {
+	        minRating = 4;
+	        maxRating = 10;
+	      }
+
+	      var offer = defaultFeatures.map(function (f, i) {
+	        return Math.floor((0, _random2.default)(minRating, maxRating));
+	      });
+
+	      var features = {
+	        offer: offer, // features, that are attached to main idea
+	        development: {}, // backups, more dev servers, e.t.c.
+
+	        marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
+	        analytics: {}, // simple analytics (main KPIs),
+	        // middle (segments analytics), mid+ (segments + versions),
+
+	        // not only chat with users, but also localisations, content updates
+	        // and all sort of things, that you need doing constantly
+	        support: {},
+	        payment: {},
+
+	        bonuses: {}
+	      };
+
+	      this.bugs = [];
+
+	      this.servers = 1;
+
+	      this.codeQuality = 0;
+
+	      this.companyId = companyId;
+	      this.features = features;
+	      this.idea = idea;
+	      this.name = name;
+
+	      this.bonuses = 1;
+
+	      this.programming = 500;
+	      this.management = 100;
+
+	      this.money = 45000;
+
+	      this.team = {
+	        programmers: [0, 0, 0, 0, 0] // intern, junior, middle, senior, architect
+	      };
+
+	      this.managers = [];
+	      this.managerBonus = null;
+	      this.corporativeCulture = {};
+	      this.appBonuses = {};
+	      this.exploration = [];
+
+	      this.XP = 10;
+	      this.totalXP = 0;
+	      this.spendedXP = 0;
+
+	      this.tests = 1;
+	      this.improvements = 1;
+
+	      this.owner = !isCompetitor;
+
+	      return this;
+	    }
+	  }, {
+	    key: 'loadFromObject',
+	    value: function loadFromObject(obj) {
+	      for (var index in obj) {
+	        this[index] = obj[index];
+	      }
+
+	      return this;
+	    }
+	  }, {
+	    key: 'isOurProduct',
+	    value: function isOurProduct() {
+	      return this.owner;
+	    }
+	  }, {
+	    key: 'getIdea',
+	    value: function getIdea() {
+	      return this.idea;
+	    }
+	  }, {
+	    key: 'getName',
+	    value: function getName() {
+	      return this.name;
+	    }
+	  }, {
+	    key: 'getStage',
+	    value: function getStage() {
+	      return this.stage;
+	    }
+	  }, {
+	    key: 'getPP',
+	    value: function getPP() {
+	      return this.programming;
+	    }
+	  }, {
+	    key: 'getMP',
+	    value: function getMP() {
+	      return this.management;
+	    }
+	  }, {
+	    key: 'getPPProduction',
+	    value: function getPPProduction() {
+	      var value = balance.PROGRAMMER_EFFICIENCY_MIDDLE; // managerial
+
+	      var coders = this.team.programmers;
+
+	      value += coders[0] * balance.PROGRAMMER_EFFICIENCY_INTERN;
+	      value += coders[1] * balance.PROGRAMMER_EFFICIENCY_JUNIOR;
+	      value += coders[2] * balance.PROGRAMMER_EFFICIENCY_MIDDLE;
+	      value += coders[3] * balance.PROGRAMMER_EFFICIENCY_SENIOR;
+
+	      return value;
+	    }
+	  }, {
+	    key: 'getMPProduction',
+	    value: function getMPProduction() {
+	      return 100;
+	    }
+	  }, {
+	    key: 'getXP',
+	    value: function getXP() {
+	      return this.XP;
+	    }
+	  }, {
+	    key: 'getTestsAmount',
+	    value: function getTestsAmount() {
+	      return this.tests;
+	    }
+	  }, {
+	    key: 'getSpendedXP',
+	    value: function getSpendedXP() {
+	      return this.spendedXP;
+	    }
+	  }, {
+	    key: 'getTotalXP',
+	    value: function getTotalXP() {
+	      return this.totalXP;
+	    }
+	  }, {
+	    key: 'getImprovementsAmount',
+	    value: function getImprovementsAmount() {
+	      return this.improvements;
+	    }
+	  }, {
+	    key: 'getBugs',
+	    value: function getBugs() {
+	      return this.bugs;
+	    }
+	  }, {
+	    key: 'getBonuses',
+	    value: function getBonuses() {
+	      return this.bonuses;
+	    }
+	  }, {
+	    key: 'getExplorationData',
+	    value: function getExplorationData() {
+	      return {
+	        clients: [{
+	          explored: true,
+	          name: 'startups'
+	        }, {
+	          explorable: true,
+	          name: 'programmers',
+	          explorationCost: 100
+	        }],
+	        backend: [],
+	        frontend: [],
+	        testing: [],
+	        team: [],
+	        research: [],
+	        blog: [],
+	        support: [],
+
+	        segments: []
+	      };
+	    }
+	  }, {
+	    key: 'getBugCost',
+	    value: function getBugCost(bugId) {
+	      var bug = this.bugs.find(function (b) {
+	        return b.id === bugId;
+	      });
+
+	      return bug ? bug.cost : 0;
+	    }
+	  }, {
+	    key: 'getBugLoyaltyLoss',
+	    value: function getBugLoyaltyLoss() {
+	      return this.bugs.map(function (i) {
+	        return i.penalty;
+	      }).reduce(function (p, c) {
+	        return p + c;
+	      }, 0);
+	    }
+	  }, {
+	    key: 'getFeatures',
+	    value: function getFeatures(featureGroup) {
+	      return this.features[featureGroup];
+	    }
+	  }, {
+	    key: 'getMainFeatureQualityByFeatureId',
+	    value: function getMainFeatureQualityByFeatureId(featureId) {
+	      return this.features.offer[featureId];
+	    }
+	  }, {
+	    key: 'getFeatureStatus',
+	    value: function getFeatureStatus(featureGroup, featureName) {
+	      return this.features[featureGroup][featureName] > 0;
+	    }
+	  }, {
+	    key: 'getDefaults',
+	    value: function getDefaults() {
+	      return (0, _productDescriptions2.default)(this.idea);
+	    }
+	  }, {
+	    key: 'getMainFeatures',
+	    value: function getMainFeatures() {
+	      return this.getDefaults().features;
+	    }
+	  }, {
+	    key: 'getMaxMainFeatureQuality',
+	    value: function getMaxMainFeatureQuality(featureId) {
+	      return this.getDefaults().features[featureId].data;
+	    }
+	  }, {
+	    key: 'getBaseFeatureDevelopmentCost',
+	    value: function getBaseFeatureDevelopmentCost(featureId) {
+	      return this.getDefaults().features[featureId].development;
+	    }
+	  }, {
+	    key: 'getPrettyFeatureNameByFeatureId',
+	    value: function getPrettyFeatureNameByFeatureId(featureId) {
+	      return this.getDefaults().features[featureId].shortDescription;
+	    }
+	  }, {
+	    key: 'getDescriptionOfProduct',
+	    value: function getDescriptionOfProduct() {
+	      return this.getDefaults().description;
+	    }
+	  }, {
+	    key: 'getImprovementChances',
+	    value: function getImprovementChances() {
+	      return 5;
+	    }
+	  }, {
+	    key: 'getPaymentModifier',
+	    value: function getPaymentModifier() {
+	      return 1;
+	    }
+	  }, {
+	    key: 'getProductExpenses',
+	    value: function getProductExpenses() {
+	      return this.getProductSupportCost();
+	    }
+	  }, {
+	    key: 'getProductSupportCost',
+	    value: function getProductSupportCost() {
+	      var base = this.getDefaults().support.pp;
+
+	      var modifier = Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
+
+	      return Math.ceil(base * modifier);
+	    }
+
+	    // bonuses
+
+	  }, {
+	    key: 'getAvailableBonuses',
+	    value: function getAvailableBonuses() {
+	      var _this2 = this;
+
+	      var list = this.getBonusesList();
+
+	      var newList = [];
+
+	      var checkBonus = function checkBonus(b) {
+	        if (_this2.picked(b.name)) {
+	          if (b.childs) {
+	            b.childs.forEach(checkBonus);
+	          }
+
+	          return;
+	        }
+
+	        newList.push(b);
+	      };
+
+	      list.forEach(checkBonus);
+
+	      return newList;
+	    }
+	  }, {
+	    key: 'getBonusesList',
+	    value: function getBonusesList() {
+	      // constants/products/bonuses-list
+	      return null;
+	    }
+	  }, {
+	    key: 'getMarketingFeatureList',
+	    value: function getMarketingFeatureList() {
+	      // constants/products/marketing-feature-list
+	      return null;
+	    }
+	  }, {
+	    key: 'getHypothesisAnalyticsFeatures',
+	    value: function getHypothesisAnalyticsFeatures() {
+	      return null;
+	    }
+	  }, {
+	    key: 'getPaymentFeatures',
+	    value: function getPaymentFeatures() {
+	      return null;
+	    }
+	  }, {
+	    key: 'addPPs',
+
+
+	    // ------------- modify -------------
+	    value: function addPPs(pp) {
+	      this.programming += pp;
+	    }
+	  }, {
+	    key: 'addMPs',
+	    value: function addMPs(mp) {
+	      this.management += mp;
+	    }
+	  }, {
+	    key: 'spendPPs',
+	    value: function spendPPs(pp) {
+	      this.programming -= pp;
+	    }
+	  }, {
+	    key: 'spendMPs',
+	    value: function spendMPs(mp) {
+	      this.management -= mp;
+	    }
+	  }, {
+	    key: 'increaseMoney',
+	    value: function increaseMoney(amount) {
+	      this.money += amount;
+	    }
+	  }, {
+	    key: 'decreaseMoney',
+	    value: function decreaseMoney(amount) {
+	      this.money -= amount;
+	    }
+	  }, {
+	    key: 'addBonuses',
+	    value: function addBonuses() {
+	      this.bonuses++;
+	    }
+	  }, {
+	    key: 'addBug',
+	    value: function addBug(p) {
+	      this.bugs.push({
+	        cost: p.cost,
+	        platform: p.platform,
+	        penalty: p.penalty,
+	        id: this.bugs.length
+	      });
+	    }
+	  }, {
+	    key: 'fixBug',
+	    value: function fixBug(bugId) {
+	      var index = this.bugs.findIndex(function (b) {
+	        return b.id === bugId;
+	      });
+
+	      this.spendPPs(this.bugs[index].cost);
+
+	      this.bugs.splice(index, 1);
+	    }
+	  }, {
+	    key: 'produceResources',
+	    value: function produceResources() {
+	      this.testHypothesis({ value: this.getImprovementChances() });
+	      this.addPPs(this.getPPProduction());
+	      this.addMPs(this.getMPProduction());
+	    }
+	  }, {
+	    key: 'testHypothesis',
+	    value: function testHypothesis(p) {
+	      this.XP += p.value;
+	      this.totalXP += p.value;
+
+	      if (this.tests) {
+	        this.tests++;
+	      } else {
+	        this.tests = 1;
+	      }
+	    }
+	  }, {
+	    key: 'decreaseXP',
+	    value: function decreaseXP(xp) {
+	      this.XP -= xp;
+	      this.spendedXP -= xp;
+	    }
+	  }, {
+	    key: 'improveFeature',
+	    value: function improveFeature(p) {
+	      var previous = this.features[p.featureGroup][p.featureName] || 0;
+
+	      this.features[p.featureGroup][p.featureName] = previous + p.value;
+
+	      if (this.improvements) {
+	        this.improvements++;
+	      } else {
+	        this.improvements = 1;
+	      }
+
+	      this.XP -= p.XP;
+	    }
+	  }, {
+	    key: 'improveFeatureByPoints',
+	    value: function improveFeatureByPoints(p) {
+	      this.features[p.featureGroup][p.featureName] = 1;
+
+	      if (p.featureGroup === 'bonuses') {
+	        this.bonuses--;
+	      }
+	    }
+	  }]);
+	  return Project;
+	}();
+
+	exports.default = Project;
+
+/***/ },
 /* 122 */
 /***/ function(module, exports) {
 
@@ -5349,6 +5888,33 @@
 /* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _classCallCheck2 = __webpack_require__(29);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Company = function Company(products, bonuses) {
+	  (0, _classCallCheck3.default)(this, Company);
+
+	  this.products = products; // List of projectIds
+	  this.bonuses = bonuses;
+	  this.maxDaughterCompanies = 1;
+	};
+
+	exports.default = Company;
+
+/***/ },
+/* 139 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -5364,7 +5930,7 @@
 
 	var _createClass3 = _interopRequireDefault(_createClass2);
 
-	var _Market = __webpack_require__(139);
+	var _Market = __webpack_require__(140);
 
 	var _Market2 = _interopRequireDefault(_Market);
 
@@ -5545,7 +6111,7 @@
 	exports.default = MarketManager;
 
 /***/ },
-/* 139 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5736,7 +6302,7 @@
 	exports.default = Market;
 
 /***/ },
-/* 140 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5771,11 +6337,11 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _messageActions = __webpack_require__(141);
+	var _messageActions = __webpack_require__(142);
 
 	var c = _interopRequireWildcard(_messageActions);
 
-	var _events2 = __webpack_require__(142);
+	var _events2 = __webpack_require__(143);
 
 	var t = _interopRequireWildcard(_events2);
 
@@ -5944,7 +6510,7 @@
 	exports.default = store;
 
 /***/ },
-/* 141 */
+/* 142 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5964,7 +6530,7 @@
 	var NOTIFICATION_ADD = exports.NOTIFICATION_ADD = 'NOTIFICATION_ADD';
 
 /***/ },
-/* 142 */
+/* 143 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5980,7 +6546,7 @@
 	var GAME_EVENT_COMPETITOR_CREATE = exports.GAME_EVENT_COMPETITOR_CREATE = 6;
 
 /***/ },
-/* 143 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5989,7 +6555,7 @@
 	  value: true
 	});
 
-	var _assign = __webpack_require__(144);
+	var _assign = __webpack_require__(145);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -6035,7 +6601,7 @@
 
 	var GAME_STAGES = _interopRequireWildcard(_gameStages);
 
-	var _workSpeed = __webpack_require__(148);
+	var _workSpeed = __webpack_require__(149);
 
 	var _sessionManager = __webpack_require__(105);
 
@@ -6269,29 +6835,29 @@
 	exports.default = store;
 
 /***/ },
-/* 144 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(145), __esModule: true };
-
-/***/ },
 /* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(146);
-	module.exports = __webpack_require__(16).Object.assign;
+	module.exports = { "default": __webpack_require__(146), __esModule: true };
 
 /***/ },
 /* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.3.1 Object.assign(target, source)
-	var $export = __webpack_require__(15);
-
-	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(147)});
+	__webpack_require__(147);
+	module.exports = __webpack_require__(16).Object.assign;
 
 /***/ },
 /* 147 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.1 Object.assign(target, source)
+	var $export = __webpack_require__(15);
+
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(148)});
+
+/***/ },
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6329,7 +6895,7 @@
 	} : $assign;
 
 /***/ },
-/* 148 */
+/* 149 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6342,7 +6908,7 @@
 	var WORK_SPEED_HAS_MAIN_JOB = exports.WORK_SPEED_HAS_MAIN_JOB = 3;
 
 /***/ },
-/* 149 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6363,7 +6929,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _scheduleStore = __webpack_require__(143);
+	var _scheduleStore = __webpack_require__(144);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
@@ -6434,7 +7000,7 @@
 	};
 
 /***/ },
-/* 150 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6443,17 +7009,17 @@
 	  value: true
 	});
 
-	var _getOwnPropertyDescriptor = __webpack_require__(151);
+	var _getOwnPropertyDescriptor = __webpack_require__(152);
 
 	var _getOwnPropertyDescriptor2 = _interopRequireDefault(_getOwnPropertyDescriptor);
 
 	var _dec, _desc, _value, _obj;
 
-	var _flux = __webpack_require__(154);
+	var _flux = __webpack_require__(155);
 
 	var _flux2 = _interopRequireDefault(_flux);
 
-	var _constants = __webpack_require__(157);
+	var _constants = __webpack_require__(158);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
@@ -6636,23 +7202,23 @@
 	}, (_applyDecoratedDescriptor(_obj, 'canShowHypothesisTab', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowHypothesisTab'), _obj), _applyDecoratedDescriptor(_obj, 'canShowUpperTabInMenu', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowUpperTabInMenu'), _obj), _applyDecoratedDescriptor(_obj, 'canShowMetricsTab', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowMetricsTab'), _obj), _applyDecoratedDescriptor(_obj, 'canShowMainFeatureTab', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowMainFeatureTab'), _obj), _applyDecoratedDescriptor(_obj, 'canShowPaymentsTab', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowPaymentsTab'), _obj), _applyDecoratedDescriptor(_obj, 'canShowCompetitorsTab', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowCompetitorsTab'), _obj), _applyDecoratedDescriptor(_obj, 'canShowClientsTab', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowClientsTab'), _obj), _applyDecoratedDescriptor(_obj, 'canShowBonusesTab', [isTest, _dec], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowBonusesTab'), _obj), _applyDecoratedDescriptor(_obj, 'canShowTeamTabs', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowTeamTabs'), _obj), _applyDecoratedDescriptor(_obj, 'canShowAdTab', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowAdTab'), _obj), _applyDecoratedDescriptor(_obj, 'canShowSegments', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowSegments'), _obj), _applyDecoratedDescriptor(_obj, 'canShowChurnFeatures', [isTest], (0, _getOwnPropertyDescriptor2.default)(_obj, 'canShowChurnFeatures'), _obj)), _obj));
 
 /***/ },
-/* 151 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(152), __esModule: true };
-
-/***/ },
 /* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(153);
+	module.exports = { "default": __webpack_require__(153), __esModule: true };
+
+/***/ },
+/* 153 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(154);
 	var $Object = __webpack_require__(16).Object;
 	module.exports = function getOwnPropertyDescriptor(it, key){
 	  return $Object.getOwnPropertyDescriptor(it, key);
 	};
 
 /***/ },
-/* 153 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
@@ -6666,7 +7232,7 @@
 	});
 
 /***/ },
-/* 154 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6679,23 +7245,23 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _scheduleStore = __webpack_require__(143);
+	var _scheduleStore = __webpack_require__(144);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
-	var _messageStore = __webpack_require__(140);
+	var _messageStore = __webpack_require__(141);
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _scheduleActions = __webpack_require__(149);
+	var _scheduleActions = __webpack_require__(150);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
-	var _messageActions = __webpack_require__(156);
+	var _messageActions = __webpack_require__(157);
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
@@ -6711,7 +7277,7 @@
 	};
 
 /***/ },
-/* 155 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7004,7 +7570,7 @@
 	};
 
 /***/ },
-/* 156 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7013,7 +7579,7 @@
 	  value: true
 	});
 
-	var _assign = __webpack_require__(144);
+	var _assign = __webpack_require__(145);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -7021,7 +7587,7 @@
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _messageActions = __webpack_require__(141);
+	var _messageActions = __webpack_require__(142);
 
 	var ACTIONS = _interopRequireWildcard(_messageActions);
 
@@ -7029,7 +7595,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _messageStore = __webpack_require__(140);
+	var _messageStore = __webpack_require__(141);
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
@@ -7074,7 +7640,7 @@
 	};
 
 /***/ },
-/* 157 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7087,11 +7653,11 @@
 
 	var jobConstants = _interopRequireWildcard(_job);
 
-	var _professions = __webpack_require__(158);
+	var _professions = __webpack_require__(159);
 
 	var professionsConstants = _interopRequireWildcard(_professions);
 
-	var _workSpeed = __webpack_require__(148);
+	var _workSpeed = __webpack_require__(149);
 
 	var workSpeedConstants = _interopRequireWildcard(_workSpeed);
 
@@ -7099,7 +7665,7 @@
 
 	var gameStagesConstants = _interopRequireWildcard(_gameStages);
 
-	var _expenses = __webpack_require__(159);
+	var _expenses = __webpack_require__(160);
 
 	var expensesConstants = _interopRequireWildcard(_expenses);
 
@@ -7124,13 +7690,13 @@
 	};
 
 /***/ },
-/* 158 */
+/* 159 */
 /***/ function(module, exports) {
 
 	"use strict";
 
 /***/ },
-/* 159 */
+/* 160 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7142,7 +7708,7 @@
 	var EXPENSES_LOAN = exports.EXPENSES_LOAN = 'EXPENSES_LOAN';
 
 /***/ },
-/* 160 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7174,7 +7740,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _moneyDifference = __webpack_require__(161);
+	var _moneyDifference = __webpack_require__(162);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
@@ -7182,15 +7748,15 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _stages = __webpack_require__(150);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _shortenValue = __webpack_require__(187);
+	var _shortenValue = __webpack_require__(188);
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
@@ -7361,7 +7927,7 @@
 	exports.default = Menu;
 
 /***/ },
-/* 161 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7422,7 +7988,7 @@
 	};
 
 /***/ },
-/* 162 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7433,55 +7999,55 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Button = __webpack_require__(163);
+	var _Button = __webpack_require__(164);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _Modal = __webpack_require__(165);
+	var _Modal = __webpack_require__(166);
 
 	var _Modal2 = _interopRequireDefault(_Modal);
 
-	var _Notification = __webpack_require__(173);
+	var _Notification = __webpack_require__(174);
 
 	var _Notification2 = _interopRequireDefault(_Notification);
 
-	var _Range = __webpack_require__(175);
+	var _Range = __webpack_require__(176);
 
 	var _Range2 = _interopRequireDefault(_Range);
 
-	var _Select = __webpack_require__(176);
+	var _Select = __webpack_require__(177);
 
 	var _Select2 = _interopRequireDefault(_Select);
 
-	var _arrows = __webpack_require__(177);
+	var _arrows = __webpack_require__(178);
 
 	var _arrows2 = _interopRequireDefault(_arrows);
 
-	var _Info = __webpack_require__(178);
+	var _Info = __webpack_require__(179);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
-	var _Bar = __webpack_require__(180);
+	var _Bar = __webpack_require__(181);
 
 	var _Bar2 = _interopRequireDefault(_Bar);
 
-	var _Changeable = __webpack_require__(181);
+	var _Changeable = __webpack_require__(182);
 
 	var _Changeable2 = _interopRequireDefault(_Changeable);
 
-	var _ColoredValue = __webpack_require__(182);
+	var _ColoredValue = __webpack_require__(183);
 
 	var _ColoredValue2 = _interopRequireDefault(_ColoredValue);
 
-	var _SmallIcon = __webpack_require__(184);
+	var _SmallIcon = __webpack_require__(185);
 
 	var _SmallIcon2 = _interopRequireDefault(_SmallIcon);
 
-	var _MeduimIcon = __webpack_require__(185);
+	var _MeduimIcon = __webpack_require__(186);
 
 	var _MeduimIcon2 = _interopRequireDefault(_MeduimIcon);
 
-	var _BigIcon = __webpack_require__(186);
+	var _BigIcon = __webpack_require__(187);
 
 	var _BigIcon2 = _interopRequireDefault(_BigIcon);
 
@@ -7569,7 +8135,7 @@
 	};
 
 /***/ },
-/* 163 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7579,7 +8145,7 @@
 	});
 	exports.default = undefined;
 
-	var _extends2 = __webpack_require__(164);
+	var _extends2 = __webpack_require__(165);
 
 	var _extends3 = _interopRequireDefault(_extends2);
 
@@ -7671,14 +8237,14 @@
 	exports.default = Button;
 
 /***/ },
-/* 164 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
 
-	var _assign = __webpack_require__(144);
+	var _assign = __webpack_require__(145);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -7699,7 +8265,7 @@
 	};
 
 /***/ },
-/* 165 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7731,15 +8297,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _messageStore = __webpack_require__(140);
+	var _messageStore = __webpack_require__(141);
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _messageActions = __webpack_require__(141);
+	var _messageActions = __webpack_require__(142);
 
 	var c = _interopRequireWildcard(_messageActions);
 
-	var _eventRenderer = __webpack_require__(166);
+	var _eventRenderer = __webpack_require__(167);
 
 	var _eventRenderer2 = _interopRequireDefault(_eventRenderer);
 
@@ -7801,7 +8367,7 @@
 	exports.default = Modal;
 
 /***/ },
-/* 166 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7816,23 +8382,23 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _FREEMONEYEVENT = __webpack_require__(167);
+	var _FREEMONEYEVENT = __webpack_require__(168);
 
 	var _FREEMONEYEVENT2 = _interopRequireDefault(_FREEMONEYEVENT);
 
-	var _FREEPOINTSEVENT = __webpack_require__(168);
+	var _FREEPOINTSEVENT = __webpack_require__(169);
 
 	var _FREEPOINTSEVENT2 = _interopRequireDefault(_FREEPOINTSEVENT);
 
-	var _HIREENTHUSIASTEVENT = __webpack_require__(169);
+	var _HIREENTHUSIASTEVENT = __webpack_require__(170);
 
 	var _HIREENTHUSIASTEVENT2 = _interopRequireDefault(_HIREENTHUSIASTEVENT);
 
-	var _COMPETITORCREATE = __webpack_require__(172);
+	var _COMPETITORCREATE = __webpack_require__(173);
 
 	var _COMPETITORCREATE2 = _interopRequireDefault(_COMPETITORCREATE);
 
-	var _events = __webpack_require__(142);
+	var _events = __webpack_require__(143);
 
 	var t = _interopRequireWildcard(_events);
 
@@ -7876,7 +8442,7 @@
 	};
 
 /***/ },
-/* 167 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7908,15 +8474,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Button = __webpack_require__(163);
+	var _Button = __webpack_require__(164);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _messageActions = __webpack_require__(156);
+	var _messageActions = __webpack_require__(157);
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
@@ -7978,7 +8544,7 @@
 	exports.default = FreeMoneyEvent;
 
 /***/ },
-/* 168 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8010,15 +8576,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Button = __webpack_require__(163);
+	var _Button = __webpack_require__(164);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _messageActions = __webpack_require__(156);
+	var _messageActions = __webpack_require__(157);
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
@@ -8084,7 +8650,7 @@
 	exports.default = FreePointsEvent;
 
 /***/ },
-/* 169 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8116,19 +8682,19 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Button = __webpack_require__(163);
+	var _Button = __webpack_require__(164);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _messageActions = __webpack_require__(156);
+	var _messageActions = __webpack_require__(157);
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
-	var _skills = __webpack_require__(170);
+	var _skills = __webpack_require__(171);
 
 	var _skills2 = _interopRequireDefault(_skills);
 
@@ -8189,7 +8755,7 @@
 	exports.default = HireEnthusiastEvent;
 
 /***/ },
-/* 170 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8198,7 +8764,7 @@
 	  value: true
 	});
 
-	var _specialization = __webpack_require__(171);
+	var _specialization = __webpack_require__(172);
 
 	var _specialization2 = _interopRequireDefault(_specialization);
 
@@ -8293,7 +8859,7 @@
 	};
 
 /***/ },
-/* 171 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8322,7 +8888,7 @@
 	};
 
 /***/ },
-/* 172 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8354,15 +8920,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Button = __webpack_require__(163);
+	var _Button = __webpack_require__(164);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _messageActions = __webpack_require__(156);
+	var _messageActions = __webpack_require__(157);
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
@@ -8413,7 +8979,7 @@
 	exports.default = CompetitorCreateEvent;
 
 /***/ },
-/* 173 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8449,19 +9015,19 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _messageStore = __webpack_require__(140);
+	var _messageStore = __webpack_require__(141);
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _notifications = __webpack_require__(174);
+	var _notifications = __webpack_require__(175);
 
 	var NOTIFICATIONS = _interopRequireWildcard(_notifications);
 
-	var _messageActions = __webpack_require__(141);
+	var _messageActions = __webpack_require__(142);
 
 	var c = _interopRequireWildcard(_messageActions);
 
-	var _eventRenderer = __webpack_require__(166);
+	var _eventRenderer = __webpack_require__(167);
 
 	var _eventRenderer2 = _interopRequireDefault(_eventRenderer);
 
@@ -8605,7 +9171,7 @@
 	exports.default = Modal;
 
 /***/ },
-/* 174 */
+/* 175 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -8625,7 +9191,7 @@
 	// export const NOTIFICATION_MARKETS_INFLUENCE_DECREASED = 'NOTIFICATION_MARKETS_INFLUENCE_DECREASED';
 
 /***/ },
-/* 175 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8689,7 +9255,7 @@
 	exports.default = Range;
 
 /***/ },
-/* 176 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8767,7 +9333,7 @@
 	exports.default = Select;
 
 /***/ },
-/* 177 */
+/* 178 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -8790,7 +9356,7 @@
 	};
 
 /***/ },
-/* 178 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8800,7 +9366,7 @@
 	});
 	exports.default = undefined;
 
-	var _objectDestructuringEmpty2 = __webpack_require__(179);
+	var _objectDestructuringEmpty2 = __webpack_require__(180);
 
 	var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
 
@@ -8826,7 +9392,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -8871,7 +9437,7 @@
 	exports.default = Info;
 
 /***/ },
-/* 179 */
+/* 180 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -8883,7 +9449,7 @@
 	};
 
 /***/ },
-/* 180 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8972,7 +9538,7 @@
 	exports.default = Bar;
 
 /***/ },
-/* 181 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9065,7 +9631,7 @@
 	exports.default = Changeable;
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9097,7 +9663,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _coloringRange = __webpack_require__(183);
+	var _coloringRange = __webpack_require__(184);
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
@@ -9136,7 +9702,7 @@
 	exports.default = ColoredValue;
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9161,7 +9727,7 @@
 	};
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9222,7 +9788,7 @@
 	exports.default = SmallIcon;
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9283,7 +9849,7 @@
 	exports.default = MeduimIcon;
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9344,7 +9910,7 @@
 	exports.default = BigIcon;
 
 /***/ },
-/* 187 */
+/* 188 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9368,7 +9934,7 @@
 	exports.default = shortenValue;
 
 /***/ },
-/* 188 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9404,35 +9970,35 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _DeveloperTab = __webpack_require__(189);
+	var _DeveloperTab = __webpack_require__(190);
 
 	var _DeveloperTab2 = _interopRequireDefault(_DeveloperTab);
 
-	var _ImprovementTab = __webpack_require__(191);
+	var _ImprovementTab = __webpack_require__(192);
 
 	var _ImprovementTab2 = _interopRequireDefault(_ImprovementTab);
 
-	var _metrics = __webpack_require__(193);
+	var _metrics = __webpack_require__(194);
 
 	var _metrics2 = _interopRequireDefault(_metrics);
 
-	var _competitors = __webpack_require__(194);
+	var _competitors = __webpack_require__(195);
 
 	var _competitors2 = _interopRequireDefault(_competitors);
 
-	var _BugPanel = __webpack_require__(196);
+	var _BugPanel = __webpack_require__(197);
 
 	var _BugPanel2 = _interopRequireDefault(_BugPanel);
 
-	var _Marketing = __webpack_require__(197);
+	var _Marketing = __webpack_require__(198);
 
 	var _Marketing2 = _interopRequireDefault(_Marketing);
 
-	var _shortenValue = __webpack_require__(187);
+	var _shortenValue = __webpack_require__(188);
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
-	var _stages = __webpack_require__(150);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -9600,7 +10166,7 @@
 	exports.default = ProductPanel;
 
 /***/ },
-/* 189 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9636,11 +10202,11 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _list = __webpack_require__(190);
+	var _list = __webpack_require__(191);
 
 	var _list2 = _interopRequireDefault(_list);
 
-	var _stages = __webpack_require__(150);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -9688,7 +10254,7 @@
 	exports.default = DeveloperTab;
 
 /***/ },
-/* 190 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9720,7 +10286,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -9728,11 +10294,11 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _stages = __webpack_require__(150);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -9892,7 +10458,7 @@
 	exports.default = MainFeatures;
 
 /***/ },
-/* 191 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9928,11 +10494,11 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _Exploration = __webpack_require__(192);
+	var _Exploration = __webpack_require__(193);
 
 	var _Exploration2 = _interopRequireDefault(_Exploration);
 
-	var _stages = __webpack_require__(150);
+	var _stages = __webpack_require__(151);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -9980,7 +10546,7 @@
 	exports.default = ImprovementTab;
 
 /***/ },
-/* 192 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10020,7 +10586,7 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -10155,7 +10721,7 @@
 	exports.default = Exploration;
 
 /***/ },
-/* 193 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10195,11 +10761,11 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _moneyDifference = __webpack_require__(161);
+	var _moneyDifference = __webpack_require__(162);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _shortenValue = __webpack_require__(187);
+	var _shortenValue = __webpack_require__(188);
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
@@ -10302,7 +10868,7 @@
 	;
 
 /***/ },
-/* 194 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10338,7 +10904,7 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _competitor = __webpack_require__(195);
+	var _competitor = __webpack_require__(196);
 
 	var _competitor2 = _interopRequireDefault(_competitor);
 
@@ -10418,7 +10984,7 @@
 	exports.default = Competitors;
 
 /***/ },
-/* 195 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10450,7 +11016,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _shortenValue = __webpack_require__(187);
+	var _shortenValue = __webpack_require__(188);
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
@@ -10516,7 +11082,7 @@
 	exports.default = Competitor;
 
 /***/ },
-/* 196 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10552,11 +11118,11 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -10740,7 +11306,7 @@
 	exports.default = BugPanel;
 
 /***/ },
-/* 197 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10776,15 +11342,15 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _ClientRetention = __webpack_require__(198);
+	var _ClientRetention = __webpack_require__(199);
 
 	var _ClientRetention2 = _interopRequireDefault(_ClientRetention);
 
-	var _ClientAcquisition = __webpack_require__(200);
+	var _ClientAcquisition = __webpack_require__(201);
 
 	var _ClientAcquisition2 = _interopRequireDefault(_ClientAcquisition);
 
-	var _SegmentExplorer = __webpack_require__(201);
+	var _SegmentExplorer = __webpack_require__(202);
 
 	var _SegmentExplorer2 = _interopRequireDefault(_SegmentExplorer);
 
@@ -10906,7 +11472,7 @@
 	exports.default = Marketing;
 
 /***/ },
-/* 198 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10942,19 +11508,19 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _shortenValue = __webpack_require__(187);
+	var _shortenValue = __webpack_require__(188);
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
-	var _coloredRating = __webpack_require__(199);
+	var _coloredRating = __webpack_require__(200);
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -11231,7 +11797,7 @@
 	exports.default = SegmentUpgrader;
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11263,7 +11829,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _coloringRange = __webpack_require__(183);
+	var _coloringRange = __webpack_require__(184);
 
 	var _coloringRange2 = _interopRequireDefault(_coloringRange);
 
@@ -11271,7 +11837,7 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -11310,7 +11876,7 @@
 	exports.default = ColoredRating;
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11346,11 +11912,11 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -11489,7 +12055,7 @@
 	exports.default = ClientAcquisition;
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11521,11 +12087,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _UI = __webpack_require__(162);
+	var _UI = __webpack_require__(163);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -11674,7 +12240,7 @@
 	exports.default = SegmentExplorer;
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11687,19 +12253,19 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _scheduleStore = __webpack_require__(143);
+	var _scheduleStore = __webpack_require__(144);
 
 	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _scheduleActions = __webpack_require__(149);
+	var _scheduleActions = __webpack_require__(150);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
-	var _messageActions = __webpack_require__(156);
+	var _messageActions = __webpack_require__(157);
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
@@ -11707,25 +12273,25 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _moneyDifference = __webpack_require__(161);
+	var _moneyDifference = __webpack_require__(162);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
-	var _eventGenerator = __webpack_require__(203);
+	var _eventGenerator = __webpack_require__(204);
 
 	var _eventGenerator2 = _interopRequireDefault(_eventGenerator);
 
-	var _ai = __webpack_require__(205);
+	var _ai = __webpack_require__(206);
 
 	var _ai2 = _interopRequireDefault(_ai);
 
-	var _Project = __webpack_require__(210);
+	var _Project = __webpack_require__(121);
 
 	var _Project2 = _interopRequireDefault(_Project);
 
-	var _date = __webpack_require__(208);
+	var _date = __webpack_require__(209);
 
-	var _notifications = __webpack_require__(174);
+	var _notifications = __webpack_require__(175);
 
 	var NOTIFICATIONS = _interopRequireWildcard(_notifications);
 
@@ -11835,7 +12401,7 @@
 	};
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11848,15 +12414,15 @@
 
 	var _random2 = _interopRequireDefault(_random);
 
-	var _events = __webpack_require__(142);
+	var _events = __webpack_require__(143);
 
 	var GAME_EVENTS = _interopRequireWildcard(_events);
 
-	var _messageActions = __webpack_require__(156);
+	var _messageActions = __webpack_require__(157);
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -11868,11 +12434,11 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _createRandomWorker = __webpack_require__(204);
+	var _createRandomWorker = __webpack_require__(205);
 
 	var _createRandomWorker2 = _interopRequireDefault(_createRandomWorker);
 
-	var _notifications = __webpack_require__(174);
+	var _notifications = __webpack_require__(175);
 
 	var NOTIFICATION = _interopRequireWildcard(_notifications);
 
@@ -11929,7 +12495,7 @@
 	};
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11942,7 +12508,7 @@
 
 	var JOB = _interopRequireWildcard(_job);
 
-	var _skills = __webpack_require__(170);
+	var _skills = __webpack_require__(171);
 
 	var _skills2 = _interopRequireDefault(_skills);
 
@@ -12020,7 +12586,7 @@
 	};
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12037,7 +12603,7 @@
 
 	var _createClass3 = _interopRequireDefault(_createClass2);
 
-	var _Project = __webpack_require__(210);
+	var _Project = __webpack_require__(121);
 
 	var _Project2 = _interopRequireDefault(_Project);
 
@@ -12045,7 +12611,7 @@
 
 	var _productStore2 = _interopRequireDefault(_productStore);
 
-	var _productActions = __webpack_require__(155);
+	var _productActions = __webpack_require__(156);
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
@@ -12053,19 +12619,19 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _companyStyles = __webpack_require__(206);
+	var _companyStyles = __webpack_require__(207);
 
 	var MANAGEMENT_STYLES = _interopRequireWildcard(_companyStyles);
 
-	var _notifications = __webpack_require__(174);
+	var _notifications = __webpack_require__(175);
 
 	var NOTIFICATIONS = _interopRequireWildcard(_notifications);
 
-	var _bonuses = __webpack_require__(207);
+	var _bonuses = __webpack_require__(208);
 
 	var BONUSES = _interopRequireWildcard(_bonuses);
 
-	var _messageActions = __webpack_require__(156);
+	var _messageActions = __webpack_require__(157);
 
 	var _messageActions2 = _interopRequireDefault(_messageActions);
 
@@ -12275,7 +12841,7 @@
 	};
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12287,7 +12853,7 @@
 	var COMPANY_STYLE_BALANCED = exports.COMPANY_STYLE_BALANCED = 'COMPANY_STYLE_BALANCED';
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12308,7 +12874,7 @@
 	var BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER = exports.BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER = 'BONUSES_TECHNOLOGY_FOLLOWER_MODIFIER';
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -12329,7 +12895,7 @@
 	};
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12341,544 +12907,6 @@
 	  var audio = new Audio('./sounds/Metal Cling - Hit.mp3');
 	  // audio.play();
 	};
-
-/***/ },
-/* 210 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _classCallCheck2 = __webpack_require__(29);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(30);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _productDescriptions = __webpack_require__(101);
-
-	var _productDescriptions2 = _interopRequireDefault(_productDescriptions);
-
-	var _random = __webpack_require__(122);
-
-	var _random2 = _interopRequireDefault(_random);
-
-	var _productDescription = __webpack_require__(103);
-
-	var _balance = __webpack_require__(123);
-
-	var balance = _interopRequireWildcard(_balance);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var names = ['Alpha', 'Proxima', 'Sun', 'Magenta', 'Grapes', 'Best Hosting', 'Tech Labs', 'Ginger bird', 'Mercury', 'Phantom', 'Modern', 'Future Labs', 'Pineaple', 'Storm Technologies', 'Unnamed'];
-
-	var Project = function () {
-	  function Project(data, createFromObject) {
-	    var _this = this;
-
-	    (0, _classCallCheck3.default)(this, Project);
-
-	    this.picked = function (value) {
-	      return _this.features.bonuses[value];
-	    };
-	  }
-
-	  (0, _createClass3.default)(Project, [{
-	    key: 'createCompany',
-	    value: function createCompany(data) {
-	      var idea = data.idea,
-	          name = data.name,
-	          isCompetitor = data.isCompetitor,
-	          companyId = data.companyId;
-	      // logger.log('product constructor', data);
-
-	      if (!idea) throw 'no idea in classes/Project.js';
-
-	      if (companyId === null || companyId === undefined) throw 'no companyId in classes/Project.js';
-
-	      var defaultFeatures = (0, _productDescriptions2.default)(idea).features;
-
-	      if (!name) {
-	        var index = Math.floor((0, _random2.default)(0, names.length - 1));
-
-	        name = names[index];
-	      }
-
-	      var minRating = 1;
-	      var maxRating = 6;
-
-	      if (isCompetitor) {
-	        minRating = 4;
-	        maxRating = 10;
-	      }
-
-	      var offer = defaultFeatures.map(function (f, i) {
-	        return Math.floor((0, _random2.default)(minRating, maxRating));
-	      });
-
-	      var features = {
-	        offer: offer, // features, that are attached to main idea
-	        development: {}, // backups, more dev servers, e.t.c.
-
-	        marketing: {}, // SEO, SMM, mass media, email marketing e.t.c.
-	        analytics: {}, // simple analytics (main KPIs),
-	        // middle (segments analytics), mid+ (segments + versions),
-
-	        // not only chat with users, but also localisations, content updates
-	        // and all sort of things, that you need doing constantly
-	        support: {},
-	        payment: {},
-
-	        bonuses: {}
-	      };
-
-	      this.bugs = [];
-	      // this.bugs = [
-	      //   { id: 0, cost: 15, penalty: 0.1, platform: 'web' },
-	      //   { id: 1, cost: 25, penalty: 0.2, platform: 'web' },
-	      //   { id: 2, cost: 35, penalty: 1, platform: 'back' }
-	      // ];
-
-	      this.companyId = companyId;
-	      this.features = features;
-	      this.idea = idea;
-	      this.name = name;
-
-	      this.bonuses = 1;
-
-	      this.programming = 500;
-	      this.management = 100;
-
-	      this.money = 45000;
-
-	      this.team = {
-	        programmers: [0, 0, 0, 0, 0] // intern, junior, middle, senior, architect
-	      };
-
-	      this.managers = [];
-	      this.managerBonus = null;
-	      this.corporativeCulture = {};
-	      this.appBonuses = {};
-	      this.exploration = [];
-
-	      this.XP = 10;
-	      this.totalXP = 0;
-	      this.spendedXP = 0;
-
-	      this.tests = 1;
-	      this.improvements = 1;
-
-	      this.owner = !isCompetitor;
-
-	      return this;
-	    }
-	  }, {
-	    key: 'loadFromObject',
-	    value: function loadFromObject(obj) {
-	      for (var index in obj) {
-	        this[index] = obj[index];
-	      }
-
-	      return this;
-	    }
-	  }, {
-	    key: 'isOurProduct',
-	    value: function isOurProduct() {
-	      return this.owner;
-	    }
-	  }, {
-	    key: 'getIdea',
-	    value: function getIdea() {
-	      return this.idea;
-	    }
-	  }, {
-	    key: 'getName',
-	    value: function getName() {
-	      return this.name;
-	    }
-	  }, {
-	    key: 'getStage',
-	    value: function getStage() {
-	      return this.stage;
-	    }
-	  }, {
-	    key: 'getPP',
-	    value: function getPP() {
-	      return this.programming;
-	    }
-	  }, {
-	    key: 'getMP',
-	    value: function getMP() {
-	      return this.management;
-	    }
-	  }, {
-	    key: 'getPPProduction',
-	    value: function getPPProduction() {
-	      var value = balance.PROGRAMMER_EFFICIENCY_MIDDLE; // managerial
-
-	      var coders = this.team.programmers;
-
-	      value += coders[0] * balance.PROGRAMMER_EFFICIENCY_INTERN;
-	      value += coders[1] * balance.PROGRAMMER_EFFICIENCY_JUNIOR;
-	      value += coders[2] * balance.PROGRAMMER_EFFICIENCY_MIDDLE;
-	      value += coders[3] * balance.PROGRAMMER_EFFICIENCY_SENIOR;
-
-	      return value;
-	    }
-	  }, {
-	    key: 'getMPProduction',
-	    value: function getMPProduction() {
-	      return 100;
-	    }
-	  }, {
-	    key: 'getXP',
-	    value: function getXP() {
-	      return this.XP;
-	    }
-	  }, {
-	    key: 'getTestsAmount',
-	    value: function getTestsAmount() {
-	      return this.tests;
-	    }
-	  }, {
-	    key: 'getSpendedXP',
-	    value: function getSpendedXP() {
-	      return this.spendedXP;
-	    }
-	  }, {
-	    key: 'getTotalXP',
-	    value: function getTotalXP() {
-	      return this.totalXP;
-	    }
-	  }, {
-	    key: 'getImprovementsAmount',
-	    value: function getImprovementsAmount() {
-	      return this.improvements;
-	    }
-	  }, {
-	    key: 'getBugs',
-	    value: function getBugs() {
-	      return this.bugs;
-	    }
-	  }, {
-	    key: 'getBonuses',
-	    value: function getBonuses() {
-	      return this.bonuses;
-	    }
-	  }, {
-	    key: 'getExplorationData',
-	    value: function getExplorationData() {
-	      return {
-	        clients: [{
-	          explored: true,
-	          name: 'startups'
-	        }, {
-	          explorable: true,
-	          name: 'programmers',
-	          explorationCost: 100
-	        }],
-	        backend: [],
-	        frontend: [],
-	        testing: [],
-	        team: [],
-	        research: [],
-	        blog: [],
-	        support: [],
-
-	        segments: []
-	      };
-	    }
-	  }, {
-	    key: 'getBugCost',
-	    value: function getBugCost(bugId) {
-	      var bug = this.bugs.find(function (b) {
-	        return b.id === bugId;
-	      });
-
-	      return bug ? bug.cost : 0;
-	    }
-	  }, {
-	    key: 'getBugLoyaltyLoss',
-	    value: function getBugLoyaltyLoss() {
-	      return this.bugs.map(function (i) {
-	        return i.penalty;
-	      }).reduce(function (p, c) {
-	        return p + c;
-	      }, 0);
-	    }
-	  }, {
-	    key: 'getFeatures',
-	    value: function getFeatures(featureGroup) {
-	      return this.features[featureGroup];
-	    }
-	  }, {
-	    key: 'getMainFeatureQualityByFeatureId',
-	    value: function getMainFeatureQualityByFeatureId(featureId) {
-	      return this.features.offer[featureId];
-	    }
-	  }, {
-	    key: 'getMarketingFeatures',
-	    value: function getMarketingFeatures() {
-	      return this.features.marketing;
-	    }
-	  }, {
-	    key: 'getFeatureStatus',
-	    value: function getFeatureStatus(featureGroup, featureName) {
-	      return this.features[featureGroup][featureName] > 0;
-	    }
-	  }, {
-	    key: 'getDefaults',
-	    value: function getDefaults() {
-	      return (0, _productDescriptions2.default)(this.idea);
-	    }
-	  }, {
-	    key: 'getMainFeatures',
-	    value: function getMainFeatures() {
-	      return this.getDefaults().features;
-	    }
-	  }, {
-	    key: 'getMaxMainFeatureQuality',
-	    value: function getMaxMainFeatureQuality(featureId) {
-	      return this.getDefaults().features[featureId].data;
-	    }
-	  }, {
-	    key: 'getBaseFeatureDevelopmentCost',
-	    value: function getBaseFeatureDevelopmentCost(featureId) {
-	      return this.getDefaults().features[featureId].development;
-	    }
-	  }, {
-	    key: 'getPrettyFeatureNameByFeatureId',
-	    value: function getPrettyFeatureNameByFeatureId(featureId) {
-	      return this.getDefaults().features[featureId].shortDescription;
-	    }
-	  }, {
-	    key: 'getDescriptionOfProduct',
-	    value: function getDescriptionOfProduct() {
-	      return this.getDefaults().description;
-	    }
-	  }, {
-	    key: 'getImprovementChances',
-	    value: function getImprovementChances() {
-	      return 5;
-	    }
-	  }, {
-	    key: 'getPaymentModifier',
-	    value: function getPaymentModifier() {
-	      return 1;
-	    }
-	  }, {
-	    key: 'getProductExpenses',
-	    value: function getProductExpenses() {
-	      return this.getProductSupportCost();
-	    }
-	  }, {
-	    key: 'getProductSupportCost',
-	    value: function getProductSupportCost() {
-	      var base = this.getDefaults().support.pp;
-
-	      var modifier = Math.pow(this.getImprovementsAmount(), balance.SUPPORT_COST_MODIFIER);
-
-	      return Math.ceil(base * modifier);
-	    }
-
-	    // bonuses
-
-	  }, {
-	    key: 'getAvailableBonuses',
-	    value: function getAvailableBonuses() {
-	      var _this2 = this;
-
-	      var list = this.getBonusesList();
-
-	      var newList = [];
-
-	      var checkBonus = function checkBonus(b) {
-	        if (_this2.picked(b.name)) {
-	          if (b.childs) {
-	            b.childs.forEach(checkBonus);
-	          }
-
-	          return;
-	        }
-
-	        newList.push(b);
-	      };
-
-	      list.forEach(checkBonus);
-
-	      return newList;
-	    }
-	  }, {
-	    key: 'getBonusesList',
-	    value: function getBonusesList() {
-	      // constants/products/bonuses-list
-	      return null;
-	    }
-	  }, {
-	    key: 'getMarketingFeatureList',
-	    value: function getMarketingFeatureList() {
-	      // constants/products/marketing-feature-list
-	      return null;
-	    }
-	  }, {
-	    key: 'getHypothesisAnalyticsFeatures',
-	    value: function getHypothesisAnalyticsFeatures() {
-	      return null;
-	    }
-	  }, {
-	    key: 'getPaymentFeatures',
-	    value: function getPaymentFeatures() {
-	      return null;
-	    }
-	  }, {
-	    key: 'addPPs',
-
-
-	    // ------------- modify -------------
-	    value: function addPPs(pp) {
-	      this.programming += pp;
-	    }
-	  }, {
-	    key: 'addMPs',
-	    value: function addMPs(mp) {
-	      this.management += mp;
-	    }
-	  }, {
-	    key: 'spendPPs',
-	    value: function spendPPs(pp) {
-	      this.programming -= pp;
-	    }
-	  }, {
-	    key: 'spendMPs',
-	    value: function spendMPs(mp) {
-	      this.management -= mp;
-	    }
-	  }, {
-	    key: 'increaseMoney',
-	    value: function increaseMoney(amount) {
-	      this.money += amount;
-	    }
-	  }, {
-	    key: 'decreaseMoney',
-	    value: function decreaseMoney(amount) {
-	      this.money -= amount;
-	    }
-	  }, {
-	    key: 'addBonuses',
-	    value: function addBonuses() {
-	      this.bonuses++;
-	    }
-	  }, {
-	    key: 'addBug',
-	    value: function addBug(p) {
-	      this.bugs.push({
-	        cost: p.cost,
-	        platform: p.platform,
-	        penalty: p.penalty,
-	        id: this.bugs.length
-	      });
-	    }
-	  }, {
-	    key: 'fixBug',
-	    value: function fixBug(bugId) {
-	      var index = this.bugs.findIndex(function (b) {
-	        return b.id === bugId;
-	      });
-
-	      this.spendPPs(this.bugs[index].cost);
-
-	      this.bugs.splice(index, 1);
-	    }
-	  }, {
-	    key: 'produceResources',
-	    value: function produceResources() {
-	      this.testHypothesis({ value: this.getImprovementChances() });
-	      this.addPPs(this.getPPProduction());
-	      this.addMPs(this.getMPProduction());
-	    }
-	  }, {
-	    key: 'testHypothesis',
-	    value: function testHypothesis(p) {
-	      this.XP += p.value;
-	      this.totalXP += p.value;
-
-	      if (this.tests) {
-	        this.tests++;
-	      } else {
-	        this.tests = 1;
-	      }
-	    }
-	  }, {
-	    key: 'decreaseXP',
-	    value: function decreaseXP(xp) {
-	      this.XP -= xp;
-	      this.spendedXP -= xp;
-	    }
-	  }, {
-	    key: 'improveFeature',
-	    value: function improveFeature(p) {
-	      var previous = this.features[p.featureGroup][p.featureName] || 0;
-
-	      this.features[p.featureGroup][p.featureName] = previous + p.value;
-
-	      if (this.improvements) {
-	        this.improvements++;
-	      } else {
-	        this.improvements = 1;
-	      }
-
-	      this.XP -= p.XP;
-	    }
-	  }, {
-	    key: 'improveFeatureByPoints',
-	    value: function improveFeatureByPoints(p) {
-	      this.features[p.featureGroup][p.featureName] = 1;
-
-	      if (p.featureGroup === 'bonuses') {
-	        this.bonuses--;
-	      }
-	    }
-	  }]);
-	  return Project;
-	}();
-
-	exports.default = Project;
-
-/***/ },
-/* 211 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _classCallCheck2 = __webpack_require__(29);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Company = function Company(products, bonuses) {
-	  (0, _classCallCheck3.default)(this, Company);
-
-	  this.products = products; // List of projectIds
-	  this.bonuses = bonuses;
-	  this.maxDaughterCompanies = 1;
-	};
-
-	exports.default = Company;
 
 /***/ }
 /******/ ]);

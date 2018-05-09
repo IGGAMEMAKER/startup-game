@@ -21,7 +21,7 @@ import {
 
 
 import Project from '../classes/Project';
-import Company from '../classes/Company';
+
 import MarketManager from '../classes/MarketManager';
 
 import stats from '../stats';
@@ -29,16 +29,14 @@ import stats from '../stats';
 
 const EC = 'PRODUCT_EVENT_CHANGE';
 
-let _companies: Array<Company>;
-
 let _products: Array<Project>;
 
 let marketManager;
 
 let _markets: Array;
 
-const initialize = ({ markets, products }) => {
-  logger.log('trying to initialize productStore.js', products);
+const initialize = (world) => {
+  let { products, markets } = world;
 
   _products = products.map(p => new Project().loadFromObject(p));
 
@@ -103,6 +101,14 @@ class ProductStore extends EventEmitter {
     return _products;
   }
 
+  getCompanyCost(id) {
+    return companyCostHelper.compute(_products[id], this.getProductIncome(id), 0);
+  }
+
+  getCompanyCostStructured(id) {
+    return companyCostHelper.structured(_products[id], this.getProductIncome(id), 0);
+  }
+
   getOurProducts() {
     return _products.filter(this.isOurProduct);
   }
@@ -115,13 +121,6 @@ class ProductStore extends EventEmitter {
     return _products[id];
   }
 
-  getCompanyCost(id) {
-    return companyCostHelper.compute(_products[id], this.getProductIncome(id), 0);
-  }
-
-  getCompanyCostStructured(id) {
-    return companyCostHelper.structured(_products[id], this.getProductIncome(id), 0);
-  }
 
   getMainFeatureQualityByFeatureId(id, featureId) {
     return _products[id].getMainFeatureQualityByFeatureId(featureId);
@@ -157,24 +156,6 @@ class ProductStore extends EventEmitter {
 
   getBugLoyaltyLoss(id) {
     return _products[id].getBugLoyaltyLoss();
-  }
-
-  getRatingBasedLoyaltyOnMarket(id, marketId, improvement = null) {
-    const rating = this.getRating(id, marketId, improvement);
-
-    let loyalty;
-
-    if (rating <= 6) {
-      loyalty = -0.1 * (6 - rating);
-    } else {
-      loyalty = 0.15 * (rating - 6);
-    }
-
-    return loyalty;
-  }
-
-  isSegmentingOpened(id) {
-    return false;
   }
 
   isBugFixable(productId, bugId) {
@@ -240,18 +221,6 @@ class ProductStore extends EventEmitter {
     return Object.keys(_products[id].features.bonuses);
   }
 
-  getBonusesList(id) {
-    return _products[id].getBonusesList();
-  }
-
-  getMarketingFeatureList(id) {
-    return _products[id].getMarketingFeatureList();
-  }
-
-  getPaymentFeatures(id) {
-    return _products[id].getPaymentFeatures();
-  }
-
   getImprovementChances(id) {
     return _products[id].getImprovementChances()
   }
@@ -262,18 +231,6 @@ class ProductStore extends EventEmitter {
 
   getDescriptionOfProduct(id) {
     return _products[id].getDescriptionOfProduct();
-  }
-
-  getBonusModifiers(id) {
-    return _products[id].getBonusModifiers();
-  }
-
-  getTestsAmount(id) {
-    return _products[id].getTestsAmount();
-  }
-
-  getImprovementsAmount(id) {
-    return _products[id].getImprovementsAmount();
   }
 
   getBonusesAmount(id) {
@@ -290,10 +247,6 @@ class ProductStore extends EventEmitter {
 
   getTeamExpenses() {
     return 0;
-  }
-
-  getMarketRatingComputationList(id, marketId) {
-    return this.getDefaults(id).markets[marketId].rating;
   }
 
   getMainFeatureIterator(id): Array {
@@ -336,6 +289,14 @@ class ProductStore extends EventEmitter {
     return marketManager.isExploredMarket(id, mId);
   }
 
+  isSegmentingOpened(id) {
+    return false;
+  }
+
+  getMarketingKnowledge(id, marketId) {
+    return marketManager.getMarketingKnowledge(marketId, id);
+  }
+
 
   getLeaderInTech(featureId) {
     const leaders: Array<Project> = _products
@@ -351,8 +312,18 @@ class ProductStore extends EventEmitter {
     return leaders[0];
   }
 
-  getMarketingKnowledge(id, marketId) {
-    return marketManager.getMarketingKnowledge(marketId, id);
+  getRatingBasedLoyaltyOnMarket(id, marketId, improvement = null) {
+    const rating = this.getRating(id, marketId, improvement);
+
+    let loyalty;
+
+    if (rating <= 6) {
+      loyalty = -0.1 * (6 - rating);
+    } else {
+      loyalty = 0.15 * (rating - 6);
+    }
+
+    return loyalty;
   }
 
   getRating(id, marketId, improvement = null) {
@@ -593,9 +564,7 @@ Dispatcher.register((p: PayloadType) => {
       _products[id].addBonuses();
       break;
 
-    default:
-      change = false;
-      break;
+    default: change = false; break;
   }
 
   if (change) {
