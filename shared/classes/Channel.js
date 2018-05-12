@@ -1,9 +1,30 @@
 export default class Channel {
-  constructor(projects, clients, language, coreLevelRange) {
+  constructor(id, projects, clientType, maxClients, language, coreLevelRange) {
+    this.id = id;
     this.projects = projects;
-    this.clients = clients;
+    this.clientType = clientType;
+    this.maxClients = maxClients;
     this.language = language;
-    this.coreLevel = coreLevelRange;
+    // this.coreLevel = coreLevelRange;
+  }
+
+  getId() {
+    return this.id;
+  }
+
+  getProjectInfoOrJoin(projectId) {
+    let index = this.projects.findIndex(p => p.id === projectId);
+
+    if (index < 0) {
+      this.projects.push({
+        id: projectId,
+        clients: 0
+      });
+
+      index = this.projects.findIndex(p => p.id === projectId);
+    }
+
+    return this.projects[index];
   }
 
   join() {
@@ -16,5 +37,9 @@ export default class Channel {
 
   makeAd() {
 
+  }
+
+  grabClients(projectId, loyalty) {
+    const
   }
 }

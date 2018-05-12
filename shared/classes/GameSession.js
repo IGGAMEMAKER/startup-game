@@ -1,5 +1,6 @@
 import Project from './Project';
 import Company from './Company';
+import Channel from './Channel';
 
 export default class GameSession {
   constructor(sessionId, companies, channels, projects, players) {
@@ -28,7 +29,20 @@ export default class GameSession {
     return item;
   };
 
+  getChannelById(channelId): Channel {
+    const item = this.channels.find(c => c.getId() === channelId);
+
+    if (!item) throw `no channel ${channelId} in session ${this.sessionId}`;
+
+    return item;
+  };
+
   // update
+
+  grabClients(projectId, channelId) {
+    this.getChannelById(channelId).grabClients(projectId, 40);
+  }
+
   exploreCore(projectId) {
     this.getProjectById(projectId).exploreCore();
   }

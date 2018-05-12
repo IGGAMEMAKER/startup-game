@@ -78,8 +78,10 @@ export default () => {
     })
   ];
 
+  // id, projects, clientType, maxClients, language, coreLevelRange
+
   const channels = [
-    new Channel([], [], 'ru', [0, 5])
+    new Channel(0, [], 0, 10000, 'ru', [0, 5])
   ];
 
   return {
