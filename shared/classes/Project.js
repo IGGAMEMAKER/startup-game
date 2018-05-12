@@ -18,10 +18,9 @@ const names = [
 
 export default class Project {
   create(data): Project {
-    let { idea, name, projectId, personas, resources, companyId } = data;
+    let { idea, name, projectId, clientProfiles, resources, companyId } = data;
 
     if (!idea) throw 'no idea in classes/Project.js';
-
     if (!projectId) throw 'no projectId in classes/Project.js';
     if (!companyId) throw 'no companyId in classes/Project.js';
 
@@ -38,10 +37,11 @@ export default class Project {
     this.name = name;
 
     this.core = 1;
-    this.personas = personas;
+    this.clientProfiles = clientProfiles;
 
     this.bugs = [];
     this.improvements = 1;
+    this.temporaryBonus = null;
 
 
     this.programming = resources.programmerPoints; // 500;
@@ -55,24 +55,8 @@ export default class Project {
     return this;
   }
 
-  loadFromObject(obj) {
-    for (let index in obj) {
-      this[index] = obj[index];
-    }
-
-    return this;
-  }
-
-  isOurProduct() {
-    return this.owner;
-  }
-
   getId() {
     return this.id;
-  }
-
-  getIdea() {
-    return this.idea;
   }
 
   getName() {
@@ -104,8 +88,8 @@ export default class Project {
     return 100;
   }
 
-  getXP() {
-    return this.XP;
+  getIdeaPoints() {
+    return this.ideas;
   }
 
   getImprovementsAmount() {
@@ -126,19 +110,6 @@ export default class Project {
 
   getBugLoyaltyLoss() {
     return this.bugs.map(i => i.penalty).reduce((p, c) => p + c, 0);
-  }
-
-  getDefaults(): DefaultDescription {
-    return productDescriptions(this.idea);
-  }
-
-  getDescriptionOfProduct() {
-    return this.getDefaults().description;
-  }
-
-
-  getImprovementChances() {
-    return 5;
   }
 
 
@@ -185,30 +156,22 @@ export default class Project {
     this.addMPs(this.getMPProduction());
   }
 
-  testHypothesis(p) {
-    this.XP += p.value;
-  }
-
-  decreaseXP(xp) {
-    this.XP -= xp;
-  }
-
-  incrementImprovements() {
+  upgradeCore() {
+    this.core++;
     this.improvements++;
   }
 
-  improveCore() {
-    this.core++;
-    this.incrementImprovements();
+  upgradeOffer(clientType, ideas) {
+    this.clientProfiles[clientType].quality++;
+    this.ideas -= ideas;
+    this.improvements++;
   }
 
-  improveOffer({ clientType, xp }) {
-    const index = this.personas.findIndex(p => p.clientType === clientType);
+  pickTemporaryProjectBonus(bonusId) {
+    this.temporaryBonus = bonusId;
+  };
 
-    this.personas[index].quality++;
-
-    this.incrementImprovements();
-
-    this.XP -= xp;
+  exploreOffer(clientType) {
+    this.clientProfiles[clientType].potential++;
   }
 }

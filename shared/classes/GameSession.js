@@ -9,6 +9,7 @@ export default class GameSession {
     this.projects = projects;
     this.channels = channels;
     this.players = players;
+    this.tasks = [];
   }
 
   getProjectById(projectId): Project {
@@ -28,7 +29,23 @@ export default class GameSession {
   };
 
   // update
+  exploreCore(projectId) {
+    this.getProjectById(projectId).exploreCore();
+  }
+
   upgradeCore(projectId) {
-    this.getProjectById(projectId).improveCore();
+    this.getProjectById(projectId).upgradeCore();
+  }
+
+  upgradeOffer(projectId, clientType) {
+    this.getProjectById(projectId).upgradeOffer(clientType, 1);
+  }
+
+  exploreOffer(projectId, clientType) {
+    this.getProjectById(projectId).exploreOffer(clientType);
+  }
+
+  pickTemporaryProjectBonus(projectId, bonusId) {
+    this.getProjectById(projectId).pickTemporaryProjectBonus(bonusId);
   }
 }

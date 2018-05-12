@@ -1,6 +1,6 @@
 export default class Channel {
-  constructor(companies, clients, language, coreLevelRange) {
-    this.companies = companies;
+  constructor(projects, clients, language, coreLevelRange) {
+    this.projects = projects;
     this.clients = clients;
     this.language = language;
     this.coreLevel = coreLevelRange;

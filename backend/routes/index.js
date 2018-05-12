@@ -1,26 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-import worldGenerator from '../../shared/content/mock';
+import SessionManager from '../../shared/classes/SessionManager';
 
-import GameSession from '../../shared/classes/GameSession';
-
-const world = {};
+const sessionManager = new SessionManager();
 
 const createSession = () => {
-  const sessionId = 1;
-
-  const data = worldGenerator();
-
-  world[sessionId].session = new GameSession(sessionId,
-    data.companies,
-    data.channels,
-    data.projects,
-    data.players
-  );
-
-  // stats
-  world[sessionId].actions = [];
+  sessionManager.createSession();
 };
 
 createSession();

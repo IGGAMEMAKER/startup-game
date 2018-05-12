@@ -16,33 +16,65 @@ export default () => {
   ];
 
   const companies = [
-    new Company(0, 'Abstergo', 0, [], []),
-    new Company(1, 'Abstergo1', 1, [], []),
-    new Company(2, 'Abstergo2', 2, [], []),
-    new Company(3, 'Abstergo3', 3, [], [])
+    new Company(0, 'Company', 0, [], []),
+    new Company(1, 'Company1', 1, [], []),
+    new Company(2, 'Company2', 2, [], []),
+    new Company(3, 'Company3', 3, [], [])
   ];
+
+  const standardResources = {
+    programmerPoints: 100,
+    managerPoints: 100,
+    salesPoints: 100,
+
+    ideas: 10
+  };
+
+  const makeProfilePool = (id) => {
+    const object = {};
+
+    object[`type${id}`] = {
+      quality: 1,
+      potential: 1
+    };
+
+    return object;
+  };
 
   const projects = [
     new Project().create({
-      idea,
       name: 'WWWEB HOSTING',
+
+      idea,
       companyId: 0,
-      projectId: 0
+      projectId: 0,
+
+      clientProfiles: makeProfilePool(0),
+      resources: standardResources
     }),
     new Project().create({
       idea,
       companyId: 1,
-      projectId: 1
+      projectId: 1,
+
+      clientProfiles: makeProfilePool(1),
+      resources: standardResources
     }),
     new Project().create({
       idea,
       companyId: 2,
-      projectId: 2
+      projectId: 2,
+
+      clientProfiles: makeProfilePool(2),
+      resources: standardResources
     }),
     new Project().create({
       idea,
       companyId: 3,
-      projectId: 3
+      projectId: 3,
+
+      clientProfiles: makeProfilePool(3),
+      resources: standardResources
     })
   ];
 
