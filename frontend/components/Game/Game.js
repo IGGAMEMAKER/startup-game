@@ -21,8 +21,6 @@ import * as sounds from '../../utils/sounds';
 
 import stats from '../../stats';
 
-import * as GAME_STAGES from '../../constants/game-stages';
-
 const MODE_MARKETING = 'MODE_MARKETING';
 const MODE_RESEARCH = 'MODE_RESEARCH';
 const MODE_MAIN_FEATURES = 'MODE_MAIN_FEATURES';
@@ -42,7 +40,6 @@ export default class Game extends Component {
     counter: 0,
 
     id: 0, // productID
-    gamePhase: GAME_STAGES.GAME_STAGE_INIT,
     mode: MODE_MARKETING
   };
 
@@ -95,7 +92,6 @@ export default class Game extends Component {
     this.setState({
       day: scheduleStore.getDay(),
       tasks: scheduleStore.getTasks(),
-      gamePhase: scheduleStore.getGamePhase()
     })
   };
 

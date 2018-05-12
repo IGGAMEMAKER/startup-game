@@ -11,17 +11,13 @@ import logger from './helpers/logger/logger';
 import moneyCalculator from './helpers/economics/money-difference';
 import eventGenerator from './helpers/events/event-generator';
 
-import bot from './helpers/ai/';
-
-import Product from './classes/Project';
+import Product from '../shared/classes/Project';
 
 import {
   isLastDayOfMonth,
   isLastDayOfYear,
   isUsualDay
 } from './helpers/date';
-
-import * as NOTIFICATIONS from './constants/notifications';
 
 const computeTasks = () => {
   const tasks = scheduleStore.getTasks();
@@ -50,20 +46,6 @@ const computeTasks = () => {
 };
 
 const checkRents = day => {
-  // const refreshRents = [];
-  // const rents = productStore.getRents();
-  //
-  // rents
-  //   .forEach((r, i) => {
-  //     if (r.until <= day) {
-  //       refreshRents.push(i);
-  //       messageActions.addNotification(NOTIFICATIONS.NOTIFICATION_RENT_EXPIRED, { r, i });
-  //     }
-  //   });
-  //
-  // if (refreshRents.length) {
-  //   productActions.refreshRents(refreshRents);
-  // }
 };
 
 const run = () => {

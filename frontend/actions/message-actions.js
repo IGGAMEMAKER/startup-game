@@ -1,5 +1,5 @@
 import Dispatcher from '../dispatcher';
-import * as ACTIONS from '../constants/actions/message-actions';
+import * as ACTIONS from '../../shared/constants/actions/message-actions';
 import logger from '../helpers/logger/logger';
 
 import messageStore from '../stores/message-store';

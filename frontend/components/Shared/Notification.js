@@ -3,9 +3,9 @@ import { h, Component } from 'preact';
 
 import messageStore from '../../stores/message-store';
 
-import * as NOTIFICATIONS from '../../constants/notifications';
+import * as NOTIFICATIONS from '../../../shared/constants/notifications';
 
-import * as c from '../../constants/actions/message-actions';
+import * as c from '../../../shared/constants/actions/message-actions';
 
 
 import renderModal from '../Game/Events/event-renderer';

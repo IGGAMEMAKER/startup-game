@@ -17,12 +17,13 @@ const names = [
 
 
 export default class Project {
-  createCompany(data): Project {
-    let { idea, name, isCompetitor, companyId } = data;
+  create(data): Project {
+    let { idea, name, projectId, personas, resources, companyId } = data;
 
     if (!idea) throw 'no idea in classes/Project.js';
 
-    if (companyId === null || companyId === undefined) throw 'no companyId in classes/Project.js';
+    if (!projectId) throw 'no projectId in classes/Project.js';
+    if (!companyId) throw 'no companyId in classes/Project.js';
 
     if (!name) {
       const index = Math.floor(random(0, names.length - 1));
@@ -30,30 +31,26 @@ export default class Project {
       name = names[index];
     }
 
-    this.companyId = companyId;
+    this.id = projectId;
+    this.owner = companyId;
+
     this.idea = idea;
     this.name = name;
 
     this.core = 1;
-    this.personas = [{
-      clientType: 1,
-      quality: 1
-    }];
+    this.personas = personas;
 
     this.bugs = [];
+    this.improvements = 1;
 
 
-    this.programming = 500;
-    this.management = 100;
-    this.XP = 10;
+    this.programming = resources.programmerPoints; // 500;
+    this.management = resources.managerPoints; // 100;
+    this.ideas = resources.ideas; // 10;
 
     this.money = 45000;
 
     this.programmers = [0, 0, 0, 0, 0]; // intern, junior, middle, senior, architect
-
-    this.improvements = 1;
-
-    this.owner = !isCompetitor;
 
     return this;
   }
@@ -68,6 +65,10 @@ export default class Project {
 
   isOurProduct() {
     return this.owner;
+  }
+
+  getId() {
+    return this.id;
   }
 
   getIdea() {
@@ -127,10 +128,6 @@ export default class Project {
     return this.bugs.map(i => i.penalty).reduce((p, c) => p + c, 0);
   }
 
-  getSystemComplexityModifier() {
-    return Math.pow(balance.TECHNOLOGY_COST_MODIFIER, this.improvements * (1 + ((this.personas.length - 1) / 10)))
-  }
-
   getDefaults(): DefaultDescription {
     return productDescriptions(this.idea);
   }
@@ -142,10 +139,6 @@ export default class Project {
 
   getImprovementChances() {
     return 5;
-  }
-
-  getPaymentModifier() {
-    return 1;
   }
 
 

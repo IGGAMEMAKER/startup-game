@@ -1,4 +1,4 @@
-import * as JOB from '../../constants/job';
+import * as JOB from '../../../shared/constants/job';
 import skillHelper from '../../helpers/team/skills';
 
 import random from '../math/random';

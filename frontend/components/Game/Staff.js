@@ -1,14 +1,11 @@
 import { h, Component } from 'preact';
 
 import logger from '../../helpers/logger/logger';
-import * as JOB from '../../constants/job';
+import * as JOB from '../../../shared/constants/job';
 
 import UI from '../UI';
 
-import teamHelper from '../../helpers/team/skills';
-
 import Worker from './Team/Worker';
-import Employee from './Team/Employee';
 
 import flux from '../../flux';
 

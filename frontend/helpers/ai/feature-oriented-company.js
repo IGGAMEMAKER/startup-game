@@ -1,4 +1,4 @@
-import Product from '../../classes/Project';
+import Product from '../../../shared/classes/Project';
 import productStore from '../../stores/product-store';
 
 

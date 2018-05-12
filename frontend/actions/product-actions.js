@@ -1,280 +1,30 @@
 import Dispatcher from '../dispatcher';
-import * as ACTIONS from '../constants/actions/product-actions';
+import * as ACTIONS from '../../shared/constants/actions/product-actions';
 import logger from '../helpers/logger/logger';
 
 import productStore from '../stores/product-store';
 
+import * as transport from '../utils/network/send-data';
+
+const sessionId = 'asd1-9jd-asjdaswqiwje';
+
+const upgradeWorld = (result) => {
+  Dispatcher.dispatch({
+    type: ACTIONS.WORLD_UPGRADE,
+    data: result
+  })
+};
+
+const sendData = (url, data) => {
+  return axios.post(url, data)
+    .then(upgradeWorld)
+};
+
 export default {
-  improveFeature(id, featureGroup, featureName, value, XP) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE,
-      id,
-      featureGroup,
-      featureName,
-      value,
-      XP
-    })
-  },
-  refreshRents(ids: Array) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_TECHNOLOGY_RENT_REFRESH,
-      list: ids.reverse()
-    })
-  },
-
-  setAsMainMarket(id, marketId) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_SET_AS_MAIN,
-      id, marketId
-    })
-  },
-
-  joinMarket(id, marketId, explorationCost) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_JOIN,
-      id,
-      marketId,
-      xp: explorationCost
-    })
-  },
-
-  offerPartnership(c1, c2, marketId) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_OFFER,
-      c1, c2, marketId
-    })
-  },
-  revokePartnership(c1, c2, marketId) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_PARTNERSHIP_REVOKE,
-      c1, c2, marketId
-    })
-  },
-
-  exploreMarket(id, marketId, explorationCost) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_EXPLORE_MARKET,
-      id, marketId, explorationCost
-    })
-  },
-
-  decreaseInfluenceOnMarket(id, marketId) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_MARKETS_INFLUENCE_DECREASE,
-      id, marketId
-    })
-  },
-
-  buyCompany(buyerId, sellerId) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_COMPANY_BUY,
-      buyerId, sellerId
-    })
-  },
-
-  rentTech(sender, acceptor, featureId, price, until) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_TECHNOLOGY_RENT,
-      sender, acceptor, featureId, price, until
-    })
-  },
-
-  addBug(id, cost, platform, penalty) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_ADD_BUG,
-      id,
-      cost,
-      platform,
-      penalty
-    })
-  },
-
-  fixBug(id, bugId) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_FIX_BUG,
-      id,
-      bugId
-    })
-  },
-
-  testHypothesis(id) {
-    const xp = productStore.getImprovementChances(id);
-
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_TEST_HYPOTHESIS,
-      id,
-      value: xp
-    })
-  },
-  improveFeatureByPoints(id, featureGroup, featureName) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
-      id,
-      featureGroup,
-      featureName
-    })
-  },
-  addBonus(id) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_BONUSES_ADD,
-      id
-    })
-  },
-  pickBonus(id, bonusName) {
-    logger.shit('this function is same to improveFeatureByPoints()');
-
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_IMPROVE_FEATURE_BY_POINTS,
-      id,
-      featureGroup: 'bonuses',
-      featureName: bonusName
-    })
-  },
-  addClients(id, marketId, clients, price) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_ADD,
-      id,
-      marketId,
-      clients,
-      price
-    })
-  },
-  addHype(id, marketId, hype, cost) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_HYPE_ADD,
-      id,
-      marketId,
-      hype,
-      cost
-    })
-  },
-  viralClients(id, clients) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_VIRAL_ADD,
-      id,
-      clients
-    })
-  },
-  removeClients(id, clients) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_CLIENTS_REMOVE,
-      id,
-      clients
-    })
-  },
-  loseMonthlyHype(id) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_HYPE_MONTHLY_DECREASE,
-      id
-    })
-  },
-
-  createCompany(p) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_ACTIONS_CREATE_COMPANY,
-      p
-    })
-  },
-
-
-  increaseMoney: (amount, id) => {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_INCREASE_MONEY,
-      amount, id
-    })
-  },
-  decreaseMoney: (amount, id) => {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_INCREASE_MONEY,
-      amount: -amount, id
-    })
-  },
-  hireWorker: (player, i) => {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_HIRE_WORKER,
-      player,
-      i
-    })
-  },
-  fireWorker(i) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_FIRE_WORKER,
-      i
-    })
-  },
-  addEmployee(player) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_ADD,
-      player
-    })
-  },
-  updateEmployees() {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_UPDATE_EMPLOYEES
-    })
-  },
-  rejectEmployee(i) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_EMPLOYEE_REMOVE,
-      i
-    })
-  },
-  
-  produceResources(id) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PRODUCT_PRODUCE_RESOURCES,
-      id
-    })
-  },
-
-  increasePoints(points, id) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_INCREASE_POINTS,
-      points,
-      id
-    })
-  },
-  spendPoints(pp, mp, id) {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_DECREASE_POINTS,
-      pp,
-      mp,
-      id
-    })
-  },
-  buyProgrammingPoints: pp => {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_BUY_PP,
-      pp
-    })
-  },
-  buyMarketingPoints: mp => {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_BUY_MP,
-      mp
-    })
-  },
-
-  setTaskForPerson: (task, index) => {
-    Dispatcher.dispatch({
-      type: ACTIONS.PLAYER_ACTIONS_SET_TASK,
-      task,
-      index
-    })
-  },
-
-  loans: {
-    take: (amount) => {
-      Dispatcher.dispatch({
-        type: ACTIONS.PLAYER_ACTIONS_LOANS_TAKE,
-        amount
-      })
-    },
-    repay: (id) => {
-      Dispatcher.dispatch({
-        type: ACTIONS.PLAYER_ACTIONS_LOANS_REPAY,
-        id
-      })
-    }
+  improveFeature(projectId, problemId) {
+    sendData(`/solutions/upgrade`, {
+      projectId,
+      problemId
+    });
   }
 };

@@ -1,7 +1,7 @@
-const getSkill = skill => Math.floor(skill / 100);
 import getSpecialization from './specialization';
-import * as JOB from '../../constants/job';
+import * as JOB from '../../../shared/constants/job';
 
+const getSkill = skill => Math.floor(skill / 100);
 
 export default {
   plain(p) {

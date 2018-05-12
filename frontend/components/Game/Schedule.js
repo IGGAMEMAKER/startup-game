@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 import logger from '../../helpers/logger/logger';
-import { WORK_SPEED_NORMAL } from '../../constants/work-speed';
 
 import percentify from '../../helpers/math/percentify';
 import round from '../../helpers/math/round';

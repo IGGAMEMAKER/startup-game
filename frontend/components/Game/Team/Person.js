@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 
 import coloringRange from '../../../helpers/coloring-range';
 import teamHelper from '../../../helpers/team/skills';
-import * as JOB from '../../../constants/job';
+import * as JOB from '../../../../shared/constants/job';
 
 export default class Person extends Component {
   componentWillMount() {}

@@ -3,7 +3,7 @@ import UI from '../../UI';
 
 import flux from '../../../flux';
 
-import level from '../../../content/levels/level1';
+import level from '../../../../shared/content/levels/level1';
 
 const STAGE_1 = 1;
 const STAGE_2 = 2;

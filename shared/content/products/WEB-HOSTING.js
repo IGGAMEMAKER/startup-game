@@ -51,6 +51,9 @@ const SEGMENT_CORPORATIONS = 'Корпорации';
 
 export default {
   description: 'Веб хостинг. Позволяет клиентам создавать сайты не заботясь об инфраструктуре',
+  resources: {
+    
+  },
   features: [
     {
       name: 'VPS',

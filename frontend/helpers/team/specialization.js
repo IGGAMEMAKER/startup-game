@@ -1,4 +1,4 @@
-import * as JOB from '../../constants/job';
+import * as JOB from '../../../shared/constants/job';
 
 export default p => {
   const skills = [

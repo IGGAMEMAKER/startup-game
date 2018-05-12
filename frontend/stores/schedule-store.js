@@ -1,12 +1,8 @@
 import { EventEmitter } from 'events';
 import Dispatcher from '../dispatcher';
-import * as c from '../constants/actions/schedule-actions';
-import payloads from '../constants/actions/payloads';
+import * as c from '../../shared/constants/actions/schedule-actions';
+import payloads from '../../shared/constants/actions/payloads';
 import logger from '../helpers/logger/logger';
-
-import * as GAME_STAGES from '../constants/game-stages';
-
-import { WORK_SPEED_NORMAL } from '../constants/work-speed';
 
 import sessionManager from '../helpers/session-manager';
 
@@ -18,12 +14,9 @@ let _tasks = [];
 
 let _day = 1;
 
-let _gamePhase = GAME_STAGES.GAME_STAGE_INIT;
-
-const initialize = ({ tasks, day, gamePhase }) => {
+const initialize = ({ tasks, day }) => {
   _tasks = tasks;
   _day = day;
-  _gamePhase = gamePhase;
 };
 
 initialize(sessionManager.getScheduleStorageData());
@@ -70,15 +63,10 @@ class ScheduleStore extends EventEmitter {
     return _day + 360;
   }
 
-  getGamePhase() {
-    return _gamePhase;
-  }
-
   static getStoreData() {
     return {
       tasks: _tasks,
       day: _day,
-      gamePhase: _gamePhase
     }
   }
 }
@@ -105,7 +93,7 @@ const addTask = task => {
     isSynchronous: queue,
     start, finish,
     progress: 0, inProgress,
-    timecost: days * WORK_SPEED_NORMAL,
+    timecost: days,
     speed: performance
   };
 
@@ -170,14 +158,6 @@ Dispatcher.register((p: PayloadType) => {
           _tasks[newSynchronousTaskId].inProgress = true;
         }
       }
-      break;
-
-    case c.SCHEDULE_ACTIONS_GAME_START:
-      _gamePhase = GAME_STAGES.GAME_STAGE_GAME_STARTED;
-      break;
-
-    case c.SCHEDULE_ACTIONS_SET_GAME_PHASE:
-      _gamePhase = p.phase;
       break;
 
     default:

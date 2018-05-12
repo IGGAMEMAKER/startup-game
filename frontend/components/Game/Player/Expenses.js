@@ -4,7 +4,7 @@ import { h, Component } from 'preact';
 import productStore from '../../../stores/product-store';
 import productActions from '../../../actions/product-actions';
 
-import * as EXPENSES from '../../../constants/expenses';
+import * as EXPENSES from '../../../../shared/constants/expenses';
 
 import Button from '../../Shared/Button';
 

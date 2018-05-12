@@ -1,5 +1,5 @@
 import Dispatcher from '../dispatcher';
-import * as ACTIONS from '../constants/actions/schedule-actions';
+import * as ACTIONS from '../../shared/constants/actions/schedule-actions';
 import logger from '../helpers/logger/logger';
 
 import scheduleStore from '../stores/schedule-store';

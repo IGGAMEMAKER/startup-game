@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 
 import messageStore from '../../stores/message-store';
 
-import * as c from '../../constants/actions/message-actions';
+import * as c from '../../../shared/constants/actions/message-actions';
 
 
 import renderModal from '../Game/Events/event-renderer';
