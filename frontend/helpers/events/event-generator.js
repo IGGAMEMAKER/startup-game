@@ -1,4 +1,4 @@
-import random from '../math/random';
+import random from '../../../shared/utils/random';
 
 import logger from '../../helpers/logger/logger';
 

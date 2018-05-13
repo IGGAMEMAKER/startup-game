@@ -17,7 +17,7 @@ const names = [
 
 
 export default class Project {
-  create(data): Project {
+  constructor(data): Project {
     let { idea, name, projectId, clientProfiles, resources, companyId } = data;
 
     if (!idea) throw 'no idea in classes/Project.js';

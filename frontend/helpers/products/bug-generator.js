@@ -1,4 +1,4 @@
-import random from '../math/random';
+import random from '../../../shared/utils/random';
 import round from '../math/round';
 
 export default (platforms, featureCost = 10, tests, bonuses) => {

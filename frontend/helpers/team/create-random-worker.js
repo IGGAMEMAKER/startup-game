@@ -1,7 +1,4 @@
-import * as JOB from '../../../shared/constants/job';
-import skillHelper from '../../helpers/team/skills';
-
-import random from '../math/random';
+import random from '../../../shared/utils/random';
 
 export default {
   create() {
@@ -13,21 +10,7 @@ export default {
     const marketing = Math.floor(random(102, 1000));
     const analyst = 0; // Math.floor(random(0, 1000));
 
-    let rating;
-    let task;
-
-    let obj = { skills: { marketing, programming, analyst }};
-    if (skillHelper.isMarketer(obj)) {
-      task = JOB.JOB_TASK_MARKETING_POINTS;
-      rating = marketing;
-    } else if (skillHelper.isProgrammer(obj)) {
-      task = JOB.JOB_TASK_PROGRAMMER_POINTS;
-      rating = programming;
-    } else {
-      // by default - go to marketing
-      task = JOB.JOB_TASK_MARKETING_POINTS;
-      rating = marketing;
-    }
+    let rating = 5;
 
     const baseSalary = rating * 6;
 
@@ -58,11 +41,9 @@ export default {
         marketing,
         analyst
       },
-      jobMotivation: JOB.JOB_MOTIVATION_IDEA_FAN,
+      jobMotivation: null,
       salary
     };
-
-    player.task = task;
 
     return player;
   }
