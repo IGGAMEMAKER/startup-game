@@ -1,5 +1,5 @@
 import productDescriptions from '../helpers/products/product-descriptions';
-import random from '../helpers/math/random';
+import random from '../utils/random';
 
 import {
   DefaultDescription
@@ -44,11 +44,10 @@ export default class Project {
     this.temporaryBonus = null;
 
 
-    this.programming = resources.programmerPoints; // 500;
-    this.management = resources.managerPoints; // 100;
-    this.ideas = resources.ideas; // 10;
-
-    this.money = 45000;
+    this.programming = resources.programmerPoints;
+    this.management = resources.managerPoints;
+    this.ideas = resources.ideas;
+    this.money = resources.money;
 
     this.programmers = [0, 0, 0, 0, 0]; // intern, junior, middle, senior, architect
 
