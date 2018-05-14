@@ -18,7 +18,7 @@ const names = [
 
 export default class Project {
   constructor(data): Project {
-    let { idea, name, projectId, clientProfiles, resources, companyId } = data;
+    let { idea, name, projectId, clientProfiles, channels, resources, companyId } = data;
 
     if (!idea) throw 'no idea in classes/Project.js';
     if (!projectId) throw 'no projectId in classes/Project.js';
@@ -42,6 +42,8 @@ export default class Project {
     this.bugs = [];
     this.improvements = 1;
     this.temporaryBonus = null;
+
+    this.channels = channels;
 
 
     this.programming = resources.programmerPoints;
@@ -169,6 +171,14 @@ export default class Project {
   pickTemporaryProjectBonus(bonusId) {
     this.temporaryBonus = bonusId;
   };
+
+  exploreClients(channelId) {
+    this.channels.push({
+      id: channelId,
+      clients: 0,
+      adPower: 0
+    })
+  }
 
   exploreOffer(clientType) {
     this.clientProfiles[clientType].potential++;

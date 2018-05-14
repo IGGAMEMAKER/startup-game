@@ -41,28 +41,29 @@ export default () => {
 
     const initialChannelId = i * numberOfChannelsPerPlayer;
 
-    projects.push(
-      new Project({
-        idea,
-        companyId: i,
-        projectId: i,
-        channels: [initialChannelId],
-
-        clientProfiles: makeProfilePool(i),
-        resources: standardResources
-      })
-    );
-
     const channelRecord = {
       id: initialChannelId,
       clients: 0,
       adPower: 0
     };
 
-    channels.push(new Channel(initialChannelId, [channelRecord], 50, i, 1000, 'ru'));
-    channels.push(new Channel(initialChannelId + 1, [], 125, i, 5000, 'ru'));
-    channels.push(new Channel(initialChannelId + 2, [], 225, i, 15000, 'en'));
-    channels.push(new Channel(initialChannelId + 3, [], 325, i, 50000, 'en'));
+    projects.push(
+      new Project({
+        idea,
+        companyId: i,
+        projectId: i,
+        channels: [channelRecord],
+
+        clientProfiles: makeProfilePool(i),
+        resources: standardResources
+      })
+    );
+
+
+    channels.push(new Channel(initialChannelId,     50, 50, i, 1000, 'ru'));
+    channels.push(new Channel(initialChannelId + 1, 125, 125, i, 5000, 'ru'));
+    channels.push(new Channel(initialChannelId + 2, 225, 225, i, 15000, 'en'));
+    channels.push(new Channel(initialChannelId + 3, 325, 325, i, 50000, 'en'));
 
     companies.push(new Company(i, `Company ${i}`, i, [], []));
   }

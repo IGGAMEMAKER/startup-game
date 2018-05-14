@@ -1,40 +1,43 @@
 // import logger from '../../../'
 
 export default class Channel {
-  constructor(id, projects, adCost, clientType, maxClients, language) {
+  constructor(id, adCost, adComplexity, clientType, maxClients, language) {
     this.id = id;
-    this.projects = projects;
     this.clientType = clientType;
     this.language = language;
+    this.clients = maxClients;
     this.maxClients = maxClients;
     this.adCost = adCost;
+    this.adComplexity = adComplexity;
+    this.channelWidth = 50;
   }
 
   getId() {
     return this.id;
   }
 
-  getProjectInfo(projectId) {
-    return this.projects.find(p => p.id === projectId);
+  grabClients(adPower) {
+    /// adPower from 0 to 1
+    let clients = this.channelWidth * adPower;
+
+    if (clients > this.clients) {
+      clients = this.clients;
+    }
+
+    this.clients -= clients;
+
+    return clients;
   }
 
-  join() {
-    this.projects.push({
-      id: projectId,
-      clients: 0,
-      adPower: 0
-    });
-  }
+  churnClients(returnedClients) {
+    let clients;
 
-  prepareAd(projectId) {
-    const projectInfo = this.getProjectInfo(projectId);
+    if (this.clients + returnedClients > this.maxClients) {
+      clients = this.maxClients - this.clients;
+    } else {
+      clients = returnedClients;
+    }
 
-
-  }
-
-  grabClients(projectId, loyalty) {
-    const projectInfo = this.getProjectInfo(projectId);
-
-    
-  }
+    this.clients += clients;
+  };
 }
