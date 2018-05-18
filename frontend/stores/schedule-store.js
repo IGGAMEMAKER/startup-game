@@ -66,7 +66,7 @@ class ScheduleStore extends EventEmitter {
   static getStoreData() {
     return {
       tasks: _tasks,
-      day: _day,
+      day: _day
     }
   }
 }

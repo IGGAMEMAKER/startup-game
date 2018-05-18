@@ -2,6 +2,8 @@ import Project from './Project';
 import Company from './Company';
 import Channel from './Channel';
 
+import * as ACTIONS from '../constants/actions/product-actions';
+
 export default class GameSession {
   constructor(sessionId, companies, channels, projects, players) {
     this.sessionId = sessionId;
@@ -39,6 +41,53 @@ export default class GameSession {
   };
 
   // update
+  addTask(taskType, channel, executionTime, resources, data) {
+    this.getProjectById(data.projectId).spendResources(resources);
+
+    this.tasks.push({
+      progress: 0,
+      executionTime,
+
+      taskType,
+      channel,
+      resources,
+      data
+    })
+  }
+
+  executeTask(task) {
+    const data = task.data;
+    const projectId = task.projectId;
+
+    switch (task.taskType) {
+      case ACTIONS.ACTIONS_EXPLORE_CORE:
+        this.exploreCore(projectId);
+        break;
+
+      case ACTIONS.ACTIONS_UPGRADE_CORE:
+        this.upgradeCore(projectId);
+        break;
+
+      case ACTIONS.ACTIONS_EXPLORE_OFFER:
+        this.exploreOffer(projectId);
+        break;
+
+      case ACTIONS.ACTIONS_UPGRADE_OFFER:
+        this.upgradeOffer(projectId, data.clientType);
+        break;
+    }
+  };
+
+  spendResources(projectId, resources) {
+
+  }
+
+  isEnoughResources(projectId, resources) {
+
+  }
+
+
+  // result functions
 
   exploreCore(projectId) {
     this.getProjectById(projectId).exploreCore();
@@ -53,6 +102,7 @@ export default class GameSession {
   }
 
   exploreOffer(projectId, clientType) {
+    // spend manager points and 1 idea point for exploration
     this.getProjectById(projectId).exploreOffer(clientType);
   }
 
@@ -60,8 +110,8 @@ export default class GameSession {
     this.getProjectById(projectId).pickTemporaryProjectBonus(bonusId);
   }
 
-  exploreClients(projectId, channelId) {
-    this.getProjectById(projectId).exploreClients(channelId);
+  exploreClientTypes(projectId, channelId) {
+    this.getProjectById(projectId).exploreClientTypes(channelId);
   }
 
   grabClients(projectId, channelId) {

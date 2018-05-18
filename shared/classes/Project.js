@@ -1,4 +1,4 @@
-import productDescriptions from '../helpers/products/product-descriptions';
+import Resources from './Resources';
 import random from '../utils/random';
 
 import {
@@ -17,8 +17,16 @@ const names = [
 
 
 export default class Project {
-  constructor(data): Project {
-    let { idea, name, projectId, clientProfiles, channels, resources, companyId } = data;
+  constructor(data) {
+    let {
+      idea,
+      name,
+      projectId,
+      clientProfiles,
+      channels,
+      resources,
+      companyId
+    } = data;
 
     if (!idea) throw 'no idea in classes/Project.js';
     if (!projectId) throw 'no projectId in classes/Project.js';
@@ -45,15 +53,8 @@ export default class Project {
 
     this.channels = channels;
 
-
-    this.programming = resources.programmerPoints;
-    this.management = resources.managerPoints;
-    this.ideas = resources.ideas;
-    this.money = resources.money;
-
+    this.resources = resources;
     this.programmers = [0, 0, 0, 0, 0]; // intern, junior, middle, senior, architect
-
-    return this;
   }
 
   getId() {
@@ -62,14 +63,6 @@ export default class Project {
 
   getName() {
     return this.name;
-  }
-
-  getPP() {
-    return this.programming;
-  }
-
-  getMP() {
-    return this.management;
   }
 
   getPPProduction() {
@@ -115,29 +108,9 @@ export default class Project {
 
 
   // ------------- modify -------------
-  addPPs(pp) {
-    this.programming += pp;
-  }
-
-  addMPs(mp) {
-    this.management += mp;
-  }
-
-  spendPPs(pp) {
-    this.programming -= pp;
-  }
-
-  spendMPs(mp) {
-    this.management -= mp;
-  }
-
-  increaseMoney(amount) {
-    this.money += amount;
-  }
-
-  decreaseMoney(amount) {
-    this.money -= amount;
-  }
+  spendResources(resources: Resources) {
+    
+  };
 
   addBug(p) {
     this.bugs.push({
@@ -164,15 +137,15 @@ export default class Project {
 
   upgradeOffer(clientType, ideas) {
     this.clientProfiles[clientType].quality++;
-    this.ideas -= ideas;
     this.improvements++;
+    this.ideas -= ideas;
   }
 
   pickTemporaryProjectBonus(bonusId) {
     this.temporaryBonus = bonusId;
   };
 
-  exploreClients(channelId) {
+  exploreClientTypes(channelId) {
     this.channels.push({
       id: channelId,
       clients: 0,

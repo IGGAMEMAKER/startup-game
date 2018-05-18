@@ -25,4 +25,8 @@ export default class SessionManager {
     // stats
     this.world[sessionId].actions = [];
   }
+
+  getSession(sessionId): GameSession {
+    return this.world[sessionId];
+  }
 }

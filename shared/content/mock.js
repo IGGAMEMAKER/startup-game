@@ -1,5 +1,6 @@
 import Project from '../classes/Project';
 import Channel from '../classes/Channel';
+import Resources from '../classes/Resources';
 import Company from '../classes/Company';
 import Person from '../classes/Person';
 
@@ -22,14 +23,11 @@ export default () => {
   const numberOfPlayers = 4;
   const numberOfChannelsPerPlayer = 4;
 
-  const standardResources = {
-    programmerPoints: 100,
-    managerPoints: 100,
-    salesPoints: 100,
-    money: 45000,
-
-    ideas: 10
-  };
+  const standardResources = () => new Resources()
+    .ideas(10)
+    .managerPoints(100)
+    .money(45000)
+    .programmerPoints(100);
 
   const players = [];
   const companies = [];
@@ -54,8 +52,11 @@ export default () => {
         projectId: i,
         channels: [channelRecord],
 
+        servers: 0,
+        security: 0,
+
         clientProfiles: makeProfilePool(i),
-        resources: standardResources
+        resources: standardResources()
       })
     );
 
