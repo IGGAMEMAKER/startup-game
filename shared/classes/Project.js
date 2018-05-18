@@ -29,8 +29,8 @@ export default class Project {
     } = data;
 
     if (!idea) throw 'no idea in classes/Project.js';
-    if (!projectId) throw 'no projectId in classes/Project.js';
-    if (!companyId) throw 'no companyId in classes/Project.js';
+    // if (!projectId) throw 'no projectId in classes/Project.js';
+    // if (!companyId) throw 'no companyId in classes/Project.js';
 
     if (!name) {
       const index = Math.floor(random(0, names.length - 1));
@@ -109,7 +109,7 @@ export default class Project {
 
   // ------------- modify -------------
   spendResources(resources: Resources) {
-    
+
   };
 
   addBug(p) {

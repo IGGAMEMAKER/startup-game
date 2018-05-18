@@ -20,7 +20,7 @@ export default class SessionManager {
       data.players
     );
 
-    this.world[sessionId].session = session;
+    this.world[sessionId] = { session };
 
     // stats
     this.world[sessionId].actions = [];
