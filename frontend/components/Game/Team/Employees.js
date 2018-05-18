@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import store from '../../../stores/product-store';
+import store from '../../../stores/store';
 
 import Employee from '../Team/Employee';
 

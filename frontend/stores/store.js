@@ -67,7 +67,7 @@ Dispatcher.register((p: PayloadType) => {
   if (change) {
     stats.saveAction(p.type, p);
 
-    sessionManager.saveProductStorageData(ProductStore.getStoreData());
+    // sessionManager.saveProductStorageData(ProductStore.getStoreData());
 
     store.emitChange();
   }

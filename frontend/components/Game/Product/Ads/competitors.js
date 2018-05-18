@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 
-import productStore from '../../../../stores/product-store';
+import productStore from '../../../../stores/store';
 import Competitor from './competitor';
 
 export default class Competitors extends Component {

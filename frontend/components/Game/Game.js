@@ -1,9 +1,7 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-import productStore from '../../stores/product-store';
-import messageStore from '../../stores/message-store';
-import scheduleStore from '../../stores/schedule-store';
+import productStore from '../../stores/store';
 import scheduleActions from '../../actions/schedule-actions';
 
 
@@ -14,8 +12,6 @@ import Menu from './Menu';
 import ProductPanel from './Product/ProductPanel/product-panel';
 import UI from '../UI';
 
-
-import gameRunner from '../../game';
 
 import * as sounds from '../../utils/sounds';
 
@@ -45,14 +41,14 @@ export default class Game extends Component {
 
   initialize = () => {
     this.getProductsFromStore();
-    this.pickDataFromScheduleStore();
+    // this.pickDataFromScheduleStore();
 
     this.runGame();
   };
 
   runGame = () => {
     if (!this.state.pause) {
-      gameRunner.run();
+      // gameRunner.run();
     }
 
     setTimeout(() => {
@@ -88,25 +84,18 @@ export default class Game extends Component {
     }
   };
 
-  pickDataFromScheduleStore = () => {
-    this.setState({
-      day: scheduleStore.getDay(),
-      tasks: scheduleStore.getTasks(),
-    })
-  };
-
   getProductsFromStore = () => {
     const productId = this.state.id;
 
-    const xp = productStore.getXP(productId);
-    const mp = productStore.getManagerPoints(productId);
-    const pp = productStore.getProgrammerPoints(productId);
+    const xp = 100; // productStore.getXP(productId);
+    const mp = 100; // productStore.getManagerPoints(productId);
+    const pp = 100; // productStore.getProgrammerPoints(productId);
 
-    const productionMP = productStore.getMPProduction(productId);
-    const productionPP = productStore.getPPProduction(productId);
+    const productionMP = 100; // productStore.getMPProduction(productId);
+    const productionPP = 100; // productStore.getPPProduction(productId);
 
-    const money = productStore.getMoney(productId);
-    const products = productStore.getOurProducts();
+    const money = 10000; // productStore.getMoney(productId);
+    const products = []; // productStore.getOurProducts();
 
     this.setState({
       products,
@@ -124,10 +113,6 @@ export default class Game extends Component {
     this.initialize();
 
     productStore.addChangeListener(this.getProductsFromStore);
-    scheduleStore.addChangeListener(this.pickDataFromScheduleStore);
-    messageStore.addChangeListener(this.getMessages);
-
-    scheduleActions.startGame();
   }
 
   setMode = (mode) => {
@@ -188,7 +173,7 @@ export default class Game extends Component {
   };
 
   render(props, state) {
-    const modalActive = messageStore.isDrawable();
+    const modalActive = false; // messageStore.isDrawable();
 
     const resources = {
       mp: state.mp,
@@ -202,27 +187,28 @@ export default class Game extends Component {
       pp: state.productionPP
     };
 
+              // <Menu
+              //   id={this.state.id}
+              //   pause={state.pause}
+              //   pauseGame={this.pauseGame}
+              //   setGameSpeed={this.setGameSpeed}
+              //   day={state.day}
+              //   resources={resources}
+              //   production={production}
+              // />
+              // {this.renderProductMenuNavbar()}
+            // {this.renderProductMenu(state)}
     return (
       <div>
         <UI.Modal onclose={this.resumeGame} />
         <div className={`body-background ${modalActive ? 'blurred' : ''}`}>
           <div className="body-wrapper">
             <div className="menu-fixed">
-              <Menu
-                id={this.state.id}
-                pause={state.pause}
-                pauseGame={this.pauseGame}
-                setGameSpeed={this.setGameSpeed}
-                day={state.day}
-                resources={resources}
-                production={production}
-              />
-              {this.renderProductMenuNavbar()}
+              HI GIRLS
             </div>
             <hr />
             <br />
             <br />
-            {this.renderProductMenu(state)}
             <br />
           </div>
         </div>

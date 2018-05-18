@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 
-import productStore from '../../../../stores/product-store';
+import productStore from '../../../../stores/store';
 import productActions from '../../../../actions/product-actions';
 import shortenValue from '../../../../helpers/math/shorten-value';
 

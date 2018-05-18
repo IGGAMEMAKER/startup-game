@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 
-import productStore from '../../../stores/product-store';
+import productStore from '../../../stores/store';
 
 import ClientRetention from '../Product/Markets/ClientRetention';
 import ClientAcquisition from '../Product/Markets/ClientAcquisition';

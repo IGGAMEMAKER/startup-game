@@ -2,7 +2,7 @@ import Dispatcher from '../dispatcher';
 import * as ACTIONS from '../../shared/constants/actions/product-actions';
 import logger from '../helpers/logger/logger';
 
-import productStore from '../stores/product-store';
+import productStore from '../stores/store';
 
 import * as transport from '../utils/network/send-data';
 

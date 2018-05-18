@@ -1,5 +1,5 @@
 import Product from '../../../shared/classes/Project';
-import productStore from '../../stores/product-store';
+import productStore from '../../stores/store';
 
 
 const timeUntilMoneyCollapse = (p) => { return 0; };

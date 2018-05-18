@@ -19,7 +19,7 @@ const initialize = ({ tasks, day }) => {
   _day = day;
 };
 
-initialize(sessionManager.getScheduleStorageData());
+// initialize(sessionManager.getScheduleStorageData());
 
 class ScheduleStore extends EventEmitter {
   addChangeListener(cb:Function) {
@@ -166,7 +166,6 @@ Dispatcher.register((p: PayloadType) => {
 
   if (change) {
     stats.saveAction(p.type, p);
-    sessionManager.saveScheduleStorageData(ScheduleStore.getStoreData());
 
     store.emitChange();
   }

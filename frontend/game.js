@@ -1,4 +1,4 @@
-import productStore from './stores/product-store';
+import productStore from './stores/store';
 import scheduleStore from './stores/schedule-store';
 
 import productActions from './actions/product-actions';
@@ -101,7 +101,7 @@ const run = () => {
   }
 
   // try to make an event
-  eventGenerator.emit(day);
+  // eventGenerator.emit(day);
 };
 
 export default {

@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 
-import productStore from '../../../../stores/product-store';
+import productStore from '../../../../stores/store';
 
 
 export default class SegmentExplorerList extends Component {

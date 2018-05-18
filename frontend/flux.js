@@ -1,4 +1,4 @@
-import productStore from './stores/product-store';
+import productStore from './stores/store';
 import scheduleStore from './stores/schedule-store';
 import messageStore from './stores/message-store';
 

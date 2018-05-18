@@ -1,4 +1,4 @@
-import productStore from '../../stores/product-store';
+import productStore from '../../stores/store';
 
 const calculate = (id) => {
   const ourCompanyId = id ? id : 0;

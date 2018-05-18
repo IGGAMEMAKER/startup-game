@@ -17,7 +17,7 @@ type StateType = {
 
 type PropsType = {};
 
-import store from '../../stores/product-store';
+import store from '../../stores/store';
 
 const IS_STAFF = 'IS_STAFF';
 const IS_EMPLOYEES = 'IS_EMPLOYEES';

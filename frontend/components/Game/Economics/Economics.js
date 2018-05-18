@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 
 import UI from '../../UI';
 import moneyCalculator from '../../../helpers/economics/money-difference';
-import productStore from '../../../stores/product-store';
+import productStore from '../../../stores/store';
 import productActions from '../../../actions/product-actions';
 
 import Expenses from '../Player/Expenses';

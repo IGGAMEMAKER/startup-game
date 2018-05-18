@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 // import React, { Component, PropTypes } from 'react';
 
-import productStore from '../../../../stores/product-store';
+import productStore from '../../../../stores/store';
 
 import round from '../../../../helpers/math/round';
 
