@@ -3,10 +3,7 @@ import Dispatcher from '../dispatcher';
 
 import logger from '../helpers/logger/logger';
 
-import sessionManager from '../helpers/session-manager';
-
 import * as c from '../../shared/constants/actions/product-actions';
-import * as ACTIONS from '../../shared/constants/actions/schedule-actions';
 
 import payloads from '../../shared/constants/actions/payloads';
 

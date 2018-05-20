@@ -586,15 +586,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
-	var _scheduleActions = __webpack_require__(113);
+	var _scheduleActions = __webpack_require__(106);
 
 	var _scheduleActions2 = _interopRequireDefault(_scheduleActions);
 
-	var _stages = __webpack_require__(114);
+	var _stages = __webpack_require__(112);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -602,7 +602,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _Menu = __webpack_require__(115);
+	var _Menu = __webpack_require__(113);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -610,11 +610,11 @@
 
 	var _productPanel2 = _interopRequireDefault(_productPanel);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _sounds = __webpack_require__(187);
+	var _sounds = __webpack_require__(179);
 
 	var sounds = _interopRequireWildcard(_sounds);
 
@@ -2448,7 +2448,141 @@
 
 
 /***/ }),
-/* 88 */,
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(3);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(30);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(31);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(35);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(80);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _events = __webpack_require__(89);
+
+	var _dispatcher = __webpack_require__(90);
+
+	var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+	var _logger = __webpack_require__(95);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	var _sessionManager = __webpack_require__(96);
+
+	var _sessionManager2 = _interopRequireDefault(_sessionManager);
+
+	var _productActions = __webpack_require__(97);
+
+	var c = _interopRequireWildcard(_productActions);
+
+	var _scheduleActions = __webpack_require__(98);
+
+	var ACTIONS = _interopRequireWildcard(_scheduleActions);
+
+	var _payloads = __webpack_require__(99);
+
+	var _payloads2 = _interopRequireDefault(_payloads);
+
+	var _productDescription = __webpack_require__(101);
+
+	var _stats = __webpack_require__(102);
+
+	var _stats2 = _interopRequireDefault(_stats);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var EC = 'PRODUCT_EVENT_CHANGE';
+
+	var companyId = 0;
+	var companies = [];
+	var projects = [];
+	var channels = [];
+
+	var ProductStore = function (_EventEmitter) {
+	  (0, _inherits3.default)(ProductStore, _EventEmitter);
+
+	  function ProductStore() {
+	    (0, _classCallCheck3.default)(this, ProductStore);
+	    return (0, _possibleConstructorReturn3.default)(this, (ProductStore.__proto__ || (0, _getPrototypeOf2.default)(ProductStore)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(ProductStore, [{
+	    key: 'addChangeListener',
+	    value: function addChangeListener(cb) {
+	      this.addListener(EC, cb);
+	    }
+	  }, {
+	    key: 'removeChangeListener',
+	    value: function removeChangeListener(cb) {
+	      this.removeListener(EC, cb);
+	    }
+	  }, {
+	    key: 'emitChange',
+	    value: function emitChange() {
+	      this.emit(EC);
+	    }
+	  }]);
+	  return ProductStore;
+	}(_events.EventEmitter);
+
+	var store = new ProductStore();
+
+	var payload = _payloads2.default.productStorePayload;
+
+
+	_dispatcher2.default.register(function (p) {
+	  if (!p.type) {
+	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
+
+	    return;
+	  }
+
+	  var id = p.id;
+
+	  var change = true;
+
+	  switch (p.type) {
+	    case c.WORLD_UPGRADE:
+	      channels = p.data.channels;
+	      projects = p.data.projects;
+	      companies = p.data.companies;
+	      break;
+	  }
+
+	  if (change) {
+	    _stats2.default.saveAction(p.type, p);
+
+	    // sessionManager.saveProductStorageData(ProductStore.getStoreData());
+
+	    store.emitChange();
+	  }
+	});
+
+	exports.default = store;
+
+/***/ }),
 /* 89 */
 /***/ (function(module, exports) {
 
@@ -3605,184 +3739,90 @@
 	  value: true
 	});
 
-	var _getPrototypeOf = __webpack_require__(3);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(30);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(31);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(35);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(80);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _events = __webpack_require__(89);
-
 	var _dispatcher = __webpack_require__(90);
 
 	var _dispatcher2 = _interopRequireDefault(_dispatcher);
 
-	var _messageActions = __webpack_require__(107);
+	var _scheduleActions = __webpack_require__(98);
 
-	var c = _interopRequireWildcard(_messageActions);
-
-	var _payloads = __webpack_require__(99);
-
-	var _payloads2 = _interopRequireDefault(_payloads);
+	var ACTIONS = _interopRequireWildcard(_scheduleActions);
 
 	var _logger = __webpack_require__(95);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
+	var _scheduleStore = __webpack_require__(107);
+
+	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var EC = 'MAIN_EVENT_CHANGE';
+	exports.default = {
+	  increaseDay: function increaseDay() {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.SCHEDULE_ACTIONS_DAY_TICK
+	    });
+	  },
+	  nextMonth: function nextMonth() {
+	    // Dispatcher.dispatch({
+	    //   type: ACTIONS.SCHEDULE_ACTIONS_MONTH_TICK
+	    // })
+	  },
+	  startGame: function startGame() {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.SCHEDULE_ACTIONS_GAME_START
+	    });
+	  },
+	  setGamePhase: function setGamePhase(phase) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.SCHEDULE_ACTIONS_SET_GAME_PHASE,
+	      phase: phase
+	    });
+	  },
 
-	var _messages = [];
-	var _notifications = [];
+	  increaseProgress: function increaseProgress(taskId, speed) {
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS,
+	      speed: speed,
+	      taskId: taskId
+	    });
+	  },
 
-	var ScheduleStore = function (_EventEmitter) {
-	  (0, _inherits3.default)(ScheduleStore, _EventEmitter);
+	  addTask: function addTask(days, queue, performance, description, cb) {
+	    // days: amount of days, that you need to complete the task. While working fulltime
+	    // if you have a job/freelance, you need more days to complete it.
+	    // it's considered, that you can work 8 h/day
 
-	  function ScheduleStore() {
-	    (0, _classCallCheck3.default)(this, ScheduleStore);
-	    return (0, _possibleConstructorReturn3.default)(this, (ScheduleStore.__proto__ || (0, _getPrototypeOf2.default)(ScheduleStore)).apply(this, arguments));
+	    // queue - if true (it means, that you run task synchronously) start date of task won't be today
+	    // it will start, when the last task will be done and this task will be pending
+	    // if false (it means, that you run task in parallel)
+	    // you paid someone to do it and it doesn't block your work)
+	    _dispatcher2.default.dispatch({
+	      type: ACTIONS.SCHEDULE_ACTIONS_TASKS_ADD,
+	      task: {
+	        days: days,
+	        queue: queue,
+	        cb: cb,
+	        description: description,
+	        performance: performance
+	      }
+	    });
+	  },
+
+	  removeTasks: function removeTasks(taskIdList) {
+	    if (taskIdList.length) {
+	      _dispatcher2.default.dispatch({
+	        type: ACTIONS.SCHEDULE_ACTIONS_TASKS_REMOVE,
+	        tasks: taskIdList
+	      });
+	    }
 	  }
-
-	  (0, _createClass3.default)(ScheduleStore, [{
-	    key: 'addChangeListener',
-	    value: function addChangeListener(cb) {
-	      this.addListener(EC, cb);
-	    }
-	  }, {
-	    key: 'removeChangeListener',
-	    value: function removeChangeListener(cb) {
-	      this.removeListener(EC, cb);
-	    }
-	  }, {
-	    key: 'emitChange',
-	    value: function emitChange() {
-	      this.emit(EC);
-	    }
-	  }, {
-	    key: 'getMessages',
-	    value: function getMessages() {
-	      return _messages;
-	    }
-	  }, {
-	    key: 'isDrawable',
-	    value: function isDrawable() {
-	      return _messages.filter(function (m) {
-	        return m.isModal;
-	      }).length;
-	    }
-	  }, {
-	    key: 'getPlainMessages',
-	    value: function getPlainMessages() {
-	      return _notifications;
-	    }
-	  }, {
-	    key: 'getNotifications',
-	    value: function getNotifications() {
-	      return this.getPlainMessages().reverse();
-	    }
-	  }, {
-	    key: 'initialize',
-	    value: function initialize(messages) {
-	      _messages = messages;
-	    }
-	  }, {
-	    key: 'getStoreData',
-	    value: function getStoreData() {
-	      return {
-	        messages: _messages
-	      };
-	    }
-	  }]);
-	  return ScheduleStore;
-	}(_events.EventEmitter);
-
-	var add = function add(message) {
-	  _messages.push(message);
 	};
-
-	var respond = function respond(i, message) {
-	  _messages.cb(message);
-	  _messages.splice(i, 1);
-	};
-
-	var close = function close(i) {
-	  // logger.debug('close ', i, 'message');
-	  _messages.splice(i, 1);
-	};
-
-	var store = new ScheduleStore();
-
-	var payload = _payloads2.default.messageStorePayload;
-
-
-	_dispatcher2.default.register(function (p) {
-	  if (!p.type) {
-	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
-	    return;
-	  }
-
-	  var change = true;
-	  switch (p.type) {
-	    case c.GAME_EVENT_ADD:
-	      add(p.message);
-	      break;
-	    case c.GAME_EVENT_CHOOSE_ANSWER:
-	      respond(p.message);
-	      break;
-	    case c.GAME_EVENT_CLOSE_TAB:
-	      close(p.id);
-	      break;
-	    case c.NOTIFICATION_ADD:
-	      _notifications.push(p.message);
-	      break;
-	    default:
-	      break;
-	  }
-
-	  if (change) store.emitChange();
-	});
-
-	exports.default = store;
 
 /***/ }),
 /* 107 */
-/***/ (function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var GAME_EVENT_ADD = exports.GAME_EVENT_ADD = 'GAME_EVENT_ADD';
-	var MODAL_EVENT_ADD = exports.MODAL_EVENT_ADD = 'MODAL_EVENT_ADD';
-	var GAME_EVENT_CHOOSE_ANSWER = exports.GAME_EVENT_CHOOSE_ANSWER = 'GAME_EVENT_CHOOSE_ANSWER';
-	var GAME_EVENT_CLOSE_TAB = exports.GAME_EVENT_CLOSE_TAB = 'GAME_EVENT_CLOSE_TAB';
-
-	var MESSAGE_TYPE_GAME_EVENT = exports.MESSAGE_TYPE_GAME_EVENT = 'MESSAGE_TYPE_GAME_EVENT';
-	var MESSAGE_TYPE_INFO = exports.MESSAGE_TYPE_INFO = 'MESSAGE_TYPE_INFO';
-	var MESSAGE_TYPE_POLL = exports.MESSAGE_TYPE_POLL = 'MESSAGE_TYPE_POLL';
-
-	var NOTIFICATION_ADD = exports.NOTIFICATION_ADD = 'NOTIFICATION_ADD';
-
-/***/ }),
-/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3791,7 +3831,7 @@
 	  value: true
 	});
 
-	var _assign = __webpack_require__(109);
+	var _assign = __webpack_require__(108);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -4048,31 +4088,31 @@
 	exports.default = store;
 
 /***/ }),
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(109), __esModule: true };
+
+/***/ }),
 /* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(110), __esModule: true };
+	__webpack_require__(110);
+	module.exports = __webpack_require__(12).Object.assign;
+
 
 /***/ }),
 /* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	__webpack_require__(111);
-	module.exports = __webpack_require__(12).Object.assign;
+	// 19.1.3.1 Object.assign(target, source)
+	var $export = __webpack_require__(17);
+
+	$export($export.S + $export.F, 'Object', { assign: __webpack_require__(111) });
 
 
 /***/ }),
 /* 111 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	// 19.1.3.1 Object.assign(target, source)
-	var $export = __webpack_require__(17);
-
-	$export($export.S + $export.F, 'Object', { assign: __webpack_require__(112) });
-
-
-/***/ }),
-/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4112,99 +4152,7 @@
 
 
 /***/ }),
-/* 113 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _dispatcher = __webpack_require__(90);
-
-	var _dispatcher2 = _interopRequireDefault(_dispatcher);
-
-	var _scheduleActions = __webpack_require__(98);
-
-	var ACTIONS = _interopRequireWildcard(_scheduleActions);
-
-	var _logger = __webpack_require__(95);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _scheduleStore = __webpack_require__(108);
-
-	var _scheduleStore2 = _interopRequireDefault(_scheduleStore);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = {
-	  increaseDay: function increaseDay() {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.SCHEDULE_ACTIONS_DAY_TICK
-	    });
-	  },
-	  nextMonth: function nextMonth() {
-	    // Dispatcher.dispatch({
-	    //   type: ACTIONS.SCHEDULE_ACTIONS_MONTH_TICK
-	    // })
-	  },
-	  startGame: function startGame() {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.SCHEDULE_ACTIONS_GAME_START
-	    });
-	  },
-	  setGamePhase: function setGamePhase(phase) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.SCHEDULE_ACTIONS_SET_GAME_PHASE,
-	      phase: phase
-	    });
-	  },
-
-	  increaseProgress: function increaseProgress(taskId, speed) {
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.SCHEDULE_ACTIONS_TASKS_INCREASE_PROGRESS,
-	      speed: speed,
-	      taskId: taskId
-	    });
-	  },
-
-	  addTask: function addTask(days, queue, performance, description, cb) {
-	    // days: amount of days, that you need to complete the task. While working fulltime
-	    // if you have a job/freelance, you need more days to complete it.
-	    // it's considered, that you can work 8 h/day
-
-	    // queue - if true (it means, that you run task synchronously) start date of task won't be today
-	    // it will start, when the last task will be done and this task will be pending
-	    // if false (it means, that you run task in parallel)
-	    // you paid someone to do it and it doesn't block your work)
-	    _dispatcher2.default.dispatch({
-	      type: ACTIONS.SCHEDULE_ACTIONS_TASKS_ADD,
-	      task: {
-	        days: days,
-	        queue: queue,
-	        cb: cb,
-	        description: description,
-	        performance: performance
-	      }
-	    });
-	  },
-
-	  removeTasks: function removeTasks(taskIdList) {
-	    if (taskIdList.length) {
-	      _dispatcher2.default.dispatch({
-	        type: ACTIONS.SCHEDULE_ACTIONS_TASKS_REMOVE,
-	        tasks: taskIdList
-	      });
-	    }
-	  }
-	};
-
-/***/ }),
-/* 114 */
+/* 112 */
 /***/ (function(module, exports) {
 
 	// import flux from '../../flux';
@@ -4384,7 +4332,7 @@
 	"use strict";
 
 /***/ }),
-/* 115 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4416,7 +4364,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _moneyDifference = __webpack_require__(116);
+	var _moneyDifference = __webpack_require__(114);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
@@ -4424,11 +4372,11 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _stages = __webpack_require__(114);
+	var _stages = __webpack_require__(112);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -4603,7 +4551,7 @@
 	exports.default = Menu;
 
 /***/ }),
-/* 116 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4612,7 +4560,7 @@
 	  value: true
 	});
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -4664,7 +4612,7 @@
 	};
 
 /***/ }),
-/* 117 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4675,11 +4623,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _Button = __webpack_require__(118);
+	var _Button = __webpack_require__(116);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _Modal = __webpack_require__(120);
+	var _Modal = __webpack_require__(118);
 
 	var _Modal2 = _interopRequireDefault(_Modal);
 
@@ -4811,7 +4759,7 @@
 	};
 
 /***/ }),
-/* 118 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4821,7 +4769,7 @@
 	});
 	exports.default = undefined;
 
-	var _extends2 = __webpack_require__(119);
+	var _extends2 = __webpack_require__(117);
 
 	var _extends3 = _interopRequireDefault(_extends2);
 
@@ -4913,14 +4861,14 @@
 	exports.default = Button;
 
 /***/ }),
-/* 119 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
 
-	var _assign = __webpack_require__(109);
+	var _assign = __webpack_require__(108);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -4941,7 +4889,7 @@
 	};
 
 /***/ }),
-/* 120 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4973,11 +4921,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _messageStore = __webpack_require__(106);
+	var _messageStore = __webpack_require__(119);
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
-	var _messageActions = __webpack_require__(107);
+	var _messageActions = __webpack_require__(120);
 
 	var c = _interopRequireWildcard(_messageActions);
 
@@ -5041,6 +4989,192 @@
 	// import React, { Component, PropTypes } from 'react';
 
 	exports.default = Modal;
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(3);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(30);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(31);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(35);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(80);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _events = __webpack_require__(89);
+
+	var _dispatcher = __webpack_require__(90);
+
+	var _dispatcher2 = _interopRequireDefault(_dispatcher);
+
+	var _messageActions = __webpack_require__(120);
+
+	var c = _interopRequireWildcard(_messageActions);
+
+	var _payloads = __webpack_require__(99);
+
+	var _payloads2 = _interopRequireDefault(_payloads);
+
+	var _logger = __webpack_require__(95);
+
+	var _logger2 = _interopRequireDefault(_logger);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var EC = 'MAIN_EVENT_CHANGE';
+
+	var _messages = [];
+	var _notifications = [];
+
+	var ScheduleStore = function (_EventEmitter) {
+	  (0, _inherits3.default)(ScheduleStore, _EventEmitter);
+
+	  function ScheduleStore() {
+	    (0, _classCallCheck3.default)(this, ScheduleStore);
+	    return (0, _possibleConstructorReturn3.default)(this, (ScheduleStore.__proto__ || (0, _getPrototypeOf2.default)(ScheduleStore)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(ScheduleStore, [{
+	    key: 'addChangeListener',
+	    value: function addChangeListener(cb) {
+	      this.addListener(EC, cb);
+	    }
+	  }, {
+	    key: 'removeChangeListener',
+	    value: function removeChangeListener(cb) {
+	      this.removeListener(EC, cb);
+	    }
+	  }, {
+	    key: 'emitChange',
+	    value: function emitChange() {
+	      this.emit(EC);
+	    }
+	  }, {
+	    key: 'getMessages',
+	    value: function getMessages() {
+	      return _messages;
+	    }
+	  }, {
+	    key: 'isDrawable',
+	    value: function isDrawable() {
+	      return _messages.filter(function (m) {
+	        return m.isModal;
+	      }).length;
+	    }
+	  }, {
+	    key: 'getPlainMessages',
+	    value: function getPlainMessages() {
+	      return _notifications;
+	    }
+	  }, {
+	    key: 'getNotifications',
+	    value: function getNotifications() {
+	      return this.getPlainMessages().reverse();
+	    }
+	  }, {
+	    key: 'initialize',
+	    value: function initialize(messages) {
+	      _messages = messages;
+	    }
+	  }, {
+	    key: 'getStoreData',
+	    value: function getStoreData() {
+	      return {
+	        messages: _messages
+	      };
+	    }
+	  }]);
+	  return ScheduleStore;
+	}(_events.EventEmitter);
+
+	var add = function add(message) {
+	  _messages.push(message);
+	};
+
+	var respond = function respond(i, message) {
+	  _messages.cb(message);
+	  _messages.splice(i, 1);
+	};
+
+	var close = function close(i) {
+	  // logger.debug('close ', i, 'message');
+	  _messages.splice(i, 1);
+	};
+
+	var store = new ScheduleStore();
+
+	var payload = _payloads2.default.messageStorePayload;
+
+
+	_dispatcher2.default.register(function (p) {
+	  if (!p.type) {
+	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
+	    return;
+	  }
+
+	  var change = true;
+	  switch (p.type) {
+	    case c.GAME_EVENT_ADD:
+	      add(p.message);
+	      break;
+	    case c.GAME_EVENT_CHOOSE_ANSWER:
+	      respond(p.message);
+	      break;
+	    case c.GAME_EVENT_CLOSE_TAB:
+	      close(p.id);
+	      break;
+	    case c.NOTIFICATION_ADD:
+	      _notifications.push(p.message);
+	      break;
+	    default:
+	      break;
+	  }
+
+	  if (change) store.emitChange();
+	});
+
+	exports.default = store;
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var GAME_EVENT_ADD = exports.GAME_EVENT_ADD = 'GAME_EVENT_ADD';
+	var MODAL_EVENT_ADD = exports.MODAL_EVENT_ADD = 'MODAL_EVENT_ADD';
+	var GAME_EVENT_CHOOSE_ANSWER = exports.GAME_EVENT_CHOOSE_ANSWER = 'GAME_EVENT_CHOOSE_ANSWER';
+	var GAME_EVENT_CLOSE_TAB = exports.GAME_EVENT_CLOSE_TAB = 'GAME_EVENT_CLOSE_TAB';
+
+	var MESSAGE_TYPE_GAME_EVENT = exports.MESSAGE_TYPE_GAME_EVENT = 'MESSAGE_TYPE_GAME_EVENT';
+	var MESSAGE_TYPE_INFO = exports.MESSAGE_TYPE_INFO = 'MESSAGE_TYPE_INFO';
+	var MESSAGE_TYPE_POLL = exports.MESSAGE_TYPE_POLL = 'MESSAGE_TYPE_POLL';
+
+	var NOTIFICATION_ADD = exports.NOTIFICATION_ADD = 'NOTIFICATION_ADD';
 
 /***/ }),
 /* 121 */
@@ -5111,7 +5245,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _messageStore = __webpack_require__(106);
+	var _messageStore = __webpack_require__(119);
 
 	var _messageStore2 = _interopRequireDefault(_messageStore);
 
@@ -5421,7 +5555,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -5995,7 +6129,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -6027,7 +6161,7 @@
 
 	var _shortenValue2 = _interopRequireDefault(_shortenValue);
 
-	var _stages = __webpack_require__(114);
+	var _stages = __webpack_require__(112);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -6227,7 +6361,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -6235,7 +6369,7 @@
 
 	var _list2 = _interopRequireDefault(_list);
 
-	var _stages = __webpack_require__(114);
+	var _stages = __webpack_require__(112);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -6319,15 +6453,15 @@
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
-	var _stages = __webpack_require__(114);
+	var _stages = __webpack_require__(112);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -6508,7 +6642,7 @@
 
 	var _logger2 = _interopRequireDefault(_logger);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -8153,7 +8287,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -8161,7 +8295,7 @@
 
 	var _Exploration2 = _interopRequireDefault(_Exploration);
 
-	var _stages = __webpack_require__(114);
+	var _stages = __webpack_require__(112);
 
 	var _stages2 = _interopRequireDefault(_stages);
 
@@ -8245,11 +8379,11 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -8416,7 +8550,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -8424,7 +8558,7 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _moneyDifference = __webpack_require__(116);
+	var _moneyDifference = __webpack_require__(114);
 
 	var _moneyDifference2 = _interopRequireDefault(_moneyDifference);
 
@@ -8577,7 +8711,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -8791,7 +8925,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -8799,7 +8933,7 @@
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -9015,7 +9149,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -9181,7 +9315,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -9197,7 +9331,7 @@
 
 	var _coloredRating2 = _interopRequireDefault(_coloredRating);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -9514,7 +9648,7 @@
 
 	var _round2 = _interopRequireDefault(_round);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -9585,7 +9719,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(88);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -9593,7 +9727,7 @@
 
 	var _productActions2 = _interopRequireDefault(_productActions);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -9764,7 +9898,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _UI = __webpack_require__(117);
+	var _UI = __webpack_require__(115);
 
 	var _UI2 = _interopRequireDefault(_UI);
 
@@ -9917,15 +10051,7 @@
 	exports.default = SegmentExplorer;
 
 /***/ }),
-/* 179 */,
-/* 180 */,
-/* 181 */,
-/* 182 */,
-/* 183 */,
-/* 184 */,
-/* 185 */,
-/* 186 */,
-/* 187 */
+/* 179 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -9937,141 +10063,6 @@
 	  var audio = new Audio('./sounds/Metal Cling - Hit.mp3');
 	  // audio.play();
 	};
-
-/***/ }),
-/* 188 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(3);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(30);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(31);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(35);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(80);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _events = __webpack_require__(89);
-
-	var _dispatcher = __webpack_require__(90);
-
-	var _dispatcher2 = _interopRequireDefault(_dispatcher);
-
-	var _logger = __webpack_require__(95);
-
-	var _logger2 = _interopRequireDefault(_logger);
-
-	var _sessionManager = __webpack_require__(96);
-
-	var _sessionManager2 = _interopRequireDefault(_sessionManager);
-
-	var _productActions = __webpack_require__(97);
-
-	var c = _interopRequireWildcard(_productActions);
-
-	var _scheduleActions = __webpack_require__(98);
-
-	var ACTIONS = _interopRequireWildcard(_scheduleActions);
-
-	var _payloads = __webpack_require__(99);
-
-	var _payloads2 = _interopRequireDefault(_payloads);
-
-	var _productDescription = __webpack_require__(101);
-
-	var _stats = __webpack_require__(102);
-
-	var _stats2 = _interopRequireDefault(_stats);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var EC = 'PRODUCT_EVENT_CHANGE';
-
-	var companyId = 0;
-	var companies = [];
-	var projects = [];
-	var channels = [];
-
-	var ProductStore = function (_EventEmitter) {
-	  (0, _inherits3.default)(ProductStore, _EventEmitter);
-
-	  function ProductStore() {
-	    (0, _classCallCheck3.default)(this, ProductStore);
-	    return (0, _possibleConstructorReturn3.default)(this, (ProductStore.__proto__ || (0, _getPrototypeOf2.default)(ProductStore)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(ProductStore, [{
-	    key: 'addChangeListener',
-	    value: function addChangeListener(cb) {
-	      this.addListener(EC, cb);
-	    }
-	  }, {
-	    key: 'removeChangeListener',
-	    value: function removeChangeListener(cb) {
-	      this.removeListener(EC, cb);
-	    }
-	  }, {
-	    key: 'emitChange',
-	    value: function emitChange() {
-	      this.emit(EC);
-	    }
-	  }]);
-	  return ProductStore;
-	}(_events.EventEmitter);
-
-	var store = new ProductStore();
-
-	var payload = _payloads2.default.productStorePayload;
-
-
-	_dispatcher2.default.register(function (p) {
-	  if (!p.type) {
-	    _logger2.default.error('empty type prop in payload ' + payload.name, p);
-
-	    return;
-	  }
-
-	  var id = p.id;
-
-	  var change = true;
-
-	  switch (p.type) {
-	    case c.WORLD_UPGRADE:
-	      channels = p.data.channels;
-	      projects = p.data.projects;
-	      companies = p.data.companies;
-	      break;
-	  }
-
-	  if (change) {
-	    _stats2.default.saveAction(p.type, p);
-
-	    // sessionManager.saveProductStorageData(ProductStore.getStoreData());
-
-	    store.emitChange();
-	  }
-	});
-
-	exports.default = store;
 
 /***/ })
 /******/ ]);

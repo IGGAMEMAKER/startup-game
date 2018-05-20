@@ -3,6 +3,7 @@ export default class Resources {
     this.resources = {
       mp: 0,
       pp: 0,
+      sp: 0,
       ideas: 0,
       money: 0
     };
@@ -18,10 +19,18 @@ export default class Resources {
     return this;
   }
 
+  iterate() {
+    Object.keys(this.resources)
+  }
+
 
 
   managerPoints(amount): Resources {
     return this.chainResource('mp', amount);
+  }
+
+  salesPoints(amount): Resources {
+    return this.chainResource('sp', amount);
   }
 
   programmerPoints(amount): Resources {
@@ -38,7 +47,7 @@ export default class Resources {
 
 
 
-  static enoughResources(need: Resources, available: Resources) {
+  static enough(need: Resources, available: Resources) {
     let enough = true;
 
     const needResources = need.getData();
@@ -51,5 +60,15 @@ export default class Resources {
     }
 
     return enough;
+  }
+
+  spend(need: Resources) {
+    const needResources = need.getData();
+
+    for (let item in needResources) {
+      this.resources[item] -= needResources[item];
+    }
+
+    return this;
   }
 }

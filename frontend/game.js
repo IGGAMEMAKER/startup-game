@@ -74,10 +74,7 @@ const run = () => {
           logger.log('money below zero companyId=', i);
         }
 
-        // productActions.testHypothesis(i);
         productActions.produceResources(i);
-
-        // productActions.loseMonthlyHype(i);
       });
 
     // clean expired rents

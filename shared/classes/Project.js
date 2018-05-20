@@ -24,13 +24,11 @@ export default class Project {
       projectId,
       clientProfiles,
       channels,
-      resources,
+      resources: Resources,
       companyId
     } = data;
 
     if (!idea) throw 'no idea in classes/Project.js';
-    // if (!projectId) throw 'no projectId in classes/Project.js';
-    // if (!companyId) throw 'no companyId in classes/Project.js';
 
     if (!name) {
       const index = Math.floor(random(0, names.length - 1));
@@ -48,13 +46,22 @@ export default class Project {
     this.clientProfiles = clientProfiles;
 
     this.bugs = [];
+    this.spam = 0;
     this.improvements = 1;
     this.temporaryBonus = null;
+
+
+    this.defence = 1;
+    this.servers = 1;
 
     this.channels = channels;
 
     this.resources = resources;
-    this.programmers = [0, 0, 0, 0, 0]; // intern, junior, middle, senior, architect
+    this.programmers = [0, 0, 0]; // junior, middle, senior
+    this.marketers = [];
+
+    this.managers = [];
+
   }
 
   getId() {
@@ -102,15 +109,51 @@ export default class Project {
     return this.bugs[bugId].cost;
   }
 
+  getSpamLoyaltyLoss() {
+    return Math.floor(this.spam * balance.SPAM_LOYALTY_IMPACT);
+  }
+
   getBugLoyaltyLoss() {
     return this.bugs.map(i => i.penalty).reduce((p, c) => p + c, 0);
   }
 
+  getSegmentQuality(clientType) {
+    return this.clientProfiles[clientType].quality;
+  }
+
+  getCoreLoyalty() {
+    return this.core * 10;
+  }
+
+  getBaseLoyalty(clientType) {
+    return this.getCoreLoyalty() + this.getSegmentQuality(clientType);
+  }
+
+  getResources() {
+    return this.resources;
+  }
+  
+  isEnoughResources(resources: Resources) {
+    return Resources.enough(resources, this.resources);
+  }
+
+
+
 
   // ------------- modify -------------
   spendResources(resources: Resources) {
-
+    if (Resources.enough(resources, this.resources)) {
+      this.resources.spend(resources);
+    }
   };
+
+  improveDefensiveness() {
+    this.defence++;
+  }
+
+  addServers() {
+    this.servers++;
+  }
 
   addBug(p) {
     this.bugs.push({
@@ -119,6 +162,14 @@ export default class Project {
       penalty: p.penalty,
       id: this.bugs.length
     });
+  }
+
+  addSpam(value) {
+    this.spam = Math.min(this.spam + value, 100);
+  }
+
+  removeSpam(value) {
+    this.spam = Math.min(this.spam - value, 0);
   }
 
   removeBug(bugId) {
