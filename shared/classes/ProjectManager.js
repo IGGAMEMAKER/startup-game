@@ -22,10 +22,23 @@ export default class ProjectManager {
     return item;
   };
 
+  printMainInfo() {
+    console.log(`-----------------`);
+    console.log(`printProjectsInfo`);
+
+    this.projects.forEach((p: Project) => {
+      p.printMainInfo();
+    });
+
+    console.log(`-----------------`);
+  }
 
 
 
 
+  addResources(projectId, resources) {
+    this.getProjectById(projectId).addResources(resources);
+  }
 
   exploreCore(projectId) {
     this.getProjectById(projectId).exploreCore();

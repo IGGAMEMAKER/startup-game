@@ -27,7 +27,7 @@ export default class SessionManager {
   }
 
   getSession(sessionId): GameSession {
-    return this.world[sessionId];
+    return this.world[sessionId].session;
   }
 
 }

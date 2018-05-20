@@ -24,7 +24,7 @@ export default class Project {
       projectId,
       clientProfiles,
       channels,
-      resources: Resources,
+      resources,
       companyId
     } = data;
 
@@ -59,9 +59,16 @@ export default class Project {
     this.resources = resources;
     this.programmers = [0, 0, 0]; // junior, middle, senior
     this.marketers = [];
-
     this.managers = [];
 
+  }
+
+  cost() {
+    return this.core < 3 ? '100000$' : '1bln';
+  }
+
+  printMainInfo() {
+    console.log(`#${this.getId()} ${this.getName()} ${this.core}. Cost: ${this.cost()}`)
   }
 
   getId() {
@@ -87,10 +94,6 @@ export default class Project {
 
   getMPProduction() {
     return 100;
-  }
-
-  getIdeaPoints() {
-    return this.ideas;
   }
 
   getImprovementsAmount() {
@@ -132,7 +135,7 @@ export default class Project {
   getResources() {
     return this.resources;
   }
-  
+
   isEnoughResources(resources: Resources) {
     return Resources.enough(resources, this.resources);
   }
@@ -146,6 +149,10 @@ export default class Project {
       this.resources.spend(resources);
     }
   };
+
+  addResources(resources: Resources) {
+    this.resources.add(resources);
+  }
 
   improveDefensiveness() {
     this.defence++;

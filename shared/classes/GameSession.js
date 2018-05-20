@@ -1,3 +1,5 @@
+import Resources from './Resources';
+
 import ChannelManager from './ChannelManager';
 import ProjectManager from './ProjectManager';
 
@@ -13,6 +15,10 @@ export default class GameSession {
 
     this.time = 1;
     this.tasks = [];
+  }
+
+  printInfo() {
+    this.projects.printMainInfo();
   }
 
   getGameTime() {
@@ -96,7 +102,6 @@ export default class GameSession {
     this.projects.upgradeOffer(projectId, clientType);
   }
 
-  // spend manager points and 1 idea point for exploration
   exploreOffer({ projectId, clientType }) {
     this.projects.exploreOffer(projectId, clientType);
   }
@@ -110,6 +115,10 @@ export default class GameSession {
   }
 
   grabClients({ projectId, channelId }) {
-    this.channels.grabClients(projectId, channelId)
+    this.channels.grabClients(projectId, channelId);
+  }
+
+  stealIdeas({ projectId, competitorId }) {
+    this.projects.addResources(projectId, new Resources().ideas(1));
   }
 }

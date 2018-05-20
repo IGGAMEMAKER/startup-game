@@ -45,7 +45,12 @@ export default class Resources {
     return this.chainResource('ideas', amount);
   }
 
-
+  // static iterateByKeys(resource: Resources) {
+  //   const data = resource.getData();
+  //   const keys = Object.keys(data);
+  //
+  //
+  // }
 
   static enough(need: Resources, available: Resources) {
     let enough = true;
@@ -60,6 +65,16 @@ export default class Resources {
     }
 
     return enough;
+  }
+
+  add(accumulation: Resources) {
+    const accumulationResources = accumulation.getData();
+
+    for (let item in accumulationResources) {
+      this.resources[item] += accumulationResources[item];
+    }
+
+    return this;
   }
 
   spend(need: Resources) {
