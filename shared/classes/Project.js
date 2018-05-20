@@ -63,10 +63,6 @@ export default class Project {
 
   }
 
-  cost() {
-    return this.core < 3 ? '100000$' : '1bln';
-  }
-
   printMainInfo() {
     console.log(`#${this.getId()} ${this.getName()} ${this.core}. Cost: ${this.cost()}`)
   }
@@ -77,6 +73,40 @@ export default class Project {
 
   getName() {
     return this.name;
+  }
+
+  getImprovementsAmount() {
+    return this.improvements;
+  }
+
+  getBugs() {
+    return this.bugs;
+  }
+
+  getBonuses() {
+    return this.bonuses;
+  }
+
+  getResources() {
+    return this.resources;
+  }
+
+  getBugCost(bugId) {
+    return this.bugs[bugId].cost;
+  }
+
+  cost() {
+    return this.core < 3 ? '100000$' : '1bln';
+  }
+
+  getSpamLoyaltyLoss() {
+    return Math.floor(this.spam * balance.SPAM_LOYALTY_IMPACT);
+  }
+
+  getBugLoyaltyLoss() {
+    return this.bugs
+      .map(i => i.penalty)
+      .reduce((p, c) => p + c, 0);
   }
 
   getPPProduction() {
@@ -96,30 +126,6 @@ export default class Project {
     return 100;
   }
 
-  getImprovementsAmount() {
-    return this.improvements;
-  }
-
-  getBugs() {
-    return this.bugs;
-  }
-
-  getBonuses() {
-    return this.bonuses;
-  }
-
-  getBugCost(bugId) {
-    return this.bugs[bugId].cost;
-  }
-
-  getSpamLoyaltyLoss() {
-    return Math.floor(this.spam * balance.SPAM_LOYALTY_IMPACT);
-  }
-
-  getBugLoyaltyLoss() {
-    return this.bugs.map(i => i.penalty).reduce((p, c) => p + c, 0);
-  }
-
   getSegmentQuality(clientType) {
     return this.clientProfiles[clientType].quality;
   }
@@ -128,12 +134,8 @@ export default class Project {
     return this.core * 10;
   }
 
-  getBaseLoyalty(clientType) {
+  getClientLoyalty(clientType) {
     return this.getCoreLoyalty() + this.getSegmentQuality(clientType);
-  }
-
-  getResources() {
-    return this.resources;
   }
 
   isEnoughResources(resources: Resources) {

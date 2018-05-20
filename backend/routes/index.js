@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 import SessionManager from '../../shared/classes/SessionManager';
+import GameSession from '../../shared/classes/GameSession';
 
 const sessionManager = new SessionManager();
 
@@ -11,17 +12,15 @@ const createSession = () => {
 
 createSession();
 
-// const session = sessionManager.getSession(1);
+const session: GameSession = sessionManager.getSession(1);
 
-// console.log('session', session.session);
-
-sessionManager.getSession(1).upgradeCore({ projectId: 0 });
-sessionManager.getSession(1).printInfo();
-sessionManager.getSession(1).upgradeCore({ projectId: 0 });
-sessionManager.getSession(1).upgradeCore({ projectId: 0 });
-sessionManager.getSession(1).upgradeCore({ projectId: 0 });
-sessionManager.getSession(1).upgradeCore({ projectId: 0 });
-sessionManager.getSession(1).printInfo();
+session.upgradeCore({ projectId: 0 });
+session.printInfo();
+session.upgradeCore({ projectId: 0 });
+session.upgradeCore({ projectId: 0 });
+session.upgradeCore({ projectId: 0 });
+session.upgradeCore({ projectId: 0 });
+session.printInfo();
 
 
 /* GET home page. */
