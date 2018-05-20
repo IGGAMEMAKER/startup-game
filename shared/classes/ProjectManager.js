@@ -6,6 +6,15 @@ export default class ProjectManager {
     this.sessionId = sessionId;
   }
 
+  printMainInfo() {
+    console.log(`-----------------`);
+    console.log(`printProjectsInfo`);
+
+    this.projects.forEach((p: Project) => {
+      p.printMainInfo();
+    });
+  }
+
   spendResources(projectId, resources) {
     this.getProjectById(projectId).spendResources(resources);
   }
@@ -22,16 +31,6 @@ export default class ProjectManager {
     return item;
   };
 
-  printMainInfo() {
-    console.log(`-----------------`);
-    console.log(`printProjectsInfo`);
-
-    this.projects.forEach((p: Project) => {
-      p.printMainInfo();
-    });
-
-    console.log(`-----------------`);
-  }
 
 
 

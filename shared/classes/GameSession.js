@@ -57,19 +57,19 @@ export default class GameSession {
 
     switch (task.taskType) {
       case ACTIONS.ACTIONS_EXPLORE_CORE:
-        this.exploreCore(data);
+        this.projects.exploreCore(data.projectId);
         break;
 
       case ACTIONS.ACTIONS_UPGRADE_CORE:
-        this.upgradeCore(data);
+        this.projects.upgradeCore(data.projectId);
         break;
 
       case ACTIONS.ACTIONS_EXPLORE_OFFER:
-        this.exploreOffer(data);
+        this.projects.exploreOffer(data.projectId, data.clientType);
         break;
 
       case ACTIONS.ACTIONS_UPGRADE_OFFER:
-        this.upgradeOffer(data);
+        this.projects.upgradeOffer(data.projectId, data.clientType);
         break;
     }
 
@@ -87,23 +87,57 @@ export default class GameSession {
   }
 
 
-  // result functions
+  requirementsForExploreCore(projectId) {
+    return [{
+      projectId,
+      resources: new Resources().ideas(10).managerPoints(50)
+    }];
+  }
+
+  requirementsForUpgradeCore(projectId) {
+    return [{
+      projectId,
+      resources: new Resources().programmerPoints(250)
+    }];
+  }
+
+  requirementsForExploreOffer(projectId, clientType) {
+    return [{
+      projectId,
+      resources: new Resources().ideas(1).managerPoints(10)
+    }];
+  }
+
+  requirementsForUpgradeOffer(projectId, clientType) {
+    return [{
+      projectId,
+      resources: new Resources().programmerPoints(50)
+    }];
+  }
 
 
   exploreCore({ projectId }) {
-    this.projects.exploreCore({ projectId });
+    const requirements = this.requirementsForExploreCore(projectId);
+
+    this.addTask(ACTIONS.ACTIONS_EXPLORE_CORE, `exploreCore-${projectId}`, 33, { projectId }, requirements);
   }
 
   upgradeCore({ projectId }) {
-    this.projects.upgradeCore(projectId);
-  }
+    const requirements = this.requirementsForUpgradeCore(projectId);
 
-  upgradeOffer({ projectId, clientType }) {
-    this.projects.upgradeOffer(projectId, clientType);
+    this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, 100, { projectId }, requirements);
   }
 
   exploreOffer({ projectId, clientType }) {
-    this.projects.exploreOffer(projectId, clientType);
+    const requirements = this.requirementsForExploreOffer(projectId, clientType);
+
+    this.addTask(ACTIONS.ACTIONS_EXPLORE_OFFER, `exploreOffer-${projectId}-${clientType}`, 10, { projectId, clientType }, requirements);
+  }
+
+  upgradeOffer({ projectId, clientType }) {
+    const requirements = this.requirementsForUpgradeOffer(projectId, clientType);
+
+    this.addTask(ACTIONS.ACTIONS_UPGRADE_OFFER, `upgradeOffer-${projectId}-${clientType}`, 25, { projectId, clientType }, requirements);
   }
 
   pickTemporaryProjectBonus({ projectId, bonusId }) {
