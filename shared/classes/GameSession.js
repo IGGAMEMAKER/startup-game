@@ -44,7 +44,7 @@ export default class GameSession {
     // }
 
     if (requirementsOk) {
-      requirements.forEach(this.spendResources);
+      requirements.forEach((r) => this.spendResources(r.projectId, r.resources));
 
       this.tasks.push({
         progress: 0,
@@ -152,9 +152,9 @@ export default class GameSession {
   };
 
   upgradeCore = (projectId) => {
-    // const requirements = this.requirementsForUpgradeCore(projectId);
-    //
-    // this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, 100, { projectId }, requirements);
+    const requirements = this.requirementsForUpgradeCore(projectId);
+
+    this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, 100, { projectId }, requirements);
   };
 
   exploreOffer = (projectId, clientType) => {

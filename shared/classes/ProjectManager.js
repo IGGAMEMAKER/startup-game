@@ -24,7 +24,6 @@ export default class ProjectManager {
   }
 
   getProjectById = (projectId: Project) => {
-    console.log('projectId', projectId);
     const item = this.projects.find(p => p.getId() === projectId);
 
     if (!item) throw `no project ${projectId} in session ${this.sessionId}`;

@@ -18,12 +18,12 @@ const test = () => {
   const session: GameSession = sessionManager.getSession(1);
 
   session.upgradeCore(0);
-  // session.printInfo();
-  // session.upgradeCore(0);
-  // session.upgradeCore(0);
-  // session.upgradeCore(0);
-  // session.upgradeCore(0);
-  // session.printInfo();
+  session.printInfo();
+  session.upgradeCore(0);
+  session.upgradeCore(0);
+  session.upgradeCore(0);
+  session.upgradeCore(0);
+  session.printInfo();
 };
 
 test();
