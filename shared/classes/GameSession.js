@@ -152,9 +152,9 @@ export default class GameSession {
   };
 
   upgradeCore = (projectId) => {
-    const requirements = this.requirementsForUpgradeCore(projectId);
-
-    this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, 100, { projectId }, requirements);
+    // const requirements = this.requirementsForUpgradeCore(projectId);
+    //
+    // this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, 100, { projectId }, requirements);
   };
 
   exploreOffer = (projectId, clientType) => {
