@@ -14,12 +14,12 @@ createSession();
 
 const session: GameSession = sessionManager.getSession(1);
 
-session.upgradeCore({ projectId: 0 });
+session.upgradeCore(0);
 session.printInfo();
-session.upgradeCore({ projectId: 0 });
-session.upgradeCore({ projectId: 0 });
-session.upgradeCore({ projectId: 0 });
-session.upgradeCore({ projectId: 0 });
+session.upgradeCore(0);
+session.upgradeCore(0);
+session.upgradeCore(0);
+session.upgradeCore(0);
 session.printInfo();
 
 

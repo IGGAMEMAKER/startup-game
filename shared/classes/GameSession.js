@@ -4,6 +4,7 @@ import ChannelManager from './ChannelManager';
 import ProjectManager from './ProjectManager';
 
 import * as ACTIONS from '../constants/actions/product-actions';
+import * as balance from '../constants/balance';
 
 export default class GameSession {
   constructor(sessionId, companies, channels, projects, players) {
@@ -15,6 +16,7 @@ export default class GameSession {
 
     this.time = 1;
     this.tasks = [];
+    this.restrictions = [];
   }
 
   printInfo() {
@@ -52,6 +54,14 @@ export default class GameSession {
     }
   }
 
+  addRestriction(channel, duration) {
+    this.restrictions.push({
+      channel,
+      start: this.getGameTime(),
+      finish: this.getGameTime() + duration
+    })
+  }
+
   executeTask(task, i) {
     const data = task.data;
 
@@ -70,6 +80,10 @@ export default class GameSession {
 
       case ACTIONS.ACTIONS_UPGRADE_OFFER:
         this.projects.upgradeOffer(data.projectId, data.clientType);
+        break;
+
+      case ACTIONS.ACTIONS_EXPLORE_CHANNEL:
+        this.projects.exploreChannel(data.projectId, data.channelId);
         break;
     }
 
@@ -115,44 +129,65 @@ export default class GameSession {
     }];
   }
 
+  requirementsForExploreChannel(projectId) {
+    return [{
+      projectId,
+      resources: new Resources().salesPoints(50)
+    }];
+  }
 
-  exploreCore({ projectId }) {
+
+  exploreCore(projectId) {
     const requirements = this.requirementsForExploreCore(projectId);
 
     this.addTask(ACTIONS.ACTIONS_EXPLORE_CORE, `exploreCore-${projectId}`, 33, { projectId }, requirements);
   }
 
-  upgradeCore({ projectId }) {
+  upgradeCore(projectId) {
     const requirements = this.requirementsForUpgradeCore(projectId);
 
     this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, 100, { projectId }, requirements);
   }
 
-  exploreOffer({ projectId, clientType }) {
+  exploreOffer(projectId, clientType) {
     const requirements = this.requirementsForExploreOffer(projectId, clientType);
 
     this.addTask(ACTIONS.ACTIONS_EXPLORE_OFFER, `exploreOffer-${projectId}-${clientType}`, 10, { projectId, clientType }, requirements);
   }
 
-  upgradeOffer({ projectId, clientType }) {
+  upgradeOffer(projectId, clientType) {
     const requirements = this.requirementsForUpgradeOffer(projectId, clientType);
 
     this.addTask(ACTIONS.ACTIONS_UPGRADE_OFFER, `upgradeOffer-${projectId}-${clientType}`, 25, { projectId, clientType }, requirements);
   }
 
-  pickTemporaryProjectBonus({ projectId, bonusId }) {
+  pickTemporaryProjectBonus(projectId, bonusId) {
     this.projects.pickTemporaryProjectBonus(projectId, bonusId);
   }
 
-  exploreClientTypes({ projectId, channelId }) {
-    this.projects.exploreClientTypes(projectId, channelId);
+  exploreChannel(projectId, channelId) {
+    const requirements = this.requirementsForExploreChannel(projectId);
+
+    this.addTask(ACTIONS.ACTIONS_EXPLORE_CHANNEL, `exploreChannel-${projectId}`, balance.DURATION_TEMPORARY_BONUS, { projectId, channelId }, requirements);
   }
 
-  grabClients({ projectId, channelId }) {
+  hireProgrammer(projectId, level) {
+    this.projects.hireProgrammer(projectId, level);
+  }
+
+  addServer(projectId) {
+    this.projects.addServer(projectId);
+  }
+
+  upgradeDefence(projectId) {
+    this.projects.improveDefence(projectId);
+  }
+
+  grabClients(projectId, channelId) {
     this.channels.grabClients(projectId, channelId);
   }
 
-  stealIdeas({ projectId, competitorId }) {
+  stealIdeas(projectId, competitorId) {
     this.projects.addResources(projectId, new Resources().ideas(1));
   }
 }

@@ -34,6 +34,13 @@ export default class ProjectManager {
 
 
 
+  addServer(projectId) {
+    this.getProjectById(projectId).addServers(1);
+  }
+
+  improveDefence(projectId) {
+    this.getProjectById(projectId).improveDefence();
+  }
 
   addResources(projectId, resources) {
     this.getProjectById(projectId).addResources(resources);
@@ -56,11 +63,15 @@ export default class ProjectManager {
     this.getProjectById(projectId).exploreOffer(clientType);
   }
 
+  exploreChannel(projectId, channelId) {
+    this.getProjectById(projectId).exploreChannel(channelId);
+  }
+
   pickTemporaryProjectBonus(projectId, bonusId) {
     this.getProjectById(projectId).pickTemporaryProjectBonus(bonusId);
   }
 
-  exploreClientTypes(projectId, channelId) {
-    this.getProjectById(projectId).exploreClientTypes(channelId);
+  hireProgrammer(projectId, level) {
+    this.getProjectById(projectId).hireProgrammer(level);
   }
 }

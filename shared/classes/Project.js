@@ -156,12 +156,20 @@ export default class Project {
     this.resources.add(resources);
   }
 
-  improveDefensiveness() {
+  hireProgrammer(level) {
+    this.programmers[level]++;
+  }
+
+  hireMarketer(level) {
+    this.marketers[level]++;
+  }
+
+  improveDefence() {
     this.defence++;
   }
 
-  addServers() {
-    this.servers++;
+  addServers(amount) {
+    this.servers += amount;
   }
 
   addBug(p) {
@@ -205,7 +213,7 @@ export default class Project {
     this.temporaryBonus = bonusId;
   };
 
-  exploreClientTypes(channelId) {
+  exploreChannel(channelId) {
     this.channels.push({
       id: channelId,
       clients: 0,
