@@ -23,7 +23,7 @@ export default class GameSession {
     this.projects.printMainInfo();
 
     this.tasks.forEach((t, i) => {
-      console.log(`task ${i}`, t);
+      // console.log(`task ${i}`, t);
     })
   }
 
@@ -103,7 +103,7 @@ export default class GameSession {
   };
 
   isEnoughResources = (projectId, resources) => {
-    console.log('isEnoughResources', projectId, resources);
+    // console.log('isEnoughResources', projectId, resources);
 
     return this.projects.isEnoughResources(projectId, resources);
   };
@@ -148,25 +148,25 @@ export default class GameSession {
   exploreCore = (projectId) => {
     const requirements = this.requirementsForExploreCore(projectId);
 
-    this.addTask(ACTIONS.ACTIONS_EXPLORE_CORE, `exploreCore-${projectId}`, 33, { projectId }, requirements);
+    this.addTask(ACTIONS.ACTIONS_EXPLORE_CORE, `exploreCore-${projectId}`, balance.DURATION_CORE_EXPLORE, { projectId }, requirements);
   };
 
   upgradeCore = (projectId) => {
     const requirements = this.requirementsForUpgradeCore(projectId);
 
-    this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, 100, { projectId }, requirements);
+    this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, balance.DURATION_CORE_UPGRADE, { projectId }, requirements);
   };
 
   exploreOffer = (projectId, clientType) => {
     const requirements = this.requirementsForExploreOffer(projectId, clientType);
 
-    this.addTask(ACTIONS.ACTIONS_EXPLORE_OFFER, `exploreOffer-${projectId}-${clientType}`, 10, { projectId, clientType }, requirements);
+    this.addTask(ACTIONS.ACTIONS_EXPLORE_OFFER, `exploreOffer-${projectId}-${clientType}`, balance.DURATION_OFFER_EXPLORE, { projectId, clientType }, requirements);
   };
 
   upgradeOffer = (projectId, clientType) => {
     const requirements = this.requirementsForUpgradeOffer(projectId, clientType);
 
-    this.addTask(ACTIONS.ACTIONS_UPGRADE_OFFER, `upgradeOffer-${projectId}-${clientType}`, 25, { projectId, clientType }, requirements);
+    this.addTask(ACTIONS.ACTIONS_UPGRADE_OFFER, `upgradeOffer-${projectId}-${clientType}`, balance.DURATION_OFFER_UPGRADE, { projectId, clientType }, requirements);
   };
 
   exploreChannel = (projectId, channelId) => {

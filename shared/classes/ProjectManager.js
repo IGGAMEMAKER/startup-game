@@ -36,43 +36,41 @@ export default class ProjectManager {
 
   addServer = (projectId) => {
     this.getProjectById(projectId).addServers(1);
-  }
+  };
 
   improveDefence = (projectId) => {
     this.getProjectById(projectId).improveDefence();
-  }
+  };
 
   addResources = (projectId, resources) => {
     this.getProjectById(projectId).addResources(resources);
-  }
+  };
 
   exploreCore = (projectId) => {
     this.getProjectById(projectId).exploreCore();
-  }
+  };
 
   upgradeCore = (projectId) => {
-    console.log('upgrade core in ProjectManager', projectId);
     this.getProjectById(projectId).upgradeCore();
-  }
+  };
 
   upgradeOffer = (projectId, clientType) => {
     this.getProjectById(projectId).upgradeOffer(clientType, 1);
-  }
+  };
 
   exploreOffer = (projectId, clientType) => {
-    // spend manager points and 1 idea point for exploration
     this.getProjectById(projectId).exploreOffer(clientType);
-  }
+  };
 
   exploreChannel = (projectId, channelId) => {
     this.getProjectById(projectId).exploreChannel(channelId);
-  }
+  };
 
   pickTemporaryProjectBonus = (projectId, bonusId) => {
     this.getProjectById(projectId).pickTemporaryProjectBonus(bonusId);
-  }
+  };
 
   hireProgrammer = (projectId, level) => {
     this.getProjectById(projectId).hireProgrammer(level);
-  }
+  };
 }
