@@ -15,15 +15,16 @@ export default class ProjectManager {
     });
   }
 
-  spendResources(projectId, resources) {
+  spendResources = (projectId, resources) => {
     this.getProjectById(projectId).spendResources(resources);
   }
 
-  isEnoughResources(projectId, resources) {
+  isEnoughResources = (projectId, resources) => {
     return this.getProjectById(projectId).isEnoughResources(resources);
   }
 
-  getProjectById(projectId): Project {
+  getProjectById = (projectId: Project) => {
+    console.log('projectId', projectId);
     const item = this.projects.find(p => p.getId() === projectId);
 
     if (!item) throw `no project ${projectId} in session ${this.sessionId}`;
@@ -34,44 +35,45 @@ export default class ProjectManager {
 
 
 
-  addServer(projectId) {
+  addServer = (projectId) => {
     this.getProjectById(projectId).addServers(1);
   }
 
-  improveDefence(projectId) {
+  improveDefence = (projectId) => {
     this.getProjectById(projectId).improveDefence();
   }
 
-  addResources(projectId, resources) {
+  addResources = (projectId, resources) => {
     this.getProjectById(projectId).addResources(resources);
   }
 
-  exploreCore(projectId) {
+  exploreCore = (projectId) => {
     this.getProjectById(projectId).exploreCore();
   }
 
-  upgradeCore(projectId) {
+  upgradeCore = (projectId) => {
+    console.log('upgrade core in ProjectManager', projectId);
     this.getProjectById(projectId).upgradeCore();
   }
 
-  upgradeOffer(projectId, clientType) {
+  upgradeOffer = (projectId, clientType) => {
     this.getProjectById(projectId).upgradeOffer(clientType, 1);
   }
 
-  exploreOffer(projectId, clientType) {
+  exploreOffer = (projectId, clientType) => {
     // spend manager points and 1 idea point for exploration
     this.getProjectById(projectId).exploreOffer(clientType);
   }
 
-  exploreChannel(projectId, channelId) {
+  exploreChannel = (projectId, channelId) => {
     this.getProjectById(projectId).exploreChannel(channelId);
   }
 
-  pickTemporaryProjectBonus(projectId, bonusId) {
+  pickTemporaryProjectBonus = (projectId, bonusId) => {
     this.getProjectById(projectId).pickTemporaryProjectBonus(bonusId);
   }
 
-  hireProgrammer(projectId, level) {
+  hireProgrammer = (projectId, level) => {
     this.getProjectById(projectId).hireProgrammer(level);
   }
 }

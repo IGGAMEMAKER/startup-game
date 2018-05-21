@@ -21,6 +21,10 @@ export default class GameSession {
 
   printInfo() {
     this.projects.printMainInfo();
+
+    this.tasks.forEach((t, i) => {
+      console.log(`task ${i}`, t);
+    })
   }
 
   getGameTime() {
@@ -30,12 +34,14 @@ export default class GameSession {
 
 
   // update
-  addTask(taskType, channel, executionTime, data, requirements = []) {
+  addTask = (taskType, channel, executionTime, data, requirements = []) => {
     let requirementsOk = true;
 
-    if (requirements.length !== requirements.filter(this.isEnoughResources)) {
-      requirementsOk = false;
-    }
+    // if (requirements.length !== requirements.filter(r => {
+    //     return this.isEnoughResources(r.projectId, r.resources)
+    //   })) {
+    //   requirementsOk = false;
+    // }
 
     if (requirementsOk) {
       requirements.forEach(this.spendResources);
@@ -52,7 +58,7 @@ export default class GameSession {
         data
       })
     }
-  }
+  };
 
   addRestriction(channel, duration) {
     this.restrictions.push({
@@ -62,7 +68,7 @@ export default class GameSession {
     })
   }
 
-  executeTask(task, i) {
+  executeTask = (task, i) => {
     const data = task.data;
 
     switch (task.taskType) {
@@ -92,13 +98,15 @@ export default class GameSession {
 
 
 
-  spendResources({ projectId, resources }) {
+  spendResources = (projectId, resources) => {
     this.projects.spendResources(projectId, resources);
-  }
+  };
 
-  isEnoughResources({ projectId, resources }) {
+  isEnoughResources = (projectId, resources) => {
+    console.log('isEnoughResources', projectId, resources);
+
     return this.projects.isEnoughResources(projectId, resources);
-  }
+  };
 
 
   requirementsForExploreCore(projectId) {
@@ -136,58 +144,60 @@ export default class GameSession {
     }];
   }
 
-
-  exploreCore(projectId) {
+  // long running tasks
+  exploreCore = (projectId) => {
     const requirements = this.requirementsForExploreCore(projectId);
 
     this.addTask(ACTIONS.ACTIONS_EXPLORE_CORE, `exploreCore-${projectId}`, 33, { projectId }, requirements);
-  }
+  };
 
-  upgradeCore(projectId) {
+  upgradeCore = (projectId) => {
     const requirements = this.requirementsForUpgradeCore(projectId);
 
     this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, 100, { projectId }, requirements);
-  }
+  };
 
-  exploreOffer(projectId, clientType) {
+  exploreOffer = (projectId, clientType) => {
     const requirements = this.requirementsForExploreOffer(projectId, clientType);
 
     this.addTask(ACTIONS.ACTIONS_EXPLORE_OFFER, `exploreOffer-${projectId}-${clientType}`, 10, { projectId, clientType }, requirements);
-  }
+  };
 
-  upgradeOffer(projectId, clientType) {
+  upgradeOffer = (projectId, clientType) => {
     const requirements = this.requirementsForUpgradeOffer(projectId, clientType);
 
     this.addTask(ACTIONS.ACTIONS_UPGRADE_OFFER, `upgradeOffer-${projectId}-${clientType}`, 25, { projectId, clientType }, requirements);
-  }
+  };
 
-  pickTemporaryProjectBonus(projectId, bonusId) {
-    this.projects.pickTemporaryProjectBonus(projectId, bonusId);
-  }
-
-  exploreChannel(projectId, channelId) {
+  exploreChannel = (projectId, channelId) => {
     const requirements = this.requirementsForExploreChannel(projectId);
 
     this.addTask(ACTIONS.ACTIONS_EXPLORE_CHANNEL, `exploreChannel-${projectId}`, balance.DURATION_TEMPORARY_BONUS, { projectId, channelId }, requirements);
-  }
+  };
 
-  hireProgrammer(projectId, level) {
+
+  // instant functions
+  pickTemporaryProjectBonus = (projectId, bonusId) => {
+    this.projects.pickTemporaryProjectBonus(projectId, bonusId);
+  };
+
+  hireProgrammer = (projectId, level) => {
     this.projects.hireProgrammer(projectId, level);
-  }
+  };
 
-  addServer(projectId) {
+  addServer = (projectId) => {
     this.projects.addServer(projectId);
-  }
+  };
 
-  upgradeDefence(projectId) {
+  upgradeDefence = (projectId) => {
     this.projects.improveDefence(projectId);
-  }
+  };
 
-  grabClients(projectId, channelId) {
+  grabClients = (projectId, channelId) => {
     this.channels.grabClients(projectId, channelId);
-  }
+  };
 
-  stealIdeas(projectId, competitorId) {
+  stealIdeas = (projectId, competitorId) => {
     this.projects.addResources(projectId, new Resources().ideas(1));
-  }
+  };
 }
