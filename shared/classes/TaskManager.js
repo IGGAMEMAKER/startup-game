@@ -53,8 +53,6 @@ export default class TaskManager {
       } else {
         const progress = Math.floor(10 * (time - task.started) / (task.finished - task.started));
 
-        // logger.log(task.taskType, task.started, task.finished, time, progress, '%');
-
         const stars = "*".repeat(progress);
         const dots = '.'.repeat(10 - progress);
         logger.log(`${stars}${dots}`, task.taskType);

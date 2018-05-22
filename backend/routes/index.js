@@ -24,8 +24,6 @@ const test = () => {
   session.upgradeOffer(0, 0);
   session.upgradeCore(0);
   session.upgradeCore(0);
-  
-  
 };
 
 test();

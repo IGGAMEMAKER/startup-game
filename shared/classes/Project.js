@@ -66,14 +66,8 @@ export default class Project {
   }
 
   printMainInfo() {
-    // const profiles = this.clientProfiles.map(cP => cP.quality).join();
-
     console.log(`#${this.getId()} ${this.getName()} ${this.core}LVL. Cost: ${this.cost()}`, this.clientProfiles)
   }
-
-  // iterateByClientTypes() {
-  //   return Object.keys(this.clientProfiles).map()
-  // }
 
   getId() {
     return this.id;
@@ -168,10 +162,6 @@ export default class Project {
 
   hireProgrammer(level) {
     this.programmers[level]++;
-  }
-
-  hireMarketer(level) {
-    this.marketers[level]++;
   }
 
   improveDefence() {
