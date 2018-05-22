@@ -19,7 +19,7 @@ export default class ChannelManager {
 
 
 
-  grabClients(projectId, channelId) {
+  grabClients = (projectId, channelId) => {
     this.getChannelById(channelId).grabClients(projectId, 40);
   }
 }

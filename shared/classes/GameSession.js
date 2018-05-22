@@ -23,10 +23,6 @@ export default class GameSession {
 
   printInfo() {
     this.projects.printMainInfo();
-
-    this.tasks.forEach((t, i) => {
-      // console.log(`task ${i}`, t);
-    })
   }
 
   getGameTime() {
@@ -59,7 +55,7 @@ export default class GameSession {
 
   // long running tasks
   exploreCore = (projectId) => {
-    const requirements = this.projects.getproject.getRequirementsForExploreCore(projectId);
+    const requirements = this.projects.getRequirementsForExploreCore(projectId);
 
     this.addTask(
       ACTIONS.ACTIONS_EXPLORE_CORE,
@@ -71,7 +67,7 @@ export default class GameSession {
   };
 
   upgradeCore = (projectId) => {
-    const requirements = this.projects.getproject.getRequirementsForUpgradeCore(projectId);
+    const requirements = this.projects.getRequirementsForUpgradeCore(projectId);
 
     this.addTask(
       ACTIONS.ACTIONS_UPGRADE_CORE,

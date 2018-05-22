@@ -16,7 +16,7 @@ export default class Channel {
     return this.id;
   }
 
-  grabClients(adPower) {
+  grabClients = (adPower) => {
     /// adPower from 0 to 1
     let clients = this.channelWidth * adPower;
 
@@ -27,9 +27,9 @@ export default class Channel {
     this.clients -= clients;
 
     return clients;
-  }
+  };
 
-  churnClients(returnedClients) {
+  churnClients = (returnedClients) => {
     let clients;
 
     if (this.clients + returnedClients > this.maxClients) {
