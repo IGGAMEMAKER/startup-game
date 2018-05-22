@@ -41,6 +41,8 @@ export default class TaskManager {
 
   check = (time) => {
     logger.clear();
+    logger.log('------------------------ AMOUNT OF TASKS', this.tasks.length);
+
     const removable = [];
 
     for (let i = 0; i < this.tasks.length; i++) {
@@ -61,9 +63,9 @@ export default class TaskManager {
     }
 
     removable.reverse().forEach(r => {
-      logger.log(`FINISHED! ${this.tasks[r].taskType}`);
+      logger.log(`FINISHED! ${r}`);
 
-      this.tasks = this.tasks.splice(r, 0);
+      this.tasks.splice(r, 1);
     })
   };
 
@@ -92,6 +94,6 @@ export default class TaskManager {
         break;
     }
 
-    logger.log(`Executed task: ${task.taskType} with parameters`, data);
+    // logger.log(`Executed task: ${task.taskType} with parameters`, data);
   };
 }

@@ -214,9 +214,6 @@ export default class Project {
   }
 
   upgradeOffer(clientType, ideas) {
-    logger.log('upgradeOffer', this.clientProfiles);
-    logger.log('upgradeOffer', clientType, ideas);
-
     this.clientProfiles[clientType].quality++;
     this.improvements++;
     this.ideas -= ideas;
