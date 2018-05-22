@@ -48,21 +48,6 @@ export default class GameSession {
     this.tasks.add(taskType, channel, executionTime, data, requirements);
   };
 
-  executeTask = (task, i) => {
-  };
-
-
-
-  spendResources = (projectId, resources) => {
-    this.projects.spendResources(projectId, resources);
-  };
-
-  isEnoughResources = (projectId, resources) => {
-    // console.log('isEnoughResources', projectId, resources);
-
-    return this.projects.isEnoughResources(projectId, resources);
-  };
-
   getUserData = (playerId) => {
     return {
       projects: this.projects.getInfo(playerId),
@@ -72,44 +57,9 @@ export default class GameSession {
     }
   };
 
-  requirementsForExploreCore(projectId) {
-    return [{
-      projectId,
-      resources: new Resources().ideas(10).managerPoints(50)
-    }];
-  }
-
-  requirementsForUpgradeCore(projectId) {
-    return [{
-      projectId,
-      resources: new Resources().programmerPoints(250)
-    }];
-  }
-
-  requirementsForExploreOffer(projectId, clientType) {
-    return [{
-      projectId,
-      resources: new Resources().ideas(1).managerPoints(10)
-    }];
-  }
-
-  requirementsForUpgradeOffer(projectId, clientType) {
-    return [{
-      projectId,
-      resources: new Resources().programmerPoints(50)
-    }];
-  }
-
-  requirementsForExploreChannel(projectId) {
-    return [{
-      projectId,
-      resources: new Resources().salesPoints(50)
-    }];
-  }
-
   // long running tasks
   exploreCore = (projectId) => {
-    const requirements = this.requirementsForExploreCore(projectId);
+    const requirements = this.projects.getproject.getRequirementsForExploreCore(projectId);
 
     this.addTask(
       ACTIONS.ACTIONS_EXPLORE_CORE,
@@ -121,7 +71,7 @@ export default class GameSession {
   };
 
   upgradeCore = (projectId) => {
-    const requirements = this.requirementsForUpgradeCore(projectId);
+    const requirements = this.projects.getproject.getRequirementsForUpgradeCore(projectId);
 
     this.addTask(
       ACTIONS.ACTIONS_UPGRADE_CORE,
@@ -133,7 +83,7 @@ export default class GameSession {
   };
 
   exploreOffer = (projectId, clientType) => {
-    const requirements = this.requirementsForExploreOffer(projectId, clientType);
+    const requirements = this.project.getRequirementsForExploreOffer(projectId, clientType);
 
     this.addTask(
       ACTIONS.ACTIONS_EXPLORE_OFFER,
@@ -145,7 +95,7 @@ export default class GameSession {
   };
 
   upgradeOffer = (projectId, clientType) => {
-    const requirements = this.requirementsForUpgradeOffer(projectId, clientType);
+    const requirements = this.project.getRequirementsForUpgradeOffer(projectId, clientType);
 
     this.addTask(
       ACTIONS.ACTIONS_UPGRADE_OFFER,
@@ -157,7 +107,7 @@ export default class GameSession {
   };
 
   exploreChannel = (projectId, channelId) => {
-    const requirements = this.requirementsForExploreChannel(projectId);
+    const requirements = this.project.getRequirementsForExploreChannel(projectId);
 
     this.addTask(
       ACTIONS.ACTIONS_EXPLORE_CHANNEL,

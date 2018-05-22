@@ -1,4 +1,5 @@
 import Project from './Project';
+import Resources from './Resources';
 
 export default class ProjectManager {
   constructor(projects: Array, sessionId) {
@@ -17,11 +18,11 @@ export default class ProjectManager {
 
   spendResources = (projectId, resources) => {
     this.getProjectById(projectId).spendResources(resources);
-  }
+  };
 
   isEnoughResources = (projectId, resources) => {
     return this.getProjectById(projectId).isEnoughResources(resources);
-  }
+  };
 
   getProjectById = (projectId: Project) => {
     const item = this.projects.find(p => p.getId() === projectId);
@@ -30,6 +31,41 @@ export default class ProjectManager {
 
     return item;
   };
+
+  getRequirementsForExploreCore(projectId) {
+    return [{
+      projectId,
+      resources: new Resources().ideas(10).managerPoints(50)
+    }];
+  }
+
+  getRequirementsForUpgradeCore(projectId) {
+    return [{
+      projectId,
+      resources: new Resources().programmerPoints(250)
+    }];
+  }
+
+  getRequirementsForExploreOffer(projectId, clientType) {
+    return [{
+      projectId,
+      resources: new Resources().ideas(1).managerPoints(10)
+    }];
+  }
+
+  getRequirementsForUpgradeOffer(projectId, clientType) {
+    return [{
+      projectId,
+      resources: new Resources().programmerPoints(50)
+    }];
+  }
+
+  getRequirementsForExploreChannel(projectId) {
+    return [{
+      projectId,
+      resources: new Resources().salesPoints(50)
+    }];
+  }
 
 
 
