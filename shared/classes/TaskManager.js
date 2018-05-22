@@ -51,10 +51,13 @@ export default class TaskManager {
       if (time >= task.finished) {
         this.execute(task, i);
       } else {
-        const progress = Math.floor(100 * (time - task.started) / (task.finished - task.started));
+        const progress = Math.floor(10 * (time - task.started) / (task.finished - task.started));
 
         // logger.log(task.taskType, task.started, task.finished, time, progress, '%');
-        logger.log(task.taskType, "*".repeat(progress / 10));
+
+        const stars = "*".repeat(progress);
+        const dots = '.'.repeat(10 - progress);
+        logger.log(`${stars}${dots}`, task.taskType);
       }
 
       if (time >= task.finished) {
