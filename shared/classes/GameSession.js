@@ -2,6 +2,7 @@ import Resources from './Resources';
 
 import ChannelManager from './ChannelManager';
 import ProjectManager from './ProjectManager';
+import TaskManager from './TaskManager';
 
 import * as ACTIONS from '../constants/actions/product-actions';
 import * as balance from '../constants/balance';
@@ -12,10 +13,11 @@ export default class GameSession {
 
     this.projects = new ProjectManager(projects, sessionId);
     this.channels = new ChannelManager(channels, sessionId);
+    this.tasks = new TaskManager(this.projects, this.channels);
+
     this.players = players;
 
     this.time = 1;
-    this.tasks = [];
     this.restrictions = [];
   }
 
@@ -34,32 +36,6 @@ export default class GameSession {
 
 
   // update
-  addTask = (taskType, channel, executionTime, data, requirements = []) => {
-    let requirementsOk = true;
-
-    // if (requirements.length !== requirements.filter(r => {
-    //     return this.isEnoughResources(r.projectId, r.resources)
-    //   })) {
-    //   requirementsOk = false;
-    // }
-
-    if (requirementsOk) {
-      requirements.forEach((r) => this.spendResources(r.projectId, r.resources));
-
-      this.tasks.push({
-        progress: 0,
-        executionTime,
-        started: this.getGameTime(),
-        finish: this.getGameTime() + executionTime,
-
-        taskType,
-        channel,
-        requirements,
-        data
-      })
-    }
-  };
-
   addRestriction(channel, duration) {
     this.restrictions.push({
       channel,
@@ -68,32 +44,11 @@ export default class GameSession {
     })
   }
 
+  addTask = (taskType, channel, executionTime, data, requirements = []) => {
+    this.tasks.add(taskType, channel, executionTime, data, requirements);
+  };
+
   executeTask = (task, i) => {
-    const data = task.data;
-
-    switch (task.taskType) {
-      case ACTIONS.ACTIONS_EXPLORE_CORE:
-        this.projects.exploreCore(data.projectId);
-        break;
-
-      case ACTIONS.ACTIONS_UPGRADE_CORE:
-        this.projects.upgradeCore(data.projectId);
-        break;
-
-      case ACTIONS.ACTIONS_EXPLORE_OFFER:
-        this.projects.exploreOffer(data.projectId, data.clientType);
-        break;
-
-      case ACTIONS.ACTIONS_UPGRADE_OFFER:
-        this.projects.upgradeOffer(data.projectId, data.clientType);
-        break;
-
-      case ACTIONS.ACTIONS_EXPLORE_CHANNEL:
-        this.projects.exploreChannel(data.projectId, data.channelId);
-        break;
-    }
-
-    this.tasks.splice(i, 0);
   };
 
 
@@ -108,6 +63,14 @@ export default class GameSession {
     return this.projects.isEnoughResources(projectId, resources);
   };
 
+  getUserData = (playerId) => {
+    return {
+      projects: this.projects.getInfo(playerId),
+      channels: this.channels.getInfo(playerId),
+      time: this.getGameTime(),
+      // tasks:
+    }
+  };
 
   requirementsForExploreCore(projectId) {
     return [{
@@ -148,31 +111,61 @@ export default class GameSession {
   exploreCore = (projectId) => {
     const requirements = this.requirementsForExploreCore(projectId);
 
-    this.addTask(ACTIONS.ACTIONS_EXPLORE_CORE, `exploreCore-${projectId}`, balance.DURATION_CORE_EXPLORE, { projectId }, requirements);
+    this.addTask(
+      ACTIONS.ACTIONS_EXPLORE_CORE,
+      `exploreCore-${projectId}`,
+      balance.DURATION_CORE_EXPLORE,
+      { projectId },
+      requirements
+    );
   };
 
   upgradeCore = (projectId) => {
     const requirements = this.requirementsForUpgradeCore(projectId);
 
-    this.addTask(ACTIONS.ACTIONS_UPGRADE_CORE, `upgradeCore-${projectId}`, balance.DURATION_CORE_UPGRADE, { projectId }, requirements);
+    this.addTask(
+      ACTIONS.ACTIONS_UPGRADE_CORE,
+      `upgradeCore-${projectId}`,
+      balance.DURATION_CORE_UPGRADE,
+      { projectId },
+      requirements
+    );
   };
 
   exploreOffer = (projectId, clientType) => {
     const requirements = this.requirementsForExploreOffer(projectId, clientType);
 
-    this.addTask(ACTIONS.ACTIONS_EXPLORE_OFFER, `exploreOffer-${projectId}-${clientType}`, balance.DURATION_OFFER_EXPLORE, { projectId, clientType }, requirements);
+    this.addTask(
+      ACTIONS.ACTIONS_EXPLORE_OFFER,
+      `exploreOffer-${projectId}-${clientType}`,
+      balance.DURATION_OFFER_EXPLORE,
+      { projectId, clientType },
+      requirements
+    );
   };
 
   upgradeOffer = (projectId, clientType) => {
     const requirements = this.requirementsForUpgradeOffer(projectId, clientType);
 
-    this.addTask(ACTIONS.ACTIONS_UPGRADE_OFFER, `upgradeOffer-${projectId}-${clientType}`, balance.DURATION_OFFER_UPGRADE, { projectId, clientType }, requirements);
+    this.addTask(
+      ACTIONS.ACTIONS_UPGRADE_OFFER,
+      `upgradeOffer-${projectId}-${clientType}`,
+      balance.DURATION_OFFER_UPGRADE,
+      { projectId, clientType },
+      requirements
+    );
   };
 
   exploreChannel = (projectId, channelId) => {
     const requirements = this.requirementsForExploreChannel(projectId);
 
-    this.addTask(ACTIONS.ACTIONS_EXPLORE_CHANNEL, `exploreChannel-${projectId}`, balance.DURATION_TEMPORARY_BONUS, { projectId, channelId }, requirements);
+    this.addTask(
+      ACTIONS.ACTIONS_EXPLORE_CHANNEL,
+      `exploreChannel-${projectId}`,
+      balance.DURATION_TEMPORARY_BONUS,
+      { projectId, channelId },
+      requirements
+    );
   };
 
 

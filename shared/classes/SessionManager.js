@@ -30,4 +30,7 @@ export default class SessionManager {
     return this.world[sessionId].session;
   }
 
+  getWorldForUser(sessionId, playerId) {
+    this.getSession(sessionId).getUserData(playerId);
+  }
 }
