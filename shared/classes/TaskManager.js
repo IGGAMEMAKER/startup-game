@@ -51,8 +51,8 @@ export default class TaskManager {
       } else {
         const progress = Math.floor(100 * (time - task.started) / (task.finished - task.started));
 
-        logger.log(task.taskType, task.started, task.finished, time, progress, '%');
-        // logger.log(task.taskType, "*".repeat(progress / 10));
+        // logger.log(task.taskType, task.started, task.finished, time, progress, '%');
+        logger.log(task.taskType, "*".repeat(progress / 10));
       }
 
       if (time >= task.finished) {
@@ -63,7 +63,7 @@ export default class TaskManager {
     removable.reverse().forEach(r => {
       logger.log(`FINISHED! ${this.tasks[r].taskType}`);
 
-      this.tasks.splice(r, 0);
+      this.tasks = this.tasks.splice(r, 0);
     })
   };
 
