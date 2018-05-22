@@ -1,6 +1,8 @@
 import Project from './Project';
 import Resources from './Resources';
 
+import logger from '../../backend/helpers/logger';
+
 export default class ProjectManager {
   constructor(projects: Array, sessionId) {
     this.projects = projects;
@@ -8,8 +10,8 @@ export default class ProjectManager {
   }
 
   printMainInfo() {
-    console.log(`-----------------`);
-    console.log(`printProjectsInfo`);
+    logger.log(`-----------------`);
+    logger.log(`printProjectsInfo`);
 
     this.projects.forEach((p: Project) => {
       p.printMainInfo();

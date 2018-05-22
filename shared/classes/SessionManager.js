@@ -5,6 +5,7 @@ import GameSession from './GameSession';
 export default class SessionManager {
   constructor() {
     this.world = {};
+    this.timers = [];
   }
 
   createSession() {
@@ -20,10 +21,16 @@ export default class SessionManager {
       data.players
     );
 
-    this.world[sessionId] = { session };
+    this.world[sessionId] = {
+      session,
+      actions: [] // stats
+    };
 
-    // stats
-    this.world[sessionId].actions = [];
+    const timerId = setInterval(() => {
+      this.getSession(sessionId).makeTick();
+    }, 1000);
+
+    this.timers.push(timerId);
   }
 
   getSession(sessionId): GameSession {

@@ -4,6 +4,8 @@ import ChannelManager from './ChannelManager';
 import * as ACTIONS from '../constants/actions/product-actions';
 import * as balance from '../constants/balance';
 
+import logger from '../../backend/helpers/logger';
+
 export default class TaskManager {
   constructor(projectManager: ProjectManager, channelManager: ChannelManager) {
     this.projects = projectManager;
@@ -11,23 +13,23 @@ export default class TaskManager {
     this.tasks = [];
   }
 
-  add = (taskType, channel, executionTime, data, requirements = []) => {
+  add = (taskType, channel, currentTime, executionTime, data, requirements = []) => {
     let requirementsOk = true;
 
     // if (requirements.length !== requirements.filter(r => {
-    //     return this.isEnoughResources(r.projectId, r.resources)
+    //     return this.projects.isEnoughResources(r.projectId, r.resources)
     //   })) {
     //   requirementsOk = false;
     // }
 
     if (requirementsOk) {
-      requirements.forEach((r) => this.spendResources(r.projectId, r.resources));
+      requirements.forEach((r) => this.projects.spendResources(r.projectId, r.resources));
 
       this.tasks.push({
-        progress: 0,
+        // progress: 0,
         executionTime,
-        started: this.getGameTime(),
-        finish: this.getGameTime() + executionTime,
+        started: currentTime,
+        finished: currentTime + executionTime,
 
         taskType,
         channel,
@@ -35,8 +37,34 @@ export default class TaskManager {
         data
       })
     }
+  };
 
-    this.tasks.forEach(this.execute)
+  check = (time) => {
+    logger.clear();
+    const removable = [];
+
+    for (let i = 0; i < this.tasks.length; i++) {
+      const task = this.tasks[i];
+
+      if (time >= task.finished) {
+        this.execute(task, i);
+      } else {
+        const progress = Math.floor(100 * (time - task.started) / (task.finished - task.started));
+
+        logger.log(task.taskType, task.started, task.finished, time, progress, '%');
+        // logger.log(task.taskType, "*".repeat(progress / 10));
+      }
+
+      if (time >= task.finished) {
+        removable.push(i);
+      }
+    }
+
+    removable.reverse().forEach(r => {
+      logger.log(`FINISHED! ${this.tasks[r].taskType}`);
+
+      this.tasks.splice(r, 0);
+    })
   };
 
   execute = (task, i) => {
@@ -64,6 +92,6 @@ export default class TaskManager {
         break;
     }
 
-    this.tasks.splice(i, 0);
+    logger.log(`Executed task: ${task.taskType} with parameters`, data);
   };
 }

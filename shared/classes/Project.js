@@ -7,6 +7,8 @@ import {
 
 import * as balance from '../constants/balance';
 
+import logger from '../../backend/helpers/logger';
+
 
 const names = [
   'Alpha', 'Proxima', 'Sun', 'Magenta', 'Grapes',
@@ -64,8 +66,14 @@ export default class Project {
   }
 
   printMainInfo() {
-    console.log(`#${this.getId()} ${this.getName()} ${this.core}. Cost: ${this.cost()}`)
+    // const profiles = this.clientProfiles.map(cP => cP.quality).join();
+
+    console.log(`#${this.getId()} ${this.getName()} ${this.core}LVL. Cost: ${this.cost()}`, this.clientProfiles)
   }
+
+  // iterateByClientTypes() {
+  //   return Object.keys(this.clientProfiles).map()
+  // }
 
   getId() {
     return this.id;
@@ -127,6 +135,8 @@ export default class Project {
   }
 
   getSegmentQuality(clientType) {
+    console.log('getSegmentQuality', clientType);
+
     return this.clientProfiles[clientType].quality;
   }
 
@@ -204,6 +214,9 @@ export default class Project {
   }
 
   upgradeOffer(clientType, ideas) {
+    logger.log('upgradeOffer', this.clientProfiles);
+    logger.log('upgradeOffer', clientType, ideas);
+
     this.clientProfiles[clientType].quality++;
     this.improvements++;
     this.ideas -= ideas;

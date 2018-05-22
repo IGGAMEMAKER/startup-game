@@ -11,7 +11,7 @@ const idea = IDEAS.IDEA_WEB_HOSTING;
 const makeProfilePool = (id) => {
   const object = {};
 
-  object[`type${id}`] = {
+  object[id] = {
     quality: 1,
     potential: 1
   };

@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+import logger from '../helpers/logger';
+
 // import tgBot from '../helpers/tgBot';
 
 import SessionManager from '../../shared/classes/SessionManager';
@@ -17,13 +19,11 @@ const test = () => {
 
   const session: GameSession = sessionManager.getSession(1);
 
+  session.upgradeOffer(0, 0);
+  session.upgradeOffer(0, 0);
+  session.upgradeOffer(0, 0);
   session.upgradeCore(0);
-  session.printInfo();
   session.upgradeCore(0);
-  session.upgradeCore(0);
-  session.upgradeCore(0);
-  session.upgradeCore(0);
-  session.printInfo();
 };
 
 test();

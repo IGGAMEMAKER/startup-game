@@ -32,6 +32,11 @@ export default class GameSession {
 
 
   // update
+  makeTick() {
+    this.time++;
+    this.tasks.check(this.time);
+  }
+
   addRestriction(channel, duration) {
     this.restrictions.push({
       channel,
@@ -41,7 +46,7 @@ export default class GameSession {
   }
 
   addTask = (taskType, channel, executionTime, data, requirements = []) => {
-    this.tasks.add(taskType, channel, executionTime, data, requirements);
+    this.tasks.add(taskType, channel, this.getGameTime(), executionTime, data, requirements);
   };
 
   getUserData = (playerId) => {
@@ -79,7 +84,7 @@ export default class GameSession {
   };
 
   exploreOffer = (projectId, clientType) => {
-    const requirements = this.project.getRequirementsForExploreOffer(projectId, clientType);
+    const requirements = this.projects.getRequirementsForExploreOffer(projectId, clientType);
 
     this.addTask(
       ACTIONS.ACTIONS_EXPLORE_OFFER,
@@ -91,7 +96,7 @@ export default class GameSession {
   };
 
   upgradeOffer = (projectId, clientType) => {
-    const requirements = this.project.getRequirementsForUpgradeOffer(projectId, clientType);
+    const requirements = this.projects.getRequirementsForUpgradeOffer(projectId, clientType);
 
     this.addTask(
       ACTIONS.ACTIONS_UPGRADE_OFFER,
@@ -103,7 +108,7 @@ export default class GameSession {
   };
 
   exploreChannel = (projectId, channelId) => {
-    const requirements = this.project.getRequirementsForExploreChannel(projectId);
+    const requirements = this.projects.getRequirementsForExploreChannel(projectId);
 
     this.addTask(
       ACTIONS.ACTIONS_EXPLORE_CHANNEL,
