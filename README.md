@@ -1,4 +1,4 @@
-## Web version of startup simulator
+## Web version of corporation simulator
 
 React Starter Kit — "isomorphic" web app boilerplate
 
